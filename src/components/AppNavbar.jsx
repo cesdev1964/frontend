@@ -1,0 +1,213 @@
+import { React, useEffect, useState, useRef } from "react";
+import { useAuth } from "../auth/AuthContext";
+import { useProfile } from "../hooks/profileStore";
+import AppSidebar from "./AppSidebar";
+function AppNavbar() {
+  const { logout } = useAuth();
+  const { data, isLoading, error, getProfileData } = useProfile();
+  const [openSideBar, setOpenSideBar] = useState(false);
+  const btnRef = useRef(null);
+  const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        await getProfileData();
+      } catch (error) {
+        alert("โหลด API ไม่สำเร็จ", error);
+      }
+    };
+    fetchProfile();
+  }, [getProfileData]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (window.matchMedia("(max-width:1023.98px)").matches) {
+        if (
+          openSideBar &&
+          sidebarRef.current &&
+          !sidebarRef.current.contains(e.target) &&
+          e.target !== btnRef.current
+        ) {
+          setOpenSideBar(false);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openSideBar]);
+
+  const avatarUrl =
+    data?.avatar ||
+    `data:image/jpeg;base64,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`;
+
+  const toggleOpenSideBar = () => {
+    setOpenSideBar(!openSideBar);
+  };
+
+  return (
+    <>
+      <div className={`App ${openSideBar ? "drawer-open" : ""}`}>
+        <div className="topbar">
+          <button
+            ref={btnRef}
+            className="hamburger drawer-open"
+            id="btnHamburger"
+            aria-label="เปิด/ปิดเมนู"
+            aria-controls="sidebar"
+            aria-expanded={openSideBar ? "true" : "false"}
+            onClick={toggleOpenSideBar}
+          >
+            ☰
+          </button>
+          <div className="sideBarArea">
+            <aside id="sidebar" className="sidebar" ref={sidebarRef}>
+              <AppSidebar />
+            </aside>
+          </div>
+
+          <div className="spacer"></div>
+          <div className="user-mini">
+            <div className="dropdown">
+              <a
+                className="btn btn-outline-primary btn-lg dropdown-toggle"
+                href="#"
+                role="button"
+                id="dropdownUser"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="spinner-grow" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <div className="muted text-center">กำลังโหลด...</div>
+                  </>
+                ) : (
+                  <>
+                    <img src={avatarUrl} alt="avatar" />
+                    <div className="muted">
+                      {data.id ? data.id : "N/A"} : คุณ{" "}
+                      {data.name ? data.name : "N/A"}
+                    </div>
+                  </>
+                )}
+                {/* <div className="muted">คุณ {isLoading ? "..." : data.name?data.name:"N/A"} */}
+              </a>
+
+              {/* <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                            <li className="pt-2 ps-2 pe-2">
+                                <table className="table table-borderless" style={{fontSize: "14px"}}>
+                                    <tbody>
+                                        <tr>
+                                            <td>รหัสหนักงาน</td>
+                                            <td>555555</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ชื่อ-สกุล</td>
+                                            <td>นายปวริศน์ ชัยวัฒนแสง</td>
+                                        </tr>
+                                        <tr>
+                                            <td>แผนก</td>
+                                            <td>พัฒนาซอฟต์แวร์</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ฝ่าย</td>
+                                            <td>222222222222222222222222</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ตำแหน่ง</td>
+                                            <td>เจ้าหน้าที่พัฒนาซอฟต์แวร์</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                            <li>
+                                <hr className="dropdown-divider" />
+                            </li>
+                            <li>
+                                <a className="d-flex justify-content-between dropdown-item" style={{textDecoration: "none"}}
+                                    onClick={logout}>
+                                    <strong>ออกจากระบบ</strong>
+                                    <i className="bi bi-box-arrow-right"></i>
+                                </a>
+                            </li>
+                        </ul> */}
+
+              <div
+                className="dropdown-menu dropdown-menu-end"
+                aria-labelledby="dropdownUser"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="profile-card">...กำลังโหลดข้อมูล</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="profile-card">
+                      <p
+                        className="text-end"
+                        style={{ fontSize: "0.8rem", color: "#ff1414" }}
+                      >
+                        EmpID : {data.id ? data.id : "N/A"}
+                      </p>
+                      <div className="profile-content">
+                        <img src={avatarUrl} alt="profile-image" />
+                        <div
+                          className="my-3"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div className="fs-5">
+                            คุณ {data.name ? data.name : "N/A"}
+                          </div>
+                          <p className="text-muted">
+                            {data.email ? data.email : "N/A"}
+                          </p>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            lineHeight: "10px",
+                          }}
+                        >
+                          <p className="position-content fs-6">
+                            เจ้าหน้าที่พัฒนาซอฟแวร์
+                          </p>
+                          <p className="position-content">เทคโนโลยีสารสนเทศ </p>
+                          <p style={{ color: "#FF7584" }}>
+                            (Information Technology)
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="dropdown-divider"></div>
+                    <div>
+                      <a
+                        className="d-flex justify-content-between dropdown-item"
+                        style={{ textDecoration: "none", cursor: "pointer" }}
+                        onClick={logout}
+                      >
+                        <strong>ออกจากระบบ</strong>
+                        <i className="bi bi-box-arrow-right"></i>
+                      </a>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default AppNavbar;
