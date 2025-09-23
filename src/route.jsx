@@ -9,6 +9,7 @@ import ChangePassword from "../src/pages/ChangePassword";
 import Settings from "../src/pages/Setting";
 import { useRoutes } from "react-router-dom";
 import Employee from "./pages/setting/Employee";
+import NameTitle from "./pages/setting/NameTitle";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -33,7 +34,9 @@ export default function RouterPage() {
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />,
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
-        { path: "setting/employees", element: <Employee title="บันทึกข้อมูลพนักงาน" /> },
+        { path: "settings/employees", element: <Employee title="บันทึกข้อมูลพนักงาน" /> },
+        { path: "settings/nametitle", element: <NameTitle title="บันทึกข้อมูลคำนำหน้า" /> },
+
       ],
     },
     {
