@@ -2455,7 +2455,7 @@ textarea.form-control-lg {
     border-radius: .25rem
 }
 
-.form-select {
+/* .form-select {
     display: block;
     width: 100%;
     padding: .375rem 2.25rem .375rem .75rem;
@@ -2516,7 +2516,7 @@ textarea.form-control-lg {
     padding-bottom: .5rem;
     padding-left: 1rem;
     font-size: 1.25rem
-}
+} */
 
 .form-check {
     display: block;

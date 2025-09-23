@@ -17,7 +17,7 @@ const Settings = ({ title }) => {
   const settingCard = [
     {
       page: "4",
-      path: "/setting/employees",
+      path: "/settings/employees",
       icon: "bi bi-people-fill",
       color: cardColor[0],
       title: "ข้อมูลพนักงาน",
@@ -25,7 +25,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "12",
-      path: "#",
+      path: "/settings/nametitle",
       icon: "bi bi-file-earmark-person-fill",
       color: cardColor[1],
       title: "คำนำหน้า",
