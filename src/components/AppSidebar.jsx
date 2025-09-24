@@ -4,7 +4,7 @@ import logo from "../assets/ces-icon.png";
 import { useProfile } from "../hooks/profileStore";
 import { useEffect, useState } from "react";
 
-function AppSidebar() {
+function AppSidebar({ isOpen, toggleSidebar }) {
   const { logout } = useAuth();
   const [isWorkOpen, setIsWorkOpen] = useState(false);
   const { data, isLoading, error, getProfileData } = useProfile();
@@ -27,18 +27,31 @@ function AppSidebar() {
 
   return (
     <>
-      <aside className="sidebar" id="sidebar">
-        <div className="brand">
-          <Link to="/" className="brand-logo" style={{ objectFit: "contain" }}>
-            <img src={logo} width={38} height={38} />
-          </Link>
-          <Link
-            to="/"
-            className="brand-title text-dark"
-            style={{ textDecoration: "none", fontSize: 24 }}
+      <aside className={`sidebar ${isOpen ? "active" : ""}`} id="sidebar">
+        {/* เพิ่มมาใหม่ */}
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="brand">
+            <Link
+              to="/"
+              className="brand-logo"
+              style={{ objectFit: "contain" }}
+            >
+              <img src={logo} width={38} height={38} />
+            </Link>
+            <Link
+              to="/"
+              className="brand-title text-dark"
+              style={{ textDecoration: "none", fontSize: 24 }}
+            >
+              ระบบฝากเบิก
+            </Link>
+          </div>
+          <button
+            className="btn btn-sm btn-outline-light d-lg-none "
+            onClick={toggleSidebar}
           >
-            ระบบฝากเบิก
-          </Link>
+            <i className="bi bi-x-lg"></i>
+          </button>
         </div>
 
         <div className="profile">

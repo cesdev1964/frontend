@@ -77,6 +77,7 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   transform: translateX(0);
   transition: transform 0.25s ease;
+  width: 280px;
 }
 
 .brand {
@@ -85,6 +86,7 @@ body {
   justify-content: center;
   gap: 10px;
   padding: 6px 8px 18px 8px;
+  margin-top: 10px;
 }
 
 .brand-logo {
@@ -638,6 +640,7 @@ body {
     display: block;
   } */
 
+
   body.drawer-open {
     overflow: hidden;
   }
@@ -658,17 +661,27 @@ body {
   }
 
   .content {
-    margin-left: 92px;
+    margin-left: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
   .sidebar {
     position: fixed;
-    width: 92px;
+    top: 0;
+    left: 0;
     box-shadow: none;
+    transform: translateX(-100%);
+    z-index: 1050;
+    height: 100vh;
   }
-  .nav .label {
+
+  /* เพิ่มใหม่ */
+   .sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* .nav .label {
     visibility: hidden;
   }
 
@@ -724,7 +737,6 @@ body {
     font-weight: 700;
   }
 
-  /* Logout button (menu item) */
 
   .submenu {
     list-style: none;
@@ -824,7 +836,8 @@ body {
   .power .label,
   .profile > div {
     display: none;
-  }
+  } */
+
 
   /* header */
   .headerName {
@@ -2042,5 +2055,9 @@ body {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
+}
+
+.setting-icon{
+  font-size: 50px;
 }
 
