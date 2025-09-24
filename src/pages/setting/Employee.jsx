@@ -19,7 +19,7 @@ const Employee = ({ title }) => {
     educationId: 0,
     jobId: 0,
     levelId: 0,
-    startDate: null,
+    startDate: new Date().toISOString().split("T")[0],
     endDate: null,
     positionId: 0,
     contractorId: 0,
@@ -28,7 +28,16 @@ const Employee = ({ title }) => {
     statusId: 0,
   });
 
+  const handleChangeInput = (e) => {
+    const { name, value } = e.target;
+    setInput((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const tableHead = [
+    { index: 0, colName: "ลำดับ" },
     { index: 1, colName: "รหัสพนักงาน" },
     { index: 2, colName: "ชื่อพนักงาน" },
     { index: 3, colName: "ระดับ" },
@@ -75,12 +84,13 @@ const Employee = ({ title }) => {
 
   const tableRef = useRef();
   useEffect(() => {
-    const table = $(tableRef.current).DataTable({
+    $(tableRef.current).DataTable({
       responsive: true,
+      destroy:true,
       paging: true,
       searching: true,
       scrollX: true,
-      autoWidth: false,
+      autoWidth: true,
       language: {
         decimal: "",
         emptyTable: "ไม่มีข้อมูลในตาราง",
@@ -97,13 +107,21 @@ const Employee = ({ title }) => {
       },
       data: mockemployeetableData,
       columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "160px", targets: 1 },
-        { width: "100px", targets: 2 },
-        { width: "100px", targets: 4 },
-        { width: "120px", targets: 5 },
+        { width: "50px", targets: 0 },
+        { width: "70px", targets: 1 },
+        { width: "160px", targets: 2 },
+        { width: "100px", targets: 3 },
+        { width: "160px", targets: 4 },
+        { width: "100px", targets: 5 },
+        { width: "120px", targets: 6 },
       ],
       columns: [
+        {
+          data: null,
+          render: function (data, type, row, meta) {
+            return meta.row + 1;
+          },
+        },
         {
           title: "รหัสพนักงาน",
           data: "empId",
@@ -141,24 +159,42 @@ const Employee = ({ title }) => {
           title: "การจัดการ",
           render: function (data, type, row) {
             return `
-                    <div class="btn-group btn-group-sm " role="group">
-                      <a
-                        href="#"
-                        class="btn btn-warning actionBtn"
-                        title="ดูรายละเอียด"
-                        data-toggle="tooltip"
-                      >
-                        <i class="bi bi-pen-fill"></i>
-                      </a>
-                      <a
-                        href="#"
-                        class="btn btn-danger actionBtn"
-                        title="Export Excel"
-                        data-toggle="tooltip"
-                      >
-                        <i class="bi bi-trash-fill"></i>
-                      </a>
-                    </div>
+           <div className="d-flex align-items-center justify-content-center">
+            <div class="dropdown d-lg-none">
+              <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                 <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                <a class="dropdown-item text-dark" href="#">
+                  <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-dark" href="#">
+                  <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
+                </a>
+              </li>
+             </ul>
+          </div>
+          
+          <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+            <a
+              href="#"
+              class="btn btn-warning me-2"
+              title="แก้ไข"
+            >
+              <i class="bi bi-pen-fill"></i>
+            </a>
+            <a
+              href="#"
+              class="btn btn-danger"
+              title="ลบ"
+            >
+              <i class="bi bi-trash-fill"></i>
+            </a>
+          </div>
+        </div>
                   `;
           },
         },
@@ -169,10 +205,16 @@ const Employee = ({ title }) => {
           : '<"top"lf>rt<"bottom"ip><"clear">',
     });
 
-    return () => {
-      table.destroy();
-    };
+    
   }, []);
+
+  // validate cardID
+  const inputTHIdformat = (e) => {
+    // การกำหนดสัญลัษณ์เพื่อแทนที่
+    let value = e.target.value.replace(/\D/g, "");
+    // กรอกได้ไม่เกิน 13 ตัว ใช้ substring
+    value = value.subString(0, 13);
+  };
 
   const avatarUrl = `data:image/jpeg;base64,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`;
 
@@ -231,6 +273,7 @@ const Employee = ({ title }) => {
             </thead>
           </table>
         </div>
+
         {/* modal */}
         <div
           className="modal fade"
@@ -240,7 +283,7 @@ const Employee = ({ title }) => {
           aria-hidden="true"
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content bg-danger d-flex flex-column">
+            <div className="modal-content bg-primary d-flex flex-column">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
@@ -276,22 +319,6 @@ const Employee = ({ title }) => {
                         alignItems: "center",
                       }}
                     >
-                      {/* firstname: "",
-    lastname: "",
-    telephoneNo: "",
-    cardId: "",
-    birthday: null,
-    educationId: 0,
-    jobId: 0,
-    levelId: 0,
-    startDate: null,
-    endDate: null,
-    positionId: 0,
-    contractorId: 0,
-    rate: 0.0,
-    typeId: 0,
-    statusId: 0, */}
-
                       <form>
                         {/* ข้อมูลทั่วไป */}
                         <div className="mb-3">
@@ -307,6 +334,8 @@ const Employee = ({ title }) => {
                                 name="titleId"
                                 id="titleId"
                                 className="form-select"
+                                onChange={handleChangeInput}
+                                value={input.titleId}
                               >
                                 <option value={""}>เลือกคำนำหน้า</option>
                                 <option value={1}>นาย</option>
@@ -325,8 +354,9 @@ const Employee = ({ title }) => {
                                 type="text"
                                 className="form-control"
                                 id="firstname"
-                                value=""
                                 placeholder="กรอกชื่อจริง"
+                                value={input.firstname}
+                                onChange={handleChangeInput}
                               />
                             </div>
                             <div className="col-md-6 col-lg-4">
@@ -339,8 +369,9 @@ const Employee = ({ title }) => {
                                 type="text"
                                 className="form-control"
                                 id="lastname"
-                                value=""
                                 placeholder="กรอกนามสกุล"
+                                value={input.lastname}
+                                onChange={handleChangeInput}
                               />
                             </div>
                             <div className="col-md-8 col-lg-4">
@@ -348,13 +379,22 @@ const Employee = ({ title }) => {
                                 วันเดือนปีเกิด
                                 <span style={{ color: "red" }}>*</span>
                               </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="StartDate"
-                                value=""
-                                placeholder="เลือกวันที่"
-                              />
+                              <div
+                                className="input-group date"
+                                data-date-format="mm-dd-yyyy"
+                              >
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  id="StartDate"
+                                  placeholder="เลือกวันที่"
+                                  onChange={handleChangeInput}
+                                  value={input.birthday}
+                                  // data-provide="datepicker"
+                                  // data-date-language="th-th"
+                                />
+                              </div>
+                              {/* </> */}
                             </div>
                           </div>
                           <div className="row form-spacing g-2">
@@ -367,6 +407,8 @@ const Employee = ({ title }) => {
                                 name="educationId"
                                 id="educationId"
                                 className="form-select"
+                                value={input.educationId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกระดับการศึกษา</option>
                                 <option value={1}>ประถมศึกษาตอนต้น</option>
@@ -383,8 +425,10 @@ const Employee = ({ title }) => {
                                 type="tel"
                                 className="form-control"
                                 id="StartDate"
-                                value=""
+                                maxLength={10}
+                                value={input.telephoneNo}
                                 placeholder="000-000-0000"
+                                onChange={handleChangeInput}
                               />
                             </div>
                           </div>
@@ -407,7 +451,10 @@ const Employee = ({ title }) => {
                                 aria-invalid
                                 aria-required="true"
                                 required
-                                tabindex="1"
+                                tabIndex="1"
+                                maxLength={13}
+                                value={input.cardId}
+                                onChange={handleChangeInput}
                               />
                             </div>
                           </div>
@@ -426,6 +473,8 @@ const Employee = ({ title }) => {
                                 name="levelId"
                                 id="levelId"
                                 className="form-select"
+                                value={input.levelId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกระดับ</option>
                                 <option value={1}>PC 1</option>
@@ -443,6 +492,8 @@ const Employee = ({ title }) => {
                                 name="jobId"
                                 id="jobId"
                                 className="form-select"
+                                value={input.jobId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกหน่วยงาน</option>
                               </select>
@@ -456,6 +507,8 @@ const Employee = ({ title }) => {
                                 name="positionId"
                                 id="positionId"
                                 className="form-select"
+                                value={input.positionId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกตำแหน่ง</option>
                               </select>
@@ -471,6 +524,8 @@ const Employee = ({ title }) => {
                                 name="contractorId"
                                 id="contractorId"
                                 className="form-select"
+                                value={input.contractorId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกผู้รับเหมา</option>
                               </select>
@@ -480,10 +535,12 @@ const Employee = ({ title }) => {
                                 ประเภท
                                 <span style={{ color: "red" }}>*</span>
                               </label>
-                             <select
+                              <select
                                 name="typeId"
                                 id="typeId"
                                 className="form-select"
+                                value={input.typeId}
+                                onChange={handleChangeInput}
                               >
                                 <option value={""}>เลือกประเภท</option>
                               </select>
@@ -497,9 +554,11 @@ const Employee = ({ title }) => {
                                 type="number"
                                 className="form-control"
                                 id="rate"
-                                value=""
+                                value={input.rate}
                                 placeholder="0.00"
-                                step="0.01" min="0"
+                                step="0.01"
+                                min="0.00"
+                                onChange={handleChangeInput}
                               />
                             </div>
                           </div>
@@ -510,11 +569,13 @@ const Employee = ({ title }) => {
                                 <span style={{ color: "red" }}>*</span>
                               </label>
                               <input
-                                type="text"
+                                type="date"
                                 className="form-control"
                                 id="StartDate"
-                                value=""
                                 placeholder="เลือกวันที่"
+                                value={input.startDate}
+                                onChange={handleChangeInput}
+                                defaultValue={Date.now()}
                               />
                             </div>
                             <div className="col-md-6 col-lg-4">
@@ -523,11 +584,12 @@ const Employee = ({ title }) => {
                                 <span style={{ color: "red" }}>*</span>
                               </label>
                               <input
-                                type="text"
+                                type="date"
                                 className="form-control"
                                 id="StartDate"
-                                value=""
                                 placeholder="เลือกวันที่"
+                                value={input.endDate}
+                                onChange={handleChangeInput}
                               />
                             </div>
                             <div className="col-md-5 col-lg-4">
@@ -535,7 +597,13 @@ const Employee = ({ title }) => {
                                 สถานะ
                                 <span style={{ color: "red" }}>*</span>
                               </label>
-                              <select name="statusId" id="statusId" className="form-select">
+                              <select
+                                name="statusId"
+                                id="statusId"
+                                className="form-select"
+                                value={input.statusId}
+                                onChange={handleChangeInput}
+                              >
                                 <option value={""}>เลือกสถานะ</option>
                                 <option value={1}>ประจำการ</option>
                                 <option value={0}>ลาออก</option>
@@ -550,7 +618,7 @@ const Employee = ({ title }) => {
                 </div>
               </div>
               <div className="d-flex flex-column align-items-center mb-4">
-                <div className="d-flex gap-2 w-50">
+                <div className="d-flex gap-2 w-75">
                   <button
                     className="btn btn-outline-primary w-100"
                     data-bs-dismiss="modal"
@@ -568,7 +636,6 @@ const Employee = ({ title }) => {
             </div>
           </div>
         </div>
-        ;
       </div>
     </>
   );

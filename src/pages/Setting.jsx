@@ -58,7 +58,7 @@ const Settings = ({ title }) => {
     {
       page: "6",
       path: "#",
-      icon: "fa-solid fa-person",
+      icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "ตำแหน่ง",
       subtitle: "จัดการข้อมูลตำแหน่ง",
@@ -66,7 +66,7 @@ const Settings = ({ title }) => {
     {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "bi bi-people-fill",
       color: cardColor[5],
       title: "ผู้รับเหมา",
       subtitle: "จัดการข้อมูลผู้รับเหมา",
@@ -74,7 +74,7 @@ const Settings = ({ title }) => {
     {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "ประเภทพนักงาน",
       subtitle: "จัดการข้อมูลประเภทพนักงาน",
@@ -90,7 +90,7 @@ const Settings = ({ title }) => {
      {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "บทบาท",
       subtitle: "จัดการข้อมูลบทบาทการเข้าใช้งาน",
@@ -98,7 +98,7 @@ const Settings = ({ title }) => {
     {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "fas fa-umbrella-beach",
       color: cardColor[5],
       title: "วันหยุดบริษัท",
       subtitle: "จัดการข้อมูลวันหยุด",
@@ -106,7 +106,7 @@ const Settings = ({ title }) => {
     {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "fa-solid fa-file-invoice",
       color: cardColor[5],
       title: "โอที",
       subtitle: "จัดการข้อมูลโอที",
@@ -114,7 +114,7 @@ const Settings = ({ title }) => {
       {
       page: "6",
       path: "#",
-      icon: "bi bi-clipboard-data-fill",
+      icon: "bi bi-journal-bookmark-fill",
       color: cardColor[5],
       title: "หมวดงาน",
       subtitle: "จัดการข้อมูลหมวดงาน",
@@ -154,17 +154,17 @@ const Settings = ({ title }) => {
               {settingCard.map((item, index) => {
                 return (
                   <div
-                    className="col card-item"
+                    className="col "
                     style={{ cursor: "pointer" }}
                     key={index}
                     onClick={()=>handleChagePage(item.path)}
                   >
-                    <div className="card h-100 shadow-sm card-hover card--soft settingCard">
+                    <div className="card h-100 shadow-sm card--soft settingCard card-item">
                       <div
                         className="card-body text-center d-flex flex-column"
                         //  onclick="handleClickToPage('${value.path}')"
                       >
-                        <div className="setting-icon">
+                        <div className="setting-icon pt-3">
                           <i
                             className={`${item.icon} text-danger`}
                             style={{ fontSize: "50px" }}
