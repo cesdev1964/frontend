@@ -45,6 +45,7 @@ export default function NameTitle({ title }) {
   useEffect(() => {
     setData(mockeTitletableData);
   }, []);
+  
   useEffect(() => {
     try {
       if (!data) {
@@ -229,7 +230,7 @@ export default function NameTitle({ title }) {
   };
 
   return (
-    <div className="App">
+    <div className="container py-4 min-vh-100 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">

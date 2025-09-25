@@ -10,6 +10,8 @@ import Settings from "../src/pages/Setting";
 import { useRoutes } from "react-router-dom";
 import Employee from "./pages/setting/Employee";
 import NameTitle from "./pages/setting/NameTitle";
+import TestComponent from "./pages/TestComponent";
+import OT from "./pages/OT";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -29,6 +31,10 @@ export default function RouterPage() {
           path: "working/summary",
           element: <WorkingSummary title="สรุปการทำงาน" />,
         },
+          {
+          path: "working/OT",
+          element: <OT title="บันทึกโอที" />,
+        },
         {
           path: "changePassword",
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />,
@@ -36,6 +42,7 @@ export default function RouterPage() {
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
         { path: "settings/employees", element: <Employee title="บันทึกข้อมูลพนักงาน" /> },
         { path: "settings/nametitle", element: <NameTitle title="บันทึกข้อมูลคำนำหน้า" /> },
+        { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 
       ],
     },

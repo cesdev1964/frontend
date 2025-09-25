@@ -624,8 +624,58 @@ thead th:last-child {
   border-top-right-radius: 10px;
 }
 
+/* หน้า home */
 
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+}
+.news-container {
+  max-height: 540px;
+  overflow-y: auto;
+}
 
+.text-slice-container {
+  background-color: teal;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  overflow-x: hidden;
+}
+
+.text-slice-container > div{
+  border:1.5px solid teal;
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-width: 100%;
+}
+
+.text-message {
+  display: flex;
+  flex-shrink: 0;
+  height: 50px;
+  align-items: center;
+  animation: slide-left 20s linear infinite;
+}
+
+.text-message p {
+  font-size: 2.5em;
+  font-weight: 100;
+  padding-left: 0.5em;
+  padding-top: 1rem;
+}
+
+/* ต้องประกาศ keyframes นอก selector */
+@keyframes slide-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
 
 /* Off-canvas for < 1024px */
 @media (max-width: 1023.98px) {
@@ -714,14 +764,7 @@ thead th:last-child {
 
 /* employee form */
 
-.employee-content img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(90, 45, 45, 0.15);
-}
-.employee-image {
+.employee-image-section {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1751,6 +1794,10 @@ thead th:last-child {
   .modal-fullscreen-lg-down .modal-footer {
     border-radius: 0;
   }
+
+  .news-container {
+    max-height: 450px;
+  }
 }
 
 @media (max-width: 1199.98px) {
@@ -1808,6 +1855,13 @@ thead th:last-child {
 
   .table-conteiner {
     font-size: 12px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1412px) {
+  .col-custom {
+    flex: 0 0 100%;
+    max-width: 100%;
   }
 }
 

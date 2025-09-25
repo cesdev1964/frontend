@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 function AppSidebar({ isOpen, toggleSidebar }) {
   const { logout } = useAuth();
   const [isWorkOpen, setIsWorkOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const { data, isLoading, error, getProfileData } = useProfile();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
           </div>
         </div>
 
-        <div className="section-label">GENERAL</div>
+        <div className="section-label">Menu</div>
         <ul className="nav">
           <li>
             <NavLink
@@ -99,32 +100,51 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-              <li>
-                <a href="#" className="nav-link dropdown-link">
-                  ลงเวลางาน
-                </a>
-              </li>
-              <li>
+             <li>
                 <NavLink
-                  to="/working/summary"
+                  to="/working/OT"
                   className="nav-link dropdown-link"
                 >
-                  สรุปการทำงาน
+                  บันทึกโอที
+                </NavLink>
+              </li>
+
+            </ul>
+          </li>
+             <li className="dropdown-container">
+            <button
+              // to="/working"
+              onClick={() => setIsReportOpen((prev) => !prev)}
+              className={`${({ isActive }) =>
+                isActive ? "active" : ""} dropdown-btn`}
+            >
+              <span className="icon">
+                <i className="bi bi-folder-fill"></i>
+              </span>
+              <span className="label">รายงาน</span>
+              <span className="chev">
+                <i className="bi bi-caret-right-fill"></i>
+              </span>
+            </button>
+            <ul className={`submenu ${isReportOpen ? "show" : ""}`}>
+             <li>
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  รายงานการขอโอที
+                </NavLink>
+              </li>
+               <li>
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  รายงานหลังประมวลผล
                 </NavLink>
               </li>
             </ul>
           </li>
-          {/* <li>
-            <NavLink
-              to="#"
-              // className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              <span className="icon">
-                <i className="bi bi-lock-fill"></i>
-              </span>
-              <span className="label">รายงาน</span>
-            </NavLink>
-          </li> */}
           <li>
             <NavLink
               to="/changePassword"
@@ -145,6 +165,17 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                 <i className="bi bi-gear-fill"></i>
               </span>
               <span className="label">ตั้งค่า</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/test"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <span className="icon">
+                <i className="bi bi-android2"></i>
+              </span>
+              <span className="label">สำหรับทดสอบ</span>
             </NavLink>
           </li>
         </ul>

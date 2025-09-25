@@ -125,7 +125,7 @@ const Settings = ({ title }) => {
     navigate(path);
   }
   return (
-    <div>
+    <div className="container py-4 min-vh-100 d-flex flex-column">
       <HeaderPage pageName={title} />
       <div className="search-box">
         <div className="input-group mb-4">

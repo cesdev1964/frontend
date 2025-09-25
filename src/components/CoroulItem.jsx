@@ -1,7 +1,24 @@
-export default function CarouselItem({name}) {
+export default function CarouselItem({ name}) {
   return (
-    <div className="carousel-card">
-      <p>{name}</p>
+    <div className="text-slice-container mb-3">
+      <div>
+        <div class="text-message">
+          <p>{name}</p>
+          <p>ยินดีต้อนรับ</p>
+        </div>
+        <div class="text-message">
+           <p>{name}</p>
+          <p>ยินดีต้อนรับ</p>
+        </div>
+         <div class="text-message">
+           <p>{name}</p>
+          <p>ยินดีต้อนรับ</p>
+        </div>
+         <div class="text-message">
+           <p>{name}</p>
+          <p>ยินดีต้อนรับ</p>
+        </div>
+      </div>
     </div>
   );
 }
