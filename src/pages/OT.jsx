@@ -92,32 +92,52 @@ export default function OT({ title }) {
         </div>
       </div>
       {/* modal add */}
-        <div
-          class="modal fade"
-          id="addOTModal"
-          tabindex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered modal-md">
-            <div class="modal-content bg-primary">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                     <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  ทำการขอโอที
-                </h1>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+      <div
+        class="modal fade"
+        id="addOTModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content bg-primary">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                <i className="bi bi-plus-circle fs-4 me-2"></i>
+                ทำการขอโอที
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body d-flex flex-column align-items-center">
+              <div class="alert alert-info w-100" role="alert">
+                วันที่ 21/09/2568 กะ (นับชั่วโมง) OF3 เวลาเข้า 08:00 ออก 00:00 วันหยุด พัก 60 นาที
               </div>
-              <div class="modal-body d-flex flex-column align-items-center">
+                  <div className="d-flex flex-column align-items-center mb-4">
+                <div className="d-flex gap-2 w-75">
+                  <button
+                    className="btn btn-outline-primary w-100"
+                    data-bs-dismiss="modal"
+                    // onClick={ClearInput}
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    className="btn btn-primary w-100"
+                    // onClick={handleSubmit}
+                  >
+                    บันทึก
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 }

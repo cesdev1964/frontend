@@ -18,10 +18,18 @@ const Settings = ({ title }) => {
     {
       page: "4",
       path: "/settings/employees",
-      icon: "bi bi-people-fill",
+      icon: "fa-solid fa-user-tie",
       color: cardColor[0],
       title: "ข้อมูลพนักงาน",
       subtitle: "จัดการข้อมูลพนักงานในระบบ",
+    },
+    {
+      page: "4",
+      path: "/settings/users",
+      icon: "fa-solid fa-users",
+      color: cardColor[0],
+      title: "ข้อมูลผู้ใช้งาน",
+      subtitle: "จัดการข้อมูลผู้ใช้งานในระบบ",
     },
     {
       page: "12",
@@ -33,7 +41,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "5",
-      path: "#",
+      path: "/settings/education",
       icon: "bi bi-mortarboard-fill",
       color: cardColor[2],
       title: "การศึกษา",
@@ -41,7 +49,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/job",
       icon: "bi bi-journal-bookmark-fill",
       color: cardColor[3],
       title: "หน่วยงาน",
@@ -49,7 +57,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/level",
       icon: "bi bi-clipboard-data-fill",
       color: cardColor[4],
       title: "ระดับ",

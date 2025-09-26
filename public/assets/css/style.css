@@ -677,6 +677,48 @@ thead th:last-child {
   }
 }
 
+/* ปุ่ม switch toggle */
+ .form-check-input {
+     clear: left;
+ }
+
+ .form-switch.form-switch-md {
+     margin-bottom: 0.8rem;
+ }
+
+ .form-switch.form-switch-md .form-check-input {
+     height: 2rem;
+     width: calc(2rem + 1.5rem);
+     border-radius: 3rem;
+ }
+
+ .form-check-input:focus {
+    border-color: var(--pink);
+    outline: 0;
+     box-shadow: 0 0 0 .25rem rgba(220, 53, 69, .25)
+}
+
+.form-check-input:checked {
+    background-color: var(--pink-active);
+    border-color: var(--pink-active);
+}
+
+.form-check-input[type=checkbox]:indeterminate {
+    background-color: var(--pink-active);
+    border-color: var(--pink-active);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e")
+}
+
+.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23f19999'/%3e%3c/svg%3e")
+    /* %23 => # */
+}
+
+.form-switch .form-check-input:checked {
+    background-position: right center;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e")
+}
+
 /* Off-canvas for < 1024px */
 @media (max-width: 1023.98px) {
   .app {
@@ -1928,6 +1970,7 @@ thead th:last-child {
   padding-left: 1rem;
   font-size: 1.25rem;
 }
+
 
 /* custom  */
 .add-btn {

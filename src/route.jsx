@@ -8,10 +8,14 @@ import WorkingSummary from "../src/pages/WorkingSummary";
 import ChangePassword from "../src/pages/ChangePassword";
 import Settings from "../src/pages/Setting";
 import { useRoutes } from "react-router-dom";
-import Employee from "./pages/setting/Employee";
+import Employees from "./pages/setting/Employees";
 import NameTitle from "./pages/setting/NameTitle";
 import TestComponent from "./pages/TestComponent";
 import OT from "./pages/OT";
+import Users from "./pages/setting/Users";
+import Educations from "./pages/setting/Educations";
+import Jobs from "./pages/setting/Jobs";
+import Levels from "./pages/setting/Levels";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -40,8 +44,13 @@ export default function RouterPage() {
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />,
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
-        { path: "settings/employees", element: <Employee title="บันทึกข้อมูลพนักงาน" /> },
+        { path: "settings/employees", element: <Employees title="บันทึกข้อมูลพนักงาน" /> },
+        { path: "settings/users", element: <Users title="บันทึกข้อมูลผู้ใช้งาน" /> },
         { path: "settings/nametitle", element: <NameTitle title="บันทึกข้อมูลคำนำหน้า" /> },
+        { path: "settings/education", element: <Educations title="บันทึกข้อมูลการศึกษา" /> },
+        { path: "settings/job", element: <Jobs title="บันทึกข้อมูลหน่วยงาน" /> },
+        { path: "settings/level", element: <Levels title="บันทึกข้อมูลระดับ" /> },
+       
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 
       ],

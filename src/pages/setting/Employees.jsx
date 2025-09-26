@@ -8,7 +8,7 @@ import HeaderPage from "../../components/HeaderPage";
 import { mockemployeetableData } from "../../MockData";
 import ImageComponent from "../../components/Image";
 
-const Employee = ({ title }) => {
+const Employees = ({ title }) => {
   useTitle(title);
   const [input, setInput] = useState({
     titleId: 0,
@@ -28,6 +28,7 @@ const Employee = ({ title }) => {
     typeId: 0,
     statusId: 0,
   });
+  const [addBtnName,setAddBtnName] = useState("เพิ่มพนักงานใหม่")
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -111,10 +112,10 @@ const Employee = ({ title }) => {
         { width: "50px", targets: 0 },
         { width: "70px", targets: 1 },
         { width: "160px", targets: 2 },
-        { width: "100px", targets: 3 },
-        { width: "160px", targets: 4 },
+        { width: "80px", targets: 3 },
+        { width: "180px", targets: 4 },
         { width: "100px", targets: 5 },
-        { width: "120px", targets: 6 },
+        { width: "80px", targets: 6 },
       ],
       columns: [
         {
@@ -161,8 +162,8 @@ const Employee = ({ title }) => {
           render: function (data, type, row) {
             return `
            <div className="d-flex align-items-center justify-content-center">
-            <div class="dropdown d-lg-none">
-              <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="dropdown d-lg-none text-center">
+              <button class="border-0 bg-transparent" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                  <i class="bi bi-three-dots-vertical"></i>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -179,7 +180,7 @@ const Employee = ({ title }) => {
              </ul>
           </div>
           
-          <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+          <div class="btn-group btn-group-sm d-none d-lg-flex text-center" role="group">
             <a
               href="#"
               class="btn btn-warning me-2"
@@ -226,7 +227,7 @@ const Employee = ({ title }) => {
             <a href="/settings">ตั้งค่า</a>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-            พนักงาน
+            {title}
           </li>
         </ol>
       </nav>
@@ -244,7 +245,7 @@ const Employee = ({ title }) => {
             <span>
               <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
-            <span className="label">เพิ่มพนักงานใหม่</span>
+            <span className="label">{addBtnName}</span>
           </button>
         </div>
         {/* ตารางข้อมูล */}
@@ -286,7 +287,7 @@ const Employee = ({ title }) => {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  เพิ่มข้อมูลพนักงานใหม่
+                  {addBtnName}
                 </h1>
 
                 <button
@@ -648,4 +649,4 @@ const Employee = ({ title }) => {
   );
 };
 
-export default Employee;
+export default Employees;

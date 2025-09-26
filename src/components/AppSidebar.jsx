@@ -108,6 +108,14 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                   บันทึกโอที
                 </NavLink>
               </li>
+               <li>
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  อนุมติโอที
+                </NavLink>
+              </li>
 
             </ul>
           </li>
@@ -128,6 +136,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
             </button>
             <ul className={`submenu ${isReportOpen ? "show" : ""}`}>
              <li>
+              {/* แสดงเป็นรายชื่อให้เลือกดูได้ */}
                 <NavLink
                   to="#"
                   className="nav-link dropdown-link"
