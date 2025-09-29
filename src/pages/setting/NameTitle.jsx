@@ -28,6 +28,8 @@ export default function NameTitle({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มคำนำหน้าใหม่");
+  
+
   const labelModal = {
     isSureText: "คุณต้องการลบใช่หรือไม่",
     isSureSubtext: "",
@@ -232,7 +234,7 @@ export default function NameTitle({ title }) {
       //  table.row.add(newData);
       //  table.draw();
       const currentModal = document.getElementById("notModal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(currentModal);
       modalInstance.hide();
       ClearInput();
     }
@@ -243,11 +245,10 @@ export default function NameTitle({ title }) {
   };
 
   const handleEdit = () =>{
-    setAddBtnName("แก้ไขคำนำหน้า")
     const currentModal = document.getElementById("notModal");
     if(currentModal){
       //เป็นการสร้างใหม่ ก่อนการเรียกใช้
-      const modal = new bootstrap.Modal(currentModal);
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
     }
   }
@@ -298,7 +299,7 @@ export default function NameTitle({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-100 d-flex flex-column">
+    <div className="container py-4 min-vh-90 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -364,7 +365,7 @@ export default function NameTitle({ title }) {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
+                  {title}
                 </h1>
 
                 <button

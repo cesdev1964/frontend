@@ -10,10 +10,10 @@ export function AuthProvider({ children }) {
   const login = async ({ username, password }) => {
     setLoading(true);
     try {
-      const res = await fetch(`${baseURL}/api/v1/auth/login`, {
+      const res = await fetch(`${baseURL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: username, password }),
+        body: JSON.stringify({username, password }),
       });
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();

@@ -11,24 +11,25 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสระดับ" },
-  { index: 2, colName: "ระดับ" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 1, colName: "รหัสบทบาท" },
+  { index: 3, colName: "ชื่อบทบาท" },
+  { index: 4, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
   { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
   { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
   { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
 ];
-export default function Levels({ title }) {
+export default function Roles({ title }) {
   useTitle(title);
   const tableRef = useRef();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลระดับ")
+  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลบทบาท");
   const [input, setInput] = useState({
-    levelname: "",
+    roleName: "",
+    description: "",
   });
 
   const handleChangeInput = (e) => {
@@ -55,11 +56,8 @@ export default function Levels({ title }) {
   //   }
   // }, [data]);
 
-
-
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
-      finishSubmit();
     }
   }, [error, isSubmit]);
 
@@ -170,10 +168,13 @@ export default function Levels({ title }) {
 
   const validateForm = () => {
     let errors = {};
-    const hasThai = /[ก-ฮ]/;
-    if (!input.levelname) {
-      errors.levelname = "กรุณากรอกระดับในองค์กร";
-    } 
+    if (!input.roleName) {
+      errors.roleName = "กรุณากรอกชื่อบทบาท";
+    }
+
+    if (!input.description) {
+      errors.description = "กรุณากรอกคำอธิบาย";
+    }
     return errors;
   };
 
@@ -182,7 +183,6 @@ export default function Levels({ title }) {
     // ตรวจสอบโดย sweetalert 2
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
     //api post
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
@@ -205,13 +205,10 @@ export default function Levels({ title }) {
     }
   };
 
-  const finishSubmit = () => {
-    console.log("submit data", input);
-  };
-
   const ClearInput = () => {
     setInput({
-      levelname:""
+      roleName: "",
+      description: "",
     });
     setError({});
   };
@@ -277,7 +274,7 @@ export default function Levels({ title }) {
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered modal-md">
             <div className="modal-content bg-primary d-flex flex-column">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -294,39 +291,55 @@ export default function Levels({ title }) {
               </div>
               <div class="modal-body">
                 <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
                   <div
-                    className="col-lg-9 "
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                      width: "100%",
                     }}
                   >
                     <form>
                       {/* ข้อมูลทั่วไป */}
                       <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="levelname"
-                              type="text"
-                              className={`form-control ${
-                                error.levelname ? "border border-danger" : ""
-                              }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
-                              onChange={handleChangeInput}
-                            />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
-                            ) : null}
-                          </div>
+                        <div className="mb-3">
+                          <label class="form-label">
+                            ชื่อบทบาท
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="roleName"
+                            type="text"
+                            className={`form-control ${
+                              error.roleName ? "border border-danger" : ""
+                            }`}
+                            placeholder="กรอกชื่อบทบาท"
+                            value={input.roleName}
+                            onChange={handleChangeInput}
+                          />
+                          {error.roleName ? (
+                            <p className="text-danger">{error.roleName}</p>
+                          ) : null}
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label">
+                            คำอธิบายบทบาท
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <textarea
+                            className="form-control"
+                            name="description"
+                            placeholder="กรอกคำอธิบาย"
+                            rows="3"
+                            cols="40"
+                            maxlength="100"
+                            style={{ resize: "none", overflow: "hidden" }}
+                            value={input.description}
+                            onChange={handleChangeInput}
+                          ></textarea>
+                          {error.description ? (
+                            <p className="text-danger">{error.description}</p>
+                          ) : null}
                         </div>
                       </div>
                     </form>

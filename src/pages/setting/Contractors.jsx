@@ -11,24 +11,27 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสระดับ" },
-  { index: 2, colName: "ระดับ" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 1, colName: "รหัสผู้รับเหมา" },
+  { index: 2, colName: "ชื่อผู้รับเหมา" },
+  { index: 3, colName: "เปิดใช้งาน" },
+  { index: 4, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
   { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
   { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
   { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
 ];
-export default function Levels({ title }) {
+export default function Contrators({ title }) {
   useTitle(title);
   const tableRef = useRef();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลระดับ")
+  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลผู้รับเหมา")
+
   const [input, setInput] = useState({
-    levelname: "",
+    contractorname: "",
+    isactive : 0
   });
 
   const handleChangeInput = (e) => {
@@ -38,6 +41,13 @@ export default function Levels({ title }) {
       [name]: value,
     }));
   };
+
+  const handleChangeCheckbox = (e) =>{
+    setInput((prev)=>({
+        ...prev,
+        isactive: e.target.checked ? 1 : 0
+    }))
+  }
 
   useEffect(() => {
     setData(mockeTitletableData);
@@ -171,8 +181,8 @@ export default function Levels({ title }) {
   const validateForm = () => {
     let errors = {};
     const hasThai = /[ก-ฮ]/;
-    if (!input.levelname) {
-      errors.levelname = "กรุณากรอกระดับในองค์กร";
+    if (!input.contractorname) {
+      errors.contractorname = "กรุณากรอกชื่อผู้รับเหมา";
     } 
     return errors;
   };
@@ -187,6 +197,7 @@ export default function Levels({ title }) {
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
       setIsSubmit(true);
+      
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
@@ -211,7 +222,8 @@ export default function Levels({ title }) {
 
   const ClearInput = () => {
     setInput({
-      levelname:""
+      contractorname:"",
+      isactive : 0
     });
     setError({});
   };
@@ -282,7 +294,7 @@ export default function Levels({ title }) {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
+                  {addBtnName}
                 </h1>
 
                 <button
@@ -309,23 +321,37 @@ export default function Levels({ title }) {
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
                             <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
+                              ชื่อผู้รับเหมา
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="levelname"
+                              name="contractorname"
                               type="text"
                               className={`form-control ${
-                                error.levelname ? "border border-danger" : ""
+                                error.contractorname ? "border border-danger" : ""
                               }`}
                               id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
+                              placeholder="กรอกชื่อผู้รับเหมา"
+                              value={input.contractorname}
                               onChange={handleChangeInput}
                             />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
+                            {error.contractorname ? (
+                              <p className="text-danger">{error.contractorname}</p>
                             ) : null}
+                          </div>
+                            <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                            <label className="mb-2">เปิดใช้งาน</label>
+                            <div class="form-check form-switch form-switch-md ms-3">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isActive-toggle"
+                                name="isactive"
+                                value={input.isactive}
+                                onChange={handleChangeCheckbox}
+                                checked={input.isactive === 1}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -11,24 +11,26 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสระดับ" },
-  { index: 2, colName: "ระดับ" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 1, colName: "รหัสโอที" },
+  { index: 2, colName: "โค้ดโอที" },
+  { index: 3, colName: "ชื่อโอที" },
+  { index: 4, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
   { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
   { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
   { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
 ];
-export default function Levels({ title }) {
+export default function OTCategories({ title }) {
   useTitle(title);
   const tableRef = useRef();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลระดับ")
+  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลโอที")
   const [input, setInput] = useState({
-    levelname: "",
+    OTtypecode : "",
+    OTtypename: "",
   });
 
   const handleChangeInput = (e) => {
@@ -59,7 +61,7 @@ export default function Levels({ title }) {
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
-      finishSubmit();
+    
     }
   }, [error, isSubmit]);
 
@@ -171,8 +173,12 @@ export default function Levels({ title }) {
   const validateForm = () => {
     let errors = {};
     const hasThai = /[ก-ฮ]/;
-    if (!input.levelname) {
-      errors.levelname = "กรุณากรอกระดับในองค์กร";
+    if (!input.OTtypecode) {
+      errors.OTtypecode = "กรุณากรอกรหัสโอที";
+    } 
+
+    if (!input.OTtypename) {
+      errors.OTtypename = "กรุณากรอกชื่อโอที";
     } 
     return errors;
   };
@@ -182,7 +188,6 @@ export default function Levels({ title }) {
     // ตรวจสอบโดย sweetalert 2
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
     //api post
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
@@ -205,13 +210,9 @@ export default function Levels({ title }) {
     }
   };
 
-  const finishSubmit = () => {
-    console.log("submit data", input);
-  };
-
   const ClearInput = () => {
     setInput({
-      levelname:""
+      categoryname:""
     });
     setError({});
   };
@@ -306,25 +307,47 @@ export default function Levels({ title }) {
                     <form>
                       {/* ข้อมูลทั่วไป */}
                       <div>
-                        <div className="row form-spacing g-3">
+                          <div className="row form-spacing g-3">
                           <div className="col-md-12">
                             <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
+                              รหัสโอที
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="levelname"
+                              name="OTtypecode"
                               type="text"
                               className={`form-control ${
-                                error.levelname ? "border border-danger" : ""
+                                error.OTtypecode ? "border border-danger" : ""
                               }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
+                              id="categoryname"
+                              placeholder="กรอกรหัสโอที"
+                              value={input.OTtypecode}
                               onChange={handleChangeInput}
                             />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
+                            {error.OTtypecode ? (
+                              <p className="text-danger">{error.OTtypecode}</p>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="row form-spacing g-3">
+                          <div className="col-md-12">
+                            <label htmlFor="StartDate" class="form-label">
+                              ชื่อโอที
+                              <span style={{ color: "red" }}>*</span>
+                            </label>
+                            <input
+                              name="OTtypename"
+                              type="text"
+                              className={`form-control ${
+                                error.OTtypename ? "border border-danger" : ""
+                              }`}
+                              id="OTtypename"
+                              placeholder="กรอกชื่อโอที"
+                              value={input.OTtypename}
+                              onChange={handleChangeInput}
+                            />
+                            {error.OTtypename ? (
+                              <p className="text-danger">{error.OTtypename}</p>
                             ) : null}
                           </div>
                         </div>

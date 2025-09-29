@@ -9,7 +9,7 @@ export const useProfile = create((set)=>({
    getProfileData : async()=>{
     set({isLoading:true,error:null});
     try{
-        const response = await api.get("/api/v1/auth/profile"); 
+        const response = await api.get("/api/auth/login"); 
         console.log("profile data",response.data);
         set({
             data : response.data ?? {},

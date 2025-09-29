@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import HeaderPage from "../components/HeaderPage";
 import { useTitle } from "../hooks/useTitle";
+import { useState } from "react";
 
 const Settings = ({ title }) => {
   useTitle(title);
@@ -13,6 +14,8 @@ const Settings = ({ title }) => {
     "danger",
     "secondary",
   ];
+  const [search,setSearch] = useState("");
+  
 
   const settingCard = [
     {
@@ -57,6 +60,14 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
+      path: "/settings/jobcategory",
+      icon: "bi bi-journal-bookmark-fill",
+      color: cardColor[5],
+      title: "หมวดงาน",
+      subtitle: "จัดการข้อมูลหมวดงาน",
+    },
+    {
+      page: "6",
       path: "/settings/level",
       icon: "bi bi-clipboard-data-fill",
       color: cardColor[4],
@@ -65,7 +76,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/position",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "ตำแหน่ง",
@@ -73,7 +84,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/contractor",
       icon: "bi bi-people-fill",
       color: cardColor[5],
       title: "ผู้รับเหมา",
@@ -81,13 +92,13 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/employeeType",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "ประเภทพนักงาน",
       subtitle: "จัดการข้อมูลประเภทพนักงาน",
     },
-      {
+    {
       page: "6",
       path: "#",
       icon: "bi bi-clipboard-data-fill",
@@ -95,9 +106,9 @@ const Settings = ({ title }) => {
       title: "ประเภทการหักเงิน",
       subtitle: "จัดการข้อมูลประเภทการหักเงิน",
     },
-     {
+    {
       page: "6",
-      path: "#",
+      path: "/settings/role",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "บทบาท",
@@ -113,59 +124,71 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/OTcategory",
       icon: "fa-solid fa-file-invoice",
       color: cardColor[5],
-      title: "โอที",
-      subtitle: "จัดการข้อมูลโอที",
+      title: "ประเภทโอที",
+      subtitle: "จัดการข้อมูลประเภทโอที",
     },
-      {
+   {
       page: "6",
       path: "#",
-      icon: "bi bi-journal-bookmark-fill",
+      icon: "fa-solid fa-newspaper",
       color: cardColor[5],
-      title: "หมวดงาน",
-      subtitle: "จัดการข้อมูลหมวดงาน",
+      title: "ข่าวสาร",
+      subtitle: "จัดการข้อมูลข่าวสาร",
+    },
+    {
+      page: "6",
+      path: "#",
+      icon: "bi bi-diagram-2-fill",
+      color: cardColor[5],
+      title: "สายอนุมัติ",
+      subtitle: "จัดการข้อมูลสายอนุมัติ",
     },
   ];
 
-  const handleChagePage = (path)=>{
+  const handleChagePage = (path) => {
     navigate(path);
-  }
+  };
+
+
+    //search function
+  const filterItemSetting = settingCard.filter((item)=> {
+    if(item.title.toLocaleLowerCase().includes(search) ||
+    item.subtitle.toLocaleLowerCase().includes(search)){
+      return item;
+    }
+  });
+
+
   return (
-    <div className="container py-4 min-vh-100 d-flex flex-column">
+    <div className="container py-4 min-vh-90 d-flex flex-column">
       <HeaderPage pageName={title} />
       <div className="search-box">
-        <div className="input-group mb-4">
-          <input
+        <div className="searchBar">
+           <input
             type="text"
             autoComplete="current-password"
             placeholder="ค้นหาเมนูตั้งค่า"
-            className="form-control"
-            // value={password}
-            // onChange={(e) => setPassword(e.target.value)}
+            className={`searchInput form-control`}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-          <button
-            type="button"
-            className="btn btn-outline-primary bg-light"
-            // onClick={() => setShowPassword((s) => !s)}
-          >
-            {/* ใส่ icon */}
-            <i className="bi bi-search text-muted"></i>
-          </button>
+           <i className="bi bi-search text-muted searchIcon"></i>
         </div>
       </div>
       <div className="content-box">
         <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {settingCard.length > 0 ? (
+          {filterItemSetting.length > 0 ? (
             <>
-              {settingCard.map((item, index) => {
+              {filterItemSetting.map((item, index) => {
                 return (
                   <div
                     className="col "
                     style={{ cursor: "pointer" }}
                     key={index}
-                    onClick={()=>handleChagePage(item.path)}
+                    onClick={() => handleChagePage(item.path)}
                   >
                     <div className="card h-100 shadow-sm card--soft settingCard card-item">
                       <div
@@ -190,7 +213,12 @@ const Settings = ({ title }) => {
             </>
           ) : (
             <>
-              <p>ไม่มีรายการ</p>
+              <div className="container">
+                <div className="d-flex flex-column align-items-center justify-content-center  w-100 p-3 mt-4">
+                 <i class="bi bi-gear text-danger" style={{ fontSize: "60px" }}></i>
+                 <h5 className="text-danger">ไม่พบรายการตั้งค่า</h5>
+                </div>
+              </div>
             </>
           )}
         </div>

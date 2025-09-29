@@ -11,8 +11,8 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสระดับ" },
-  { index: 2, colName: "ระดับ" },
+  { index: 1, colName: "รหัสตำแหน่ง" },
+  { index: 2, colName: "ตำแหน่ง" },
   { index: 3, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
@@ -20,15 +20,15 @@ export const mockeTitletableData = [
   { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
   { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
 ];
-export default function Levels({ title }) {
+export default function Positions({ title }) {
   useTitle(title);
   const tableRef = useRef();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลระดับ")
+  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลตำแหน่ง")
   const [input, setInput] = useState({
-    levelname: "",
+    positionName: "",
   });
 
   const handleChangeInput = (e) => {
@@ -171,8 +171,8 @@ export default function Levels({ title }) {
   const validateForm = () => {
     let errors = {};
     const hasThai = /[ก-ฮ]/;
-    if (!input.levelname) {
-      errors.levelname = "กรุณากรอกระดับในองค์กร";
+    if (!input.positionName) {
+      errors.positionName = "กรุณากรอกชื่อตำแหน่ง";
     } 
     return errors;
   };
@@ -211,13 +211,13 @@ export default function Levels({ title }) {
 
   const ClearInput = () => {
     setInput({
-      levelname:""
+      positionName:""
     });
     setError({});
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div className="container py-4 min-vh-100 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -309,22 +309,22 @@ export default function Levels({ title }) {
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
                             <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
+                              ตำแหน่ง
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="levelname"
+                              name="positionName"
                               type="text"
                               className={`form-control ${
                                 error.levelname ? "border border-danger" : ""
                               }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
+                              id="positionName"
+                              placeholder="กรอกชื่อตำแหน่ง"
+                              value={input.positionName}
                               onChange={handleChangeInput}
                             />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
+                            {error.positionName ? (
+                              <p className="text-danger">{error.positionName}</p>
                             ) : null}
                           </div>
                         </div>

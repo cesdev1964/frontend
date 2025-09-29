@@ -11,8 +11,8 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสระดับ" },
-  { index: 2, colName: "ระดับ" },
+  { index: 1, colName: "รหัสประเภท" },
+  { index: 2, colName: "ประเภทพนักงาน" },
   { index: 3, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
@@ -20,15 +20,15 @@ export const mockeTitletableData = [
   { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
   { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
 ];
-export default function Levels({ title }) {
+export default function EmployeeTypes({ title }) {
   useTitle(title);
   const tableRef = useRef();
   const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลระดับ")
+  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลประเภทของพนักงาน")
   const [input, setInput] = useState({
-    levelname: "",
+    typename: "",
   });
 
   const handleChangeInput = (e) => {
@@ -171,8 +171,8 @@ export default function Levels({ title }) {
   const validateForm = () => {
     let errors = {};
     const hasThai = /[ก-ฮ]/;
-    if (!input.levelname) {
-      errors.levelname = "กรุณากรอกระดับในองค์กร";
+    if (!input.typename) {
+      errors.typename = "กรุณากรอกชื่อประเภทของพนักงาน";
     } 
     return errors;
   };
@@ -182,7 +182,6 @@ export default function Levels({ title }) {
     // ตรวจสอบโดย sweetalert 2
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
     //api post
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
@@ -211,7 +210,7 @@ export default function Levels({ title }) {
 
   const ClearInput = () => {
     setInput({
-      levelname:""
+      typename:""
     });
     setError({});
   };
@@ -309,22 +308,21 @@ export default function Levels({ title }) {
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
                             <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
+                              ประเภทพนักงาน
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="levelname"
+                              name="typename"
                               type="text"
                               className={`form-control ${
-                                error.levelname ? "border border-danger" : ""
+                                error.typename ? "border border-danger" : ""
                               }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
+                              placeholder="กรอกชื่อประเภท"
+                              value={input.typename}
                               onChange={handleChangeInput}
                             />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
+                            {error.typename ? (
+                              <p className="text-danger">{error.typename}</p>
                             ) : null}
                           </div>
                         </div>

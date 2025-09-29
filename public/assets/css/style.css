@@ -426,8 +426,27 @@ body {
   display: flex;
   justify-content: end;
 }
-.search-box > .input-group {
+
+.searchBar{
   width: 300px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.searchInput{
+  width: 100%;
+  height: 2.8rem;
+  outline: none;
+  border:1px solid var(--pink);
+  padding: 0 3.5rem 0 1.5rem;
+  font-size: 1rem;
+  border-radius: 20px;
+}
+
+.searchIcon{
+  margin-left: -2rem;
+  margin-top: 10px;
 }
 
 .card.settingCard {
@@ -740,7 +759,7 @@ thead th:last-child {
     justify-content: end;
   }
 
-  .search-box > .input-group {
+  .searchBar {
     width: 250px;
   }
 
@@ -1990,4 +2009,14 @@ thead th:last-child {
 
 .setting-icon {
   font-size: 50px;
+}
+
+.modal-backdrop {
+  z-index: 1040; /* backdrop ปกติ */
+}
+.modal.modal-nested {
+  z-index: 1060; /* modal ซ้อน */
+}
+.modal-backdrop.modal-nested {
+  z-index: 1055; /* backdrop ของ modal ซ้อน */
 }

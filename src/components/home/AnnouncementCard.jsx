@@ -37,7 +37,7 @@ export default function AnnouncementCard() {
                     class="fa-solid fa-newspaper mb-4 text-danger"
                     style={{ fontSize: "60px" }}
                   ></i>
-                  <h4 className="text-danger">ไม่พบข่าวประกาศ</h4>
+                  <h5 className="text-danger">ไม่พบข่าวประกาศ</h5>
                 </div>
               ) : (
                 <>

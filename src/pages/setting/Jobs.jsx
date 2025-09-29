@@ -13,7 +13,8 @@ export const tableHead = [
   { index: 0, colName: "ลำดับ" },
   { index: 1, colName: "รหัสหน่วยงาน" },
   { index: 2, colName: "ชื่อหน่วยงาน" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 3, colName: "เปิดใช้งาน" },
+  { index: 4, colName: "การจัดการ" },
 ];
 export const mockeTitletableData = [
   { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
@@ -30,6 +31,7 @@ export default function Jobs({ title }) {
   const [input, setInput] = useState({
     jobname: "",
     jobname2: "",
+    jobno : "",
     isactive: 0,
   });
 
@@ -40,6 +42,13 @@ export default function Jobs({ title }) {
       [name]: value,
     }));
   };
+
+    const handleChangeCheckbox = (e) =>{
+    setInput((prev)=>({
+        ...prev,
+        isactive: e.target.checked ? 1 : 0
+    }))
+  }
 
   useEffect(() => {
     setData(mockeTitletableData);
@@ -174,6 +183,9 @@ export default function Jobs({ title }) {
     if (!input.jobname) {
       errors.jobname = "กรุณากรอกชื่อหน่วยงาน";
     }
+    if (!input.jobno) {
+      errors.jobno = "กรุณากรอกรหัสหน่วยงาน";
+    }
     return errors;
   };
 
@@ -210,9 +222,10 @@ export default function Jobs({ title }) {
 
   const ClearInput = () => {
     setInput({
-      isactive : 0,
-      jobname : "",
-      jobname2 :""
+      isactive: 0,
+      jobname: "",
+      jobname2: "",
+      jobno : ""
     });
     setError({});
   };
@@ -308,6 +321,27 @@ export default function Jobs({ title }) {
                       {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="row">
+                           <div className="col-12 mb-3">
+                            <label htmlFor="StartDate" className="form-label">
+                              รหัสหน่วยงาน
+                              <span style={{ color: "red" }}>*</span>
+                            </label>
+                            <input
+                              name="jobno"
+                              type="text"
+                              className={`form-control ${
+                                error.jobno ? "border border-danger" : ""
+                              }`}
+                              id="jobno"
+                              placeholder="กรอกรหัสหน่วยงาน"
+                              value={input.jobno}
+                              onChange={handleChangeInput}
+                              maxLength="10"
+                            />
+                            {error.jobno ? (
+                              <p className="text-danger">{error.jobno}</p>
+                            ) : null}
+                          </div>
                           <div className="col-12">
                             <label htmlFor="StartDate" class="form-label">
                               ชื่อหน่วยงาน
@@ -337,9 +371,7 @@ export default function Jobs({ title }) {
                               [{input.jobname.length}/100]
                             </p>
                             {error.jobname ? (
-                              <p className="text-danger">
-                                {error.jobname}
-                              </p>
+                              <p className="text-danger">{error.jobname}</p>
                             ) : null}
                           </div>
                           <div className="col-12">
@@ -370,24 +402,23 @@ export default function Jobs({ title }) {
                               [{input.jobname2.length}/100]
                             </p>
                             {error.jobname2 ? (
-                              <p className="text-danger">
-                                {error.jobname2}
-                              </p>
+                              <p className="text-danger">{error.jobname2}</p>
                             ) : null}
                           </div>
-                           <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
-                          <label className="mb-2">เปิดใช้งาน</label>
-                          <div class="form-check form-switch form-switch-md ms-3">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="isActive-toggle"
-                              name="mustchangepassword"
-                              value={input.isactive}
-                              onChange={handleChangeInput}
-                            />
+                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                            <label className="mb-2">เปิดใช้งาน</label>
+                            <div class="form-check form-switch form-switch-md ms-3">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isActive-toggle"
+                                name="isactive"
+                                value={input.isactive}
+                                onChange={handleChangeCheckbox}
+                                checked = {input.isactive === 1}
+                              />
+                            </div>
                           </div>
-                        </div>
                         </div>
                       </div>
                     </form>

@@ -14,14 +14,14 @@ export default function Users({ title }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มผู้ใช้งานใหม่")
+  const [addBtnName, setAddBtnName] = useState("เพิ่มผู้ใช้งานใหม่");
   const [input, setInput] = useState({
     titleId: 0,
     firstname: "",
     lastname: "",
     username: "",
     password: "",
-    mustchangepassword: 0,
+    mustchangepassword:0,
     isactive: 0,
   });
 
@@ -30,6 +30,14 @@ export default function Users({ title }) {
     setInput((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleChangeCheckbox = (e) => {
+    const {name,checked} = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: checked ? 1 : 0,
     }));
   };
 
@@ -54,161 +62,125 @@ export default function Users({ title }) {
     { index: 4, colName: "การจัดการ" },
   ];
 
-  const statusBadge = (status) => {
-    switch (status) {
-      case 0:
-        return `<span class="badge-style badge-leave">ลาออก</span>`;
-
-      case 1:
-        return `<span class="badge-style badge-stillWork">ประจำการ</span>`;
-
-      default:
-        return `<span class="badge-style badge-unknown">ไม่ระบุ</span>`;
-    }
-  };
-
-  const levelBadge = (level) => {
-    console.log("level", level);
-    switch (level) {
-      case 1:
-      case 2:
-      case 3:
-        return `<span class="badge-style badge-leave">PC ${level}</span>`;
-
-      case 4:
-      case 5:
-      case 6:
-        return `<span class="badge-style badge-middle">PC ${level}</span>`;
-
-      case 7:
-      case 8:
-      case 9:
-        return `<span class="badge-style badge-stillWork">PC ${level}</span>`;
-
-      default:
-        return `<span class="badge-style badge-unknown">ไม่ระบุ</span>`;
-    }
-  };
-
   const tableRef = useRef();
-//   useEffect(() => {
-//     $(tableRef.current).DataTable({
-//       responsive: true,
-//       destroy: true,
-//       paging: true,
-//       searching: true,
-//       scrollX: true,
-//       autoWidth: true,
-//       language: {
-//         decimal: "",
-//         emptyTable: "ไม่มีข้อมูลในตาราง",
-//         info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-//         infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-//         infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-//         infoPostFix: "",
-//         thousands: ",",
-//         lengthMenu: "แสดง _MENU_ รายการ",
-//         loadingRecords: "กำลังโหลด...",
-//         processing: "กำลังประมวลผล...",
-//         search: "ค้นหา:",
-//         zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
-//       },
-//       data: mockemployeetableData,
-//       columnDefs: [
-//         { width: "50px", targets: 0 },
-//         { width: "70px", targets: 1 },
-//         { width: "160px", targets: 2 },
-//         { width: "100px", targets: 3 },
-//         { width: "160px", targets: 4 },
-//         { width: "100px", targets: 5 },
-//         { width: "120px", targets: 6 },
-//       ],
-//       columns: [
-//         {
-//           data: null,
-//           render: function (data, type, row, meta) {
-//             return meta.row + 1;
-//           },
-//         },
-//         {
-//           title: "รหัสพนักงาน",
-//           data: "empId",
-//           orderable: true,
-//         },
-//         {
-//           title: "ชื่อพนักงาน",
-//           data: "empName",
-//           orderable: true,
-//         },
+  //   useEffect(() => {
+  //     $(tableRef.current).DataTable({
+  //       responsive: true,
+  //       destroy: true,
+  //       paging: true,
+  //       searching: true,
+  //       scrollX: true,
+  //       autoWidth: true,
+  //       language: {
+  //         decimal: "",
+  //         emptyTable: "ไม่มีข้อมูลในตาราง",
+  //         info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+  //         infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
+  //         infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
+  //         infoPostFix: "",
+  //         thousands: ",",
+  //         lengthMenu: "แสดง _MENU_ รายการ",
+  //         loadingRecords: "กำลังโหลด...",
+  //         processing: "กำลังประมวลผล...",
+  //         search: "ค้นหา:",
+  //         zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+  //       },
+  //       data: mockemployeetableData,
+  //       columnDefs: [
+  //         { width: "50px", targets: 0 },
+  //         { width: "70px", targets: 1 },
+  //         { width: "160px", targets: 2 },
+  //         { width: "100px", targets: 3 },
+  //         { width: "160px", targets: 4 },
+  //         { width: "100px", targets: 5 },
+  //         { width: "120px", targets: 6 },
+  //       ],
+  //       columns: [
+  //         {
+  //           data: null,
+  //           render: function (data, type, row, meta) {
+  //             return meta.row + 1;
+  //           },
+  //         },
+  //         {
+  //           title: "รหัสพนักงาน",
+  //           data: "empId",
+  //           orderable: true,
+  //         },
+  //         {
+  //           title: "ชื่อพนักงาน",
+  //           data: "empName",
+  //           orderable: true,
+  //         },
 
-//         {
-//           title: "ระดับ",
-//           data: "level",
-//           orderable: true,
+  //         {
+  //           title: "ระดับ",
+  //           data: "level",
+  //           orderable: true,
 
-//           render: function (data, type, row) {
-//             return levelBadge(row.level);
-//           },
-//         },
-//         {
-//           title: "ตำแหน่ง",
-//           data: "position",
-//         },
-//         {
-//           title: "สถานะ",
-//           data: "status",
-//         },
-//         {
-//           data: null,
-//           title: "การจัดการ",
-//           render: function (data, type, row) {
-//             return `
-//            <div className="d-flex align-items-center justify-content-center">
-//             <div class="dropdown d-lg-none">
-//               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-//                  <i class="bi bi-three-dots-vertical"></i>
-//               </button>
-//               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-//                 <li>
-//                 <a class="dropdown-item text-dark" href="#">
-//                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
-//                 </a>
-//               </li>
-//               <li>
-//                 <a class="dropdown-item text-dark" href="#">
-//                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
-//                 </a>
-//               </li>
-//              </ul>
-//           </div>
-          
-//           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-//             <a
-//               href="#"
-//               class="btn btn-warning me-2"
-//               title="แก้ไข"
-//             >
-//               <i class="bi bi-pen-fill"></i>
-//             </a>
-//             <a
-//               href="#"
-//               class="btn btn-danger"
-//               title="ลบ"
-//             >
-//               <i class="bi bi-trash-fill"></i>
-//             </a>
-//           </div>
-//         </div>
-//                   `;
-//           },
-//         },
-//       ],
-//       dom:
-//         window.innerWidth <= 570
-//           ? '<"top"lf>rt<"bottom"ip><"clear">'
-//           : '<"top"lf>rt<"bottom"ip><"clear">',
-//     });
-//   }, []);
+  //           render: function (data, type, row) {
+  //             return levelBadge(row.level);
+  //           },
+  //         },
+  //         {
+  //           title: "ตำแหน่ง",
+  //           data: "position",
+  //         },
+  //         {
+  //           title: "สถานะ",
+  //           data: "status",
+  //         },
+  //         {
+  //           data: null,
+  //           title: "การจัดการ",
+  //           render: function (data, type, row) {
+  //             return `
+  //            <div className="d-flex align-items-center justify-content-center">
+  //             <div class="dropdown d-lg-none">
+  //               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+  //                  <i class="bi bi-three-dots-vertical"></i>
+  //               </button>
+  //               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+  //                 <li>
+  //                 <a class="dropdown-item text-dark" href="#">
+  //                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+  //                 </a>
+  //               </li>
+  //               <li>
+  //                 <a class="dropdown-item text-dark" href="#">
+  //                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
+  //                 </a>
+  //               </li>
+  //              </ul>
+  //           </div>
+
+  //           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+  //             <a
+  //               href="#"
+  //               class="btn btn-warning me-2"
+  //               title="แก้ไข"
+  //             >
+  //               <i class="bi bi-pen-fill"></i>
+  //             </a>
+  //             <a
+  //               href="#"
+  //               class="btn btn-danger"
+  //               title="ลบ"
+  //             >
+  //               <i class="bi bi-trash-fill"></i>
+  //             </a>
+  //           </div>
+  //         </div>
+  //                   `;
+  //           },
+  //         },
+  //       ],
+  //       dom:
+  //         window.innerWidth <= 570
+  //           ? '<"top"lf>rt<"bottom"ip><"clear">'
+  //           : '<"top"lf>rt<"bottom"ip><"clear">',
+  //     });
+  //   }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -242,9 +214,10 @@ export default function Users({ title }) {
 
     const errorList = validateForm(input);
     setError(errorList);
-
+  
     if (Object.keys(errorList).length === 0) {
       setIsSubmit(true);
+      console.log("submit data", input);
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
@@ -404,7 +377,7 @@ export default function Users({ title }) {
                               id="isActive-toggle"
                               name="mustchangepassword"
                               value={input.mustchangepassword}
-                              onChange={handleChangeInput}
+                              onChange={handleChangeCheckbox}
                             />
                           </div>
                         </div>
@@ -417,7 +390,7 @@ export default function Users({ title }) {
                               id="isActive-toggle"
                               name="isactive"
                               value={input.isactive}
-                              onChange={handleChangeInput}
+                              onChange={handleChangeCheckbox}
                             />
                           </div>
                         </div>

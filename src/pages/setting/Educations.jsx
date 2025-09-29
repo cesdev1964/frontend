@@ -221,7 +221,7 @@ export default function Educations({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-100 d-flex flex-column">
+    <div className="container py-4 min-vh-90 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -286,7 +286,7 @@ export default function Educations({ title }) {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
+                  {title}
                 </h1>
 
                 <button

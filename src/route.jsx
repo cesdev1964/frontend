@@ -16,6 +16,12 @@ import Users from "./pages/setting/Users";
 import Educations from "./pages/setting/Educations";
 import Jobs from "./pages/setting/Jobs";
 import Levels from "./pages/setting/Levels";
+import Positions from "./pages/setting/Positions";
+import Contrators from "./pages/setting/Contractors";
+import JobCategories from "./pages/setting/JobCategories";
+import OTCategories from "./pages/setting/OTcategories";
+import Roles from "./pages/setting/Roles";
+import EmployeeTypes from "./pages/setting/EmployeeTypes";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -44,12 +50,18 @@ export default function RouterPage() {
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />,
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
-        { path: "settings/employees", element: <Employees title="บันทึกข้อมูลพนักงาน" /> },
-        { path: "settings/users", element: <Users title="บันทึกข้อมูลผู้ใช้งาน" /> },
-        { path: "settings/nametitle", element: <NameTitle title="บันทึกข้อมูลคำนำหน้า" /> },
-        { path: "settings/education", element: <Educations title="บันทึกข้อมูลการศึกษา" /> },
-        { path: "settings/job", element: <Jobs title="บันทึกข้อมูลหน่วยงาน" /> },
-        { path: "settings/level", element: <Levels title="บันทึกข้อมูลระดับ" /> },
+        { path: "settings/employees", element: <Employees title="จัดการข้อมูลพนักงาน" /> },
+        { path: "settings/users", element: <Users title="จัดการข้อมูลผู้ใช้งาน" /> },
+        { path: "settings/nametitle", element: <NameTitle title="จัดการข้อมูลคำนำหน้า" /> },
+        { path: "settings/education", element: <Educations title="จัดการข้อมูลการศึกษา" /> },
+        { path: "settings/job", element: <Jobs title="จัดการข้อมูลหน่วยงาน" /> },
+        { path: "settings/level", element: <Levels title="จัดการข้อมูลระดับ" /> },
+        { path: "settings/position", element: <Positions title="จัดการข้อมูลตำแหน่ง" /> },
+        { path: "settings/contractor", element: <Contrators title="จัดการข้อมูลผู้รับเหมา" /> },
+        { path: "settings/jobcategory", element: <JobCategories title="จัดการข้อมูลหมวดงาน" /> },
+        { path: "settings/OTcategory", element: <OTCategories title="จัดการข้อมูลประเภทโอที" /> },
+        { path: "settings/role", element: <Roles title="จัดการข้อมูลบทบาท" /> },
+        { path: "settings/employeeType", element: <EmployeeTypes title="จัดการข้อมูลประเภทของพนักงาน" /> },
        
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 
