@@ -10,7 +10,7 @@ export const useProfile = create((set)=>({
     set({isLoading:true,error:null});
     try{
         const response = await api.get("/api/auth/login"); 
-        console.log("profile data",response.data);
+        // console.log("profile data",response.data);
         set({
             data : response.data ?? {},
             isLoading : false

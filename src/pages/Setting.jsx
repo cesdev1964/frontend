@@ -92,7 +92,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "/settings/employeeType",
+      path: "/settings/employeetype",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
       title: "ประเภทพนักงาน",
@@ -100,7 +100,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/deductiontype",
       icon: "bi bi-clipboard-data-fill",
       color: cardColor[5],
       title: "ประเภทการหักเงิน",

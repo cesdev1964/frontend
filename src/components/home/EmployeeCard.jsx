@@ -89,7 +89,7 @@ const avatarUrl = "https://www.beartai.com/wp-content/uploads/2025/01/Sakamoto-D
             <div>
               <div className="w-100 bg-danger p-2 border-n rounded-3">
                 <p>
-                  <strong>ข้อมูลทั่วไป</strong>
+                  <strong>ข้อมูลการทำงาน</strong>
                 </p>
                  <div className="row g-2 p-2">
                   <div className="col-sm-6 col-md-4 col-custom">

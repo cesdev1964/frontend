@@ -8,29 +8,31 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
-import { useRole } from "../../hooks/roleStore";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสบทบาท" },
-  { index: 3, colName: "ชื่อบทบาท" },
-  { index: 4, colName: "คำอธิบาย" },
-  { index: 5, colName: "การจัดการ" },
+  { index: 1, colName: "รหัสประเภท" },
+  { index: 2, colName: "ชื่อประเภทการหักเงิน" },
+  { index: 3, colName: "เปิดใช้งาน" },
+  { index: 4, colName: "การจัดการ" },
 ];
-
-export default function Roles({ title }) {
+export const mockeTitletableData = [
+  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
+  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
+  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
+];
+export default function DeductionTypes({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  // const [data, setData] = useState({});
+  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลบทบาท");
-  // const [isLoading, setIsLoading] = useState(false);
+  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลประเภทการหักเงิน");
+
   const [input, setInput] = useState({
-    roleName: "",
-    description: "",
+    deductiontypename: "",
+    isactive: 0,
   });
-  const { data, errorMessage, getRoleData ,isLoading} = useRole();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -40,24 +42,17 @@ export default function Roles({ title }) {
     }));
   };
 
-  useEffect(() => {
-    const fetchDataTable = async() => {
-      try {
-       await getRoleData();
-      } catch (error) {
-        alert("โหลด API ไม่สำเร็จ", errorMessage);
-      }
-    };
-    fetchDataTable();
-  }, [getRoleData]);
+  const handleChangeCheckbox = (e) => {
+    setInput((prev) => ({
+      ...prev,
+      isactive: e.target.checked ? 1 : 0,
+    }));
+  };
 
-  //เมื่อค่าเปลี่ยน
   useEffect(() => {
-    if (data) {
-      console.log("data", data);
-      GetDataTable();
-    }
-  }, [data]);
+    setData(mockeTitletableData);
+  }, []);
+
   // useEffect(() => {
   //   try {
   //     if (!data) {
@@ -72,6 +67,7 @@ export default function Roles({ title }) {
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
+      finishSubmit();
     }
   }, [error, isSubmit]);
 
@@ -82,7 +78,6 @@ export default function Roles({ title }) {
       responsive: true,
       paging: true,
       searching: true,
-      // scrollX: true,
       autoWidth: true,
       language: {
         decimal: "",
@@ -100,10 +95,10 @@ export default function Roles({ title }) {
       },
       columnDefs: [
         { width: "70px", targets: 0 },
-        { width: "70px", targets: 1 },
-        { width: "200px", targets: 2 },
+        { width: "120px", targets: 1 },
+        { width: "230px", targets: 2 },
         { width: "230px", targets: 3 },
-        { width: "120px", targets: 4 },
+        { width: "190px", targets: 4 },
       ],
       columns: [
         {
@@ -113,19 +108,19 @@ export default function Roles({ title }) {
           },
         },
         {
-          title: "รหัสบทบาท",
-          data: "roleId",
+          title: "รหัสตารางคำนำหน้า",
+          data: "TitleId",
           orderable: true,
         },
         {
-          title: "บทบาท",
-          data: "roleName",
+          title: "คำนำหน้าชื่อ",
+          data: "TitleNameTH",
           orderable: true,
         },
 
         {
-          title: "คำอธิบาย",
-          data: "description",
+          title: "คำนำหน้าชื่อ(ENG)",
+          data: "TitleNameEng",
           orderable: true,
         },
         {
@@ -182,12 +177,8 @@ export default function Roles({ title }) {
 
   const validateForm = () => {
     let errors = {};
-    if (!input.roleName) {
-      errors.roleName = "กรุณากรอกชื่อบทบาท";
-    }
-
-    if (!input.description) {
-      errors.description = "กรุณากรอกคำอธิบาย";
+    if (!input.deductiontypename) {
+      errors.deductiontypename = "กรุณากรอกชื่อประเภทการหักเงิน";
     }
     return errors;
   };
@@ -197,10 +188,12 @@ export default function Roles({ title }) {
     // ตรวจสอบโดย sweetalert 2
     const errorList = validateForm(input) || [];
     setError(errorList);
+    console.log("error list", error);
     //api post
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
       setIsSubmit(true);
+
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
@@ -219,10 +212,14 @@ export default function Roles({ title }) {
     }
   };
 
+  const finishSubmit = () => {
+    console.log("submit data", input);
+  };
+
   const ClearInput = () => {
     setInput({
-      roleName: "",
-      description: "",
+      deductiontypename: "",
+      isactive: 0,
     });
     setError({});
   };
@@ -288,12 +285,12 @@ export default function Roles({ title }) {
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog modal-dialog-centered modal-md">
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-primary d-flex flex-column">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
+                  {addBtnName}
                 </h1>
 
                 <button
@@ -305,55 +302,56 @@ export default function Roles({ title }) {
               </div>
               <div class="modal-body">
                 <div className="employee-content p-4">
+                  <div className="col-lg-3 "></div>
                   <div
+                    className="col-lg-9 "
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                      width: "100%",
                     }}
                   >
                     <form>
                       {/* ข้อมูลทั่วไป */}
                       <div>
-                        <div className="mb-3">
-                          <label class="form-label">
-                            ชื่อบทบาท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            name="roleName"
-                            type="text"
-                            className={`form-control ${
-                              error.roleName ? "border border-danger" : ""
-                            }`}
-                            placeholder="กรอกชื่อบทบาท"
-                            value={input.roleName}
-                            onChange={handleChangeInput}
-                          />
-                          {error.roleName ? (
-                            <p className="text-danger">{error.roleName}</p>
-                          ) : null}
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">
-                            คำอธิบายบทบาท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <textarea
-                            className="form-control"
-                            name="description"
-                            placeholder="กรอกคำอธิบาย"
-                            rows="3"
-                            cols="40"
-                            maxlength="100"
-                            style={{ resize: "none", overflow: "hidden" }}
-                            value={input.description}
-                            onChange={handleChangeInput}
-                          ></textarea>
-                          {error.description ? (
-                            <p className="text-danger">{error.description}</p>
-                          ) : null}
+                        <div className="row form-spacing g-3">
+                          <div className="col-md-12">
+                            <label htmlFor="StartDate" class="form-label">
+                              ชื่อประเภทการหักเงิน
+                              <span style={{ color: "red" }}>*</span>
+                            </label>
+                            <input
+                              name="deductiontypename"
+                              type="text"
+                              className={`form-control ${
+                                error.deductiontypename
+                                  ? "border border-danger"
+                                  : ""
+                              }`}
+                              placeholder="กรอกชื่อประเภทการหักเงิน"
+                              value={input.deductiontypename}
+                              onChange={handleChangeInput}
+                            />
+                            {error.deductiontypename ? (
+                              <p className="text-danger">
+                                {error.deductiontypename}
+                              </p>
+                            ) : null}
+                          </div>
+                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                            <label className="mb-2">เปิดใช้งาน</label>
+                            <div class="form-check form-switch form-switch-md ms-3">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isActive-toggle"
+                                name="isactive"
+                                value={input.isactive}
+                                onChange={handleChangeCheckbox}
+                                checked={input.isactive === 1}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </form>
@@ -364,7 +362,6 @@ export default function Roles({ title }) {
                 handleSubmit={handleSubmit}
                 handleCancel={ClearInput}
               />
-              {isLoading && <span className="loader"></span>}
             </div>
           </div>
         </div>

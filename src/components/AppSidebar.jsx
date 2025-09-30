@@ -18,7 +18,6 @@ function AppSidebar({ isOpen, toggleSidebar }) {
         alert("โหลด API ไม่สำเร็จ", error);
       }
     };
-
     fetchProfile();
   }, [getProfileData]);
 

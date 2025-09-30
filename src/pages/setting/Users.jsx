@@ -1,13 +1,20 @@
-import React, { useRef, useState } from "react";
-import { useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import "datatables.net-bs5";
 import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
-import { mockemployeetableData } from "../../MockData";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
+import { useRole } from "../../hooks/roleStore";
+
+const tableHead = [
+  { index: 0, colName: "ลำดับ" },
+  { index: 1, colName: "ชื่อผู้ใช้" },
+  { index: 2, colName: "ชื่อ นามสกุล" },
+  { index: 3, colName: "เปิดใช้งาน" },
+  { index: 4, colName: "การจัดการ" },
+];
 
 export default function Users({ title }) {
   useTitle(title);
@@ -15,14 +22,17 @@ export default function Users({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มผู้ใช้งานใหม่");
+  const { data, errorMessage, getRoleData, isLoading } = useRole();
+  const [isHidden,setIsHidden] = useState(false);
   const [input, setInput] = useState({
     titleId: 0,
     firstname: "",
     lastname: "",
     username: "",
     password: "",
-    mustchangepassword:0,
+    mustchangepassword: 0,
     isactive: 0,
+    roles: [],
   });
 
   const handleChangeInput = (e) => {
@@ -34,7 +44,7 @@ export default function Users({ title }) {
   };
 
   const handleChangeCheckbox = (e) => {
-    const {name,checked} = e.target;
+    const { name, checked } = e.target;
     setInput((prev) => ({
       ...prev,
       [name]: checked ? 1 : 0,
@@ -54,13 +64,25 @@ export default function Users({ title }) {
     setError({});
   };
 
-  const tableHead = [
-    { index: 0, colName: "ลำดับ" },
-    { index: 1, colName: "ชื่อผู้ใช้" },
-    { index: 2, colName: "ชื่อ นามสกุล" },
-    { index: 3, colName: "เปิดใช้งาน" },
-    { index: 4, colName: "การจัดการ" },
-  ];
+  useEffect(() => {
+    const fetchDataTable = async () => {
+      try {
+        await getRoleData();
+      } catch (error) {
+        alert("โหลด API ไม่สำเร็จ", errorMessage);
+      }
+    };
+    fetchDataTable();
+  }, [getRoleData]);
+
+  //เมื่อค่าเปลี่ยน
+  useEffect(() => {
+    if (data) {
+      console.log("data", data);
+      // GetDataTable();
+    }
+    // console.log("role select item", input.roles);
+  }, [data,input.roles]);
 
   const tableRef = useRef();
   //   useEffect(() => {
@@ -209,12 +231,36 @@ export default function Users({ title }) {
     return errors;
   };
 
+  // ในการเลือก role
+  const handleAddRole = (roleId) => {
+    setInput((prevData) => {
+      const roleItem = prevData.roles || [];
+      if (roleItem.includes(roleId)) return prevData; //ตรวจสอบว่ามี role ที่เลือกไปแล้วไหม
+      return {
+        ...prevData,
+        roles: [...roleItem, roleId], //add role ใหม่ลงใน list
+      };
+    });
+    // setIsHidden(true);
+  };
+
+    const handleRemoveRole = (roleId) => {
+    setInput((prevData) => {
+      const roleItem = prevData.roles || [];
+      return {
+        ...prevData,
+        roles: roleItem.filter((select)=>select !== roleId), //add role ใหม่ลงใน list
+      };
+    });
+    // setIsHidden(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const errorList = validateForm(input);
     setError(errorList);
-  
+
     if (Object.keys(errorList).length === 0) {
       setIsSubmit(true);
       console.log("submit data", input);
@@ -332,6 +378,72 @@ export default function Users({ title }) {
                       {error.username ? (
                         <p className="text-danger">{error.username}</p>
                       ) : null}
+
+                      <div className="mt-3">
+                        <div className="mb-2">
+                          <label class="form-label">
+                            คำนำหน้า
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <select
+                            name="titleId"
+                            id="titleId"
+                            className={`form-select ${
+                              error.titleId ? "border border-danger" : ""
+                            }`}
+                            onChange={handleChangeInput}
+                            value={input.titleId}
+                            dis
+                          >
+                            <option value={""}>เลือกคำนำหน้า</option>
+                            <option value={1}>นาย</option>
+                            <option value={2}>นางสาว</option>
+                          </select>
+                          {error.titleId ? (
+                            <p className="text-danger">{error.titleId}</p>
+                          ) : null}
+                        </div>
+                        <div className="mb-2">
+                          <label className="form-label">
+                            ชื่อจริง
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="firstname"
+                            type="text"
+                            className={`form-control ${
+                              error.firstname ? "border border-danger" : ""
+                            }`}
+                            id="firstname"
+                            placeholder="กรอกชื่อจริง"
+                            value={input.firstname}
+                            onChange={handleChangeInput}
+                          />
+                          {error.firstname ? (
+                            <p className="text-danger">{error.firstname}</p>
+                          ) : null}
+                        </div>
+                        <div className="mb-2">
+                          <label class="form-label">
+                            นามสกุล
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="lastname"
+                            type="text"
+                            className={`form-control ${
+                              error.lastname ? "border border-danger" : ""
+                            }`}
+                            id="lastname"
+                            placeholder="กรอกนามสกุล"
+                            value={input.lastname}
+                            onChange={handleChangeInput}
+                          />
+                          {error.lastname ? (
+                            <p className="text-danger">{error.lastname}</p>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
                     <div className="col-md-12 col-lg-6">
                       <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
@@ -397,9 +509,79 @@ export default function Users({ title }) {
                       </div>
                     </div>
                   </div>
-                  <div className="row form-spacing g-2">
+
+                  <div className="border-top border-danger my-3"></div>
+                  <h5 className="group-label"># เลือกบทบาท</h5>
+                  <div className="col-lg-12">
+                    <div className="d-flex my-3 gap-2 flex-wrap">
+                      {data?.filter((item) => !input.roles?.includes(item.roleId)).map((item) => (
+                        <button
+                          className="btn btn-primary"
+                          id={`roleItem-${item.roleId}`}
+                          key={item.roleId}
+                          onClick={() => handleAddRole(item.roleId)}
+                          // style={{visibility:isHidden?"hidden":"visible"}}
+                        >
+                          {item.roleName}
+                        </button>
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        border: "2px dotted #f19999",
+                        paddingLeft: "10px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <div className="d-flex my-3 gap-2  flex-wrap">
+                         {input.roles?.map((item) => (
+                         <div
+                          className="border border-danger p-1 pe-0 rounded-3 bg-light"
+                          style={{ fontSize: "0.9rem" }}
+                           id={`roleItem-${item}`} //ทำการอ้างอิง โดยเมื่อทำการกากบาทออก item จะปรากฏ
+                        >
+                          บทบาทที่ 1{" "}
+                          <button className="border-0 bg-transparent" onClick={()=>handleRemoveRole(item)}>
+                            <i className="bi bi-x text-danger"></i>
+                          </button>
+                        </div>
+                      ))}
+                       
+
+                        {/* <div
+                          className="border border-danger p-1 pe-0 rounded-3 bg-danger"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          บทบาทที่ 1{" "}
+                          <button className="border-0 bg-transparent">
+                            <i className="bi bi-x text-danger"></i>
+                          </button>
+                        </div>
+                        <div
+                          className="border border-danger p-1 pe-0 rounded-3"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          บทบาทที่ 1{" "}
+                          <button className="border-0 bg-transparent">
+                            <i className="bi bi-x text-danger"></i>
+                          </button>
+                        </div>
+                        <div
+                          className="border border-danger p-1 pe-0 rounded-3"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          บทบาทที่ 1{" "}
+                          <button className="border-0 bg-transparent">
+                            <i className="bi bi-x text-danger"></i>
+                          </button>
+                        </div> */}
+                      </div>
+                    </div>
+                  </div>
+                  {/* ส่วนของข้อมูล employee เดิม */}
+                  {/* <div className="row form-spacing g-2">
                     <div className="col-lg-3">
-                      <label for="StartDate" class="form-label">
+                      <label class="form-label">
                         คำนำหน้า
                         <span style={{ color: "red" }}>*</span>
                       </label>
@@ -421,11 +603,11 @@ export default function Users({ title }) {
                     {error.titleId ? (
                       <p className="text-danger">{error.titleId}</p>
                     ) : null}
-                  </div>
+                  </div> */}
 
-                  <div className="row form-spacing g-2">
+                  {/* <div className="row form-spacing g-2">
                     <div className="col-md-12 col-lg-6">
-                      <label for="StartDate" className="form-label">
+                      <label className="form-label">
                         ชื่อจริง
                         <span style={{ color: "red" }}>*</span>
                       </label>
@@ -445,7 +627,7 @@ export default function Users({ title }) {
                       ) : null}
                     </div>
                     <div className="col-md-12 col-lg-6">
-                      <label for="StartDate" class="form-label">
+                      <label class="form-label">
                         นามสกุล
                         <span style={{ color: "red" }}>*</span>
                       </label>
@@ -464,7 +646,7 @@ export default function Users({ title }) {
                         <p className="text-danger">{error.lastname}</p>
                       ) : null}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

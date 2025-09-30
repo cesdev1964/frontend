@@ -22,6 +22,7 @@ import JobCategories from "./pages/setting/JobCategories";
 import OTCategories from "./pages/setting/OTcategories";
 import Roles from "./pages/setting/Roles";
 import EmployeeTypes from "./pages/setting/EmployeeTypes";
+import DeductionTypes from "./pages/setting/DeductionTypes";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -61,7 +62,8 @@ export default function RouterPage() {
         { path: "settings/jobcategory", element: <JobCategories title="จัดการข้อมูลหมวดงาน" /> },
         { path: "settings/OTcategory", element: <OTCategories title="จัดการข้อมูลประเภทโอที" /> },
         { path: "settings/role", element: <Roles title="จัดการข้อมูลบทบาท" /> },
-        { path: "settings/employeeType", element: <EmployeeTypes title="จัดการข้อมูลประเภทของพนักงาน" /> },
+        { path: "settings/employeetype", element: <EmployeeTypes title="จัดการข้อมูลประเภทของพนักงาน" /> },
+        { path: "settings/deductiontype", element: <DeductionTypes title="จัดการข้อมูลประเภทการหักเงิน" /> },
        
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 
