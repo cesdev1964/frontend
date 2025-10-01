@@ -23,8 +23,12 @@ import OTCategories from "./pages/setting/OTcategories";
 import Roles from "./pages/setting/Roles";
 import EmployeeTypes from "./pages/setting/EmployeeTypes";
 import DeductionTypes from "./pages/setting/DeductionTypes";
+import Permissions from "./pages/setting/Permissions";
+import RolePermission from "./pages/setting/role/RolePermission";
+import { useNavigate } from "react-router-dom";
 
 export default function RouterPage() {
+  const navigate = useNavigate();
   const routes = useRoutes([
     {
       // ต้อง login ก่อน
@@ -62,8 +66,10 @@ export default function RouterPage() {
         { path: "settings/jobcategory", element: <JobCategories title="จัดการข้อมูลหมวดงาน" /> },
         { path: "settings/OTcategory", element: <OTCategories title="จัดการข้อมูลประเภทโอที" /> },
         { path: "settings/role", element: <Roles title="จัดการข้อมูลบทบาท" /> },
+        { path: "settings/rolepermission/:roleid", element: <RolePermission title="แก้ไขสิทธิ์การเข้าใช้งาน" /> },
         { path: "settings/employeetype", element: <EmployeeTypes title="จัดการข้อมูลประเภทของพนักงาน" /> },
         { path: "settings/deductiontype", element: <DeductionTypes title="จัดการข้อมูลประเภทการหักเงิน" /> },
+        { path: "settings/permission", element: <Permissions title="จัดการข้อมูล Permission" /> },
        
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 
@@ -86,3 +92,7 @@ export default function RouterPage() {
   ]);
   return routes;
 }
+
+// export default function NavigatePath({path}){
+//    navigate(path);
+// }

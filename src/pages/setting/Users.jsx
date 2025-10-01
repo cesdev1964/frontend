@@ -7,6 +7,9 @@ import HeaderPage from "../../components/HeaderPage";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { useRole } from "../../hooks/roleStore";
+import { useUser } from "../../hooks/userStore";
+import { useTitltName } from "../../hooks/titleNameStore";
+import { isActiveBadge } from "../../util/isActiveBadge";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -18,12 +21,26 @@ const tableHead = [
 
 export default function Users({ title }) {
   useTitle(title);
+  const tableRef = useRef();
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มผู้ใช้งานใหม่");
   const { data, errorMessage, getRoleData, isLoading } = useRole();
-  const [isHidden,setIsHidden] = useState(false);
+  const { titleData, titleIsLoading, getTitleNameData } = useTitltName();
+  const {
+    userdata,
+    userIsLoading,
+    userError,
+    getUserData,
+    register,
+    success,
+    deleteUser,
+    getUserByIdData,
+    userById,
+    updateUser,
+  } = useUser();
   const [input, setInput] = useState({
     titleId: 0,
     firstname: "",
@@ -31,9 +48,12 @@ export default function Users({ title }) {
     username: "",
     password: "",
     mustchangepassword: 0,
-    isactive: 0,
+    isactive: false,
     roles: [],
+    employeeId: 0,
   });
+  const [editMode, setEditMode] = useState(false);
+  const [editUserId, setEditUserId] = useState(null);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -47,7 +67,7 @@ export default function Users({ title }) {
     const { name, checked } = e.target;
     setInput((prev) => ({
       ...prev,
-      [name]: checked ? 1 : 0,
+      [name]: checked ? true : false,
     }));
   };
 
@@ -59,150 +79,175 @@ export default function Users({ title }) {
       username: "",
       password: "",
       mustchangepassword: 0,
-      isactive: 0,
+      isactive: false,
+      roles: [],
+      employeeId: 0,
     });
     setError({});
+    setEditMode(false);
   };
 
   useEffect(() => {
     const fetchDataTable = async () => {
       try {
         await getRoleData();
+        await getUserData();
+        await getTitleNameData();
       } catch (error) {
-        alert("โหลด API ไม่สำเร็จ", errorMessage);
+        alert("โหลด API ไม่สำเร็จ", error);
       }
     };
     fetchDataTable();
-  }, [getRoleData]);
+  }, [getRoleData, getUserData]);
 
   //เมื่อค่าเปลี่ยน
   useEffect(() => {
-    if (data) {
-      console.log("data", data);
-      // GetDataTable();
+    if (data || userdata || titleData) {
+      // console.log("data", data);
+      // console.log("user data", userdata);
+      GetDataTable();
     }
-    // console.log("role select item", input.roles);
-  }, [data,input.roles]);
+  }, [data, input.roles, userdata, titleData]);
 
-  const tableRef = useRef();
-  //   useEffect(() => {
-  //     $(tableRef.current).DataTable({
-  //       responsive: true,
-  //       destroy: true,
-  //       paging: true,
-  //       searching: true,
-  //       scrollX: true,
-  //       autoWidth: true,
-  //       language: {
-  //         decimal: "",
-  //         emptyTable: "ไม่มีข้อมูลในตาราง",
-  //         info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-  //         infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-  //         infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-  //         infoPostFix: "",
-  //         thousands: ",",
-  //         lengthMenu: "แสดง _MENU_ รายการ",
-  //         loadingRecords: "กำลังโหลด...",
-  //         processing: "กำลังประมวลผล...",
-  //         search: "ค้นหา:",
-  //         zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
-  //       },
-  //       data: mockemployeetableData,
-  //       columnDefs: [
-  //         { width: "50px", targets: 0 },
-  //         { width: "70px", targets: 1 },
-  //         { width: "160px", targets: 2 },
-  //         { width: "100px", targets: 3 },
-  //         { width: "160px", targets: 4 },
-  //         { width: "100px", targets: 5 },
-  //         { width: "120px", targets: 6 },
-  //       ],
-  //       columns: [
-  //         {
-  //           data: null,
-  //           render: function (data, type, row, meta) {
-  //             return meta.row + 1;
-  //           },
-  //         },
-  //         {
-  //           title: "รหัสพนักงาน",
-  //           data: "empId",
-  //           orderable: true,
-  //         },
-  //         {
-  //           title: "ชื่อพนักงาน",
-  //           data: "empName",
-  //           orderable: true,
-  //         },
+  //ใส่ใน input ของ edit mode
+  useEffect(() => {
+    if (userById) {
+      setInput((prevData) => ({
+        ...prevData,
+        username: userById.username ?? "",
+        employeeId: userById.employeeId ?? 0,
+        titleId: userById.titleId ?? 0,
+        firstname: userById.firstname ?? "",
+        lastname: userById.lastname ?? "",
+        isactive: userById.isActive ?? false,
+        roles: userById?.roles?.map((item) => item.roleId) ?? [],
+      }));
+    }
+  }, [userById]);
 
-  //         {
-  //           title: "ระดับ",
-  //           data: "level",
-  //           orderable: true,
+  const GetDataTable = () => {
+    $(tableRef.current).DataTable({
+      data: userdata,
+      destroy: true,
+      responsive: true,
+      paging: true,
+      searching: true,
+      autoWidth: true,
+      language: {
+        decimal: "",
+        emptyTable: "ไม่มีข้อมูลในตาราง",
+        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
+        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
+        infoPostFix: "",
+        thousands: ",",
+        lengthMenu: "แสดง _MENU_ รายการ",
+        loadingRecords: "กำลังโหลด...",
+        processing: "กำลังประมวลผล...",
+        search: "ค้นหา:",
+        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+      },
+      columnDefs: [
+        { width: "70px", targets: 0 },
+        { width: "70px", targets: 1 },
+        { width: "200px", targets: 2 },
+        { width: "100px", targets: 3 },
+        { width: "120px", targets: 4 },
+      ],
+      columns: [
+        {
+          data: null,
+          render: function (data, type, row, meta) {
+            return meta.row + 1;
+          },
+        },
+        {
+          title: "ชื่อผู้ใช้",
+          data: "username",
+          orderable: true,
+        },
 
-  //           render: function (data, type, row) {
-  //             return levelBadge(row.level);
-  //           },
-  //         },
-  //         {
-  //           title: "ตำแหน่ง",
-  //           data: "position",
-  //         },
-  //         {
-  //           title: "สถานะ",
-  //           data: "status",
-  //         },
-  //         {
-  //           data: null,
-  //           title: "การจัดการ",
-  //           render: function (data, type, row) {
-  //             return `
-  //            <div className="d-flex align-items-center justify-content-center">
-  //             <div class="dropdown d-lg-none">
-  //               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-  //                  <i class="bi bi-three-dots-vertical"></i>
-  //               </button>
-  //               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-  //                 <li>
-  //                 <a class="dropdown-item text-dark" href="#">
-  //                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
-  //                 </a>
-  //               </li>
-  //               <li>
-  //                 <a class="dropdown-item text-dark" href="#">
-  //                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
-  //                 </a>
-  //               </li>
-  //              </ul>
-  //           </div>
+        {
+          title: "ชื่อ-นามสกุล",
+          data: null,
+          orderable: true,
+          render: function (data, type, row) {
+            return `<p>${row.firstname} ${row.lastname}</p>`;
+          },
+        },
+        {
+          title: "เปิดใช้งาน",
+          data: "isActive",
+          orderable: true,
+          render: function (data, type, row) {
+            return isActiveBadge(row.isActive);
+          },
+        },
+        {
+          data: null,
+          title: "การจัดการ",
+          render: function (data, type, row) {
+            return `      
+         <div className="d-flex align-items-center justify-content-center">
+            <div class="dropdown d-lg-none">
+              <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                 <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                <a class="dropdown-item text-dark btn-edit " data-user-id="${row.userId}">
+                  <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-dark btn-delete" data-user-id="${row.userId}">
+                  <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
+                </a>
+              </li>
+             </ul>
+          </div>
+          
+          <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+            <a
+              data-user-id="${row.userId}"
+              class="btn btn-warning me-2 btn-edit"
+              title="แก้ไข"
+              
+            >
+              <i class="bi bi-pen-fill"></i>
+            </a>
+            <a
+              
+              data-user-id="${row.userId}"
+              class="btn btn-danger btn-delete"
+              title="ลบ"
+            >
+              <i class="bi bi-trash-fill"></i>
+            </a>
+          </div>
+        </div>
+       `;
+          },
+        },
+      ],
+      dom:
+        window.innerWidth <= 570
+          ? '<"top"lf>rt<"bottom"ip><"clear">'
+          : '<"top"lf>rt<"bottom"ip><"clear">',
+    });
+  };
 
-  //           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-  //             <a
-  //               href="#"
-  //               class="btn btn-warning me-2"
-  //               title="แก้ไข"
-  //             >
-  //               <i class="bi bi-pen-fill"></i>
-  //             </a>
-  //             <a
-  //               href="#"
-  //               class="btn btn-danger"
-  //               title="ลบ"
-  //             >
-  //               <i class="bi bi-trash-fill"></i>
-  //             </a>
-  //           </div>
-  //         </div>
-  //                   `;
-  //           },
-  //         },
-  //       ],
-  //       dom:
-  //         window.innerWidth <= 570
-  //           ? '<"top"lf>rt<"bottom"ip><"clear">'
-  //           : '<"top"lf>rt<"bottom"ip><"clear">',
-  //     });
-  //   }, []);
+  //เข้าถึง function delete
+  $(tableRef.current).on("click", ".btn-delete", function () {
+    const id = $(this).data("userId");
+    console.log("id in click delete func", id);
+    handleDelete(id);
+  });
+
+  $(tableRef.current).on("click", ".btn-edit", function () {
+    const id = $(this).data("userId");
+    handleEdit(id);
+  });
 
   const validateForm = () => {
     let errors = {};
@@ -210,11 +255,14 @@ export default function Users({ title }) {
     if (!input.username) {
       errors.username = "กรุณากรอกชื่อผู้ใช้";
     }
-    if (!input.password) {
-      errors.password = "กรุณากรอกรหัสผ่าน";
-    } else {
-      if (input.password.length < 8) {
-        errors.password = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+
+    if (!editMode) {
+      if (!input.password) {
+        errors.password = "กรุณากรอกรหัสผ่าน";
+      } else {
+        if (input.password.length < 8) {
+          errors.password = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+        }
       }
     }
     if (input.titleId === 0 || input.titleId === "") {
@@ -226,6 +274,10 @@ export default function Users({ title }) {
 
     if (!input.lastname) {
       errors.lastname = "กรุณากรอกนามสกุลของท่าน";
+    }
+
+    if (input.roles.length === 0) {
+      errors.roles = "กรุณาเพิ่มบทบาทอย่างน้อย 1 บทบาท";
     }
 
     return errors;
@@ -241,42 +293,137 @@ export default function Users({ title }) {
         roles: [...roleItem, roleId], //add role ใหม่ลงใน list
       };
     });
-    // setIsHidden(true);
   };
 
-    const handleRemoveRole = (roleId) => {
+  const handleRemoveRole = (roleId) => {
     setInput((prevData) => {
       const roleItem = prevData.roles || [];
       return {
         ...prevData,
-        roles: roleItem.filter((select)=>select !== roleId), //add role ใหม่ลงใน list
+        roles: roleItem.filter((select) => select !== roleId), //add role ใหม่ลงใน list
       };
     });
-    // setIsHidden(false);
   };
 
-  const handleSubmit = (e) => {
+  const getRoleName = (roleId) => {
+    const roleName = data.find((item) => item.roleId === roleId);
+    if (roleName) {
+      return roleName.roleName;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const reqAddData = {
+      username: input.username,
+      password: input.password,
+      isActive: input.isactive, // ต้อง map ให้เป็น boolean
+      employeeId: input.employeeId,
+      titleId: input.titleId,
+      firstname: input.firstname,
+      lastname: input.lastname,
+      roleIds: input.roles, // array ของ number เช่น [1,2]
+    };
+
+    const reqUpdateData = {
+      employeeId: input.employeeId,
+      titleId: input.titleId,
+      firstname: input.firstname,
+      lastname: input.lastname,
+      roleIds: input.roles,
+      isActive: input.isactive,
+    };
 
     const errorList = validateForm(input);
     setError(errorList);
-
+    console.log("add new data", reqAddData);
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      console.log("submit data", input);
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
-      //   ปิด modal เมื่อบันทึกข้อมูลสำเร็จ
-      const currentModal = document.getElementById("addModal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      handleClear();
+      // console.log("input data to update",reqUpdateData)
+      const response = editMode
+        ? await updateUser(reqUpdateData, editUserId)
+        : await register(reqAddData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        //   ปิด modal เมื่อบันทึกข้อมูลสำเร็จ
+        const currentModal = document.getElementById("addModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        handleClear();
+        //โหลดตารางใหม่
+        await getUserData();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          icon: "error",
+        });
+      }
     }
   };
+
+  const handleEdit = async (userId) => {
+    await getUserByIdData(userId); //ผูก api เรียกใช้ข้อมูล
+    setEditUserId(userId);
+
+    const currentModal = document.getElementById("addModal");
+    if (currentModal) {
+      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+      setEditMode(true);
+    }
+  };
+
+  const handleDelete = (userId) => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ใช่ ลบได้เลย",
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await deleteUser(userId);
+          if (response.success) {
+            swalWithBootstrapButtons.fire({
+              title: "ลบรายการสำเร็จ!",
+              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+              icon: "success",
+            });
+            await getUserData();
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "ยกเลิก",
+            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
+            icon: "error",
+          });
+        }
+      });
+  };
+
   return (
     <div className="container py-4 min-vh-90 d-flex flex-column">
       {/* Breadcrumb */}
@@ -346,7 +493,7 @@ export default function Users({ title }) {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
+                  {title}
                 </h1>
 
                 <button
@@ -354,13 +501,18 @@ export default function Users({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={handleClear}
                 ></button>
               </div>
               <div class="modal-body">
                 <div className="p-4">
                   <div className="row form-spacing g-3">
-                    <div className="col-md-12 col-lg-6">
-                      <label for="StartDate" className="form-label">
+                    <div
+                      className={`col-md-12 ${
+                        editMode ? "col-lg-8 offset-lg-2" : "col-lg-6"
+                      }`}
+                    >
+                      <label className="form-label">
                         ชื่อผู้ใช้
                         <span style={{ color: "red" }}>*</span>
                       </label>
@@ -395,9 +547,14 @@ export default function Users({ title }) {
                             value={input.titleId}
                             dis
                           >
-                            <option value={""}>เลือกคำนำหน้า</option>
-                            <option value={1}>นาย</option>
-                            <option value={2}>นางสาว</option>
+                            <option value={0}>เลือกคำนำหน้า</option>
+                            {/* <option value={1}>นาย</option>
+                            <option value={2}>นางสาว</option> */}
+                            {titleData.map((item) => (
+                              <option value={item.titleId} key={item.titleId}>
+                                {item.titleNameTH}
+                              </option>
+                            ))}
                           </select>
                           {error.titleId ? (
                             <p className="text-danger">{error.titleId}</p>
@@ -442,10 +599,29 @@ export default function Users({ title }) {
                           {error.lastname ? (
                             <p className="text-danger">{error.lastname}</p>
                           ) : null}
+                          <div class=" d-flex justify-content-end align-items-center w-100 mt-2">
+                            <label className="mb-2">เปิดใช้งาน</label>
+                            <div class="form-check form-switch form-switch-md ms-3">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isActive-toggle"
+                                name="isactive"
+                                checked={input.isactive === true}
+                                value={input.isactive}
+                                onChange={handleChangeCheckbox}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="col-md-12 col-lg-6">
+                    <div
+                      className="col-md-12 col-lg-6"
+                      style={{
+                        display: editMode ? "none" : "block",
+                      }}
+                    >
                       <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
                         <label for="StartDate" class="form-label">
                           รหัสผ่าน
@@ -493,19 +669,6 @@ export default function Users({ title }) {
                             />
                           </div>
                         </div>
-                        <div class=" d-flex justify-content-between align-items-center w-100">
-                          <label className="mb-2">เปิดใช้งาน</label>
-                          <div class="form-check form-switch form-switch-md ms-3">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="isActive-toggle"
-                              name="isactive"
-                              value={input.isactive}
-                              onChange={handleChangeCheckbox}
-                            />
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -514,17 +677,17 @@ export default function Users({ title }) {
                   <h5 className="group-label"># เลือกบทบาท</h5>
                   <div className="col-lg-12">
                     <div className="d-flex my-3 gap-2 flex-wrap">
-                      {data?.filter((item) => !input.roles?.includes(item.roleId)).map((item) => (
-                        <button
-                          className="btn btn-primary"
-                          id={`roleItem-${item.roleId}`}
-                          key={item.roleId}
-                          onClick={() => handleAddRole(item.roleId)}
-                          // style={{visibility:isHidden?"hidden":"visible"}}
-                        >
-                          {item.roleName}
-                        </button>
-                      ))}
+                      {data
+                        ?.filter((item) => !input.roles?.includes(item.roleId))
+                        .map((item) => (
+                          <button
+                            className="btn btn-primary"
+                            key={item.roleId}
+                            onClick={() => handleAddRole(item.roleId)}
+                          >
+                            {item.roleName}
+                          </button>
+                        ))}
                     </div>
                     <div
                       style={{
@@ -534,125 +697,33 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex my-3 gap-2  flex-wrap">
-                         {input.roles?.map((item) => (
-                         <div
-                          className="border border-danger p-1 pe-0 rounded-3 bg-light"
-                          style={{ fontSize: "0.9rem" }}
-                           id={`roleItem-${item}`} //ทำการอ้างอิง โดยเมื่อทำการกากบาทออก item จะปรากฏ
-                        >
-                          บทบาทที่ 1{" "}
-                          <button className="border-0 bg-transparent" onClick={()=>handleRemoveRole(item)}>
-                            <i className="bi bi-x text-danger"></i>
-                          </button>
-                        </div>
-                      ))}
-                       
-
-                        {/* <div
-                          className="border border-danger p-1 pe-0 rounded-3 bg-danger"
-                          style={{ fontSize: "0.9rem" }}
-                        >
-                          บทบาทที่ 1{" "}
-                          <button className="border-0 bg-transparent">
-                            <i className="bi bi-x text-danger"></i>
-                          </button>
-                        </div>
-                        <div
-                          className="border border-danger p-1 pe-0 rounded-3"
-                          style={{ fontSize: "0.9rem" }}
-                        >
-                          บทบาทที่ 1{" "}
-                          <button className="border-0 bg-transparent">
-                            <i className="bi bi-x text-danger"></i>
-                          </button>
-                        </div>
-                        <div
-                          className="border border-danger p-1 pe-0 rounded-3"
-                          style={{ fontSize: "0.9rem" }}
-                        >
-                          บทบาทที่ 1{" "}
-                          <button className="border-0 bg-transparent">
-                            <i className="bi bi-x text-danger"></i>
-                          </button>
-                        </div> */}
+                        {input.roles?.map((item) => (
+                          <div
+                            className="border border-danger p-1 pe-0 rounded-3 bg-light ps-2"
+                            style={{ fontSize: "0.9rem" }}
+                          >
+                            {getRoleName(item)}
+                            <button
+                              className="border-0 bg-transparent"
+                              onClick={() => handleRemoveRole(item)}
+                            >
+                              <i className="bi bi-x text-danger"></i>
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                  {/* ส่วนของข้อมูล employee เดิม */}
-                  {/* <div className="row form-spacing g-2">
-                    <div className="col-lg-3">
-                      <label class="form-label">
-                        คำนำหน้า
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <select
-                        name="titleId"
-                        id="titleId"
-                        className={`form-select ${
-                          error.titleId ? "border border-danger" : ""
-                        }`}
-                        onChange={handleChangeInput}
-                        value={input.titleId}
-                        dis
-                      >
-                        <option value={""}>เลือกคำนำหน้า</option>
-                        <option value={1}>นาย</option>
-                        <option value={2}>นางสาว</option>
-                      </select>
-                    </div>
-                    {error.titleId ? (
-                      <p className="text-danger">{error.titleId}</p>
+                    {error.roles ? (
+                      <p className="text-danger mt-2">{error.roles}</p>
                     ) : null}
-                  </div> */}
-
-                  {/* <div className="row form-spacing g-2">
-                    <div className="col-md-12 col-lg-6">
-                      <label className="form-label">
-                        ชื่อจริง
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="firstname"
-                        type="text"
-                        className={`form-control ${
-                          error.firstname ? "border border-danger" : ""
-                        }`}
-                        id="firstname"
-                        placeholder="กรอกชื่อจริง"
-                        value={input.firstname}
-                        onChange={handleChangeInput}
-                      />
-                      {error.firstname ? (
-                        <p className="text-danger">{error.firstname}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-12 col-lg-6">
-                      <label class="form-label">
-                        นามสกุล
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="lastname"
-                        type="text"
-                        className={`form-control ${
-                          error.lastname ? "border border-danger" : ""
-                        }`}
-                        id="lastname"
-                        placeholder="กรอกนามสกุล"
-                        value={input.lastname}
-                        onChange={handleChangeInput}
-                      />
-                      {error.lastname ? (
-                        <p className="text-danger">{error.lastname}</p>
-                      ) : null}
-                    </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
 
               <SubmitOrCancelButton
                 handleCancel={handleClear}
                 handleSubmit={handleSubmit}
+                isLoading={userIsLoading}
               />
             </div>
           </div>

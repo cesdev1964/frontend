@@ -9,6 +9,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { useRole } from "../../hooks/roleStore";
+import { useNavigate } from "react-router-dom";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -21,16 +22,31 @@ export const tableHead = [
 export default function Roles({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  // const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลบทบาท");
-  // const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState({
     roleName: "",
     description: "",
   });
-  const { data, errorMessage, getRoleData ,isLoading} = useRole();
+  const {
+    data,
+    errorMessage,
+    getRoleData,
+    isLoading,
+    createRole,
+    deleteRole,
+    updateRole,
+    getRoleByIdData,
+    dataById
+  } = useRole();
+  const [editMode,setEditMode] = useState(false);
+  const [editRoleId,setEditRoleId] = useState(null);
+  const navigate = useNavigate();
+
+  const handleToPermissionPage = (roleId) => {
+    navigate(`/settings/rolepermission/:${roleId}`);
+  };
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -41,34 +57,33 @@ export default function Roles({ title }) {
   };
 
   useEffect(() => {
-    const fetchDataTable = async() => {
+    const fetchDataTable = async () => {
       try {
-       await getRoleData();
+        await getRoleData();
       } catch (error) {
-        alert("โหลด API ไม่สำเร็จ", errorMessage);
+        alert("ดึงข้อมูลไม่สำเร็จ", errorMessage);
       }
     };
     fetchDataTable();
   }, [getRoleData]);
 
-  //เมื่อค่าเปลี่ยน
+  //ตอนโหลตข้อมูลทั้งหมด
   useEffect(() => {
+    setEditMode(false)
     if (data) {
-      console.log("data", data);
       GetDataTable();
     }
   }, [data]);
-  // useEffect(() => {
-  //   try {
-  //     if (!data) {
-  //       return;
-  //     } else {
-  //       GetDataTable();
-  //     }
-  //   } catch (error) {
-  //     console.log("ไม่สามารถโหลดข้อมูลได้", error.message);
-  //   }
-  // }, [data]);
+
+  useEffect(()=>{
+   if(dataById){
+      setInput((prevData) => ({
+        ...prevData,
+        roleName : dataById.roleName  ?? "",
+        description : dataById.description ?? ""
+      }));
+    }
+  },[dataById])
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -82,7 +97,6 @@ export default function Roles({ title }) {
       responsive: true,
       paging: true,
       searching: true,
-      // scrollX: true,
       autoWidth: true,
       language: {
         decimal: "",
@@ -140,12 +154,17 @@ export default function Roles({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark btn-edit" data-role-id="${row.roleId}">
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark btn-permission" data-role-id="${row.roleId}">
+                  <i class="bi bi-person-fill-lock me-2"></i>สิทธิเข้าใช้งาน
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-dark btn-delete" data-role-id="${row.roleId}">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -154,16 +173,24 @@ export default function Roles({ title }) {
           
           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
             <a
-              href="#"
-              class="btn btn-warning me-2"
+              
+              class="btn btn-warning me-2 btn-edit"
               title="แก้ไข"
+              data-role-id="${row.roleId}"
             >
               <i class="bi bi-pen-fill"></i>
             </a>
             <a
-              href="#"
-              class="btn btn-danger"
+              class="btn btn-info me-2 btn-permission"
+              title="สิทธิเข้าใช้งาน"
+              data-role-id="${row.roleId}"
+            >
+              <i class="bi bi-person-fill-lock"></i>
+            </a>
+            <a
+              class="btn btn-danger btn-delete"
               title="ลบ"
+              data-role-id="${row.roleId}"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
@@ -180,43 +207,121 @@ export default function Roles({ title }) {
     });
   };
 
+  //  เข้าสู่ ปุ่ม action
+  $(tableRef.current).on("click", ".btn-permission", function () {
+    const id = $(this).data("roleId");
+    handleToPermissionPage(id);
+  });
+
+  $(tableRef.current).on("click", ".btn-delete", function () {
+    const id = $(this).data("roleId");
+    handleDelete(id);
+  });
+
+  $(tableRef.current).on("click", ".btn-edit", function () {
+    const id = $(this).data('roleId');
+    handleEdit(id);
+  });
+
   const validateForm = () => {
     let errors = {};
     if (!input.roleName) {
       errors.roleName = "กรุณากรอกชื่อบทบาท";
     }
-
-    if (!input.description) {
-      errors.description = "กรุณากรอกคำอธิบาย";
-    }
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+    const reqData = {
+      roleName: input.roleName,
+      roleDescription: input.description,
+    };
+
     const errorList = validateForm(input) || [];
     setError(errorList);
     //api post
-    // setData(data.res)
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
-      //  const newData = GetDataTable();
-      //  const table = $(tableRef.current).DataTable({});
-      //  table.clear().destroy();
-      //  table.row.add(newData);
-      //  table.draw();
-      const currentModal = document.getElementById("notModal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
+      const response = editMode? await updateRole(reqData,editRoleId) : await createRole(reqData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+
+        const currentModal = document.getElementById("notModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+        await getRoleData();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          icon: "error",
+        });
+      }
     }
+  };
+
+  const handleEdit =async (roleId) => {
+    await getRoleByIdData(roleId); //ผูก api เรียกใช้ข้อมูล
+    setEditRoleId(roleId)
+
+    const currentModal = document.getElementById("notModal");
+    if (currentModal) {
+      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+      setEditMode(true)
+      
+    }
+  };
+
+  const handleDelete = (roleId) => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ใช่ ลบได้เลย",
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await deleteRole(roleId);
+          if (response.success) {
+            swalWithBootstrapButtons.fire({
+              title: "ลบรายการสำเร็จ!",
+              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+              icon: "success",
+            });
+            await getRoleData();
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "ยกเลิก",
+            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
+            icon: "error",
+          });
+        }
+      });
   };
 
   const ClearInput = () => {
@@ -225,6 +330,7 @@ export default function Roles({ title }) {
       description: "",
     });
     setError({});
+    setEditMode(false);
   };
 
   return (
@@ -301,6 +407,7 @@ export default function Roles({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={ClearInput}
                 ></button>
               </div>
               <div class="modal-body">
@@ -351,9 +458,7 @@ export default function Roles({ title }) {
                             value={input.description}
                             onChange={handleChangeInput}
                           ></textarea>
-                          {error.description ? (
-                            <p className="text-danger">{error.description}</p>
-                          ) : null}
+                         
                         </div>
                       </div>
                     </form>

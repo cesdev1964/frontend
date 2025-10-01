@@ -81,7 +81,7 @@ const CookieConsents = () => {
   const handleAcceptCookie = () => {
     setIsAccept(true);
     const currentDate = new Date();
-    currentDate.setSeconds(currentDate.getSeconds() + 50);
+    currentDate.setSeconds(currentDate.getSeconds() + 60);
     //ชื่อ cookie , ข้อมูลที่เก็บใน cookie , วันหมดอายุ
     Cookies.set("MyCookie", "true", { expires: currentDate });
     setisShowSetting(false);

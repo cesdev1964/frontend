@@ -116,6 +116,14 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
+      path: "/settings/permission",
+      icon: "bi bi-person-fill-lock",
+      color: cardColor[5],
+      title: "Permission",
+      subtitle: "จัดการข้อมูล permission",
+    },
+    {
+      page: "6",
       path: "#",
       icon: "fas fa-umbrella-beach",
       color: cardColor[5],
