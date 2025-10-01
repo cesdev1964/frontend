@@ -92,7 +92,7 @@ const ChangePassword = ({ title }) => {
   }, [error, isSubmit]);
 
   return (
-    <>
+    < div className="container py-4 min-vh-90 d-flex flex-column">
       <HeaderPage pageName={title} />
       <div className="content-box">
         <div
@@ -250,7 +250,7 @@ const ChangePassword = ({ title }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

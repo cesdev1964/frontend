@@ -8,27 +8,30 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
-import { useTitltName } from "../../hooks/titleNameStore";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสตารางคำนำหน้า" },
-  { index: 2, colName: "คำนำหน้าชื่อ" },
-  { index: 3, colName: "คำนำหน้าชื่อ(ENG)" },
+  { index: 1, colName: "รหัสประเภท" },
+  { index: 2, colName: "ชื่อประเภทการหักเงิน" },
+  { index: 3, colName: "เปิดใช้งาน" },
   { index: 4, colName: "การจัดการ" },
 ];
-
-export default function NameTitle({ title }) {
+export const mockeTitletableData = [
+  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
+  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
+  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
+];
+export default function DeductionTypes({ title }) {
   useTitle(title);
   const tableRef = useRef();
+  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName, setAddBtnName] = useState("เพิ่มคำนำหน้าใหม่");
-  const {getTitleNameData,titleData,titleIsLoading, titleErrorMessage} = useTitltName;
+  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลประเภทการหักเงิน");
 
   const [input, setInput] = useState({
-    titleNameTH: "",
-    titleNameEng: "",
+    deductiontypename: "",
+    isactive: 0,
   });
 
   const handleChangeInput = (e) => {
@@ -38,25 +41,29 @@ export default function NameTitle({ title }) {
       [name]: value,
     }));
   };
-  
-   useEffect(() => {
-      const fetchDataTable = async() => {
-        try {
-         await getTitleNameData();
-        } catch (error) {
-          alert("ดึงข้อมูลไม่สำเร็จ", error);
-        }
-      };
-      fetchDataTable();
-    }, [getTitleNameData]);
+
+  const handleChangeCheckbox = (e) => {
+    setInput((prev) => ({
+      ...prev,
+      isactive: e.target.checked ? 1 : 0,
+    }));
+  };
 
   useEffect(() => {
-    if (titleData) {
-      GetDataTable();
-    }
-  }, [titleData]);
+    setData(mockeTitletableData);
+  }, []);
 
-  
+  // useEffect(() => {
+  //   try {
+  //     if (!data) {
+  //       return;
+  //     } else {
+  //       GetDataTable();
+  //     }
+  //   } catch (error) {
+  //     console.log("ไม่สามารถโหลดข้อมูลได้", error.message);
+  //   }
+  // }, [data]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -65,9 +72,8 @@ export default function NameTitle({ title }) {
   }, [error, isSubmit]);
 
   const GetDataTable = () => {
-
     $(tableRef.current).DataTable({
-      data: titleData,
+      data: data,
       destroy: true,
       responsive: true,
       paging: true,
@@ -103,18 +109,18 @@ export default function NameTitle({ title }) {
         },
         {
           title: "รหัสตารางคำนำหน้า",
-          data: "titleId",
+          data: "TitleId",
           orderable: true,
         },
         {
           title: "คำนำหน้าชื่อ",
-          data: "titleNameTH",
+          data: "TitleNameTH",
           orderable: true,
         },
 
         {
           title: "คำนำหน้าชื่อ(ENG)",
-          data: "titleNameEng",
+          data: "TitleNameEng",
           orderable: true,
         },
         {
@@ -129,12 +135,12 @@ export default function NameTitle({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark btn-edit">
+                <a class="dropdown-item text-dark" href="#">
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark btn-delete">
+                <a class="dropdown-item text-dark" href="#">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -142,18 +148,20 @@ export default function NameTitle({ title }) {
           </div>
           
           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-            <button
-              class="btn btn-warning me-2 btn-edit"
+            <a
+              href="#"
+              class="btn btn-warning me-2"
               title="แก้ไข"
             >
               <i class="bi bi-pen-fill"></i>
-            </button>
-            <button
-              class="btn btn-danger btn-delete"
+            </a>
+            <a
+              href="#"
+              class="btn btn-danger"
               title="ลบ"
             >
               <i class="bi bi-trash-fill"></i>
-            </button>
+            </a>
           </div>
         </div>
        `;
@@ -167,37 +175,10 @@ export default function NameTitle({ title }) {
     });
   };
 
-     //เข้าถึง function delete
-   $(tableRef.current).on('click','.btn-delete',function(){
-    // const id = $(this).data('id');
-    handleDelete();
-   })
-
-    //เข้าถึง function edit
-   $(tableRef.current).on('click','.btn-edit',function(){
-    // const id = $(this).data('id');
-    handleEdit();
-    
-   })
-
-
   const validateForm = () => {
     let errors = {};
-    const hasEnglish = /[A-Za-z]/;
-    const hasThai = /[ก-ฮ]/;
-    if (!input.titleNameTH) {
-      errors.titleNameTH = "กรุณากรอกคำนำหน้า";
-    } else {
-      if (hasEnglish.test(input.titleNameTH)) {
-        errors.titleNameTH = "กรุณากรอกเป็นภาษาไทย";
-      }
-    }
-    if (!input.titleNameEng) {
-      errors.titleNameEng = "กรุณากรอกคำนำหน้า";
-    } else {
-      if (hasThai.test(input.titleNameEng)) {
-        errors.titleNameEng = "กรุณากรอกเป็นภาษาอังกฤษ";
-      }
+    if (!input.deductiontypename) {
+      errors.deductiontypename = "กรุณากรอกชื่อประเภทการหักเงิน";
     }
     return errors;
   };
@@ -212,14 +193,20 @@ export default function NameTitle({ title }) {
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
       setIsSubmit(true);
+
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
         draggable: true,
         buttonsStyling: "w-100",
       });
+      //  const newData = GetDataTable();
+      //  const table = $(tableRef.current).DataTable({});
+      //  table.clear().destroy();
+      //  table.row.add(newData);
+      //  table.draw();
       const currentModal = document.getElementById("notModal");
-      const modalInstance = bootstrap.Modal.getOrCreateInstance(currentModal);
+      const modalInstance = bootstrap.Modal.getInstance(currentModal);
       modalInstance.hide();
       ClearInput();
     }
@@ -229,56 +216,10 @@ export default function NameTitle({ title }) {
     console.log("submit data", input);
   };
 
-  const handleEdit = () =>{
-    const currentModal = document.getElementById("notModal");
-    if(currentModal){
-      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
-      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modal.show();
-    }
-  }
-
-  const handleDelete = () => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: "ลบรายการสำเร็จ!",
-            text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-            icon: "success",
-          });
-        } else if (
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
-        }
-      });
-  };
-
   const ClearInput = () => {
     setInput({
-      titleNameTH: "",
-      titleNameEng: "",
+      deductiontypename: "",
+      isactive: 0,
     });
     setError({});
   };
@@ -293,7 +234,6 @@ export default function NameTitle({ title }) {
           <li className="breadcrumb-item active" aria-current="page">
             {title}
           </li>
-         
         </ol>
       </nav>
       <HeaderPage pageName={title} />
@@ -307,7 +247,7 @@ export default function NameTitle({ title }) {
             data-bs-target="#notModal"
           >
             <span>
-              <i className="bi bi-plus-circle fs-4"></i>
+              <i class="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
@@ -350,7 +290,7 @@ export default function NameTitle({ title }) {
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
+                  {addBtnName}
                 </h1>
 
                 <button
@@ -360,7 +300,7 @@ export default function NameTitle({ title }) {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="modal-body">
+              <div class="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -376,46 +316,41 @@ export default function NameTitle({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label  className="form-label">
-                              คำนำหน้า (ภาษาไทย)
+                            <label htmlFor="StartDate" class="form-label">
+                              ชื่อประเภทการหักเงิน
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="titleNameTH"
+                              name="deductiontypename"
                               type="text"
                               className={`form-control ${
-                                error.titleNameTH ? "border border-danger" : ""
+                                error.deductiontypename
+                                  ? "border border-danger"
+                                  : ""
                               }`}
-                              id="titleNameTH"
-                              placeholder="กรอกคำนำหน้าเป็นภาษาไทย"
-                              value={input.titleNameTH}
+                              placeholder="กรอกชื่อประเภทการหักเงิน"
+                              value={input.deductiontypename}
                               onChange={handleChangeInput}
                             />
-                            {error.titleNameTH ? (
-                              <p className="text-danger">{error.titleNameTH}</p>
-                            ) : null}
-                          </div>
-                          <div className="col-md-12">
-                            <label className="form-label">
-                              คำนำหน้า (ภาษาอังกฤษ)
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="titleNameEng"
-                              type="text"
-                              className={`form-control ${
-                                error.titleNameEng ? "border border-danger" : ""
-                              }`}
-                              id="titleNameEng"
-                              placeholder="กรอกคำนำหน้าเป็นภาษาอังกฤษ"
-                              value={input.titleNameEng}
-                              onChange={handleChangeInput}
-                            />
-                            {error.titleNameEng ? (
+                            {error.deductiontypename ? (
                               <p className="text-danger">
-                                {error.titleNameEng}
+                                {error.deductiontypename}
                               </p>
                             ) : null}
+                          </div>
+                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                            <label className="mb-2">เปิดใช้งาน</label>
+                            <div class="form-check form-switch form-switch-md ms-3">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="isActive-toggle"
+                                name="isactive"
+                                value={input.isactive}
+                                onChange={handleChangeCheckbox}
+                                checked={input.isactive === 1}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -426,7 +361,6 @@ export default function NameTitle({ title }) {
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
                 handleCancel={ClearInput}
-                isLoading = {titleIsLoading}
               />
             </div>
           </div>

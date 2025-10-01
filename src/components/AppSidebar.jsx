@@ -4,9 +4,10 @@ import logo from "../assets/ces-icon.png";
 import { useProfile } from "../hooks/profileStore";
 import { useEffect, useState } from "react";
 
-function AppSidebar() {
+function AppSidebar({ isOpen, toggleSidebar }) {
   const { logout } = useAuth();
   const [isWorkOpen, setIsWorkOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const { data, isLoading, error, getProfileData } = useProfile();
 
   useEffect(() => {
@@ -17,7 +18,6 @@ function AppSidebar() {
         alert("โหลด API ไม่สำเร็จ", error);
       }
     };
-
     fetchProfile();
   }, [getProfileData]);
 
@@ -27,18 +27,31 @@ function AppSidebar() {
 
   return (
     <>
-      <aside className="sidebar" id="sidebar">
-        <div className="brand">
-          <Link to="/" className="brand-logo" style={{ objectFit: "contain" }}>
-            <img src={logo} width={38} height={38} />
-          </Link>
-          <Link
-            to="/"
-            className="brand-title text-dark"
-            style={{ textDecoration: "none", fontSize: 24 }}
+      <aside className={`sidebar ${isOpen ? "active" : ""}`} id="sidebar">
+        {/* เพิ่มมาใหม่ */}
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="brand">
+            <Link
+              to="/"
+              className="brand-logo"
+              style={{ objectFit: "contain" }}
+            >
+              <img src={logo} width={38} height={38} />
+            </Link>
+            <Link
+              to="/"
+              className="brand-title text-dark"
+              style={{ textDecoration: "none", fontSize: 24 }}
+            >
+              ระบบฝากเบิก
+            </Link>
+          </div>
+          <button
+            className="btn btn-sm btn-outline-light d-lg-none "
+            onClick={toggleSidebar}
           >
-            ระบบฝากเบิก
-          </Link>
+            <i className="bi bi-x-lg"></i>
+          </button>
         </div>
 
         <div className="profile">
@@ -57,7 +70,7 @@ function AppSidebar() {
           </div>
         </div>
 
-        <div className="section-label">GENERAL</div>
+        <div className="section-label">Menu</div>
         <ul className="nav">
           <li>
             <NavLink
@@ -86,32 +99,60 @@ function AppSidebar() {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-              <li>
-                <a href="#" className="nav-link dropdown-link">
-                  ลงเวลางาน
-                </a>
-              </li>
-              <li>
+             <li>
                 <NavLink
-                  to="/working/summary"
+                  to="/working/OT"
                   className="nav-link dropdown-link"
                 >
-                  สรุปการทำงาน
+                  บันทึกโอที
+                </NavLink>
+              </li>
+               <li>
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  อนุมติโอที
+                </NavLink>
+              </li>
+
+            </ul>
+          </li>
+             <li className="dropdown-container">
+            <button
+              // to="/working"
+              onClick={() => setIsReportOpen((prev) => !prev)}
+              className={`${({ isActive }) =>
+                isActive ? "active" : ""} dropdown-btn`}
+            >
+              <span className="icon">
+                <i className="bi bi-folder-fill"></i>
+              </span>
+              <span className="label">รายงาน</span>
+              <span className="chev">
+                <i className="bi bi-caret-right-fill"></i>
+              </span>
+            </button>
+            <ul className={`submenu ${isReportOpen ? "show" : ""}`}>
+             <li>
+              {/* แสดงเป็นรายชื่อให้เลือกดูได้ */}
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  รายงานการขอโอที
+                </NavLink>
+              </li>
+               <li>
+                <NavLink
+                  to="#"
+                  className="nav-link dropdown-link"
+                >
+                  รายงานหลังประมวลผล
                 </NavLink>
               </li>
             </ul>
           </li>
-          {/* <li>
-            <NavLink
-              to="#"
-              // className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              <span className="icon">
-                <i className="bi bi-lock-fill"></i>
-              </span>
-              <span className="label">รายงาน</span>
-            </NavLink>
-          </li> */}
           <li>
             <NavLink
               to="/changePassword"
@@ -132,6 +173,17 @@ function AppSidebar() {
                 <i className="bi bi-gear-fill"></i>
               </span>
               <span className="label">ตั้งค่า</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/test"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <span className="icon">
+                <i className="bi bi-android2"></i>
+              </span>
+              <span className="label">สำหรับทดสอบ</span>
             </NavLink>
           </li>
         </ul>
