@@ -1,22 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { useRole } from "../../hooks/roleStore";
 import { useNavigate } from "react-router-dom";
+import DataTableComponent from "../../components/DatatableComponent";
+import { Link } from "react-router-dom";
 
 export const tableHead = [
-  { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสบทบาท" },
-  { index: 3, colName: "ชื่อบทบาท" },
-  { index: 4, colName: "คำอธิบาย" },
-  { index: 5, colName: "การจัดการ" },
+  { colName: "ลำดับ" },
+  { colName: "ชื่อบทบาท" },
+  { colName: "คำอธิบาย" },
+  { colName: "การจัดการ" },
 ];
 
 export default function Roles({ title }) {
@@ -38,10 +36,11 @@ export default function Roles({ title }) {
     deleteRole,
     updateRole,
     getRoleByIdData,
-    dataById
+    dataById,
   } = useRole();
-  const [editMode,setEditMode] = useState(false);
-  const [editRoleId,setEditRoleId] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editRoleId, setEditRoleId] = useState(null);
+  const [onOpenModal,setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   const handleToPermissionPage = (roleId) => {
@@ -56,97 +55,62 @@ export default function Roles({ title }) {
     }));
   };
 
-  useEffect(() => {
-    const fetchDataTable = async () => {
-      try {
-        await getRoleData();
-      } catch (error) {
-        alert("ดึงข้อมูลไม่สำเร็จ", errorMessage);
-      }
-    };
-    fetchDataTable();
+  const fetchDataTable = useCallback(async () => {
+    try {
+      await getRoleData();
+    } catch (error) {
+      alert("ดึงข้อมูลไม่สำเร็จ", errorMessage);
+    }
   }, [getRoleData]);
 
-  //ตอนโหลตข้อมูลทั้งหมด
   useEffect(() => {
-    setEditMode(false)
-    if (data) {
-      GetDataTable();
-    }
-  }, [data]);
+    fetchDataTable();
+    setEditMode(false);
+  }, [fetchDataTable]);
 
-  useEffect(()=>{
-   if(dataById){
+
+
+  useEffect(() => {
+    if (dataById) {
       setInput((prevData) => ({
         ...prevData,
-        roleName : dataById.roleName  ?? "",
-        description : dataById.description ?? ""
+        roleName: dataById.roleName ?? "",
+        description: dataById.description ?? "",
       }));
     }
-  },[dataById])
+  }, [dataById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
     }
   }, [error, isSubmit]);
 
-  const GetDataTable = () => {
-    $(tableRef.current).DataTable({
-      data: data,
-      destroy: true,
-      responsive: true,
-      paging: true,
-      searching: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
-      },
-      columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "70px", targets: 1 },
-        { width: "200px", targets: 2 },
-        { width: "230px", targets: 3 },
-        { width: "120px", targets: 4 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "รหัสบทบาท",
-          data: "roleId",
-          orderable: true,
-        },
-        {
-          title: "บทบาท",
-          data: "roleName",
-          orderable: true,
-        },
 
-        {
-          title: "คำอธิบาย",
-          data: "description",
-          orderable: true,
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `      
+
+  const columnData = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
+      },
+    },
+
+    {
+      title: "บทบาท",
+      data: "roleName",
+      orderable: true,
+    },
+
+    {
+      title: "คำอธิบาย",
+      data: "description",
+      orderable: true,
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -154,17 +118,25 @@ export default function Roles({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark btn-edit" data-role-id="${row.roleId}">
+                <a class="dropdown-item text-dark btn-edit" 
+                   data-id="${row.roleId}"
+                   data-action="edit" 
+                   >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark btn-permission" data-role-id="${row.roleId}">
+                <a class="dropdown-item text-dark btn-permission" 
+                   data-id="${row.roleId}"
+                   data-action="permission"
+                   >
                   <i class="bi bi-person-fill-lock me-2"></i>สิทธิเข้าใช้งาน
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark btn-delete" data-role-id="${row.roleId}">
+                <a class="dropdown-item text-dark btn-delete"
+                   data-id="${row.roleId}" 
+                   data-action="delete">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -176,52 +148,46 @@ export default function Roles({ title }) {
               
               class="btn btn-warning me-2 btn-edit"
               title="แก้ไข"
-              data-role-id="${row.roleId}"
+              data-id="${row.roleId}"
+              data-action="edit" 
             >
               <i class="bi bi-pen-fill"></i>
             </a>
             <a
               class="btn btn-info me-2 btn-permission"
               title="สิทธิเข้าใช้งาน"
-              data-role-id="${row.roleId}"
+              data-id="${row.roleId}"
+               data-action="permission"
             >
               <i class="bi bi-person-fill-lock"></i>
             </a>
             <a
               class="btn btn-danger btn-delete"
               title="ลบ"
-              data-role-id="${row.roleId}"
+              data-id="${row.roleId}"
+              data-action="delete"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
           </div>
         </div>
        `;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
+      },
+    },
+  ];
+
+  const handleAction = (action, id) => {
+    if (action === "edit") {
+      console.log("Edit:", id);
+      handleEdit(id);
+    } else if (action === "delete") {
+      console.log("Delete:", id);
+      handleDelete(id);
+    } else if (action === "permission") {
+      handleToPermissionPage(id);
+    }
   };
 
-  //  เข้าสู่ ปุ่ม action
-  $(tableRef.current).on("click", ".btn-permission", function () {
-    const id = $(this).data("roleId");
-    handleToPermissionPage(id);
-  });
-
-  $(tableRef.current).on("click", ".btn-delete", function () {
-    const id = $(this).data("roleId");
-    handleDelete(id);
-  });
-
-  $(tableRef.current).on("click", ".btn-edit", function () {
-    const id = $(this).data('roleId');
-    handleEdit(id);
-  });
 
   const validateForm = () => {
     let errors = {};
@@ -242,7 +208,9 @@ export default function Roles({ title }) {
     setError(errorList);
     //api post
     if (Object.keys(errorList).length === 0) {
-      const response = editMode? await updateRole(reqData,editRoleId) : await createRole(reqData);
+      const response = editMode
+        ? await updateRole(reqData, editRoleId)
+        : await createRole(reqData);
       if (response.success) {
         setIsSubmit(true);
         Swal.fire({
@@ -266,17 +234,16 @@ export default function Roles({ title }) {
     }
   };
 
-  const handleEdit =async (roleId) => {
+  const handleEdit = async (roleId) => {
     await getRoleByIdData(roleId); //ผูก api เรียกใช้ข้อมูล
-    setEditRoleId(roleId)
+    setEditRoleId(roleId);
 
     const currentModal = document.getElementById("notModal");
     if (currentModal) {
       //เป็นการสร้างใหม่ ก่อนการเรียกใช้
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
-      setEditMode(true)
-      
+      setEditMode(true);
     }
   };
 
@@ -338,7 +305,7 @@ export default function Roles({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -361,30 +328,15 @@ export default function Roles({ title }) {
             <span className="label">{addBtnName}</span>
           </a>
         </div>
-        <div className="mt-4">
-          <table
-            ref={tableRef}
-            className="table table-striped"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                {tableHead.map((row) => (
-                  <th
-                    key={row.index}
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                      padding: "12px 8px",
-                    }}
-                  >
-                    {row.colName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
+        {/* table */}
+
+        <DataTableComponent
+          column={columnData}
+          data={data}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+        />
 
         {/* modal */}
         <div
@@ -458,7 +410,6 @@ export default function Roles({ title }) {
                             value={input.description}
                             onChange={handleChangeInput}
                           ></textarea>
-                         
                         </div>
                       </div>
                     </form>
@@ -468,6 +419,7 @@ export default function Roles({ title }) {
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
                 handleCancel={ClearInput}
+                isLoading={isLoading}
               />
               {isLoading && <span className="loader"></span>}
             </div>

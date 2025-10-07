@@ -1,15 +1,16 @@
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import { mockemployeetableData } from "../../MockData";
 import ImageComponent from "../../components/Image";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import CopperImage from "../../components/modal/CopperImage";
+import { LevelBadge } from "../../util/levelBadge";
+import DataTableComponent from "../../components/DatatableComponent";
+import { Link } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
 
 var fileName = "";
 var filePath = "";
@@ -40,7 +41,10 @@ const Employees = ({ title }) => {
   const [src, setSrc] = useState(null);
   const [preview, setPreview] = useState(null);
   const inputImageRef = useRef(null);
-  
+  const [openModal, setOpenModal] = useState(false);
+  const [openCopperModal,setOpenCopperModal] = useState(false);
+
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setInput((prevData) => ({
@@ -60,134 +64,61 @@ const Employees = ({ title }) => {
     { index: 6, colName: "การจัดการ" },
   ];
 
-  const statusBadge = (status) => {
-    switch (status) {
-      case 0:
-        return `<span class="badge-style badge-leave">ลาออก</span>`;
-
-      case 1:
-        return `<span class="badge-style badge-stillWork">ประจำการ</span>`;
-
-      default:
-        return `<span class="badge-style badge-unknown">ไม่ระบุ</span>`;
-    }
-  };
-
-  const levelBadge = (level) => {
-    switch (level) {
-      case 1:
-      case 2:
-      case 3:
-        return `<span class="badge-style badge-leave">PC ${level}</span>`;
-
-      case 4:
-      case 5:
-      case 6:
-        return `<span class="badge-style badge-middle">PC ${level}</span>`;
-
-      case 7:
-      case 8:
-      case 9:
-        return `<span class="badge-style badge-stillWork">PC ${level}</span>`;
-
-      default:
-        return `<span class="badge-style badge-unknown">ไม่ระบุ</span>`;
-    }
-  };
-
   const tableRef = useRef();
-  //เข้าถึง function delete
 
-  useEffect(() => {
-    GetDataTable();
-    $(tableRef.current).on("click", ".btn-delete", function () {
-      // const id = $(this).data('id');
-      handleDelete();
-    });
+  // useEffect(() => {
+  //   GetDataTable();
+  // }, []);
+  const handleAction = (action, id) => {
+    if (action === "edit") {
+      console.log("Edit:", id);
+      handleEdit(id);
+    } else if (action === "delete") {
+      console.log("Delete:", id);
+      handleDelete(id);
+    }
+  };
 
-    //เข้าถึง function edit
-    $(tableRef.current).on("click", ".btn-edit", function () {
-      // const id = $(this).data('id');
-      handleEdit();
-    });
-  }, []);
-
-  const GetDataTable = () => {
-    $(tableRef.current).DataTable({
-      responsive: true,
-      destroy: true,
-      paging: true,
-      searching: true,
-      // scrollX: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+  const columnData = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
       },
-      data: mockemployeetableData,
-      columnDefs: [
-        { width: "50px", targets: 0 },
-        { width: "70px", targets: 1 },
-        { width: "160px", targets: 2 },
-        { width: "80px", targets: 3 },
-        { width: "180px", targets: 4 },
-        { width: "100px", targets: 5 },
-        { width: "80px", targets: 6 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "รหัสพนักงาน",
-          data: "empId",
-          orderable: true,
-        },
-        {
-          title: "ชื่อพนักงาน",
-          data: "empName",
-          orderable: true,
-        },
+    },
+    {
+      title: "รหัสพนักงาน",
+      data: "empId",
+      orderable: true,
+    },
+    {
+      title: "ชื่อพนักงาน",
+      data: "empName",
+      orderable: true,
+    },
 
-        {
-          title: "ระดับ",
-          data: "level",
-          orderable: true,
+    {
+      title: "ระดับ",
+      data: "level",
+      orderable: true,
 
-          render: function (data, type, row) {
-            return levelBadge(row.level);
-          },
-        },
-        {
-          title: "ตำแหน่ง",
-          data: "position",
-        },
-        {
-          title: "สถานะ",
-          data: "status",
-          // render: function (data, type, row) {
-          //   console.log("statusNumber:", row.status);
-          //   return statusBadge(row.status);
-          // },
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `
+      render: function (data, type, row) {
+        return LevelBadge(row.level);
+      },
+    },
+    {
+      title: "ตำแหน่ง",
+      data: "position",
+    },
+    {
+      title: "สถานะ",
+      data: "status",
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `
       <div className="d-flex align-items-center justify-content-center">
           <div class="dropdown d-lg-none">
             <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -195,12 +126,18 @@ const Employees = ({ title }) => {
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li>
-              <a class="dropdown-item text-dark btn-edit">
+              <a class="dropdown-item text-dark btn-edit"
+                 data-action="edit"
+                 data-id="${row.empId}" 
+              >
                 <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
               </a>
             </li>
             <li>
-              <a class="dropdown-item text-dark btn-delete">
+              <a class="dropdown-item text-dark btn-delete"
+                 data-action="delete"
+                 data-id="${row.empId}" 
+              >
                 <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
               </a>
             </li>
@@ -211,27 +148,24 @@ const Employees = ({ title }) => {
           <button
             class="btn btn-warning me-2 btn-edit"
             title="แก้ไข"
+            data-action="edit"
+            data-id="${row.empId}" 
           >
             <i class="bi bi-pen-fill"></i>
           </button>
           <button
             class="btn btn-danger btn-delete"
             title="ลบ"
+            data-action="delete"
+            data-id="${row.empId}" 
           >
             <i class="bi bi-trash-fill"></i>
           </button>
         </div>
       </div>`;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
-  };
-
+      },
+    },
+  ];
   // validate cardID
   const inputTHIdformat = (e) => {
     // การกำหนดสัญลัษณ์เพื่อแทนที่
@@ -263,19 +197,18 @@ const Employees = ({ title }) => {
       filename: "",
       filepath: "",
     });
+    setOpenModal(false)
     // setSetEditMode(false)
   };
 
   const handleSubmit = () => {
     // setSetEditMode(false);
-    console.log("filePath",filePath);
-    console.log("fileName",fileName);
+    console.log("filePath", filePath);
+    console.log("fileName", fileName);
 
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
 
-    const currentModal = document.getElementById("notModal");
-    const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-    modal.hide();
+  setOpenModal(false)
 
   };
 
@@ -327,38 +260,34 @@ const Employees = ({ title }) => {
   };
 
   const openCopperImageModal = (e) => {
-  
-     e.preventDefault();
-     //การเปิดโฟลเดอร์
-     const file = e.target.files?.[0];
-     if(!file) return;
-     
+    e.preventDefault();
+    //การเปิดโฟลเดอร์
+    const file = e.target.files?.[0];
+    if (!file) return;
+
     //  console.log("file data",file);
-     const fileSRC = URL.createObjectURL(file)
-     const getFileName = file.name
-    setSrc(fileSRC)
-    
+    const fileSRC = URL.createObjectURL(file);
+    const getFileName = file.name;
+    setSrc(fileSRC);
+
     // เก็ย fileName and filePath กว่าจะอัปเดตค่าใหม่ต้องทำการ render ก่อน
     setInput((prevData) => ({
       ...prevData,
-      filename : getFileName,
-      filepath : fileSRC
+      filename: getFileName,
+      filepath: fileSRC,
     }));
 
     fileName = file.name;
-    filePath = URL.createObjectURL(file)
+    filePath = URL.createObjectURL(file);
 
-    console.log("only file path ",filePath)
-    console.log("only file name ",fileName)
+    console.log("only file path ", filePath);
+    console.log("only file name ", fileName);
     // oprn modal
-    const copperModal = document.getElementById(modalCopperName);
-    const modal = bootstrap.Modal.getOrCreateInstance(copperModal);
-    modal.show();
+    // const copperModal = document.getElementById(modalCopperName);
+    // const modal = bootstrap.Modal.getOrCreateInstance(copperModal);
+    // modal.show();
+    setOpenCopperModal(true);
   };
-
-  //   const handleInputClick = (e) => {
-  //   e.preventDefault();
-  // };
 
   return (
     <div className="container py-4 min-vh-90 d-flex flex-column">
@@ -366,7 +295,7 @@ const Employees = ({ title }) => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -381,8 +310,7 @@ const Employees = ({ title }) => {
             type="button"
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#notModal"
+            onClick={() => setOpenModal(true)}
           >
             <span>
               <i className="bi bi-plus-circle fs-4"></i>
@@ -391,7 +319,7 @@ const Employees = ({ title }) => {
           </button>
         </div>
         {/* ตารางข้อมูล */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <table
             ref={tableRef}
             className="table table-striped"
@@ -414,10 +342,17 @@ const Employees = ({ title }) => {
               </tr>
             </thead>
           </table>
-        </div>
+        </div> */}
+        <DataTableComponent
+          column={columnData}
+          data={mockemployeetableData}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+        />
 
         {/* modal */}
-        <div
+        {/* <div
           className="modal fade"
           id="notModal"
           tabindex="-1"
@@ -447,7 +382,7 @@ const Employees = ({ title }) => {
                     <div className={`col-lg-3`}>
                       <div className="employee-image-section">
                         <ImageComponent
-                          imageSRC={preview||avatarUrl}
+                          imageSRC={preview || avatarUrl}
                           borderRadius="50%"
                           height="120px"
                           width="120px"
@@ -457,12 +392,12 @@ const Employees = ({ title }) => {
                         />
                         <button
                           className="btn btn-primary btn-sm my-4"
-                          onClick={()=>inputImageRef.current.click()}
+                          onClick={() => inputImageRef.current.click()}
                         >
                           อัปโหลดรูปภาพ
                         </button>
                         <input
-                          style={{display:"none"}}
+                          style={{ display: "none" }}
                           type="file"
                           accept="image/*"
                           ref={inputImageRef}
@@ -479,7 +414,6 @@ const Employees = ({ title }) => {
                       }}
                     >
                       <form>
-                        {/* ข้อมูลทั่วไป */}
                         <div className="mb-3">
                           <h5 className="group-label"># ข้อมูลทั่วไป</h5>
                           <div className="border-top border-danger my-3"></div>
@@ -549,11 +483,8 @@ const Employees = ({ title }) => {
                                   placeholder="เลือกวันที่"
                                   onChange={handleChangeInput}
                                   value={input.birthday}
-                                  // data-provide="datepicker"
-                                  // data-date-language="th-th"
                                 />
                               </div>
-                              {/* </> */}
                             </div>
                           </div>
                           <div className="row form-spacing g-2">
@@ -618,7 +549,7 @@ const Employees = ({ title }) => {
                             </div>
                           </div>
                         </div>
-                        {/* ข้อมูลหน่วยงาน */}
+
                         <div>
                           <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
                           <div className="border-top border-danger my-3"></div>
@@ -643,7 +574,7 @@ const Employees = ({ title }) => {
                               </select>
                             </div>
                             <div className="col-md-6 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 หน่วยงาน
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -658,7 +589,7 @@ const Employees = ({ title }) => {
                               </select>
                             </div>
                             <div className="col-md-8 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 ตำแหน่ง
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -675,7 +606,7 @@ const Employees = ({ title }) => {
                           </div>
                           <div className="row form-spacing g-2">
                             <div className="col-md-6 col-lg-4">
-                              <label for="StartDate" className="form-label">
+                              <label className="form-label">
                                 ผู้รับเหมา
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -690,7 +621,7 @@ const Employees = ({ title }) => {
                               </select>
                             </div>
                             <div className="col-md-6 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 ประเภท
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -705,7 +636,7 @@ const Employees = ({ title }) => {
                               </select>
                             </div>
                             <div className="col-md-5 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 อัตราค่าจ้าง
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -723,7 +654,7 @@ const Employees = ({ title }) => {
                           </div>
                           <div className="row form-spacing g-2">
                             <div className="col-md-6 col-lg-4">
-                              <label for="StartDate" className="form-label">
+                              <label className="form-label">
                                 วันที่เริ่มงาน
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -738,7 +669,7 @@ const Employees = ({ title }) => {
                               />
                             </div>
                             <div className="col-md-6 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 วันที่ลาออก
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -752,7 +683,7 @@ const Employees = ({ title }) => {
                               />
                             </div>
                             <div className="col-md-5 col-lg-4">
-                              <label for="StartDate" class="form-label">
+                              <label class="form-label">
                                 สถานะ
                                 <span style={{ color: "red" }}>*</span>
                               </label>
@@ -782,13 +713,371 @@ const Employees = ({ title }) => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
+        <Modal
+          size="lg"
+          show={openModal}
+          onHide={() => {
+            handleClear(); // เรียกเคลียร์ข้อมูลก่อน
+            setOpenModal(false); // ปิด modal
+          }}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton className="bg-primary">
+            <Modal.Title id="example-modal-sizes-title-lg">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                <i className="bi bi-plus-circle fs-4 me-2"></i>
+                {addBtnName}
+              </h1>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="bg-primary">
+
+            <div className="employee-content p-4">
+                  <div className="row">
+                    <div className={`col-lg-3`}>
+                      <div className="employee-image-section">
+                        <ImageComponent
+                          imageSRC={preview || avatarUrl}
+                          borderRadius="50%"
+                          height="120px"
+                          width="120px"
+                          alt="profile-avatar"
+                          objectfit="cover"
+                          border="2px solid rgba(90, 45, 45, 0.15)"
+                        />
+                        <button
+                          className="btn btn-primary btn-sm my-4"
+                          onClick={() => inputImageRef.current.click()}
+                        >
+                          อัปโหลดรูปภาพ
+                        </button>
+                        <input
+                          style={{ display: "none" }}
+                          type="file"
+                          accept="image/*"
+                          ref={inputImageRef}
+                          onChange={openCopperImageModal}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className={`my-3 col-lg-9`}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <form>
+                        <div className="mb-3">
+                          <h5 className="group-label"># ข้อมูลทั่วไป</h5>
+                          <div className="border-top border-danger my-3"></div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-4 col-lg-3">
+                              <label for="StartDate" class="form-label">
+                                คำนำหน้า
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="titleId"
+                                id="titleId"
+                                className="form-select"
+                                onChange={handleChangeInput}
+                                value={input.titleId}
+                              >
+                                <option value={""}>เลือกคำนำหน้า</option>
+                                <option value={1}>นาย</option>
+                                <option value={2}>นางสาว</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-6 col-lg-4">
+                              <label for="StartDate" className="form-label">
+                                ชื่อจริง
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                name="firstname"
+                                type="text"
+                                className="form-control"
+                                id="firstname"
+                                placeholder="กรอกชื่อจริง"
+                                value={input.firstname}
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                            <div className="col-md-6 col-lg-4">
+                              <label for="StartDate" class="form-label">
+                                นามสกุล
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                name="lastname"
+                                type="text"
+                                className="form-control"
+                                id="lastname"
+                                placeholder="กรอกนามสกุล"
+                                value={input.lastname}
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                            <div className="col-md-8 col-lg-4">
+                              <label for="StartDate" class="form-label">
+                                วันเดือนปีเกิด
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <div
+                                className="input-group date"
+                                data-date-format="mm-dd-yyyy"
+                              >
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  id="StartDate"
+                                  placeholder="เลือกวันที่"
+                                  onChange={handleChangeInput}
+                                  value={input.birthday}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-6 col-lg-4">
+                              <label for="StartDate" className="form-label">
+                                ระดับการศึกษา
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="educationId"
+                                id="educationId"
+                                className="form-select"
+                                value={input.educationId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกระดับการศึกษา</option>
+                                <option value={1}>ประถมศึกษาตอนต้น</option>
+                                <option value={2}>ประถมศึกษาตอนปลาย</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6 col-lg-4">
+                              <label for="StartDate" class="form-label">
+                                เบอร์โทรศัพท์
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                name="telephoneNo"
+                                type="tel"
+                                className="form-control"
+                                id="StartDate"
+                                maxLength={10}
+                                value={input.telephoneNo}
+                                placeholder="000-000-0000"
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                          </div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-lg-6">
+                              <label for="StartDate" class="form-label">
+                                เลขบัตรประชาชน
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                className="form-control"
+                                id="cardId"
+                                type="tel"
+                                name="cardId"
+                                placeholder="X-XXXX-XXXXX-XX-X"
+                                autocomplete="off"
+                                autofocus
+                                title="National ID Input"
+                                aria-labelledby="InputLabel"
+                                aria-invalid
+                                aria-required="true"
+                                required
+                                tabIndex="1"
+                                maxLength={13}
+                                value={input.cardId}
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
+                          <div className="border-top border-danger my-3"></div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-6 col-lg-4">
+                              <label for="StartDate" className="form-label">
+                                ระดับ
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="levelId"
+                                id="levelId"
+                                className="form-select"
+                                value={input.levelId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกระดับ</option>
+                                <option value={1}>PC 1</option>
+                                <option value={2}>PC 2</option>
+                                <option value={3}>PC 3</option>
+                                <option value={4}>PC 4</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6 col-lg-4">
+                              <label class="form-label">
+                                หน่วยงาน
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="jobId"
+                                id="jobId"
+                                className="form-select"
+                                value={input.jobId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกหน่วยงาน</option>
+                              </select>
+                            </div>
+                            <div className="col-md-8 col-lg-4">
+                              <label class="form-label">
+                                ตำแหน่ง
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="positionId"
+                                id="positionId"
+                                className="form-select"
+                                value={input.positionId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกตำแหน่ง</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-6 col-lg-4">
+                              <label className="form-label">
+                                ผู้รับเหมา
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="contractorId"
+                                id="contractorId"
+                                className="form-select"
+                                value={input.contractorId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกผู้รับเหมา</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6 col-lg-4">
+                              <label class="form-label">
+                                ประเภท
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="typeId"
+                                id="typeId"
+                                className="form-select"
+                                value={input.typeId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกประเภท</option>
+                              </select>
+                            </div>
+                            <div className="col-md-5 col-lg-4">
+                              <label class="form-label">
+                                อัตราค่าจ้าง
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                type="number"
+                                className="form-control"
+                                id="rate"
+                                value={input.rate}
+                                placeholder="0.00"
+                                step="0.01"
+                                min="0.00"
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                          </div>
+                          <div className="row form-spacing g-2">
+                            <div className="col-md-6 col-lg-4">
+                              <label className="form-label">
+                                วันที่เริ่มงาน
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                type="date"
+                                className="form-control"
+                                id="StartDate"
+                                placeholder="เลือกวันที่"
+                                value={input.startDate}
+                                onChange={handleChangeInput}
+                                defaultValue={Date.now()}
+                              />
+                            </div>
+                            <div className="col-md-6 col-lg-4">
+                              <label class="form-label">
+                                วันที่ลาออก
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <input
+                                type="date"
+                                className="form-control"
+                                id="StartDate"
+                                placeholder="เลือกวันที่"
+                                value={input.endDate}
+                                onChange={handleChangeInput}
+                              />
+                            </div>
+                            <div className="col-md-5 col-lg-4">
+                              <label class="form-label">
+                                สถานะ
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <select
+                                name="statusId"
+                                id="statusId"
+                                className="form-select"
+                                value={input.statusId}
+                                onChange={handleChangeInput}
+                              >
+                                <option value={""}>เลือกสถานะ</option>
+                                <option value={1}>ประจำการ</option>
+                                <option value={0}>ลาออก</option>
+                                <option value={2}>ไม่ระบุ</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <SubmitOrCancelButton
+                handleCancel={handleClear}
+                handleSubmit={handleSubmit}
+              />
+          </Modal.Body>
+        </Modal>
+      </div>
+      {openCopperModal&&(
         <CopperImage
           madalName={modalCopperName}
           setPreview={setPreview}
           src={src}
+          handleClose={()=>setOpenCopperModal(false)}
+          show={openCopperModal}
         />
-      </div>
+      )}
     </div>
   );
 };

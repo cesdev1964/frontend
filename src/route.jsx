@@ -28,10 +28,8 @@ import RolePermission from "./pages/setting/role/RolePermission";
 import { useNavigate } from "react-router-dom";
 
 export default function RouterPage() {
-  const navigate = useNavigate();
   const routes = useRoutes([
     {
-      // ต้อง login ก่อน
       path: "/",
       element: (
         <RequireAuth>
@@ -93,6 +91,3 @@ export default function RouterPage() {
   return routes;
 }
 
-// export default function NavigatePath({path}){
-//    navigate(path);
-// }

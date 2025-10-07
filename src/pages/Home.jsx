@@ -1,4 +1,4 @@
-// src/pages/Home.jsx
+
 import { useState,useEffect } from "react";
 import api from "../api/axios";
 import { useAuth } from "../auth/AuthContext";
@@ -8,7 +8,15 @@ import EmployeeCard from "../components/home/EmployeeCard";
 import AnnouncementCard from "../components/home/AnnouncementCard";
 import CarouselItem from "../components/CoroulItem";
 import { useProfile } from "../hooks/profileStore";
-import { hasData } from "jquery";
+
+// import '../../public/assets/css/style.css'
+// import '../../public/assets/css/bootstrap-custom.min.css';
+// import '../../public/assets/icons-1.13.1/font/bootstrap-icons.min.css';
+// import '../../public/assets/css/bootstrap-custom.min.css';
+// import '../../public/assets/js/script';
+// import '../../public/assets/js/bootstrap.bundle.min.js';
+// import '../../cc-init.js';
+
 
 export default function Home({ title }) {
   useTitle(title);

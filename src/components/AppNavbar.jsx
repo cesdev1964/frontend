@@ -2,6 +2,11 @@ import { React, useEffect, useState, useRef } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useProfile } from "../hooks/profileStore";
 import AppSidebar from "./AppSidebar";
+import "../../public/assets/css/bootstrap-custom.min.css";
+import "../../public/assets/css/style.css";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
+
 
 function AppNavbar({ toggleSidebar }) {
   const { logout } = useAuth();
@@ -95,44 +100,6 @@ function AppNavbar({ toggleSidebar }) {
                 {/* <div className="muted">คุณ {isLoading ? "..." : data.name?data.name:"N/A"} */}
               </a>
 
-              {/* <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-                            <li className="pt-2 ps-2 pe-2">
-                                <table className="table table-borderless" style={{fontSize: "14px"}}>
-                                    <tbody>
-                                        <tr>
-                                            <td>รหัสหนักงาน</td>
-                                            <td>555555</td>
-                                        </tr>
-                                        <tr>
-                                            <td>ชื่อ-สกุล</td>
-                                            <td>นายปวริศน์ ชัยวัฒนแสง</td>
-                                        </tr>
-                                        <tr>
-                                            <td>แผนก</td>
-                                            <td>พัฒนาซอฟต์แวร์</td>
-                                        </tr>
-                                        <tr>
-                                            <td>ฝ่าย</td>
-                                            <td>222222222222222222222222</td>
-                                        </tr>
-                                        <tr>
-                                            <td>ตำแหน่ง</td>
-                                            <td>เจ้าหน้าที่พัฒนาซอฟต์แวร์</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </li>
-                            <li>
-                                <hr className="dropdown-divider" />
-                            </li>
-                            <li>
-                                <a className="d-flex justify-content-between dropdown-item" style={{textDecoration: "none"}}
-                                    onClick={logout}>
-                                    <strong>ออกจากระบบ</strong>
-                                    <i className="bi bi-box-arrow-right"></i>
-                                </a>
-                            </li>
-                        </ul> */}
 
               <div
                 className="dropdown-menu dropdown-menu-end"

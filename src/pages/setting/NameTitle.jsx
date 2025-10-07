@@ -1,21 +1,21 @@
-import React, { useRef } from "react";
+import React, { Suspense, useRef } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { useTitltName } from "../../hooks/titleNameStore";
+import { NameTitleModal } from "../../components/modal/setting/nameTitleModal";
+import DataTableComponent from "../../components/DatatableComponent";
+import * as bootstrap from 'bootstrap';  
+import { Link } from "react-router-dom";
+window.bootstrap = bootstrap;   
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสตารางคำนำหน้า" },
-  { index: 2, colName: "คำนำหน้าชื่อ" },
-  { index: 3, colName: "คำนำหน้าชื่อ(ENG)" },
-  { index: 4, colName: "การจัดการ" },
+  { index: 1, colName: "คำนำหน้าชื่อ" },
+  { index: 2, colName: "คำนำหน้าชื่อ(ENG)" },
+  { index: 3, colName: "การจัดการ" },
 ];
 
 export default function NameTitle({ title }) {
@@ -24,7 +24,20 @@ export default function NameTitle({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มคำนำหน้าใหม่");
-  const {getTitleNameData,titleData,titleIsLoading, titleErrorMessage} = useTitltName;
+  const {
+    getTitleNameData,
+    titleData,
+    titleIsLoading,
+    titleErrorMessage,
+    getNameTitleById,
+    titleById,
+    createTitle,
+    deleteTitle,
+    updateTitle,
+    success,
+  } = useTitltName();
+  const [editMode, setEditMode] = useState(false);
+  const [editTitleId, setEditTitleId] = useState(null);
 
   const [input, setInput] = useState({
     titleNameTH: "",
@@ -38,25 +51,28 @@ export default function NameTitle({ title }) {
       [name]: value,
     }));
   };
-  
-   useEffect(() => {
-      const fetchDataTable = async() => {
-        try {
-         await getTitleNameData();
-        } catch (error) {
-          alert("ดึงข้อมูลไม่สำเร็จ", error);
-        }
-      };
-      fetchDataTable();
-    }, [getTitleNameData]);
 
   useEffect(() => {
-    if (titleData) {
-      GetDataTable();
-    }
-  }, [titleData]);
+    const fetchDataTable = async () => {
+      try {
+        await getTitleNameData();
+      } catch (error) {
+        alert("ดึงข้อมูลไม่สำเร็จ", error);
+      }
+    };
+    fetchDataTable();
+    setEditMode(false)
+  }, [getTitleNameData]);
 
-  
+  useEffect(() => {
+    if (titleById) {
+      setInput((prevData) => ({
+        ...prevData,
+        titleNameTH: titleById.titleNameTH,
+        titleNameEng: titleById.titleNameEng,
+      }));
+    }
+  }, [titleById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -64,77 +80,46 @@ export default function NameTitle({ title }) {
     }
   }, [error, isSubmit]);
 
-  const GetDataTable = () => {
-
-    $(tableRef.current).DataTable({
-      data: titleData,
-      destroy: true,
-      responsive: true,
-      paging: true,
-      searching: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+  const columnData = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
       },
-      columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "120px", targets: 1 },
-        { width: "230px", targets: 2 },
-        { width: "230px", targets: 3 },
-        { width: "190px", targets: 4 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "รหัสตารางคำนำหน้า",
-          data: "titleId",
-          orderable: true,
-        },
-        {
-          title: "คำนำหน้าชื่อ",
-          data: "titleNameTH",
-          orderable: true,
-        },
+    },
+    {
+      title: "คำนำหน้าชื่อ",
+      data: "titleNameTH",
+      orderable: true,
+    },
 
-        {
-          title: "คำนำหน้าชื่อ(ENG)",
-          data: "titleNameEng",
-          orderable: true,
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `      
-         <div className="d-flex align-items-center justify-content-center">
+    {
+      title: "คำนำหน้าชื่อ(ENG)",
+      data: "titleNameEng",
+      orderable: true,
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `      
+         <div class="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                  <i class="bi bi-three-dots-vertical"></i>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark btn-edit">
+                <a class="dropdown-item text-dark btn-edit" 
+                   data-id="${row.titleId}" 
+                   data-action="edit">
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark btn-delete">
+                <a class="dropdown-item text-dark btn-delete"  
+                   data-id="${row.titleId}" 
+                   data-action="delete">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -145,41 +130,35 @@ export default function NameTitle({ title }) {
             <button
               class="btn btn-warning me-2 btn-edit"
               title="แก้ไข"
+              data-id="${row.titleId}"
+              data-action="edit"
             >
               <i class="bi bi-pen-fill"></i>
             </button>
             <button
               class="btn btn-danger btn-delete"
               title="ลบ"
+              data-id="${row.titleId}"
+              data-action="delete"
             >
               <i class="bi bi-trash-fill"></i>
             </button>
           </div>
         </div>
        `;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
+      },
+    },
+  ];
+
+  const handleAction = (action, id) => {
+    if (action === "edit") {
+      console.log("Edit:", id);
+      handleEdit(id);
+    } else if (action === "delete") {
+      console.log("Delete:", id);
+      handleDelete(id);
+    }
   };
-
-     //เข้าถึง function delete
-   $(tableRef.current).on('click','.btn-delete',function(){
-    // const id = $(this).data('id');
-    handleDelete();
-   })
-
-    //เข้าถึง function edit
-   $(tableRef.current).on('click','.btn-edit',function(){
-    // const id = $(this).data('id');
-    handleEdit();
-    
-   })
-
 
   const validateForm = () => {
     let errors = {};
@@ -202,26 +181,42 @@ export default function NameTitle({ title }) {
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+    const reqData = {
+      titleNameTH: input.titleNameTH,
+      titleNameEng: input.titleNameEng,
+    };
+
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
+
     //api post
-    // setData(data.res)
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
-      const currentModal = document.getElementById("notModal");
-      const modalInstance = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
+      const response = editMode
+        ? await updateTitle(reqData, editTitleId)
+        : await createTitle(reqData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+
+        const currentModal = document.getElementById("notModal");
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(currentModal);
+        modalInstance.hide();
+        document.body.focus();
+        await getTitleNameData();
+        ClearInput();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          icon: "error",
+        });
+      }
     }
   };
 
@@ -229,16 +224,19 @@ export default function NameTitle({ title }) {
     console.log("submit data", input);
   };
 
-  const handleEdit = () =>{
+  const handleEdit = async (id) => {
+    await getNameTitleById(id);
+    setEditTitleId(id);
+    setEditMode(true);
+
     const currentModal = document.getElementById("notModal");
-    if(currentModal){
-      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
+    if (currentModal) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
     }
-  }
+  };
 
-  const handleDelete = () => {
+  const handleDelete = (id) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success custom-width-btn-alert",
@@ -252,20 +250,29 @@ export default function NameTitle({ title }) {
         text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
+        confirmButtonText: `${
+          titleIsLoading ? "...กำลังดำเนินการ" : "ใช่ ลบได้เลย"
+        }`,
         cancelButtonText: "ยกเลิกการลบ",
         reverseButtons: true,
       })
-      .then((result) => {
+      .then(async (result) => {
         if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: "ลบรายการสำเร็จ!",
-            text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-            icon: "success",
-          });
-        } else if (
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
+          const response = await deleteTitle(id);
+          if (response.success) {
+            swalWithBootstrapButtons.fire({
+              title: "ลบรายการสำเร็จ!",
+              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+              icon: "success",
+            });
+            await getTitleNameData();
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: "ยกเลิก",
             text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
@@ -281,6 +288,8 @@ export default function NameTitle({ title }) {
       titleNameEng: "",
     });
     setError({});
+    setEditMode(false);
+
   };
 
   return (
@@ -288,149 +297,48 @@ export default function NameTitle({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
           </li>
-         
         </ol>
       </nav>
       <HeaderPage pageName={title} />
       <div className="container">
-        {/* ปุ่มเพิ่ม */}
         <div className="add-btn">
-          <a
+          <button
             className="power py-2"
             style={{ maxWidth: "200px" }}
             data-bs-toggle="modal"
             data-bs-target="#notModal"
+         
           >
             <span>
               <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
-          </a>
+          </button>
         </div>
-        <div className="mt-4">
-          <table
-            ref={tableRef}
-            className="table table-striped"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                {tableHead.map((row) => (
-                  <th
-                    key={row.index}
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                      padding: "12px 8px",
-                    }}
-                  >
-                    {row.colName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
+        {/* ตารางข้อมูล */}
+          <DataTableComponent
+            column={columnData}
+            data={titleData}
+            onAction={handleAction}
+            tableHead={tableHead}
+            tableRef={tableRef}
+          />
 
         {/* modal */}
-        <div
-          className="modal fade"
-          id="notModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
-                </h1>
-
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label  className="form-label">
-                              คำนำหน้า (ภาษาไทย)
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="titleNameTH"
-                              type="text"
-                              className={`form-control ${
-                                error.titleNameTH ? "border border-danger" : ""
-                              }`}
-                              id="titleNameTH"
-                              placeholder="กรอกคำนำหน้าเป็นภาษาไทย"
-                              value={input.titleNameTH}
-                              onChange={handleChangeInput}
-                            />
-                            {error.titleNameTH ? (
-                              <p className="text-danger">{error.titleNameTH}</p>
-                            ) : null}
-                          </div>
-                          <div className="col-md-12">
-                            <label className="form-label">
-                              คำนำหน้า (ภาษาอังกฤษ)
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="titleNameEng"
-                              type="text"
-                              className={`form-control ${
-                                error.titleNameEng ? "border border-danger" : ""
-                              }`}
-                              id="titleNameEng"
-                              placeholder="กรอกคำนำหน้าเป็นภาษาอังกฤษ"
-                              value={input.titleNameEng}
-                              onChange={handleChangeInput}
-                            />
-                            {error.titleNameEng ? (
-                              <p className="text-danger">
-                                {error.titleNameEng}
-                              </p>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
-                isLoading = {titleIsLoading}
-              />
-            </div>
-          </div>
-        </div>
+           <NameTitleModal
+             ClearInput={ClearInput}
+             IsLoading={titleIsLoading}
+             error={error}
+             handleChangeInput={handleChangeInput}
+             handleSubmit={handleSubmit}
+             input={input}
+             title={title}
+           />
       </div>
     </div>
   );

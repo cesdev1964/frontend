@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef,useCallback } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
@@ -8,6 +8,10 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
+import { usePermission } from "../../hooks/permissionStore";
+import { isActiveBadge } from "../../util/isActiveBadge";
+import "/cc-init.js";
+import { Link } from "react-router-dom";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -16,11 +20,7 @@ export const tableHead = [
   { index: 3, colName: "เปิดใช้งาน" },
   { index: 4, colName: "การจัดการ" },
 ];
-export const mockeTitletableData = [
-  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
-  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
-  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
-];
+
 export default function Permissions({ title }) {
   useTitle(title);
   const tableRef = useRef();
@@ -28,7 +28,20 @@ export default function Permissions({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูล Permission");
+  const {
+    getPermission,
+    getPermissionById,
+    createPermission,
+    deletePermission,
+    updatePermission,
+    permissionData,
+    permissionLoading,
+    permissionError,
+    permissionDataById,
+  } = usePermission();
 
+  const [editMode, setEditMode] = useState(false);
+  const [editRoleId, setEditRoleId] = useState(null);
   const [input, setInput] = useState({
     permissioncode: "",
     permissionname: "",
@@ -50,21 +63,36 @@ export default function Permissions({ title }) {
     }));
   };
 
-  useEffect(() => {
-    setData(mockeTitletableData);
-  }, []);
+  const fetchDataTable = useCallback(async () => {
+    try {
+      
+      await getPermission();
+    } catch (error) {
+      alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+    }
+  }, [getPermission]);
 
-  // useEffect(() => {
-  //   try {
-  //     if (!data) {
-  //       return;
-  //     } else {
-  //       GetDataTable();
-  //     }
-  //   } catch (error) {
-  //     console.log("ไม่สามารถโหลดข้อมูลได้", error.message);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    fetchDataTable();
+  }, [fetchDataTable]);
+
+  //ตอนโหลตข้อมูลทั้งหมด
+  useEffect(() => {
+    setEditMode(false);
+    if (permissionData) {
+      GetDataTable(permissionData);
+    }
+  }, [permissionData]);
+
+  useEffect(() => {
+    if (permissionDataById) {
+      setInput({
+        roleName: permissionDataById.permissioncode ?? "",
+        description: permissionDataById.permissionname ?? "",
+        isactive: permissionDataById.isactive ?? false,
+      });
+    }
+  }, [permissionDataById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -72,7 +100,7 @@ export default function Permissions({ title }) {
     }
   }, [error, isSubmit]);
 
-  const GetDataTable = () => {
+  const GetDataTable = (data) => {
     $(tableRef.current).DataTable({
       data: data,
       destroy: true,
@@ -109,20 +137,23 @@ export default function Permissions({ title }) {
           },
         },
         {
-          title: "รหัสตารางคำนำหน้า",
-          data: "TitleId",
-          orderable: true,
-        },
-        {
-          title: "คำนำหน้าชื่อ",
-          data: "TitleNameTH",
+          title: "รหัสสิทธิ์เข้าใช้งาน",
+          data: "permissionCode",
           orderable: true,
         },
 
         {
-          title: "คำนำหน้าชื่อ(ENG)",
-          data: "TitleNameEng",
+          title: "ชื่อสิทธิ์เข้าใช้งาน",
+          data: "permissionName",
           orderable: true,
+        },
+        {
+          title: "เปิดใช้งาน",
+          data: "isActive",
+          orderable: true,
+          render: function (data, type, row) {
+            return isActiveBadge(row.isActive);
+          },
         },
         {
           data: null,
@@ -192,7 +223,6 @@ export default function Permissions({ title }) {
     // ตรวจสอบโดย sweetalert 2
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
     //api post
     // setData(data.res)
     if (Object.keys(errorList).length === 0) {
@@ -204,11 +234,7 @@ export default function Permissions({ title }) {
         draggable: true,
         buttonsStyling: "w-100",
       });
-      //  const newData = GetDataTable();
-      //  const table = $(tableRef.current).DataTable({});
-      //  table.clear().destroy();
-      //  table.row.add(newData);
-      //  table.draw();
+
       const currentModal = document.getElementById("notModal");
       const modalInstance = bootstrap.Modal.getInstance(currentModal);
       modalInstance.hide();
@@ -233,7 +259,7 @@ export default function Permissions({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -251,7 +277,7 @@ export default function Permissions({ title }) {
             data-bs-target="#notModal"
           >
             <span>
-              <i class="bi bi-plus-circle fs-4"></i>
+              <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
@@ -304,7 +330,7 @@ export default function Permissions({ title }) {
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -320,7 +346,7 @@ export default function Permissions({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                             <label  class="form-label">
+                            <label className="form-label">
                               โค้ดสิทธิ์เข้าใช้งาน
                               <span style={{ color: "red" }}>*</span>
                             </label>
@@ -341,7 +367,7 @@ export default function Permissions({ title }) {
                                 {error.permissioncode}
                               </p>
                             ) : null}
-                            <label  class="form-label mt-2">
+                            <label className="form-label mt-2">
                               ชื่อสิทธิ์เข้าใช้งาน
                               <span style={{ color: "red" }}>*</span>
                             </label>
@@ -363,11 +389,11 @@ export default function Permissions({ title }) {
                               </p>
                             ) : null}
                           </div>
-                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
+                            <div className="form-check form-switch form-switch-md ms-3">
                               <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="isActive-toggle"
                                 name="isactive"

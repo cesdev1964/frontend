@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTitle} from "../../../hooks/useTitle"
 import Swal from "sweetalert2";
 import HeaderPage from "../../../components/HeaderPage";
+import { Link } from "react-router-dom";
 
 
 export default function RolePermission({ title }) {
@@ -14,10 +15,10 @@ export default function RolePermission({ title }) {
         <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item">
-            <a href="/settings/role">จัดการข้อมูลบทบาท</a>
+            <Link to="/settings/role">จัดการข้อมูลบทบาท</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}

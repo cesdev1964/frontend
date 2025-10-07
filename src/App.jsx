@@ -10,7 +10,6 @@ import ChangePassword from "./pages/ChangePassword";
 import Settings from "./pages/Setting";
 import WorkingSummary from "./pages/WorkingSummary";
 import RouterPage from "../src/route";
-// import CookieConsents from "./components/CookieConsents";
 
 export default function App() {
   return (

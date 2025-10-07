@@ -8,6 +8,7 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
+import { Link } from "react-router-dom";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -198,11 +199,7 @@ export default function OTCategories({ title }) {
         draggable: true,
         buttonsStyling: "w-100",
       });
-      //  const newData = GetDataTable();
-      //  const table = $(tableRef.current).DataTable({});
-      //  table.clear().destroy();
-      //  table.row.add(newData);
-      //  table.draw();
+
       const currentModal = document.getElementById("notModal");
       const modalInstance = bootstrap.Modal.getInstance(currentModal);
       modalInstance.hide();
@@ -222,7 +219,7 @@ export default function OTCategories({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}

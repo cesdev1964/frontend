@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import HeaderPage from "../components/HeaderPage";
 import { useTitle } from "../hooks/useTitle";
 import { useState } from "react";
+// import "../../public/assets/css/bootstrap-custom.min.css";
+// import "../../public/assets/css/style.css";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 const Settings = ({ title }) => {
   useTitle(title);

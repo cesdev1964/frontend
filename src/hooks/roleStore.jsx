@@ -13,7 +13,7 @@ export const useRole = create((set) => ({
       const response = await api.get("/api/roles");
       // console.log("role data", response.data.data);
       set({
-        data: response.data.data ?? {},
+        data: response.data.data ?? [],
         isLoading: false,
       });
     } catch (errorMessage) {
