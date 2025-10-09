@@ -51,7 +51,7 @@ const Employees = ({ title }) => {
   const [preview, setPreview] = useState(null);
   const inputImageRef = useRef(null);
   const [openCopperModal, setOpenCopperModal] = useState(false);
-  const { educationData, getEducationDropdown } = useEducation();
+  const { educationDropdown, getEducationDropdown } = useEducation();
   const { titleData, getTitleNameData } = useTitltName();
   const { getLevelDropdown, levelData } = useLevel();
   const { getPositionDropdown, positionData } = usePosition();
@@ -378,7 +378,7 @@ const Employees = ({ title }) => {
         />
 
         {/* modal */}
-        
+
         {/* <Modal
           size="lg"
           show={openModal}
@@ -516,13 +516,13 @@ const Employees = ({ title }) => {
                             <span style={{ color: "red" }}>*</span>
                           </label>
                           <SearchDropdown
-                            data={educationData}
+                            data={educationDropdown}
                             handleSelectChange={(selected) =>
                               handleSelectChange("educationId", selected)
                             }
                             placeholder="เลือกระดับการศึกษา"
                             value={
-                              educationData.find(
+                              educationDropdown.find(
                                 (i) => i.value === input.educationId
                               ) || null
                             }

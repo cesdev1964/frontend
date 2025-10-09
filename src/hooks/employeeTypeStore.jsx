@@ -7,7 +7,7 @@ export const useEmployeeType = create((set) => ({
   employeeTypeErrorMessage: null,
   success: false,
   employeeTypeById: {},
-
+  employeeTypeDropdown : [],
   getEmployeeType: async () => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
@@ -37,7 +37,7 @@ export const useEmployeeType = create((set) => ({
           label: item.typeName,
         }));
       set({
-        employeeTypeData : option,
+        employeeTypeDropdown : option,
         employeeTypeIsLoading: false,
       });
       return { success: response.data.success };

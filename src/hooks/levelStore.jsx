@@ -7,7 +7,7 @@ export const useLevel = create((set) => ({
   levelErrorMessage: null,
   success: false,
   levelById: {},
-
+  levelDropdown : [],
   getLevelData: async () => {
     set({ levelIsLoading: true, levelErrorMessage: null });
     try {
@@ -35,7 +35,7 @@ export const useLevel = create((set) => ({
         : [];
 
       set({
-        levelData: option,
+        levelDropdown: option,
         levelIsLoading: false,
       });
       return { success: response.data.success };

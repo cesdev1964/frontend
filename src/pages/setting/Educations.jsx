@@ -305,7 +305,7 @@ export default function Educations({ title }) {
           onAction={handleAction}
           tableHead={tableHead}
           tableRef={tableRef}
-          isLoading={educationIsLoading}
+          // isLoading={educationIsLoading}
         />
       
         {/* modal */}

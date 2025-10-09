@@ -7,7 +7,7 @@ export const usePosition = create((set) => ({
   positionErrorMessage: null,
   success: false,
   positionById: {},
-
+  positionDropdown :[],
   getPositionData: async () => {
     set({ positionIsLoading: true, positionErrorMessage: null });
     try {
@@ -39,7 +39,7 @@ export const usePosition = create((set) => ({
           label: item.positionName,
         }));
       set({
-        positionData: option,
+        positionDropdown: option,
         positionIsLoading: false,
       });
       return { success: response.data.success };

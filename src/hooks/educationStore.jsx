@@ -3,6 +3,7 @@ import api from "../api/axios";
 
 export const useEducation = create((set) => ({
   educationData: [],
+  educationDropdown : [],
   educationIsLoading: false,
   educationErrorMessage: null,
   success: false,
@@ -35,7 +36,7 @@ export const useEducation = create((set) => ({
       })): []
 
       set({
-        educationData: option,
+        educationDropdown: option,
         educationIsLoading: false,
       });
       return { success: response.data.success };

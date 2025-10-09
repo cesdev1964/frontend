@@ -7,6 +7,7 @@ export const useContrator = create((set) => ({
   contratorErrorMessage: null,
   success: false,
   contratorById: {},
+  contratorDropdown:[],
 
   getContratorData: async () => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
@@ -37,7 +38,7 @@ export const useContrator = create((set) => ({
           label: item.contractorName,
         }));
       set({
-        contratorData : option,
+        contratorDropdown : option,
         contratorIsLoading: false,
       });
       return { success: response.data.success };

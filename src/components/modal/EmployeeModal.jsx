@@ -29,13 +29,13 @@ export default function EmployeeManagementModal({
   const [src, setSrc] = useState(null);
   const [preview, setPreview] = useState(null);
   const inputImageRef = useRef(null);
-  const { educationData, getEducationDropdown } = useEducation();
+  const { getEducationDropdown,educationDropdown } = useEducation();
   const { titleData, getTitleNameData } = useTitltName();
-  const { getLevelDropdown, levelData } = useLevel();
-  const { getPositionDropdown, positionData } = usePosition();
-  const { contratorData, getContratorDropdown } = useContrator();
-  const { jobData, getJobDropdown } = useJob();
-  const { employeeTypeData, getEmployeeTypeDropdown } = useEmployeeType();
+  const { levelDropdown,getLevelDropdown } = useLevel();
+  const { positionDropdown,getPositionDropdown } = usePosition();
+  const { contratorDropdown, getContratorDropdown } = useContrator();
+  const { jobDropdown, getJobDropdown } = useJob();
+  const { employeeTypeDropdown, getEmployeeTypeDropdown } = useEmployeeType();
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -254,13 +254,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={educationData}
+                          data={educationDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("educationId", selected)
                           }
                           placeholder="เลือกระดับการศึกษา"
                           value={
-                            educationData.find(
+                            educationDropdown.find(
                               (i) => i.value === input.educationId
                             ) || null
                           }
@@ -320,13 +320,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={levelData}
+                          data={levelDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("levelId", selected)
                           }
                           placeholder="เลือกระดับ"
                           value={
-                            levelData.find((i) => i.value === input.levelId) ||
+                            levelDropdown.find((i) => i.value === input.levelId) ||
                             null
                           }
                         />
@@ -337,13 +337,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={jobData}
+                          data={jobDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("jobId", selected)
                           }
                           placeholder="เลือกหน่วยงาน"
                           value={
-                            jobData.find((i) => i.value === input.jobId) || null
+                            jobDropdown.find((i) => i.value === input.jobId) || null
                           }
                         />
                       </div>
@@ -353,13 +353,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={positionData}
+                          data={positionDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("positionId", selected)
                           }
                           placeholder="เลือกตำแหน่ง"
                           value={
-                            positionData.find(
+                            positionDropdown.find(
                               (i) => i.value === input.positionId
                             ) || null
                           }
@@ -373,13 +373,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={contratorData}
+                          data={contratorDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("contractorId", selected)
                           }
                           placeholder="เลือกผู้รับเหมา"
                           value={
-                            contratorData.find(
+                            contratorDropdown.find(
                               (i) => i.value === input.contractorId
                             ) || null
                           }
@@ -391,13 +391,13 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                         </label>
                         <SearchDropdown
-                          data={employeeTypeData}
+                          data={employeeTypeDropdown}
                           handleSelectChange={(selected) =>
                             handleSelectChange("typeId", selected)
                           }
                           placeholder="เลือกประเภท"
                           value={
-                            employeeTypeData.find(
+                            employeeTypeDropdown.find(
                               (i) => i.value === input.typeId
                             ) || null
                           }

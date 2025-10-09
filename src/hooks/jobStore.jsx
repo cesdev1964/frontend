@@ -7,7 +7,7 @@ export const useJob = create((set) => ({
   jobErrorMessage: null,
   success: false,
   jobById: {},
-
+  jobDropdown:[],
   getJobData: async () => {
     set({ jobIsLoading: true, jobErrorMessage: null });
     try {
@@ -36,7 +36,7 @@ export const useJob = create((set) => ({
           label: item.jobNo,
         }));
       set({
-        jobData: option,
+        jobDropdown: option,
         jobIsLoading: false,
       });
       return { success: response.data.success };
