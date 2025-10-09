@@ -38,7 +38,7 @@ export default function NameTitle({ title }) {
   } = useTitltName();
   const [editMode, setEditMode] = useState(false);
   const [editTitleId, setEditTitleId] = useState(null);
-
+  
   const [input, setInput] = useState({
     titleNameTH: "",
     titleNameEng: "",
@@ -180,6 +180,15 @@ export default function NameTitle({ title }) {
     }
     return errors;
   };
+ 
+   const handleOpenModal = ()=>{
+    setEditMode(false);
+    const currentModal = document.getElementById("notModal");
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -206,8 +215,9 @@ export default function NameTitle({ title }) {
         });
 
         const currentModal = document.getElementById("notModal");
-        const modalInstance = bootstrap.Modal.getOrCreateInstance(currentModal);
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
         modalInstance.hide();
+
         document.body.focus();
         await getTitleNameData();
         ClearInput();
@@ -310,9 +320,7 @@ export default function NameTitle({ title }) {
           <button
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#notModal"
-         
+            onClick={handleOpenModal}
           >
             <span>
               <i className="bi bi-plus-circle fs-4"></i>

@@ -1,36 +1,64 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { Link } from "react-router-dom";
+import { useEducation } from "../../hooks/educationStore";
+import DataTableComponent from "../../components/DatatableComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "รหัสตารางการศึกษา" },
-  { index: 2, colName: "ระดับการศึกษา" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 1, colName: "ระดับการศึกษา" },
+  { index: 2, colName: "การจัดการ" },
 ];
-export const mockeTitletableData = [
-  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
-  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
-  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
-];
+
 export default function Educations({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName,setAddBtnName] = useState("เพิ่มข้อมูลการศึกษา")
+  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลการศึกษา");
+  const [editMode, setEditMode] = useState(false);
+  const [getId, setGetId] = useState(null);
   const [input, setInput] = useState({
     educationname: "",
   });
+
+  const {
+    educationData,
+    educationIsLoading,
+    educationErrorMessage,
+    success,
+    educationById,
+    getEducationData,
+    getEducationById,
+    createEducation,
+    deleteEducation,
+    updateEducation,
+  } = useEducation();
+
+  const fetchDataTable = useCallback(async () => {
+    try {
+      await getEducationData();
+    } catch (error) {
+      alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+    }
+  }, [getEducationData]);
+
+  useEffect(() => {
+    fetchDataTable();
+  }, [fetchDataTable]);
+
+   useEffect(() => {
+      if (educationById) {
+        setInput({
+          educationname: educationById.educationName ?? "",
+        });
+      }
+    }, [educationById]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -41,87 +69,28 @@ export default function Educations({ title }) {
   };
 
   useEffect(() => {
-    setData(mockeTitletableData);
-  }, []);
-
-  // useEffect(() => {
-  //   try {
-  //     if (!data) {
-  //       return;
-  //     } else {
-  //       GetDataTable();
-  //     }
-  //   } catch (error) {
-  //     console.log("ไม่สามารถโหลดข้อมูลได้", error.message);
-  //   }
-  // }, [data]);
-
-
-
-  useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
       finishSubmit();
     }
   }, [error, isSubmit]);
 
-  const GetDataTable = () => {
-    $(tableRef.current).DataTable({
-      data: data,
-      destroy: true,
-      responsive: true,
-      paging: true,
-      searching: true,
-      // scrollX: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+  const columnsData = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
       },
-      columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "120px", targets: 1 },
-        { width: "230px", targets: 2 },
-        { width: "230px", targets: 3 },
-        { width: "190px", targets: 4 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "รหัสตารางคำนำหน้า",
-          data: "TitleId",
-          orderable: true,
-        },
-        {
-          title: "คำนำหน้าชื่อ",
-          data: "TitleNameTH",
-          orderable: true,
-        },
-
-        {
-          title: "คำนำหน้าชื่อ(ENG)",
-          data: "TitleNameEng",
-          orderable: true,
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `      
+    },
+    {
+      title: "ระดับการศึกษา",
+      data: "educationName",
+      orderable: true,
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -129,12 +98,18 @@ export default function Educations({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark"
+                   data-action="edit"
+                   data-id = "${row.educationId}"
+                >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark"
+                   data-action="delete"
+                   data-id = "${row.educationId}"
+                  >
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -143,30 +118,43 @@ export default function Educations({ title }) {
           
           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
             <a
-              href="#"
               class="btn btn-warning me-2"
               title="แก้ไข"
+              data-action="edit"
+              data-id = "${row.educationId}"
             >
               <i class="bi bi-pen-fill"></i>
             </a>
             <a
-              href="#"
               class="btn btn-danger"
               title="ลบ"
+              data-action="delete"
+              data-id = "${row.educationId}"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
           </div>
         </div>
        `;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
+      },
+    },
+  ];
+
+  const handleAction = (action, id) => {
+    if (action === "edit") {
+      handleEdit(id, "educationmodal");
+    } else if (action === "delete") {
+      handleDelete(id);
+    }
+  };
+
+  const handleOpenModal = (modalId) => {
+    setEditMode(false);
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
   };
 
   const validateForm = () => {
@@ -182,27 +170,92 @@ export default function Educations({ title }) {
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleEdit = async (Id, modalId) => {
+    await getEducationById(Id);
+    setGetId(Id);
+
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+      setEditMode(true);
+    }
+  };
+
+  const handleDelete = (Id) => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ใช่ ลบได้เลย",
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await deleteEducation(Id);
+          console.log("data", response);
+          if (response.success) {
+            // swalWithBootstrapButtons.fire({
+            //   title: "ลบรายการสำเร็จ!",
+            //   text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+            //   icon: "success",
+            // });
+            await getEducationData();
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "ยกเลิก",
+            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
+            icon: "error",
+          });
+        }
+      });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+
+    const reqData = {
+      educationName: input.educationname,
+    };
     const errorList = validateForm(input) || [];
     setError(errorList);
     console.log("error list", error);
-    //api post
-    // setData(data.res)
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
-     
-      const currentModal = document.getElementById("notModal");
+      const response = editMode
+              ? await updateEducation(reqData, getId)
+              : await createEducation(reqData);
+            if (response.success) {
+              setIsSubmit(true);
+              Swal.fire({
+                title: "บันทึกข้อมูลสำเร็จ",
+                icon: "success",
+                draggable: true,
+                buttonsStyling: "w-100",
+              });
+      }
+
+      const currentModal = document.getElementById("educationmodal");
       const modalInstance = bootstrap.Modal.getInstance(currentModal);
       modalInstance.hide();
       ClearInput();
+      await getEducationData();
     }
   };
 
@@ -212,9 +265,10 @@ export default function Educations({ title }) {
 
   const ClearInput = () => {
     setInput({
-      educationname:""
+      educationname: "",
     });
     setError({});
+    setEditMode(false)
   };
 
   return (
@@ -236,8 +290,7 @@ export default function Educations({ title }) {
           <a
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#notModal"
+            onClick={() => handleOpenModal("educationmodal")}
           >
             <span>
               <i class="bi bi-plus-circle fs-4"></i>
@@ -245,35 +298,20 @@ export default function Educations({ title }) {
             <span className="label">{addBtnName}</span>
           </a>
         </div>
-        <div className="mt-4">
-          <table
-            ref={tableRef}
-            className="table table-striped"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                {tableHead.map((row) => (
-                  <th
-                    key={row.index}
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                      padding: "12px 8px",
-                    }}
-                  >
-                    {row.colName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
-
+        {/* table */}
+        <DataTableComponent
+          column={columnsData}
+          data={educationData}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+          isLoading={educationIsLoading}
+        />
+      
         {/* modal */}
         <div
           className="modal fade"
-          id="notModal"
+          id="educationmodal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -291,6 +329,7 @@ export default function Educations({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={ClearInput}
                 ></button>
               </div>
               <div class="modal-body">
@@ -325,7 +364,9 @@ export default function Educations({ title }) {
                               onChange={handleChangeInput}
                             />
                             {error.educationname ? (
-                              <p className="text-danger">{error.educationname}</p>
+                              <p className="text-danger">
+                                {error.educationname}
+                              </p>
                             ) : null}
                           </div>
                         </div>

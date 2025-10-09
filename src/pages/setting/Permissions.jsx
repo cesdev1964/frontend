@@ -1,9 +1,6 @@
-import React, { useRef,useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -12,6 +9,7 @@ import { usePermission } from "../../hooks/permissionStore";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import "/cc-init.js";
 import { Link } from "react-router-dom";
+import DataTableComponent from "../../components/DatatableComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -24,7 +22,6 @@ export const tableHead = [
 export default function Permissions({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูล Permission");
@@ -41,7 +38,7 @@ export default function Permissions({ title }) {
   } = usePermission();
 
   const [editMode, setEditMode] = useState(false);
-  const [editRoleId, setEditRoleId] = useState(null);
+  const [editPermissionId, setEditPermissionId] = useState(null);
   const [input, setInput] = useState({
     permissioncode: "",
     permissionname: "",
@@ -65,7 +62,6 @@ export default function Permissions({ title }) {
 
   const fetchDataTable = useCallback(async () => {
     try {
-      
       await getPermission();
     } catch (error) {
       alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
@@ -77,19 +73,19 @@ export default function Permissions({ title }) {
   }, [fetchDataTable]);
 
   //ตอนโหลตข้อมูลทั้งหมด
-  useEffect(() => {
-    setEditMode(false);
-    if (permissionData) {
-      GetDataTable(permissionData);
-    }
-  }, [permissionData]);
+  // useEffect(() => {
+  //   setEditMode(false);
+  //   if (permissionData) {
+  //     GetDataTable(permissionData);
+  //   }
+  // }, [permissionData]);
 
   useEffect(() => {
     if (permissionDataById) {
       setInput({
-        roleName: permissionDataById.permissioncode ?? "",
-        description: permissionDataById.permissionname ?? "",
-        isactive: permissionDataById.isactive ?? false,
+        permissioncode: permissionDataById.permissionCode ?? "",
+        permissionname: permissionDataById.permissionName ?? "",
+        isactive: permissionDataById.isActive ?? false,
       });
     }
   }, [permissionDataById]);
@@ -100,66 +96,37 @@ export default function Permissions({ title }) {
     }
   }, [error, isSubmit]);
 
-  const GetDataTable = (data) => {
-    $(tableRef.current).DataTable({
-      data: data,
-      destroy: true,
-      responsive: true,
-      paging: true,
-      searching: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
+  const columnData = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
       },
-      columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "120px", targets: 1 },
-        { width: "230px", targets: 2 },
-        { width: "230px", targets: 3 },
-        { width: "190px", targets: 4 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "รหัสสิทธิ์เข้าใช้งาน",
-          data: "permissionCode",
-          orderable: true,
-        },
+    },
+    {
+      title: "รหัสสิทธิ์เข้าใช้งาน",
+      data: "permissionCode",
+      orderable: true,
+    },
 
-        {
-          title: "ชื่อสิทธิ์เข้าใช้งาน",
-          data: "permissionName",
-          orderable: true,
-        },
-        {
-          title: "เปิดใช้งาน",
-          data: "isActive",
-          orderable: true,
-          render: function (data, type, row) {
-            return isActiveBadge(row.isActive);
-          },
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `      
+    {
+      title: "ชื่อสิทธิ์เข้าใช้งาน",
+      data: "permissionName",
+      orderable: true,
+    },
+    {
+      title: "เปิดใช้งาน",
+      data: "isActive",
+      orderable: true,
+      render: function (data, type, row) {
+        return isActiveBadge(row.isActive);
+      },
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,12 +134,19 @@ export default function Permissions({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark" 
+                   data-action="edit"
+                   data-id = "${row.permissionId}"
+                   
+                   >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark" href="#">
+                <a class="dropdown-item text-dark"
+                   data-action="delete" 
+                   data-id = "${row.permissionId}"
+                >
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -181,30 +155,43 @@ export default function Permissions({ title }) {
           
           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
             <a
-              href="#"
               class="btn btn-warning me-2"
               title="แก้ไข"
+              data-action="edit"
+              data-id = "${row.permissionId}"
             >
               <i class="bi bi-pen-fill"></i>
             </a>
             <a
-              href="#"
               class="btn btn-danger"
               title="ลบ"
+              data-action="delete"
+              data-id = "${row.permissionId}"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
           </div>
         </div>
        `;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
+      },
+    },
+  ];
+
+  const handleOpenModal = (modalId) => {
+    setEditMode(false);
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
+  };
+
+  const handleAction = (action, id) => {
+    if (action === "edit") {
+      handleEdit(id, "permissionModal");
+    } else if (action === "delete") {
+      handleDelete(id);
+    }
   };
 
   const validateForm = () => {
@@ -218,27 +205,37 @@ export default function Permissions({ title }) {
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+
+    const reqData = {
+      permissionCode: input.permissioncode,
+      permissionName: input.permissionname,
+      isActive: input.isactive,
+    };
     const errorList = validateForm(input) || [];
     setError(errorList);
-    //api post
-    // setData(data.res)
+
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
+      const response = editMode
+        ? await updatePermission(reqData, editPermissionId)
+        : await createPermission(reqData);
 
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+      }
 
-      const currentModal = document.getElementById("notModal");
+      const currentModal = document.getElementById("permissionModal");
       const modalInstance = bootstrap.Modal.getInstance(currentModal);
       modalInstance.hide();
       ClearInput();
+      await getPermission();
     }
   };
 
@@ -248,14 +245,71 @@ export default function Permissions({ title }) {
 
   const ClearInput = () => {
     setInput({
-      deductiontypename: "",
+      permissioncode: "",
+      permissionname: "",
       isactive: 0,
     });
     setError({});
+    setEditMode(false);
+  };
+
+  const handleEdit = async (Id, modalId) => {
+    await getPermissionById(Id);
+    setEditPermissionId(Id);
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+      setEditMode(true);
+    }
+  };
+
+  const handleDelete = (Id) => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ใช่ ลบได้เลย",
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await deletePermission(Id);
+          if (response.success) {
+            swalWithBootstrapButtons.fire({
+              title: "ลบรายการสำเร็จ!",
+              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+              icon: "success",
+            });
+            await getPermission();
+          } else {
+            Swal.fire({
+              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "ยกเลิก",
+            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
+            icon: "error",
+          });
+        }
+      });
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -272,9 +326,8 @@ export default function Permissions({ title }) {
         <div className="add-btn">
           <a
             className="power py-2"
-            style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#notModal"
+            style={{ maxWidth: "350px" }}
+            onClick={() => handleOpenModal("permissionModal")}
           >
             <span>
               <i className="bi bi-plus-circle fs-4"></i>
@@ -282,35 +335,19 @@ export default function Permissions({ title }) {
             <span className="label">{addBtnName}</span>
           </a>
         </div>
-        <div className="mt-4">
-          <table
-            ref={tableRef}
-            className="table table-striped"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                {tableHead.map((row) => (
-                  <th
-                    key={row.index}
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                      padding: "12px 8px",
-                    }}
-                  >
-                    {row.colName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
+
+        <DataTableComponent
+          column={columnData}
+          data={permissionData}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+        />
 
         {/* modal */}
         <div
           className="modal fade"
-          id="notModal"
+          id="permissionModal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -328,6 +365,7 @@ export default function Permissions({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={ClearInput}
                 ></button>
               </div>
               <div className="modal-body">
@@ -412,6 +450,7 @@ export default function Permissions({ title }) {
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
                 handleCancel={ClearInput}
+                isLoading={permissionLoading}
               />
             </div>
           </div>

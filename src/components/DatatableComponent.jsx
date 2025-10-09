@@ -2,6 +2,7 @@ import "../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css"
 import "datatables.net-bs5";
 import $ from "jquery";
 import { useRef, useEffect } from "react";
+import LoadingSpin from "./loadingSpin";
 
 export default function DataTableComponent({
   data,
@@ -9,6 +10,7 @@ export default function DataTableComponent({
   onAction,
   tableRef,
   tableHead,
+  isLoading = false
 }) {
 //   const tableRef = useRef(null);
   useEffect(() => {
@@ -44,11 +46,12 @@ export default function DataTableComponent({
         data: col.data,
         orderable: col.orderable ?? true,
         render: col.render,
+        className : col.className
       })),
       dom:
         window.innerWidth <= 570
           ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
+          : '<"top d-flex justify-content-between"lf>rt<"bottom d-flex justify-content-between"ip><"clear">',
     });
     $(tableRef.current).on("click", "[data-action]", function () {
       const action = $(this).data("action");
@@ -79,6 +82,7 @@ export default function DataTableComponent({
                     fontWeight: "600",
                     padding: "12px 8px",
                   }}
+                  className="text-center"
                 >
                   {row.colName}
                 </th>
@@ -86,6 +90,7 @@ export default function DataTableComponent({
             </tr>
           </thead>
         </table>
+        {isLoading&&(<LoadingSpin/>)}
       </div>
     </>
   );

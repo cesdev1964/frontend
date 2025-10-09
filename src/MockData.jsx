@@ -128,39 +128,39 @@ export const mockemployeetableData = [
 ];
 
 export const mockNews =  [
-  // {
-  //   header: "หัวข้อข่าว",
-  //   content:
-  //     "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
-  //   postDate: "25/09/2525",
-  //   postTime: "13:53",
-  // },
-  // {
-  //   header: "หัวข้อข่าว",
-  //   content:
-  //     "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
-  //   postDate: "25/09/2525",
-  //   postTime: "13:53",
-  // },
-  // {
-  //   header: "หัวข้อข่าว",
-  //   content:
-  //     "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
-  //   postDate: "25/09/2525",
-  //   postTime: "13:53",
-  // },
-  // {
-  //   header: "หัวข้อข่าว",
-  //   content:
-  //     "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
-  //   postDate: "25/09/2525",
-  //   postTime: "13:53",
-  // },
-  // {
-  //   header: "หัวข้อข่าว",
-  //   content:
-  //     "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
-  //   postDate: "25/09/2525",
-  //   postTime: "13:53",
-  // },
+  {
+    header: "หัวข้อข่าว",
+    content:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
+    postDate: "25/09/2525",
+    postTime: "13:53",
+  },
+  {
+    header: "หัวข้อข่าว",
+    content:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
+    postDate: "25/09/2525",
+    postTime: "13:53",
+  },
+  {
+    header: "หัวข้อข่าว",
+    content:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
+    postDate: "25/09/2525",
+    postTime: "13:53",
+  },
+  {
+    header: "หัวข้อข่าว",
+    content:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
+    postDate: "25/09/2525",
+    postTime: "13:53",
+  },
+  {
+    header: "หัวข้อข่าว",
+    content:
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit.Animi tenetur maxime voluptatem ullam aspernatur, dolorum rem,voluptate quae beatae et vero modi consectetur excepturi? Exesse cum non facilis cupiditate?",
+    postDate: "25/09/2525",
+    postTime: "13:53",
+  },
 ];

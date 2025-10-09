@@ -40,11 +40,11 @@ export default function Roles({ title }) {
   } = useRole();
   const [editMode, setEditMode] = useState(false);
   const [editRoleId, setEditRoleId] = useState(null);
-  const [onOpenModal,setOpenModal] = useState(false);
+
   const navigate = useNavigate();
 
   const handleToPermissionPage = (roleId) => {
-    navigate(`/settings/rolepermission/:${roleId}`);
+    navigate(`/settings/rolepermission/${roleId}`);
   };
 
   const handleChangeInput = (e) => {
@@ -68,8 +68,6 @@ export default function Roles({ title }) {
     setEditMode(false);
   }, [fetchDataTable]);
 
-
-
   useEffect(() => {
     if (dataById) {
       setInput((prevData) => ({
@@ -84,8 +82,6 @@ export default function Roles({ title }) {
     if (Object.keys(error).length === 0 && isSubmit) {
     }
   }, [error, isSubmit]);
-
-
 
   const columnData = [
     {
@@ -178,16 +174,13 @@ export default function Roles({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      console.log("Edit:", id);
       handleEdit(id);
     } else if (action === "delete") {
-      console.log("Delete:", id);
       handleDelete(id);
     } else if (action === "permission") {
       handleToPermissionPage(id);
     }
   };
-
 
   const validateForm = () => {
     let errors = {};
@@ -234,8 +227,17 @@ export default function Roles({ title }) {
     }
   };
 
+  const handleOpenModal = () => {
+    setEditMode(false);
+    const currentModal = document.getElementById("notModal");
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
+  };
+
   const handleEdit = async (roleId) => {
-    await getRoleByIdData(roleId); //ผูก api เรียกใช้ข้อมูล
+    await getRoleByIdData(roleId); 
     setEditRoleId(roleId);
 
     const currentModal = document.getElementById("notModal");
@@ -301,7 +303,7 @@ export default function Roles({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -319,8 +321,7 @@ export default function Roles({ title }) {
           <a
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#notModal"
+            onClick={handleOpenModal}
           >
             <span>
               <i class="bi bi-plus-circle fs-4"></i>

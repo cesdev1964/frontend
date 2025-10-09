@@ -27,7 +27,7 @@ export const usePermission = create((set) => ({
   getPermissionById: async (id) => {
     set({ isLoading: true, errorMessage: null });
     try {
-      const response = await api.get(`/api/permission/${id}`);
+      const response = await api.get(`/api/permissions/${id}`);
       //   console.log("role data", response.data.data);
       set({
         permissionDataById: response.data.permission ?? {},
@@ -47,14 +47,12 @@ export const usePermission = create((set) => ({
   },
 
   createPermission: async (requestData) => {
+        console.log("req data from register ",requestData)
+
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.post("/api/permission", {
-        roleName: requestData.permissionCode,
-        roleDescription: requestData.permissionName,
-        isActive : requestData.isActive
-      });
-      //   console.log("res data from register ",response.data.user)
+      const response = await api.post("/api/permissions",requestData);
+        // console.log("res data from register ",response.data.permissions)
       return {
         permissionData: response.data.permissions ?? {},
         permissionLoading: false,
@@ -72,7 +70,7 @@ export const usePermission = create((set) => ({
   deletePermission: async (id) => {
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.delete(`/api/permission/${id}`);
+      const response = await api.delete(`/api/permissions/${id}`);
       //   console.log("delete user response ",response.data.message)
       return {
         permissionLoading: false,

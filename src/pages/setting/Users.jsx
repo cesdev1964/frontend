@@ -383,11 +383,11 @@ export default function Users({ title }) {
         if (result.isConfirmed) {
           const response = await deleteUser(userId);
           if (response.success) {
-            swalWithBootstrapButtons.fire({
-              title: "ลบรายการสำเร็จ!",
-              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-              icon: "success",
-            });
+            // swalWithBootstrapButtons.fire({
+            //   title: "ลบรายการสำเร็จ!",
+            //   text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+            //   icon: "success",
+            // });
             await getUserData();
           } else {
             Swal.fire({
@@ -426,8 +426,6 @@ export default function Users({ title }) {
             type="button"
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            // data-bs-toggle="modal"
-            // data-bs-target="#addModal"
             onClick={handleOpen}
           >
             <span>
@@ -699,7 +697,7 @@ export default function Users({ title }) {
           size="lg"
           show={openModal}
           onHide={() => {
-            if (!editMode) resetAll(); //ล้างค่าให้หมด เมื่อเปลี่ยนเป็น Add
+            if (!editMode) resetAll(); 
             setOpenModal(false);
           }}
           backdrop="static"
