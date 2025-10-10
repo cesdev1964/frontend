@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from "react";
+import React, {useRef } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
@@ -9,6 +9,7 @@ import { NameTitleModal } from "../../components/modal/setting/nameTitleModal";
 import DataTableComponent from "../../components/DatatableComponent";
 import * as bootstrap from 'bootstrap';  
 import { Link } from "react-router-dom";
+import handleDelete from "../../util/handleDelete";
 window.bootstrap = bootstrap;   
 
 export const tableHead = [
@@ -150,13 +151,20 @@ export default function NameTitle({ title }) {
     },
   ];
 
+  const columnDefs = [
+    { width: "70px", targets: 0, className: "text-center" },
+    { width: "150px", targets: 1 },
+    { width: "150px", targets: 2},
+     { width: "100px", targets: 3, className: "text-center" },
+  ];
+
   const handleAction = (action, id) => {
     if (action === "edit") {
       console.log("Edit:", id);
       handleEdit(id);
     } else if (action === "delete") {
       console.log("Delete:", id);
-      handleDelete(id);
+      handleDelete(titleIsLoading,()=>deleteTitle(id),()=>getTitleNameData())
     }
   };
 
@@ -246,52 +254,6 @@ export default function NameTitle({ title }) {
     }
   };
 
-  const handleDelete = (id) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: `${
-          titleIsLoading ? "...กำลังดำเนินการ" : "ใช่ ลบได้เลย"
-        }`,
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const response = await deleteTitle(id);
-          if (response.success) {
-            swalWithBootstrapButtons.fire({
-              title: "ลบรายการสำเร็จ!",
-              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-              icon: "success",
-            });
-            await getTitleNameData();
-          } else {
-            Swal.fire({
-              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
-              icon: "error",
-            });
-          }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
-        }
-      });
-  };
-
   const ClearInput = () => {
     setInput({
       titleNameTH: "",
@@ -303,7 +265,7 @@ export default function NameTitle({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -335,6 +297,7 @@ export default function NameTitle({ title }) {
             onAction={handleAction}
             tableHead={tableHead}
             tableRef={tableRef}
+            columnDefs={columnDefs}
           />
 
         {/* modal */}

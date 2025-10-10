@@ -7,7 +7,7 @@ export const useLevel = create((set) => ({
   levelErrorMessage: null,
   success: false,
   levelById: {},
-  levelDropdown : [],
+  levelDropdown: [],
   getLevelData: async () => {
     set({ levelIsLoading: true, levelErrorMessage: null });
     try {
@@ -19,7 +19,10 @@ export const useLevel = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ levelErrorMessage: errorMessage.message, levelIsLoading: false });
+      set({
+        levelErrorMessage: errorMessage.response?.data?.message,
+        levelIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
@@ -40,7 +43,10 @@ export const useLevel = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ levelErrorMessage: errorMessage.message, levelIsLoading: false });
+      set({
+        levelErrorMessage: errorMessage.response?.data?.message,
+        levelIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
@@ -58,36 +64,38 @@ export const useLevel = create((set) => ({
         levelIsLoading: false,
       };
     } catch (errorMessage) {
-      set({ levelErrorMessage: errorMessage.message, levelIsLoading: false });
+      set({
+        levelErrorMessage: errorMessage.response?.data?.message,
+        levelIsLoading: false,
+      });
       return {
         levelIsLoading: false,
-        levelErrorMessage: errorMessage.message,
+        levelErrorMessage: errorMessage.response?.data?.message,
       };
     }
   },
   createLevel: async (requestData) => {
     set({ levelIsLoading: true, levelErrorMessage: null });
     try {
-      const response = await api.post("/api/levels", requestData);
+      await api.post("/api/levels", requestData);
       return {
         levelIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         levelErrorMessage: error?.response?.data?.message || error.message,
         levelIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         levelErrorMessage: error?.response?.data?.message || error.message,
         levelIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
   deleteLevel: async (id) => {
-    console.log("id ", id);
     set({ levelIsLoading: true, levelErrorMessage: null });
     try {
       const response = await api.delete(`/api/levels/${id}`);
@@ -112,21 +120,21 @@ export const useLevel = create((set) => ({
   updateLevel: async (requestData, id) => {
     set({ levelIsLoading: true, levelErrorMessage: null });
     try {
-      const response = await api.put(`/api/levels/${id}`, requestData);
+      await api.put(`/api/levels/${id}`, requestData);
       return {
         levelIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         levelErrorMessage: error?.response?.data?.message || error.message,
         levelIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         levelErrorMessage: error?.response?.data?.message || error.message,
         levelIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

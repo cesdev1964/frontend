@@ -653,7 +653,7 @@ thead th:last-child {
   border-radius: 10px;
 }
 .news-container {
-  max-height: 600px;
+  max-height: 580px;
   overflow-y: auto;
 }
 
@@ -754,12 +754,6 @@ thead th:last-child {
     grid-template-columns: 1fr;
   }
 
-  /* เพิ่มเติมมาใหม่ */
-
-  .search-box {
-    display: flex;
-    justify-content: end;
-  }
 
   .searchBar {
     width: 250px;
@@ -1927,8 +1921,13 @@ thead th:last-child {
     max-width: 100%;
   }
 
-  .news-container,.profile-container {
-  max-height: 760px;
+  .news-container{
+  max-height: 580px;
+  overflow-y: auto;
+ }
+
+ .profile-container {
+  max-height: 650px;
   overflow-y: auto;
  }
 }

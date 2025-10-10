@@ -21,11 +21,11 @@ export const usePermission = create((set) => ({
         permissionLoading: false,
       };
     } catch (error) {
-      set({ permissionError: error.message, permissionLoading: false });
+      set({ permissionError: error.response?.data?.message, permissionLoading: false });
     }
   },
   getPermissionById: async (id) => {
-    set({ isLoading: true, errorMessage: null });
+    set({ isLoading: true, permissionError: null });
     try {
       const response = await api.get(`/api/permissions/${id}`);
       //   console.log("role data", response.data.data);
@@ -38,10 +38,10 @@ export const usePermission = create((set) => ({
         permissionLoading: false,
       };
     } catch (errorMessage) {
-      set({ permissionError: errorMessage.message, permissionLoading: false });
+      set({ permissionError: errorMessage.response?.data?.message, permissionLoading: false });
       return {
         permissionLoading: false,
-        permissionError: errorMessage.message,
+        permissionError: errorMessage.response?.data?.message,
       };
     }
   },

@@ -62,8 +62,14 @@ export default function RolePermission({ title }) {
     },
   ];
 
+  const columnDefs = [
+    { width: "70px", targets: 0 },
+    { width: "100px", targets: 1 },
+    { width: "150px", targets: 2 },
+  ];
+
   return (
-    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -78,14 +84,18 @@ export default function RolePermission({ title }) {
         </ol>
       </nav>
       <HeaderPage pageName="รายการสิทธ์การใช้งาน" />
-
-      <DataTableComponent
-        column={columnData}
-        tableRef={tableRef}
-        tableHead={tableHead}
-        data={rolePermissiondata}
-        isLoading={rolePermissionisLoading}
-      />
+      <div className="container">
+        <div className="mt-5">
+        <DataTableComponent
+          column={columnData}
+          tableRef={tableRef}
+          tableHead={tableHead}
+          data={rolePermissiondata}
+          isLoading={rolePermissionisLoading}
+          columnDefs={columnDefs}
+        />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/axios";
+const url = "/api/contractors"
 
 export const useContrator = create((set) => ({
   contratorData: [],
@@ -7,12 +8,12 @@ export const useContrator = create((set) => ({
   contratorErrorMessage: null,
   success: false,
   contratorById: {},
-  contratorDropdown:[],
+  contratorDropdown: [],
 
   getContratorData: async () => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.get("/api/contractors");
+      const response = await api.get(url);
       // console.log("role data", response.data.data);
       set({
         contratorData: response.data.data ?? [],
@@ -20,7 +21,10 @@ export const useContrator = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ contratorErrorMessage: errorMessage.message, contratorIsLoading: false });
+      set({
+        contratorErrorMessage: errorMessage.message,
+        contratorIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
@@ -28,9 +32,9 @@ export const useContrator = create((set) => ({
   getContratorDropdown: async () => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.get("/api/contractors");
+      const response = await api.get(url);
       // console.log("role data", response.data.data)
-      const data = response.data.data ?? []
+      const data = response.data.data ?? [];
       const option = data
         ?.filter((activeData) => activeData.isActive === true)
         .map((item) => ({
@@ -38,20 +42,23 @@ export const useContrator = create((set) => ({
           label: item.contractorName,
         }));
       set({
-        contratorDropdown : option,
+        contratorDropdown: option,
         contratorIsLoading: false,
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ contratorErrorMessage: errorMessage.message, contratorIsLoading: false });
+      set({
+        contratorErrorMessage: errorMessage.message,
+        contratorIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
-  
+
   getContratorById: async (id) => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.get(`/api/contractors/${id}`);
+      const response = await api.get(`${url}/${id}`);
       //   console.log("role data", response.data.data);
       set({
         contratorById: response.data.data ?? {},
@@ -62,17 +69,20 @@ export const useContrator = create((set) => ({
         contratorIsLoading: false,
       };
     } catch (errorMessage) {
-      set({ contratorErrorMessage: errorMessage.message, contratorIsLoading: false });
+      set({
+        contratorErrorMessage: errorMessage.response?.data?.message,
+        contratorIsLoading: false,
+      });
       return {
         contratorIsLoading: false,
-        contratorErrorMessage: errorMessage.message,
+        contratorErrorMessage: errorMessage.response?.data?.message,
       };
     }
   },
   createContrator: async (requestData) => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.post("/api/contractors", requestData);
+      const response = await api.post(url, requestData);
       return {
         contratorIsLoading: false,
         success: response.data.success,
@@ -81,12 +91,12 @@ export const useContrator = create((set) => ({
       set({
         contratorErrorMessage: error?.response?.data?.message || error.message,
         contratorIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         contratorErrorMessage: error?.response?.data?.message || error.message,
         contratorIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
@@ -94,10 +104,10 @@ export const useContrator = create((set) => ({
     console.log("id ", id);
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.delete(`/api/contractors/${id}`);
+      await api.delete(`/api/contractors/${id}`);
       return {
         contratorIsLoading: false,
-        contratorErrorMessage: response.data.message ?? "",
+        contratorErrorMessage: null,
         success: true,
       };
     } catch (error) {
@@ -116,21 +126,21 @@ export const useContrator = create((set) => ({
   updateContrator: async (requestData, id) => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
-      const response = await api.put(`/api/contractors/${id}`, requestData);
+      await api.put(`${url}/${id}`, requestData);
       return {
         contratorIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         contratorErrorMessage: error?.response?.data?.message || error.message,
         contratorIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         contratorErrorMessage: error?.response?.data?.message || error.message,
         contratorIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

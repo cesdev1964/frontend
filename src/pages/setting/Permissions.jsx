@@ -10,6 +10,7 @@ import { isActiveBadge } from "../../util/isActiveBadge";
 import "/cc-init.js";
 import { Link } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
+import handleDelete from "../../util/handleDelete";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -42,7 +43,7 @@ export default function Permissions({ title }) {
   const [input, setInput] = useState({
     permissioncode: "",
     permissionname: "",
-    isactive: 0,
+    isactive: false,
   });
 
   const handleChangeInput = (e) => {
@@ -56,7 +57,7 @@ export default function Permissions({ title }) {
   const handleChangeCheckbox = (e) => {
     setInput((prev) => ({
       ...prev,
-      isactive: e.target.checked ? 1 : 0,
+      isactive: e.target.checked ? true : false,
     }));
   };
 
@@ -71,14 +72,6 @@ export default function Permissions({ title }) {
   useEffect(() => {
     fetchDataTable();
   }, [fetchDataTable]);
-
-  //ตอนโหลตข้อมูลทั้งหมด
-  // useEffect(() => {
-  //   setEditMode(false);
-  //   if (permissionData) {
-  //     GetDataTable(permissionData);
-  //   }
-  // }, [permissionData]);
 
   useEffect(() => {
     if (permissionDataById) {
@@ -190,7 +183,12 @@ export default function Permissions({ title }) {
     if (action === "edit") {
       handleEdit(id, "permissionModal");
     } else if (action === "delete") {
-      handleDelete(id);
+      // handleDelete(id);
+      handleDelete(
+        permissionLoading,
+        () => deletePermission(id),
+        () => getPermission()
+      );
     }
   };
 
@@ -229,13 +227,18 @@ export default function Permissions({ title }) {
           draggable: true,
           buttonsStyling: "w-100",
         });
+        const currentModal = document.getElementById("permissionModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+        await getPermission();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: permissionError || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
       }
-
-      const currentModal = document.getElementById("permissionModal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
-      await getPermission();
     }
   };
 
@@ -247,7 +250,7 @@ export default function Permissions({ title }) {
     setInput({
       permissioncode: "",
       permissionname: "",
-      isactive: 0,
+      isactive: false,
     });
     setError({});
     setEditMode(false);
@@ -264,52 +267,8 @@ export default function Permissions({ title }) {
     }
   };
 
-  const handleDelete = (Id) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const response = await deletePermission(Id);
-          if (response.success) {
-            swalWithBootstrapButtons.fire({
-              title: "ลบรายการสำเร็จ!",
-              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-              icon: "success",
-            });
-            await getPermission();
-          } else {
-            Swal.fire({
-              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
-              icon: "error",
-            });
-          }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
-        }
-      });
-  };
-
   return (
-    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -437,7 +396,7 @@ export default function Permissions({ title }) {
                                 name="isactive"
                                 value={input.isactive}
                                 onChange={handleChangeCheckbox}
-                                checked={input.isactive === 1}
+                                checked={input.isactive === true}
                               />
                             </div>
                           </div>

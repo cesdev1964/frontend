@@ -214,7 +214,7 @@ export default function Positions({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-100 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">

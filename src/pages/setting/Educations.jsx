@@ -8,6 +8,7 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 import { Link } from "react-router-dom";
 import { useEducation } from "../../hooks/educationStore";
 import DataTableComponent from "../../components/DatatableComponent";
+import handleDelete from "../../util/handleDelete";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -52,13 +53,13 @@ export default function Educations({ title }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-   useEffect(() => {
-      if (educationById) {
-        setInput({
-          educationname: educationById.educationName ?? "",
-        });
-      }
-    }, [educationById]);
+  useEffect(() => {
+    if (educationById) {
+      setInput({
+        educationname: educationById.educationName ?? "",
+      });
+    }
+  }, [educationById]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -140,11 +141,18 @@ export default function Educations({ title }) {
     },
   ];
 
+  const columnDefs = [
+    { width: "70px", targets: 0, className: "text-center" },
+    { width: "150px", targets: 1 },
+    { width: "70px", targets: 2, className: "text-center" },
+  ];
+
   const handleAction = (action, id) => {
     if (action === "edit") {
       handleEdit(id, "educationmodal");
     } else if (action === "delete") {
-      handleDelete(id);
+      // handleDelete(id);
+      handleDelete(educationIsLoading,()=>deleteEducation(id),()=>h=getEducationData())
     }
   };
 
@@ -183,50 +191,6 @@ export default function Educations({ title }) {
     }
   };
 
-  const handleDelete = (Id) => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          const response = await deleteEducation(Id);
-          console.log("data", response);
-          if (response.success) {
-            // swalWithBootstrapButtons.fire({
-            //   title: "ลบรายการสำเร็จ!",
-            //   text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-            //   icon: "success",
-            // });
-            await getEducationData();
-          } else {
-            Swal.fire({
-              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
-              icon: "error",
-            });
-          }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
-        }
-      });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -239,23 +203,28 @@ export default function Educations({ title }) {
     console.log("error list", error);
     if (Object.keys(errorList).length === 0) {
       const response = editMode
-              ? await updateEducation(reqData, getId)
-              : await createEducation(reqData);
-            if (response.success) {
-              setIsSubmit(true);
-              Swal.fire({
-                title: "บันทึกข้อมูลสำเร็จ",
-                icon: "success",
-                draggable: true,
-                buttonsStyling: "w-100",
-              });
+        ? await updateEducation(reqData, getId)
+        : await createEducation(reqData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        const currentModal = document.getElementById("educationmodal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+        await getEducationData();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: educationErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
       }
-
-      const currentModal = document.getElementById("educationmodal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
-      await getEducationData();
     }
   };
 
@@ -268,11 +237,11 @@ export default function Educations({ title }) {
       educationname: "",
     });
     setError({});
-    setEditMode(false)
+    setEditMode(false);
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -305,9 +274,9 @@ export default function Educations({ title }) {
           onAction={handleAction}
           tableHead={tableHead}
           tableRef={tableRef}
-          // isLoading={educationIsLoading}
+          columnDefs={columnDefs}
         />
-      
+
         {/* modal */}
         <div
           className="modal fade"

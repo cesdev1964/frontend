@@ -215,7 +215,7 @@ export default function OTCategories({ title }) {
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">

@@ -16,7 +16,7 @@ export default function OT({ title }) {
   }, [newsdata]);
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div>
       <HeaderPage pageName={title} />
       <div className="flex-grow-1 d-flex align-items-start justify-content-center">
         <div className="accordion w-100" id="accordionExample">

@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const AuthContext = createContext();
@@ -13,14 +15,28 @@ export function AuthProvider({ children }) {
       const res = await fetch(`${baseURL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({username, password }),
+        body: JSON.stringify({ username, password }),
       });
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
-      // console.log(data);
 
       localStorage.setItem("access_token", data.access_token);
       setToken(data.access_token);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "เข้าสู่ระบบสำเร็จ",
+      });
       return true;
     } finally {
       setLoading(false);
@@ -38,7 +54,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, isAuth: !!token, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ token, isAuth: !!token, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

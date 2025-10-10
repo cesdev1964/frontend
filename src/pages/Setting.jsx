@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import HeaderPage from "../components/HeaderPage";
 import { useTitle } from "../hooks/useTitle";
 import { useState } from "react";
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import SearchBox from "../components/SearchBox";
 
 const Settings = ({ title }) => {
   useTitle(title);
@@ -15,8 +16,7 @@ const Settings = ({ title }) => {
     "danger",
     "secondary",
   ];
-  const [search,setSearch] = useState("");
-  
+  const [search, setSearch] = useState("");
 
   const settingCard = [
     {
@@ -139,7 +139,7 @@ const Settings = ({ title }) => {
       title: "ประเภทโอที",
       subtitle: "จัดการข้อมูลประเภทโอที",
     },
-   {
+    {
       page: "6",
       path: "#",
       icon: "fa-solid fa-newspaper",
@@ -161,33 +161,25 @@ const Settings = ({ title }) => {
     navigate(path);
   };
 
-
-    //search function
-  const filterItemSetting = settingCard.filter((item)=> {
-    if(item.title.toLocaleLowerCase().includes(search) ||
-    item.subtitle.toLocaleLowerCase().includes(search)){
+  //search function
+  const filterItemSetting = settingCard.filter((item) => {
+    if (
+      item.title.toLocaleLowerCase().includes(search) ||
+      item.subtitle.toLocaleLowerCase().includes(search)
+    ) {
       return item;
     }
   });
 
-
   return (
-    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+    <div>
       <HeaderPage pageName={title} />
-      <div className="search-box">
-        <div className="searchBar">
-           <input
-            type="text"
-            autoComplete="current-password"
-            placeholder="ค้นหาเมนูตั้งค่า"
-            className={`searchInput form-control`}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-           <i className="bi bi-search text-muted searchIcon"></i>
-        </div>
-      </div>
-      <div className="content-box">
+        <SearchBox
+          onChange={(e) => setSearch(e.target.value)}
+          search={search}
+          placeholder="ค้นหาเมนูตั้งค่า"
+        />
+      <div className="content-box mt-4">
         <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {filterItemSetting.length > 0 ? (
             <>
@@ -202,7 +194,6 @@ const Settings = ({ title }) => {
                     <div className="card h-100 shadow-sm card--soft settingCard card-item">
                       <div
                         className="card-body text-center d-flex flex-column"
-                        //  onclick="handleClickToPage('${value.path}')"
                       >
                         <div className="setting-icon pt-3">
                           <i
@@ -224,8 +215,11 @@ const Settings = ({ title }) => {
             <>
               <div className="container">
                 <div className="d-flex flex-column align-items-center justify-content-center  w-100 p-3 mt-4">
-                 <i class="bi bi-gear text-danger" style={{ fontSize: "60px" }}></i>
-                 <h5 className="text-danger">ไม่พบรายการตั้งค่า</h5>
+                  <i
+                    class="bi bi-gear text-danger"
+                    style={{ fontSize: "60px" }}
+                  ></i>
+                  <h5 className="text-danger">ไม่พบรายการตั้งค่า</h5>
                 </div>
               </div>
             </>

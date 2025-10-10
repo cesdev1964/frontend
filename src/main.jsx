@@ -11,12 +11,6 @@ import '../cc-init.js';
 import * as bootstrap from 'bootstrap';  
 window.bootstrap = bootstrap;    
 
-// createRoot(document.getElementById('root')).render(
-//   <StrictMode>
-//     <App />
-//   </StrictMode>,
-// )
-
 document.body.innerHTML = '<div id="root"></div>';
 
 // Render your React component instead

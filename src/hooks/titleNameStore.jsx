@@ -19,7 +19,7 @@ export const useTitltName = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ titleErrorMessage: errorMessage.message, titleIsLoading: false });
+      set({ titleErrorMessage: errorMessage.response?.data?.message, titleIsLoading: false });
       return { success: response.data.success };
     }
   },
@@ -37,10 +37,10 @@ export const useTitltName = create((set) => ({
         titleIsLoading: false,
       };
     } catch (errorMessage) {
-      set({ titleErrorMessage: errorMessage.message, titleIsLoading: false });
+      set({ titleErrorMessage: errorMessage.response?.data?.message, titleIsLoading: false });
       return {
         titleIsLoading: false,
-        titleErrorMessage: errorMessage.message,
+        titleErrorMessage: errorMessage.response?.data?.message,
       };
     }
   },
@@ -56,12 +56,12 @@ export const useTitltName = create((set) => ({
       set({
         titleErrorMessage: error?.response?.data?.message || error.message,
         titleIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         titleErrorMessage: error?.response?.data?.message || error.message,
         titleIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
@@ -94,18 +94,18 @@ export const useTitltName = create((set) => ({
     const response =   await api.put(`/api/titles/${id}`, requestData);
       return {
         titleIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         titleErrorMessage: error?.response?.data?.message || error.message,
         titleIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         titleErrorMessage: error?.response?.data?.message || error.message,
         titleIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

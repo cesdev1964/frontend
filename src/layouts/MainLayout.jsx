@@ -8,6 +8,7 @@ function MainLayout() {
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
+  
 
 
   return (
@@ -16,8 +17,9 @@ function MainLayout() {
       <div className="main">
         <AppNavbar toggleSidebar={toggleSidebar}/>
         <div className="content">
+          <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
             <Outlet />
-           
+          </div>
         </div>
       </div>
     </div>

@@ -9,7 +9,6 @@ export const useUser = create((set) => ({
   success: false,
   userById : {},
 
-
   getUserData: async () => {
     set({ userIsLoading: true, userError: null });
     try {
@@ -20,7 +19,7 @@ export const useUser = create((set) => ({
         userIsLoading: false,
       });
     } catch (errorMessage) {
-      set({ userError: errorMessage.message, userIsLoading: false });
+      set({ userError: errorMessage.response.data.message, userIsLoading: false });
     }
   },
    getUserByIdData: async (userId) => {
@@ -34,8 +33,8 @@ export const useUser = create((set) => ({
       return { userById: response.data.user ?? {}, userIsLoading: false ,success : true};
    
     } catch (errorMessage) {
-      set({ userError: errorMessage.message, userIsLoading: false });
-      return { userIsLoading: false ,userError: errorMessage.message};
+      set({ userError: errorMessage.response.data.message, userIsLoading: false });
+      return { userIsLoading: false ,userError: errorMessage.response.data.message};
 
     }
   },
@@ -43,22 +42,11 @@ export const useUser = create((set) => ({
     console.log("req data from register to sent be ",requestData)
     set({ userIsLoading: true, userError: null });
     try {
-      const response = await api.post("/api/users/register",requestData
-      //    {
-      //   username: requestData.username,
-      //   password: requestData.password,
-      //   isActive: requestData.isActive,
-      //   employeeId: requestData.employeeId,
-      //   titleId: requestData.titleId,
-      //   firstname: requestData.firstname,
-      //   lastname: requestData.lastname,
-      //   roleIds: requestData.roleIds,
-      // }
-    );
+      await api.post("/api/users/register",requestData);
       return {userIsLoading: false, success: true };
     } catch (error) {
-      set({ userError: error.message, userIsLoading: false });
-      return { success: false, error: error?.response?.data?.message || error.message };
+      set({ userError: error.response.data.message, userIsLoading: false });
+      return { success: false, error: error?.response?.data?.message };
     }
   },
   deleteUser: async (userId) => {
@@ -68,8 +56,8 @@ export const useUser = create((set) => ({
     //   console.log("delete user response ",response.data.message)
       return { userIsLoading: false, message : response.data.message ?? "", success: true };
     } catch (error) {
-      set({ userError: error.message, userIsLoading: false });
-      return { success: false, error: error?.response?.data?.message || error.message };
+      set({ userError: error.response.data.message, userIsLoading: false });
+      return { success: false, error: error?.response?.data?.message };
     }
   },
   // ใช้ sessionId
@@ -86,10 +74,10 @@ export const useUser = create((set) => ({
         success: response.data.success,
       };
     } catch (error) {
-      set({ userError: error.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false });
       return {
-        success: response.data.success,
-        userError: error?.response?.data?.message || error.message,
+        success: false,
+        userError: error?.response?.data?.message,
       };
     }
   },
@@ -106,10 +94,10 @@ export const useUser = create((set) => ({
         success: true,
       };
     } catch (error) {
-      set({ userError: error.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false });
       return {
         success: false,
-        userError: error?.response?.data?.message || error.message,
+        userError: error?.response?.data?.message ,
       };
     }
   },

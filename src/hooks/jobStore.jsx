@@ -7,7 +7,7 @@ export const useJob = create((set) => ({
   jobErrorMessage: null,
   success: false,
   jobById: {},
-  jobDropdown:[],
+  jobDropdown: [],
   getJobData: async () => {
     set({ jobIsLoading: true, jobErrorMessage: null });
     try {
@@ -19,7 +19,10 @@ export const useJob = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ jobErrorMessage: errorMessage.message, jobIsLoading: false });
+      set({
+        jobErrorMessage: error?.response?.data?.message,
+        jobIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
@@ -28,7 +31,7 @@ export const useJob = create((set) => ({
     set({ jobIsLoading: true, jobErrorMessage: null });
     try {
       const response = await api.get("/api/jobs");
-      const data = response.data.data ?? []
+      const data = response.data.data ?? [];
       const option = data
         ?.filter((activeData) => activeData.isActive === true)
         .map((item) => ({
@@ -41,7 +44,10 @@ export const useJob = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ jobErrorMessage: errorMessage.message, jobIsLoading: false });
+      set({
+        jobErrorMessage: error?.response?.data?.message,
+        jobIsLoading: false,
+      });
       return { success: response.data.success };
     }
   },
@@ -60,10 +66,13 @@ export const useJob = create((set) => ({
         jobIsLoading: false,
       };
     } catch (errorMessage) {
-      set({ jobErrorMessage: errorMessage.message, jobIsLoading: false });
+      set({
+        jobErrorMessage: errorMessage?.response?.data?.message,
+        jobIsLoading: false,
+      });
       return {
         jobIsLoading: false,
-        jobErrorMessage: errorMessage.message,
+        jobErrorMessage: response.data?.message,
       };
     }
   },
@@ -79,23 +88,21 @@ export const useJob = create((set) => ({
       set({
         jobErrorMessage: error?.response?.data?.message || error.message,
         jobIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         jobErrorMessage: error?.response?.data?.message || error.message,
         jobIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
   deleteJob: async (id) => {
-    console.log("id ", id);
     set({ jobIsLoading: true, jobErrorMessage: null });
+    await api.delete(`/api/jobs/${id}`);
     try {
-      const response = await api.delete(`/api/jobs/${id}`);
       return {
         jobIsLoading: false,
-        jobErrorMessage: response.data.message ?? "",
         success: true,
       };
     } catch (error) {
@@ -123,12 +130,12 @@ export const useJob = create((set) => ({
       set({
         jobErrorMessage: error?.response?.data?.message || error.message,
         jobIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         jobErrorMessage: error?.response?.data?.message || error.message,
         jobIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

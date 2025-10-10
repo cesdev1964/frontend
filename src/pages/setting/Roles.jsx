@@ -172,6 +172,13 @@ export default function Roles({ title }) {
     },
   ];
 
+    const columnDefs = [
+    { width: "70px", targets: 0 ,className:"text-center"},
+    { width: "100px", targets: 1 },
+    { width: "150px", targets: 2 },
+    { width: "90px", targets: 3},
+  ];
+
   const handleAction = (action, id) => {
     if (action === "edit") {
       handleEdit(id);
@@ -337,6 +344,7 @@ export default function Roles({ title }) {
           onAction={handleAction}
           tableHead={tableHead}
           tableRef={tableRef}
+          columnDefs={columnDefs}
         />
 
         {/* modal */}

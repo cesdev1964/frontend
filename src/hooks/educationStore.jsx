@@ -19,8 +19,8 @@ export const useEducation = create((set) => ({
         educationIsLoading: false,
       });
       return { success: response.data.success };
-    } catch (errorMessage) {
-      set({ educationErrorMessage: errorMessage.message, educationIsLoading: false });
+    } catch (error) {
+      set({ educationErrorMessage: error.response.data.message, educationIsLoading: false });
       return { success: response.data.success };
     }
   },
@@ -40,8 +40,8 @@ export const useEducation = create((set) => ({
         educationIsLoading: false,
       });
       return { success: response.data.success };
-    } catch (errorMessage) {
-      set({ educationErrorMessage: errorMessage.message, educationIsLoading: false });
+    } catch (error) {
+      set({ educationErrorMessage: error?.response?.data?.message, educationIsLoading: false });
       return { success: response.data.success };
     }
   },
@@ -58,11 +58,11 @@ export const useEducation = create((set) => ({
         educationById: response.data.data ?? {},
         educationIsLoading: false,
       };
-    } catch (errorMessage) {
-      set({ educationErrorMessage: errorMessage.message, educationIsLoading: false });
+    } catch (error) {
+      set({ educationErrorMessage: error?.response?.data?.message, educationIsLoading: false });
       return {
         educationIsLoading: false,
-        educationErrorMessage: errorMessage.message,
+        educationErrorMessage: error?.response?.data?.message,
       };
     }
   },
@@ -78,17 +78,16 @@ export const useEducation = create((set) => ({
       set({
         educationErrorMessage: error?.response?.data?.message || error.message,
         educationIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         educationErrorMessage: error?.response?.data?.message || error.message,
         educationIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
   deleteEducation: async (id) => {
-    console.log("id ", id);
     set({ educationIsLoading: true, educationErrorMessage: null });
     try {
       const response = await api.delete(`/api/educations/${id}`);
@@ -118,16 +117,16 @@ export const useEducation = create((set) => ({
         educationIsLoading: false,
         success: response.data.success,
       };
-    } catch (error) {
+    }  catch (error) {
       set({
         educationErrorMessage: error?.response?.data?.message || error.message,
         educationIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         educationErrorMessage: error?.response?.data?.message || error.message,
         educationIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

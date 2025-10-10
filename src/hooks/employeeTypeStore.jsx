@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/axios";
+const url = "/api/employeeTypes"
 
 export const useEmployeeType = create((set) => ({
   employeeTypeData: [],
@@ -11,7 +12,7 @@ export const useEmployeeType = create((set) => ({
   getEmployeeType: async () => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.get("/api/employeeTypes");
+      const response = await api.get(url);
       // console.log("role data", response.data.data);
       set({
         employeeTypeData: response.data.data ?? [],
@@ -19,7 +20,7 @@ export const useEmployeeType = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ employeeTypeErrorMessage: errorMessage.message, employeeTypeIsLoading: false });
+      set({ employeeTypeErrorMessage: errorMessage.response?.data?.message, employeeTypeIsLoading: false });
       return { success: response.data.success };
     }
   },
@@ -27,7 +28,7 @@ export const useEmployeeType = create((set) => ({
   getEmployeeTypeDropdown: async () => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.get("/api/employeeTypes");
+      const response = await api.get(url);
       // console.log("role data", response.data.data)
       const data = response.data.data ?? []
       const option = data
@@ -42,7 +43,7 @@ export const useEmployeeType = create((set) => ({
       });
       return { success: response.data.success };
     } catch (errorMessage) {
-      set({ employeeTypeErrorMessage: errorMessage.message, employeeTypeIsLoading: false });
+      set({ employeeTypeErrorMessage: errorMessage.response?.data?.message, employeeTypeIsLoading: false });
       return { success: response.data.success };
     }
   },
@@ -50,7 +51,7 @@ export const useEmployeeType = create((set) => ({
   getEmployeeTypeById: async (id) => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.get(`/api/employeeTypes/${id}`);
+      const response = await api.get(`${url}/${id}`);
       //   console.log("role data", response.data.data);
       set({
         employeeTypeById: response.data.data ?? {},
@@ -61,31 +62,31 @@ export const useEmployeeType = create((set) => ({
         employeeTypeIsLoading: false,
       };
     } catch (errorMessage) {
-      set({ employeeTypeErrorMessage: errorMessage.message, employeeTypeIsLoading: false });
+      set({ employeeTypeErrorMessage: errorMessage.response?.data?.message, employeeTypeIsLoading: false });
       return {
         employeeTypeIsLoading: false,
-        employeeTypeErrorMessage: errorMessage.message,
+        employeeTypeErrorMessage: errorMessage.response?.data?.message,
       };
     }
   },
   createEmployeeType: async (requestData) => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.post("/api/employeeTypes", requestData);
+      await api.post(url, requestData);
       return {
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         employeeTypeErrorMessage: error?.response?.data?.message || error.message,
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         employeeTypeErrorMessage: error?.response?.data?.message || error.message,
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },
@@ -93,10 +94,9 @@ export const useEmployeeType = create((set) => ({
     console.log("id ", id);
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.delete(`/api/employeeTypes/${id}`);
+      await api.delete(`${url}/${id}`);
       return {
         employeeTypeIsLoading: false,
-        employeeTypeErrorMessage: response.data.message ?? "",
         success: true,
       };
     } catch (error) {
@@ -115,21 +115,21 @@ export const useEmployeeType = create((set) => ({
   updateEmployeeType: async (requestData, id) => {
     set({ employeeTypeIsLoading: true, employeeTypeErrorMessage: null });
     try {
-      const response = await api.put(`/api/employeeTypes/${id}`, requestData);
+      await api.put(`${url}/${id}`, requestData);
       return {
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({
         employeeTypeErrorMessage: error?.response?.data?.message || error.message,
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: false,
       });
       return {
         employeeTypeErrorMessage: error?.response?.data?.message || error.message,
         employeeTypeIsLoading: false,
-        success: response.data.success,
+        success: false,
       };
     }
   },

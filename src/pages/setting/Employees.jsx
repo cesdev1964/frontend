@@ -340,7 +340,7 @@ const Employees = ({ title }) => {
   ];
 
   return (
-    <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+    <div>
       {/* Breadcrumb */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">

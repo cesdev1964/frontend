@@ -10,7 +10,8 @@ export default function DataTableComponent({
   onAction,
   tableRef,
   tableHead,
-  isLoading = false
+  isLoading = false,
+  columnDefs = []
 }) {
 //   const tableRef = useRef(null);
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function DataTableComponent({
         search: "ค้นหา:",
         zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
       },
+      columnDefs: columnDefs,
       columns: column.map((col) => ({
         title: col.title,
         data: col.data,

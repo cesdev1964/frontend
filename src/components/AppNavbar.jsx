@@ -97,7 +97,6 @@ function AppNavbar({ toggleSidebar }) {
                     </div>
                   </>
                 )}
-                {/* <div className="muted">คุณ {isLoading ? "..." : data.name?data.name:"N/A"} */}
               </a>
 
 

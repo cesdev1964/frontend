@@ -40,7 +40,7 @@ export const useRolePermission = create((set) => ({
       };
     } catch (errorMessage) {
       set({
-        erolePermissionerrorMessage: errorMessage.message,
+        rolePermissionerrorMessage: errorMessage.message,
         rolePermissionisLoading: false,
       });
       return {
