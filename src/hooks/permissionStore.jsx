@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/axios";
+const url = "/api/permissions"
 
 export const usePermission = create((set) => ({
   permissionData: [],
@@ -10,8 +11,7 @@ export const usePermission = create((set) => ({
   getPermission: async () => {
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.get("/api/permissions");
-    //   console.log("responsedata",response.data.permissions)
+      const response = await api.get(url);
       set({
         permissionData: response.data.permissions ?? [],
         permissionLoading: false,
@@ -27,7 +27,7 @@ export const usePermission = create((set) => ({
   getPermissionById: async (id) => {
     set({ isLoading: true, permissionError: null });
     try {
-      const response = await api.get(`/api/permissions/${id}`);
+      const response = await api.get(`${url}/${id}`);
       //   console.log("role data", response.data.data);
       set({
         permissionDataById: response.data.permission ?? {},
@@ -51,7 +51,7 @@ export const usePermission = create((set) => ({
 
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.post("/api/permissions",requestData);
+      const response = await api.post(url,requestData);
         // console.log("res data from register ",response.data.permissions)
       return {
         permissionData: response.data.permissions ?? {},
@@ -70,7 +70,7 @@ export const usePermission = create((set) => ({
   deletePermission: async (id) => {
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.delete(`/api/permissions/${id}`);
+      const response = await api.delete(`${url}/${id}`);
       //   console.log("delete user response ",response.data.message)
       return {
         permissionLoading: false,
@@ -90,7 +90,7 @@ export const usePermission = create((set) => ({
   updatePermission: async (requestData, id) => {
     set({ permissionLoading: true, permissionError: null });
     try {
-      const response = await api.put(`/api/permissions/${id}`,requestData);
+      const response = await api.put(`${url}/${id}`,requestData);
       return {
         permissionData: response.data.permissions ?? {},
         permissionError: false,

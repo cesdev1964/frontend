@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../api/axios";
+const url = "/api/role_permissions/role";
 
 export const useRolePermission = create((set) => ({
   rolePermissiondata: [],
@@ -7,12 +8,12 @@ export const useRolePermission = create((set) => ({
   rolePermissionerrorMessage: null,
   success: false,
   rolePermissionMessage: "",
-  rolePermissiondataById: {},
+  rolePermissiondataById: [],
   getRolePermission: async () => {
     set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
     try {
       const response = await api.get("/api/role_permissions");
-      // console.log("role data", response.data.data);
+      console.log("role data", response.data.data);
       set({
         rolePermissiondata: response.data.data ?? [],
         rolePermissionisLoading: false,
@@ -27,14 +28,14 @@ export const useRolePermission = create((set) => ({
   getRolePermissionByRoleId: async (roleId) => {
     set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
     try {
-      const response = await api.get(`/api/role_permissions/role/${roleId}`);
-      console.log("role data", response.data.data);
+      const response = await api.get(`${url}/${roleId}`);
+      // console.log("role data", response.data.data);
       set({
-        rolePermissiondata: response.data.data ?? {},
+        rolePermissiondataById: response.data.data ?? [],
         rolePermissionisLoading: false,
       });
       return {
-        rolePermissiondata: response.data.data ?? {},
+        rolePermissiondataById: response.data.data ?? [],
         rolePermissionisLoading: false,
         success: true,
       };
@@ -49,37 +50,37 @@ export const useRolePermission = create((set) => ({
       };
     }
   },
-  createRolePermission: async (requestData) => {
-    set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
-    try {
-      const response = await api.post("/api/roles", requestData);
-      //   console.log("res data from register ",response.data.user)
-      return {
-        rolePermissiondata: response.data.data ?? {},
-        rolePermissionisLoading: false,
-        rolePermissionMessage: response.data.message ?? "",
-        success: true,
-      };
-    } catch (error) {
-      set({
-        rolePermissionerrorMessage: error.message,
-        rolePermissionisLoading: false,
-      });
-      return {
-        success: false,
-        rolePermissionerrorMessage:
-          error?.response?.data?.message || error.message,
-      };
-    }
-  },
+  // createRolePermission: async (requestData) => {
+  //   set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
+  //   try {
+  //     const response = await api.post("/api/roles", requestData);
+  //     //   console.log("res data from register ",response.data.user)
+  //     return {
+  //       rolePermissiondata: response.data.data ?? {},
+  //       rolePermissionisLoading: false,
+  //       rolePermissionMessage: response.data.message ?? "",
+  //       success: true,
+  //     };
+  //   } catch (error) {
+  //     set({
+  //       rolePermissionerrorMessage: error.message,
+  //       rolePermissionisLoading: false,
+  //     });
+  //     return {
+  //       success: false,
+  //       rolePermissionerrorMessage:
+  //         error?.response?.data?.message || error.message,
+  //     };
+  //   }
+  // },
 
   updateRolePermission: async (requestData, roleId) => {
     set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
     try {
-      const response = await api.put(`/api/roles/${roleId}`, requestData);
+      const response = await api.put(`${url}/${roleId}`,requestData);
       //   console.log("res data from register ",response.data.user)
       return {
-        rolePermissiondata: response.data.data ?? {},
+        rolePermissiondata: response.data.permissions ?? {},
         rolePermissionisLoading: false,
         rolePermissionMessage: response.data.message ?? "",
         success: true,

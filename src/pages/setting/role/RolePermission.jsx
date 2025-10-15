@@ -3,70 +3,131 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTitle } from "../../../hooks/useTitle";
 import Swal from "sweetalert2";
 import HeaderPage from "../../../components/HeaderPage";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DataTableComponent from "../../../components/DatatableComponent";
 import { useRolePermission } from "../../../hooks/rolePermissionStore";
 import { useParams } from "react-router-dom";
+import { SubmitOrCancelButton } from "../../../components/SubmitOrCancelBtnForModal";
+import { usePermission } from "../../../hooks/permissionStore";
+import LoadingSpin from "../../../components/loadingSpin";
 
-export const tableHead = [
-  { colName: "ลำดับ" },
-  { colName: "รหัสสิทธิ์เข้าใช้งาน" },
-  { colName: "ชื่อสิทธิ์เข้าใช้งาน" },
-  // { index: 4, colName: "การจัดการ" },
-];
+export const tableHead = [{ colName: "รหัสสิทธิ์เข้าใช้งาน" }];
 export default function RolePermission({ title }) {
-  const tableRef = useRef();
+  const tableRef2 = useRef();
+  const [selectPermission, setSelectPermission] = useState([]);
+  const [isSelectAll, setIsSelectAll] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useTitle(title);
+
   const {
-    rolePermissiondata,
     rolePermissionisLoading,
     rolePermissionerrorMessage,
     success,
     rolePermissionMessage,
     rolePermissiondataById,
     getRolePermissionByRoleId,
+    getRolePermission,
+    updateRolePermission,
   } = useRolePermission();
+
+  const { getPermission, permissionData } = usePermission();
+
   const { roleid } = useParams();
-  console.log("roleId from params :", roleid);
 
   const fetchDataTable = useCallback(async () => {
     try {
       await getRolePermissionByRoleId(roleid);
+      await getRolePermission();
+      await getPermission();
     } catch (error) {
       alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
     }
-  }, [getRolePermissionByRoleId]);
+  }, [getRolePermissionByRoleId, getRolePermission]);
 
   useEffect(() => {
     fetchDataTable();
   }, [fetchDataTable]);
 
-  const columnData = [
+  // การดึงค่าเก็บใน state
+  useEffect(() => {
+    if (rolePermissiondataById.length > 0) {
+      setSelectPermission(
+        rolePermissiondataById.map((item) => item.permissionId) ?? []
+      );
+      if (rolePermissiondataById.length === permissionData.length) {
+        setIsSelectAll(true);
+      } else {
+        setIsSelectAll(false);
+      }
+    } else {
+      setSelectPermission([]);
+    }
+  }, [rolePermissiondataById, permissionData.length]);
+
+  //ทำการเก็บค่าเฉยๆ
+  const columnData2 = [
     {
-      data: null,
-      title: "ลำดับ",
-      render: function (data, type, row, meta) {
-        return meta.row + 1;
-      },
-    },
-    {
-      title: "รหัสสิทธิ์เข้าใช้งาน",
+      title: "สิทธิ์เข้าใช้งานที่เลือกแล้ว",
       data: "permissionCode",
       orderable: true,
     },
-
-    {
-      title: "ชื่อสิทธิ์เข้าใช้งาน",
-      data: "permissionName",
-      orderable: true,
-    },
   ];
 
-  const columnDefs = [
-    { width: "70px", targets: 0 },
-    { width: "100px", targets: 1 },
-    { width: "150px", targets: 2 },
-  ];
+  const columnDefs = [];
+
+  const handleChangeSelect = (e, permissionId) => {
+    if (e.target.checked) {
+      setSelectPermission((prev) => {
+        if (!prev.includes(permissionId)) {
+          return [...prev, permissionId];
+        }
+        return prev;
+      });
+    } else {
+      setSelectPermission((prev) => prev.filter((id) => id !== permissionId));
+    }
+    setIsSelectAll(false);
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setIsSelectAll(true);
+      setSelectPermission(permissionData.map((item) => item.permissionId));
+    } else {
+      setIsSelectAll(false);
+      setSelectPermission([]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    setIsLoading(true);
+    e.preventDefault();
+    const reqData = {
+      permissionIds: selectPermission,
+    };
+    const response = await updateRolePermission(reqData, roleid);
+    if (response.success) {
+      Swal.fire({
+        title: "บันทึกข้อมูลสำเร็จ",
+        icon: "success",
+        draggable: true,
+        buttonsStyling: "w-100",
+      });
+      await getRolePermissionByRoleId(roleid);
+      setIsLoading(false);
+      
+    } else {
+      Swal.fire({
+        title: "บันทึกข้อมูลไม่สำเร็จ",
+        text: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+        icon: "error",
+      });
+    }
+  };
+
+  const ClearInput = () => {
+    setSelectPermission([]);
+  };
 
   return (
     <div>
@@ -85,15 +146,86 @@ export default function RolePermission({ title }) {
       </nav>
       <HeaderPage pageName="รายการสิทธ์การใช้งาน" />
       <div className="container">
-        <div className="mt-5">
-        <DataTableComponent
-          column={columnData}
-          tableRef={tableRef}
-          tableHead={tableHead}
-          data={rolePermissiondata}
-          isLoading={rolePermissionisLoading}
-          columnDefs={columnDefs}
-        />
+        <div className="row g-3">
+          <div className="col-lg-6 col-sm-12">
+            <div
+              className="table-container-horizontal-scorll table-responsive"
+              style={{ marginTop: "65px" }}
+            >
+              {isLoading && <LoadingSpin />}
+              <table
+                className="table table-striped table-hover text-nowrap"
+                style={{ width: "100%", tableLayout: "fixed" }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      background: "#ffe8da",
+                      fontWeight: "600",
+                    }}
+                    className="text-center"
+                  >
+                    <th>รหัสสิทธิ์เข้าใช้งาน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td td className="p-2">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={isSelectAll === true}
+                        onChange={(e) => handleSelectAll(e)}
+                      />
+                      <label className="form-check-label ms-2">
+                        เลือกทั้งหมด
+                      </label>
+                    </td>
+                  </tr>
+                  {permissionData.map((row, index) => (
+                    <tr key={index}>
+                      <td className="p-2">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={row.permissionId}
+                            checked={selectPermission.includes(
+                              row.permissionId
+                            )}
+                            onChange={(e) =>
+                              handleChangeSelect(e, row.permissionId)
+                            }
+                          />
+                          <label className="form-check-label">
+                            {row.permissionCode}
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-4 d-flex justify-content-end me-4">
+              <SubmitOrCancelButton
+                handleSubmit={handleSubmit}
+                handleCancel={ClearInput}
+                isLoading={rolePermissionisLoading}
+              />
+            </div>
+          </div>
+
+          <div className="col-lg-6 col-sm-12 ">
+            <DataTableComponent
+              column={columnData2}
+              tableRef={tableRef2}
+              tableHead={tableHead}
+              data={rolePermissiondataById}
+              isLoading={rolePermissionisLoading}
+              columnDefs={columnDefs}
+            />
+          </div>
         </div>
       </div>
     </div>

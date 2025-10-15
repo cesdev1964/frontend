@@ -220,6 +220,12 @@ export default function Permissions({ title }) {
         : await createPermission(reqData);
 
       if (response.success) {
+
+        await getPermission();
+        ClearInput();
+        const currentModal = document.getElementById("permissionModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -227,11 +233,6 @@ export default function Permissions({ title }) {
           draggable: true,
           buttonsStyling: "w-100",
         });
-        const currentModal = document.getElementById("permissionModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        await getPermission();
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",

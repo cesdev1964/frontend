@@ -12,6 +12,7 @@ import { usePosition } from "../../hooks/positionStore";
 import { useJob } from "../../hooks/jobStore";
 import { useContrator } from "../../hooks/contratorStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
+import {maskIDCard,maskPhone} from "../../util/inputFormat";
 
 var fileName = "";
 var filePath = "";
@@ -29,10 +30,10 @@ export default function EmployeeManagementModal({
   const [src, setSrc] = useState(null);
   const [preview, setPreview] = useState(null);
   const inputImageRef = useRef(null);
-  const { getEducationDropdown,educationDropdown } = useEducation();
+  const { getEducationDropdown, educationDropdown } = useEducation();
   const { titleData, getTitleNameData } = useTitltName();
-  const { levelDropdown,getLevelDropdown } = useLevel();
-  const { positionDropdown,getPositionDropdown } = usePosition();
+  const { levelDropdown, getLevelDropdown } = useLevel();
+  const { positionDropdown, getPositionDropdown } = usePosition();
   const { contratorDropdown, getContratorDropdown } = useContrator();
   const { jobDropdown, getJobDropdown } = useJob();
   const { employeeTypeDropdown, getEmployeeTypeDropdown } = useEmployeeType();
@@ -275,10 +276,15 @@ export default function EmployeeManagementModal({
                           name="telephoneNo"
                           type="tel"
                           className="form-control"
-                          maxLength={10}
+                          maxLength={12}
                           value={input.telephoneNo}
-                          placeholder="000-000-0000"
-                          onChange={handleChangeInput}
+                          placeholder="กรอกหมายเลขโทรศัพท์"
+                          onChange={(e) =>
+                            setInput((prevData) => ({
+                              ...prevData,
+                              telephoneNo: maskPhone(e.target.value),
+                            }))
+                          }
                         />
                       </div>
                     </div>
@@ -291,20 +297,22 @@ export default function EmployeeManagementModal({
                         <input
                           className="form-control"
                           id="cardId"
-                          type="tel"
                           name="cardId"
-                          placeholder="X-XXXX-XXXXX-XX-X"
-                          autocomplete="off"
+                          placeholder="กรอกเลขบัตรประชาชน"
                           autofocus
                           title="National ID Input"
                           aria-labelledby="InputLabel"
                           aria-invalid
                           aria-required="true"
                           required
-                          tabIndex="1"
-                          maxLength={13}
+                          maxLength={17}
                           value={input.cardId}
-                          onChange={handleChangeInput}
+                          onChange={(e) =>
+                            setInput((prevData) => ({
+                              ...prevData,
+                              cardId: maskIDCard(e.target.value),
+                            }))
+                          }
                         />
                       </div>
                     </div>
@@ -326,8 +334,9 @@ export default function EmployeeManagementModal({
                           }
                           placeholder="เลือกระดับ"
                           value={
-                            levelDropdown.find((i) => i.value === input.levelId) ||
-                            null
+                            levelDropdown.find(
+                              (i) => i.value === input.levelId
+                            ) || null
                           }
                         />
                       </div>
@@ -343,7 +352,8 @@ export default function EmployeeManagementModal({
                           }
                           placeholder="เลือกหน่วยงาน"
                           value={
-                            jobDropdown.find((i) => i.value === input.jobId) || null
+                            jobDropdown.find((i) => i.value === input.jobId) ||
+                            null
                           }
                         />
                       </div>
@@ -474,10 +484,7 @@ export default function EmployeeManagementModal({
               </div>
             </div>
           </div>
-          <SubmitOrCancelButton
-            handleCancel={clear}
-            handleSubmit={submit}
-          />
+          <SubmitOrCancelButton handleCancel={clear} handleSubmit={submit} />
         </Modal.Body>
       </Modal>
       {openCopperModal && (

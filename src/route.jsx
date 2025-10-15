@@ -25,7 +25,6 @@ import EmployeeTypes from "./pages/setting/EmployeeTypes";
 import DeductionTypes from "./pages/setting/DeductionTypes";
 import Permissions from "./pages/setting/Permissions";
 import RolePermission from "./pages/setting/role/RolePermission";
-import { useNavigate } from "react-router-dom";
 
 export default function RouterPage() {
   const routes = useRoutes([

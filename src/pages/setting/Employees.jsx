@@ -247,10 +247,14 @@ const Employees = ({ title }) => {
     // setSetEditMode(false)
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
     // setSetEditMode(false);
+    e.preventDefault();
     console.log("filePath", filePath);
     console.log("fileName", fileName);
+
+    console.log("employee data",input);
+    
 
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
 
@@ -258,50 +262,43 @@ const Employees = ({ title }) => {
   };
 
   const handleEdit = () => {
-    const currentModal = document.getElementById("notModal");
-    if (currentModal) {
-      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
-      // setSetEditMode(true)
-
-      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modal.show();
-    }
+    setOpenModal(true)
   };
 
-  const handleDelete = () => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: "ลบรายการสำเร็จ!",
-            text: "คุณทำการลบรายการเรียบร้อยแล้ว",
-            icon: "success",
-          });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
-        }
-      });
-  };
+  // const handleDelete = () => {
+  //   const swalWithBootstrapButtons = Swal.mixin({
+  //     customClass: {
+  //       confirmButton: "btn btn-success custom-width-btn-alert",
+  //       cancelButton: "btn btn-danger custom-width-btn-alert",
+  //     },
+  //     buttonsStyling: "w-100",
+  //   });
+  //   swalWithBootstrapButtons
+  //     .fire({
+  //       title: "คุณต้องการลบรายการใช่หรือไม่",
+  //       text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "ใช่ ลบได้เลย",
+  //       cancelButtonText: "ยกเลิกการลบ",
+  //       reverseButtons: true,
+  //     })
+  //     .then((result) => {
+  //       if (result.isConfirmed) {
+  //         swalWithBootstrapButtons.fire({
+  //           title: "ลบรายการสำเร็จ!",
+  //           text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+  //           icon: "success",
+  //         });
+  //       } else if (result.dismiss === Swal.DismissReason.cancel) {
+  //         swalWithBootstrapButtons.fire({
+  //           title: "ยกเลิก",
+  //           text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
+  //           icon: "error",
+  //         });
+  //       }
+  //     });
+  // };
 
   const openCopperImageModal = (e) => {
     e.preventDefault();
@@ -766,7 +763,7 @@ const Employees = ({ title }) => {
             handleClear();
             setOpenModal(false);
           }}
-          submit={handleSubmit}
+        submit={handleSubmit}
        />
     </div>
   );

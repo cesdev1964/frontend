@@ -213,7 +213,7 @@ export default function Contrators({ title }) {
         const modalInstance = bootstrap.Modal.getInstance(currentModal);
         modalInstance.hide();
         ClearInput();
-        getContratorData();
+       await getContratorData();
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",

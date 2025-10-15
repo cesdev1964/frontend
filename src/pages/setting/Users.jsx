@@ -102,12 +102,6 @@ export default function Users({ title }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-  //เมื่อค่าเปลี่ยน
-  // useEffect(() => {
-  //   if (data || userdata || titleData) {
-  //     GetDataTable();
-  //   }
-  // }, [data, input.roles, userdata, titleData]);
 
   //ใส่ใน input ของ edit mode
   useEffect(() => {

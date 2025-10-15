@@ -11,7 +11,8 @@ export default function DataTableComponent({
   tableRef,
   tableHead,
   isLoading = false,
-  columnDefs = []
+  columnDefs = [],
+  // onCheck
 }) {
 //   const tableRef = useRef(null);
   useEffect(() => {
@@ -19,6 +20,18 @@ export default function DataTableComponent({
       GetDataTable();
     }
   }, [data,column,onAction]);
+
+  // useEffect(()=>{
+  //   const table = $(tableRef.current)
+  //   table.on("change", "[data-action]", function (e) {
+  //     const action = $(this).data("action");
+  //     const rowId = $(this).data("id");
+  //     if (onCheck) onCheck(action, rowId,e);
+  //   });
+  //   return ()=>{
+  //      table.off("change", "[data-action]");
+  //   }
+  // },[])
 
   const GetDataTable = () => {
     $(tableRef.current).DataTable({
@@ -60,6 +73,8 @@ export default function DataTableComponent({
       const rowId = $(this).data("id");
       if (onAction) onAction(action, rowId);
     });
+
+    
 
     return () => {
       table.destroy(true);
