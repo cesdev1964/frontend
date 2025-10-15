@@ -746,6 +746,12 @@ thead th:last-child {
   max-height: 500px;
 }
 
+.sub-label{
+  margin-left: 10px;
+  color: gray;
+  font-size: 0.9rem;
+}
+
 /* Off-canvas for < 1024px */
 @media (max-width: 1023.98px) {
   .app {

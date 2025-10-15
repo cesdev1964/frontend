@@ -5,6 +5,8 @@ export const SearchDropdown = ({
   handleSelectChange,
   value = null,
   placeholder = "",
+  className = "",
+  customComponent = {}
 }) => {
   return (
     <>
@@ -15,6 +17,8 @@ export const SearchDropdown = ({
         // isClearable
         isSearchable
         placeholder={placeholder}
+        className={className}
+        components={customComponent}
       />
     </>
   );

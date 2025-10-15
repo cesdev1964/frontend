@@ -25,6 +25,7 @@ import EmployeeTypes from "./pages/setting/EmployeeTypes";
 import DeductionTypes from "./pages/setting/DeductionTypes";
 import Permissions from "./pages/setting/Permissions";
 import RolePermission from "./pages/setting/role/RolePermission";
+import Flows from "./pages/setting/Flows";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -67,6 +68,7 @@ export default function RouterPage() {
         { path: "settings/employeetype", element: <EmployeeTypes title="จัดการข้อมูลประเภทของพนักงาน" /> },
         { path: "settings/deductiontype", element: <DeductionTypes title="จัดการข้อมูลประเภทการหักเงิน" /> },
         { path: "settings/permission", element: <Permissions title="จัดการข้อมูล Permission" /> },
+        { path: "settings/flow", element: <Flows title="จัดการข้อมูลสายอนุมัติ" /> },
        
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },
 

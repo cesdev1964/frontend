@@ -149,7 +149,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/flow",
       icon: "bi bi-diagram-2-fill",
       color: cardColor[5],
       title: "สายอนุมัติ",
