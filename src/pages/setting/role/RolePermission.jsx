@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { SubmitOrCancelButton } from "../../../components/SubmitOrCancelBtnForModal";
 import { usePermission } from "../../../hooks/permissionStore";
 import LoadingSpin from "../../../components/loadingSpin";
+import SearchBox from "../../../components/SearchBox";
 
 export const tableHead = [{ colName: "รหัสสิทธิ์เข้าใช้งาน" }];
 export default function RolePermission({ title }) {
@@ -17,6 +18,7 @@ export default function RolePermission({ title }) {
   const [selectPermission, setSelectPermission] = useState([]);
   const [isSelectAll, setIsSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState("");
   useTitle(title);
 
   const {
@@ -115,7 +117,6 @@ export default function RolePermission({ title }) {
       });
       await getRolePermissionByRoleId(roleid);
       setIsLoading(false);
-      
     } else {
       Swal.fire({
         title: "บันทึกข้อมูลไม่สำเร็จ",
@@ -128,6 +129,14 @@ export default function RolePermission({ title }) {
   const ClearInput = () => {
     setSelectPermission([]);
   };
+
+    const filterPermission = permissionData.filter((item) => {
+    if (
+      item.permissionCode.toLocaleLowerCase().includes(search)
+    ) {
+      return item;
+    }
+  });
 
   return (
     <div>
@@ -145,74 +154,82 @@ export default function RolePermission({ title }) {
         </ol>
       </nav>
       <HeaderPage pageName="รายการสิทธ์การใช้งาน" />
+
       <div className="container">
         <div className="row g-3">
           <div className="col-lg-6 col-sm-12">
-            <div
-              className="table-container-horizontal-scorll table-responsive"
-              style={{ marginTop: "65px" }}
-            >
-              {isLoading && <LoadingSpin />}
-              <table
-                className="table table-striped table-hover text-nowrap"
-                style={{ width: "100%", tableLayout: "fixed" }}
+            <div className="mt-4">
+              <SearchBox
+                onChange={(e) => setSearch(e.target.value)}
+                search={search}
+                placeholder="ค้นหาสิทธิ์เข้าใช้งาน"
+              />
+              <div
+                className="table-container-horizontal-scorll table-responsive"
+                // style={{ marginTop: "65px" }}
               >
-                <thead>
-                  <tr
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                    }}
-                    className="text-center"
-                  >
-                    <th>รหัสสิทธิ์เข้าใช้งาน</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td td className="p-2">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={isSelectAll === true}
-                        onChange={(e) => handleSelectAll(e)}
-                      />
-                      <label className="form-check-label ms-2">
-                        เลือกทั้งหมด
-                      </label>
-                    </td>
-                  </tr>
-                  {permissionData.map((row, index) => (
-                    <tr key={index}>
-                      <td className="p-2">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value={row.permissionId}
-                            checked={selectPermission.includes(
-                              row.permissionId
-                            )}
-                            onChange={(e) =>
-                              handleChangeSelect(e, row.permissionId)
-                            }
-                          />
-                          <label className="form-check-label">
-                            {row.permissionCode}
-                          </label>
-                        </div>
+                {isLoading && <LoadingSpin />}
+                <table
+                  className="table table-striped table-hover text-nowrap"
+                  style={{ width: "100%", tableLayout: "fixed" }}
+                >
+                  <thead>
+                    <tr
+                      style={{
+                        background: "#ffe8da",
+                        fontWeight: "600",
+                      }}
+                      className="text-center"
+                    >
+                      <th>รหัสสิทธิ์เข้าใช้งาน</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td td className="p-2">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={isSelectAll === true}
+                          onChange={(e) => handleSelectAll(e)}
+                        />
+                        <label className="form-check-label ms-2">
+                          เลือกทั้งหมด
+                        </label>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 d-flex justify-content-end me-4">
-              <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
-                isLoading={rolePermissionisLoading}
-              />
+                    {filterPermission.map((row, index) => (
+                      <tr key={index}>
+                        <td className="p-2">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              value={row.permissionId}
+                              checked={selectPermission.includes(
+                                row.permissionId
+                              )}
+                              onChange={(e) =>
+                                handleChangeSelect(e, row.permissionId)
+                              }
+                            />
+                            <label className="form-check-label">
+                              {row.permissionCode}
+                            </label>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-4 d-flex justify-content-end me-4">
+                <SubmitOrCancelButton
+                  handleSubmit={handleSubmit}
+                  handleCancel={ClearInput}
+                  isLoading={rolePermissionisLoading}
+                />
+              </div>
             </div>
           </div>
 
