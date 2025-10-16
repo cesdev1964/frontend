@@ -6,11 +6,18 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { Link } from "react-router-dom";
-import { useContrator } from "../../hooks/contratorStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import handleDelete from "../../util/handleDelete";
 import { useFlow } from "../../hooks/flowStore";
+
+export const stepList = [
+  { value: "หัวหน้าคนที่ 1", index: 1 },
+  { value: "หัวหน้าคนที่ 2", index: 2 },
+  { value: "หัวหน้าคนที่ 3", index: 3 },
+  { value: "หัวหน้าคนที่ 4", index: 4 },
+  { value: "หัวหน้าคนที่ 5", index: 5 },
+];
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -27,27 +34,33 @@ export default function Flows({ title }) {
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลสายอนุมัติ");
   const [editmode, setEditMode] = useState(false);
   const [getId, setGetId] = useState(null);
+  const [isOpenNewApproveStep, setIsOpenNewApproveStep] = useState(false);
+  const [listItem, setListItem] = useState([]);
   const [input, setInput] = useState({
-    contractorname: "",
+    flowName: "",
     isactive: false,
+    approveSteps: [],
   });
-  const {
-    contratorData,
-    contratorIsLoading,
-    contratorErrorMessage,
-    contratorById,
-    getContratorData,
-    getContratorById,
-    createContrator,
-    deleteContrator,
-    updateContrator,
-  } = useContrator();
+  const [inputStepFlow, setInputStepFlow] = useState({
+    stepNumber: "",
+    stepName: "",
+    userId: "",
+  });
 
-  const { getFlowById,flowById,getFlowData,flowData} = useFlow();
+  const { getFlowById, flowById, getFlowData, flowData, flowIsLoading } =
+    useFlow();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setInput((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleChangeInputStepFlow = (e) => {
+    const { name, value } = e.target;
+    setInputStepFlow((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -72,14 +85,14 @@ export default function Flows({ title }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-  useEffect(() => {
-    if (contratorById) {
-      setInput({
-        contractorname: contratorById.contractorName ?? "",
-        isactive: contratorById.isActive ?? false,
-      });
-    }
-  }, [contratorById]);
+  // useEffect(() => {
+  //   if (contratorById) {
+  //     setInput({
+  //       contractorname: contratorById.contractorName ?? "",
+  //       isactive: contratorById.isActive ?? false,
+  //     });
+  //   }
+  // }, [contratorById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -88,10 +101,10 @@ export default function Flows({ title }) {
   }, [error, isSubmit]);
 
   const columnDefs = [
-    { width: "70px", targets: 0,className:"text-center" },
+    { width: "70px", targets: 0, className: "text-center" },
     { width: "230px", targets: 1 },
     { width: "100px", targets: 2 },
-    { width: "100px", targets: 3,className: "text-center" },
+    { width: "100px", targets: 3, className: "text-center" },
   ];
 
   const columns = [
@@ -102,12 +115,12 @@ export default function Flows({ title }) {
       },
     },
     {
-      title: "ชื่อสายอนุมัติ",
+      index: "ชื่อสายอนุมัติ",
       data: "flowName",
       orderable: true,
     },
     {
-      title: "เปิดใช้งาน",
+      index: "เปิดใช้งาน",
       data: "isActive",
       render: function (data, type, row) {
         return isActiveBadge(row.isActive);
@@ -115,7 +128,7 @@ export default function Flows({ title }) {
     },
     {
       data: null,
-      title: "การจัดการ",
+      index: "การจัดการ",
       render: function (data, type, row) {
         return `      
          <div className="d-flex align-items-center justify-content-center">
@@ -137,7 +150,7 @@ export default function Flows({ title }) {
               data-id="${row.flowId}"
               data-action="edit"
               class="btn btn-warning me-2"
-              title="แก้ไข"
+              index="แก้ไข"
             >
               <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล 
             </a>
@@ -160,19 +173,18 @@ export default function Flows({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-    //   handleEdit(id, "flowModal");
+      //   handleEdit(id, "flowModal");
     } else if (action === "delete") {
-    //   handleDelete(
-    //     contratorIsLoading,
-    //     () => deleteContrator(id),
-    //     () => getContratorData()
-    //   );
+      //   handleDelete(
+      //     contratorIsLoading,
+      //     () => deleteContrator(id),
+      //     () => getContratorData()
+      //   );
     }
   };
 
   const handleEdit = async (id, modalId) => {
     ClearInput();
-    await getContratorById(id);
     setGetId(id);
     setEditMode(true);
 
@@ -185,46 +197,53 @@ export default function Flows({ title }) {
 
   const validateForm = () => {
     let errors = {};
-    if (!input.contractorname) {
-      errors.contractorname = "กรุณากรอกชื่อผู้รับเหมา";
+    if (!input.flowName) {
+      errors.flowName = "กรุณากรอกชื่อสายอนุมัติ";
     }
+    // if (!inputStepFlow) {
+    //   errors.flowName = "กรุณากรอกชื่อสายอนุมัติ";
+    // }
     return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const reqData = {
-      contractorName: input.contractorname,
-      isActive: input.isactive,
-    };
+
     const errorList = validateForm(input) || [];
     setError(errorList);
-
-    if (Object.keys(errorList).length === 0) {
-      const response = editmode
-        ? await updateContrator(reqData, getId)
-        : await createContrator(reqData);
-      if (response.success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
-        });
-        const currentModal = document.getElementById("flowModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-       await getContratorData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: contratorErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-          icon: "error",
-        });
-      }
+    if (input.approveSteps.length === 0) {
+      Swal.fire({
+        index: "บันทึกข้อมูลไม่สำเร็จ",
+        text: "ไม่พบการเพิ่มสายอนุมัติ กรุณาเพิ่มสายอนุมัติ",
+        icon: "error",
+      });
     }
+
+    // if (Object.keys(errorList).length === 0) {
+    //   const response = editmode
+    //     ? await updateContrator(reqData, getId)
+    //     : await createContrator(reqData);
+    //   if (response.success) {
+    //     setIsSubmit(true);
+    //     Swal.fire({
+    //       index: "บันทึกข้อมูลสำเร็จ",
+    //       icon: "success",
+    //       draggable: true,
+    //       buttonsStyling: "w-100",
+    //     });
+    //     const currentModal = document.getElementById("flowModal");
+    //     const modalInstance = bootstrap.Modal.getInstance(currentModal);
+    //     modalInstance.hide();
+    //     ClearInput();
+    //     // await getContratorData();
+    //   } else {
+    //     Swal.fire({
+    //       index: "บันทึกข้อมูลไม่สำเร็จ",
+    //       text: contratorErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+    //       icon: "error",
+    //     });
+    //   }
+    // }
   };
 
   const finishSubmit = () => {
@@ -233,11 +252,41 @@ export default function Flows({ title }) {
 
   const ClearInput = () => {
     setInput({
-      contractorname: "",
+      flowName: "",
       isactive: false,
+      approveSteps: [],
+    });
+    setInputStepFlow({
+      stepNumber: "",
+      stepName: "",
+      userId: "",
     });
     setError({});
     setEditMode(false);
+  };
+
+  const handleAddApproveStep = () => {
+    // การเพิ่ม form สายอนุมัติ
+
+    setListItem([...listItem, { stepId: listItem.length + 1 }]); //ตอนเปิด
+
+    //  setInput((prevData) => {
+    //     const item = prevData.approveSteps || [];
+    //     return {
+    //       ...prevData,
+    //       approveSteps: [...item, inputStepFlow],
+    //     };
+    //   });
+  };
+
+  const handleDeleteApproveStep = (index) => {
+    console.log(index);
+    setListItem(listItem.filter((select) => select.stepId !== index));
+  };
+
+  const handleOpenApproveStepSection = () => {
+    setIsOpenNewApproveStep(true);
+    setListItem([...listItem, { stepId: listItem.length + 1 }]);
   };
 
   return (
@@ -258,7 +307,7 @@ export default function Flows({ title }) {
         <div className="add-btn">
           <a
             className="power py-2"
-            style={{ maxWidth: "200px" }}
+            style={{ maxWidth: "400px" }}
             onClick={() => handleOpenModal("flowModal")}
           >
             <span>
@@ -274,7 +323,7 @@ export default function Flows({ title }) {
           tableHead={tableHead}
           tableRef={tableRef}
           columnDefs={columnDefs}
-          isLoading={contratorIsLoading}
+          isLoading={flowIsLoading}
         />
 
         {/* modal */}
@@ -284,15 +333,16 @@ export default function Flows({ title }) {
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content bg-primary d-flex flex-column">
               <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
+                <h1 className="modal-index fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
                   {addBtnName}
                 </h1>
-
                 <button
                   type="button"
                   className="btn-close"
@@ -301,69 +351,138 @@ export default function Flows({ title }) {
                   onClick={ClearInput}
                 ></button>
               </div>
-              <div class="modal-body">
-                <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
-                              ชื่อผู้รับเหมา
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="contractorname"
-                              type="text"
-                              className={`form-control ${
-                                error.contractorname
-                                  ? "border border-danger"
-                                  : ""
-                              }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อผู้รับเหมา"
-                              value={input.contractorname}
-                              onChange={handleChangeInput}
-                            />
-                            {error.contractorname ? (
-                              <p className="text-danger">
-                                {error.contractorname}
-                              </p>
-                            ) : null}
-                          </div>
-                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isactive"
-                                value={input.isactive}
-                                onChange={handleChangeCheckbox}
-                                checked={input.isactive === true}
-                              />
-                            </div>
+              <div className="modal-body">
+                <div className="employee-content p-2">
+                  <form className="w-100">
+                    {/* ข้อมูลทั่วไป */}
+                    <div>
+                      <label class="form-label">
+                        ชื่อสายอนุมัติ
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="flowName"
+                        type="text"
+                        className={`form-control ${
+                          error.flowName ? "border border-danger" : ""
+                        }`}
+                        placeholder="กรอกชื่อสายอนุมัติ"
+                        value={input.flowName}
+                        onChange={handleChangeInput}
+                      />
+                      {error.flowName ? (
+                        <p className="text-danger">{error.flowName}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-end align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div class="form-check form-switch form-switch-md ms-3">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
+                      </div>
+                    </div>
+                    <p className="ms-2">
+                      <i className="bi bi-diagram-2-fill"></i>{" "}
+                      <strong>สายอนุมัติ</strong>
+                    </p>
+                    {/* ไม่มีข้อมูล */}
+                    {/* มีข้อมูล */}
+                  </form>
+                  {!isOpenNewApproveStep ? (
+                    <div className="d-flex flex-column align-items-center justify-content-center mb-4">
+                      <i
+                        className="bi bi-diagram-2-fill text-danger"
+                        style={{ fontSize: "60px" }}
+                      ></i>
+                      <h5 className="text-danger">ไม่พบการเพิ่มสายอนุมัติ</h5>
+
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={handleOpenApproveStepSection}
+                      >
+                        <i className="bi bi-plus-circle fs-4"></i>
+                        {addBtnName}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="d-flex flex-column align-items-center justify-content-center mb-4 w-100">
+                      <div className="d-flex justify-content-end w-100">
+                        <button
+                          className="btn btn-outline-primary mb-2"
+                          onClick={() => {
+                            setIsOpenNewApproveStep(false);
+                            setListItem([]);
+                          }}
+                        >
+                          ลบทั้งหมด
+                        </button>
+                      </div>
+                      {/* ส่วนของ card สายอนุมัติ */}
+                      {listItem.map((item, index) => (
+                        <div
+                          className="w-100 bg-white my-2 p-3 border rounded-2"
+                          key={index}
+                        >
+                          <p style={{ fontSize: "0.9rem" }}>
+                            ลำดับ {item.stepId}
+                          </p>
+                          <div className="d-flex justify-content-between align-items-center gap-3 ">
+                            <select
+                              name="stepName"
+                              id="stepName"
+                              className={`form-control`}
+                              onChange={handleChangeInputStepFlow}
+                              value={inputStepFlow.stepName}
+                            >
+                              <option value={""}>เลือกลำดับ</option>
+                              {stepList.map((item) => (
+                                <option value={item.value} key={item.index}>
+                                  {item.value}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              name="userId"
+                              id="userId"
+                              className={`form-control`}
+                              onChange={handleChangeInputStepFlow}
+                              value={inputStepFlow.userId}
+                            >
+                              <option value={""}>เลือกผู้อนุมัติ</option>
+                            </select>
+                            <a
+                              style={{cursor:"pointer"}}
+                              onClick={() =>
+                                handleDeleteApproveStep(item.stepId)
+                              }
+                            >
+                              <i className="bi bi-trash-fill text-center text-danger"  title="ลบ"></i>
+                            </a>
                           </div>
                         </div>
-                      </div>
-                    </form>
-                  </div>
+                      ))}
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={handleAddApproveStep}
+                      >
+                        <i className="bi bi-plus-circle fs-4"></i>
+                        เพิ่มสายอนุมัติเพิ่มเติม
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
                 handleCancel={ClearInput}
-                isLoading={contratorIsLoading}
+                isLoading={flowIsLoading}
               />
             </div>
           </div>

@@ -1548,7 +1548,7 @@ progress {
         width: 100%
     }
 
-    /* .offset-lg-0 {
+    .offset-lg-0 {
         margin-left: 0
     }
 
@@ -1594,7 +1594,7 @@ progress {
 
     .offset-lg-11 {
         margin-left: 91.66666667%
-    } */
+    }
 
     .g-lg-0,
     .gx-lg-0 {

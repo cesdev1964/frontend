@@ -18,7 +18,7 @@ export default function AnnouncementCard() {
     }
   });
   return (
-    <div className="accordion" id="accordionExample">
+    <div className="accordion" id="accordionExample2">
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button
@@ -36,7 +36,7 @@ export default function AnnouncementCard() {
         <div
           id="collapseNews"
           class="accordion-collapse collapse show"
-          data-bs-parent="#accordionExample"
+          data-bs-parent="#accordionExample2"
         >
           <div class="accordion-body">
               <SearchBox
