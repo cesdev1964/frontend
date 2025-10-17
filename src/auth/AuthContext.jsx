@@ -8,7 +8,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem("access_token"));
   const [loading, setLoading] = useState(false);
-
+  const [authdata, setAuthData] = useState({});
   const login = async ({ username, password }) => {
     setLoading(true);
     try {
@@ -19,7 +19,9 @@ export function AuthProvider({ children }) {
       });
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
-
+      console.log("data form login", data);
+      // setAuthData({data : data,accessToken:data.access_token});
+      // console.log("data form login", authdata);
       localStorage.setItem("access_token", data.access_token);
       setToken(data.access_token);
       const Toast = Swal.mixin({
@@ -43,7 +45,25 @@ export function AuthProvider({ children }) {
     }
   };
 
-  
+  const loadUser = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await fetch(`${baseURL}/api/users/me`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json",
+          "Authorization":`Bearer ${token}`
+         }
+      });
+      if (!res.ok) throw new Error("Invalid credentials");
+      const data = await res.json();
+      setAuthData(data.user);
+      setLoading(false);
+    } catch (error) {}
+  };
 
   const logout = () => {
     localStorage.removeItem("access_token");
@@ -53,11 +73,20 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // คุณอาจเรียก /api/auth/me เพื่อตรวจสอบ token ที่ยังใช้ได้
     // ข้ามรายละเอียดเพื่อความสั้น
-  }, []);
+    loadUser();
+  }, [token]);
 
   return (
     <AuthContext.Provider
-      value={{ token, isAuth: !!token, login, logout, loading }}
+      value={{
+        token,
+        isAuth: !!token,
+        login,
+        logout,
+        loading,
+        authdata,
+        loadUser
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -10,6 +10,8 @@ import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import handleDelete from "../../util/handleDelete";
 import { useFlow } from "../../hooks/flowStore";
+import { useUser } from "../../hooks/userStore";
+import { SearchDropdown } from "../../components/searchDropdown";
 
 export const stepList = [
   { value: "หัวหน้าคนที่ 1", index: 1 },
@@ -39,28 +41,14 @@ export default function Flows({ title }) {
   const [input, setInput] = useState({
     flowName: "",
     isactive: false,
-    approveSteps: [],
-  });
-  const [inputStepFlow, setInputStepFlow] = useState({
-    stepNumber: "",
-    stepName: "",
-    userId: "",
   });
 
-  const { getFlowById, flowById, getFlowData, flowData, flowIsLoading } =
-    useFlow();
+  const { getFlowById, flowById, getFlowData, flowData, flowIsLoading , createFlow,flowErrorMessage} = useFlow();
+  const { getUserDropdown, userDropdown } = useUser();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setInput((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleChangeInputStepFlow = (e) => {
-    const { name, value } = e.target;
-    setInputStepFlow((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -73,13 +61,27 @@ export default function Flows({ title }) {
     }));
   };
 
+  const handleChangeEaseItem = (index, field, value) => {
+    const updated = [...listItem];
+    updated[index][field] = value;
+    setListItem(updated);
+  };
+
+  const handleChangeSelectEaseItem = (index, field, selected) => {
+    const updated = [...listItem];
+
+    updated[index][field] = selected ? selected.value : null;
+    setListItem(updated);
+  };
+
   const fetchDataTable = useCallback(async () => {
     try {
       await getFlowData();
+      await getUserDropdown();
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
     }
-  }, [getFlowData]);
+  }, [getFlowData, getUserDropdown]);
 
   useEffect(() => {
     fetchDataTable();
@@ -173,7 +175,7 @@ export default function Flows({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      //   handleEdit(id, "flowModal");
+        handleEdit(id, "flowModal");
     } else if (action === "delete") {
       //   handleDelete(
       //     contratorIsLoading,
@@ -195,55 +197,82 @@ export default function Flows({ title }) {
     }
   };
 
-  const validateForm = () => {
+  const validateInput = (input) => {
     let errors = {};
     if (!input.flowName) {
       errors.flowName = "กรุณากรอกชื่อสายอนุมัติ";
     }
-    // if (!inputStepFlow) {
-    //   errors.flowName = "กรุณากรอกชื่อสายอนุมัติ";
-    // }
+    return errors;
+  };
+
+  const validateStepInput = (listItem) => {
+    let errors = {};
+    // check error ตาม stepid
+    listItem.forEach(
+      (item, index) => {
+        if (!item.userId || item.userId === null) {
+          errors[`userId_${index}`] = "กรุณาเลือกชื่อผู้อนุมัติ";
+        }
+        if (!item.stepName || item.stepName === '') {
+          errors[`stepName_${index}`] = "กรุณาเลือกลำดับของผู้อนุมัติ";
+        }
+      }
+    )
     return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const reqData = {
+       flowName : input.flowName,
+       isActive : input.isactive,
+       approveSteps : listItem
+    }
 
-    const errorList = validateForm(input) || [];
+    const errorInput = validateInput(input);
+    const errorStepInput = validateStepInput(listItem);
+    const errorList = { ...errorInput, ...errorStepInput };
     setError(errorList);
-    if (input.approveSteps.length === 0) {
+    console.log("Error list",error);
+    if (listItem.length === 0) {
       Swal.fire({
         index: "บันทึกข้อมูลไม่สำเร็จ",
         text: "ไม่พบการเพิ่มสายอนุมัติ กรุณาเพิ่มสายอนุมัติ",
         icon: "error",
       });
+      return;
     }
 
-    // if (Object.keys(errorList).length === 0) {
-    //   const response = editmode
-    //     ? await updateContrator(reqData, getId)
-    //     : await createContrator(reqData);
-    //   if (response.success) {
-    //     setIsSubmit(true);
-    //     Swal.fire({
-    //       index: "บันทึกข้อมูลสำเร็จ",
-    //       icon: "success",
-    //       draggable: true,
-    //       buttonsStyling: "w-100",
-    //     });
-    //     const currentModal = document.getElementById("flowModal");
-    //     const modalInstance = bootstrap.Modal.getInstance(currentModal);
-    //     modalInstance.hide();
-    //     ClearInput();
-    //     // await getContratorData();
-    //   } else {
-    //     Swal.fire({
-    //       index: "บันทึกข้อมูลไม่สำเร็จ",
-    //       text: contratorErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-    //       icon: "error",
-    //     });
-    //   }
-    // }
+    console.log("approve flow data", listItem);
+    console.log("data", input);
+
+    if (Object.keys(errorList).length === 0) {
+      const response = await createFlow(reqData)
+        // editmode
+        // ? await updateContrator(reqData, getId)
+        // : await createContrator(reqData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          index: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        const currentModal = document.getElementById("flowModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+        await getFlowData();
+      } else {
+        Swal.fire({
+          index: "บันทึกข้อมูลไม่สำเร็จ",
+          text: flowErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
+      }
+    }
   };
 
   const finishSubmit = () => {
@@ -254,39 +283,36 @@ export default function Flows({ title }) {
     setInput({
       flowName: "",
       isactive: false,
-      approveSteps: [],
     });
-    setInputStepFlow({
-      stepNumber: "",
-      stepName: "",
-      userId: "",
-    });
+    setListItem([]);
     setError({});
     setEditMode(false);
+    setIsOpenNewApproveStep(false)
   };
 
   const handleAddApproveStep = () => {
-    // การเพิ่ม form สายอนุมัติ
-
-    setListItem([...listItem, { stepId: listItem.length + 1 }]); //ตอนเปิด
-
-    //  setInput((prevData) => {
-    //     const item = prevData.approveSteps || [];
-    //     return {
-    //       ...prevData,
-    //       approveSteps: [...item, inputStepFlow],
-    //     };
-    //   });
+    // การเพิ่ม form เปล่าใน set ใหม่
+    setListItem([
+      ...listItem,
+      { stepNumber: listItem.length + 1, stepName: "", userId: null },
+    ]); //ตอนเปิด
   };
 
+
+
   const handleDeleteApproveStep = (index) => {
-    console.log(index);
-    setListItem(listItem.filter((select) => select.stepId !== index));
+    // console.log(index);
+    setListItem(listItem.filter((select) => select.stepNumber !== index));
   };
 
   const handleOpenApproveStepSection = () => {
     setIsOpenNewApproveStep(true);
-    setListItem([...listItem, { stepId: listItem.length + 1 }]);
+    // setListItem([...listItem, { stepId: listItem.length + 1 }]);
+    setListItem([
+      ...listItem,
+      { stepNumber: listItem.length + 1, stepName: "", userId: null },
+    ]);
+    // console.log("first item",listItem)
   };
 
   return (
@@ -427,50 +453,92 @@ export default function Flows({ title }) {
                       {/* ส่วนของ card สายอนุมัติ */}
                       {listItem.map((item, index) => (
                         <div
-                          className="w-100 bg-white my-2 p-3 border rounded-2"
+                          className="w-100 bg-white my-2 p-3 border rounded-3"
                           key={index}
                         >
-                          <p style={{ fontSize: "0.9rem" }}>
-                            ลำดับ {item.stepId}
-                          </p>
-                          <div className="d-flex justify-content-between align-items-center gap-3 ">
-                            <select
-                              name="stepName"
-                              id="stepName"
-                              className={`form-control`}
-                              onChange={handleChangeInputStepFlow}
-                              value={inputStepFlow.stepName}
-                            >
-                              <option value={""}>เลือกลำดับ</option>
-                              {stepList.map((item) => (
-                                <option value={item.value} key={item.index}>
-                                  {item.value}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              name="userId"
-                              id="userId"
-                              className={`form-control`}
-                              onChange={handleChangeInputStepFlow}
-                              value={inputStepFlow.userId}
-                            >
-                              <option value={""}>เลือกผู้อนุมัติ</option>
-                            </select>
+                          <div className="d-flex align-items-top justify-content-between">
+                            <p style={{ fontSize: "0.9rem" }}>
+                              ลำดับ {item.stepNumber}
+                            </p>
                             <a
-                              style={{cursor:"pointer"}}
+                              style={{ cursor: "pointer", marginTop: 0 }}
                               onClick={() =>
-                                handleDeleteApproveStep(item.stepId)
+                                handleDeleteApproveStep(item.stepNumber)
                               }
                             >
-                              <i className="bi bi-trash-fill text-center text-danger"  title="ลบ"></i>
+                              <i
+                                className="bi bi-trash-fill text-center text-danger"
+                                title="ลบ"
+                              ></i>
                             </a>
+                          </div>
+                          <div className="row">
+                            <div className="col-5">
+                              <select
+                                style={{ width: "150px" }}
+                                name="stepName"
+                                id="stepName"
+                                className={`form-control ${error[`stepName_${index}`]?"border-danger":""}`}
+                                // onChange={handleChangeInputStepFlow}
+                                onChange={(e) =>
+                                  handleChangeEaseItem(
+                                    index,
+                                    "stepName",
+                                    e.target.value
+                                  )
+                                }
+                                value={item.stepName}
+                              >
+                                <option value={""}>เลือกลำดับ</option>
+                                {stepList.map((item) => (
+                                  <option value={item.value} key={item.index}>
+                                    {item.value}
+                                  </option>
+                                ))}
+                              </select>
+                               {error[`stepName_${index}`] ? (
+                              <p className="text-danger" style={{fontSize:"0.8rem"}}>{error[`stepName_${index}`]}</p>
+                            ) : null}
+                            </div>
+                            <div className="col-7">
+                              <SearchDropdown
+                                data={userDropdown}
+                                handleSelectChange={(selected) =>
+                                  handleChangeSelectEaseItem(
+                                    index,
+                                    "userId",
+                                    selected
+                                  )
+                                }
+                                placeholder="เลือกผู้อนุมัติ"
+                                value={
+                                  userDropdown.find(
+                                    (i) => i.value === item.userId
+                                  ) || null
+                                }
+                                className={`${
+                                  error[`userId_${index}`]
+                                    ? "border border-danger rounded-2"
+                                    : ""
+                                }`}
+                              />
+                               {error[`userId_${index}`] ? (
+                              <p className="text-danger" style={{fontSize:"0.8rem"}}>{error[`userId_${index}`]}</p>
+                            ) : null}
+                              <a
+                                style={{ cursor: "pointer" }}
+                                onClick={() =>
+                                  handleDeleteApproveStep(item.stepId)
+                                }
+                              ></a>
+                            </div>
                           </div>
                         </div>
                       ))}
                       <button
                         className="btn btn-primary mt-2"
                         onClick={handleAddApproveStep}
+                        disabled={listItem.length === 5}
                       >
                         <i className="bi bi-plus-circle fs-4"></i>
                         เพิ่มสายอนุมัติเพิ่มเติม

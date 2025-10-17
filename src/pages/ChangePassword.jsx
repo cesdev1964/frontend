@@ -1,7 +1,10 @@
 import { useTitle } from "../hooks/useTitle";
 import HeaderPage from "../components/HeaderPage";
 import { useEffect, useState } from "react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
+import { useAuth } from "../auth/AuthContext";
+import { useUser } from "../hooks/userStore";
+
 const ChangePassword = ({ title }) => {
   useTitle(title);
 
@@ -15,6 +18,18 @@ const ChangePassword = ({ title }) => {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { authdata } = useAuth();
+  const { changePassword, userError, userIsLoading } = useUser();
+  // console.log("userData", userData);
+
+  useEffect(() => {
+    if (authdata) {
+      setInputData({
+        userName: authdata?.user?.username ?? "",
+      });
+    }
+  }, [authdata]);
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setInputData((prevData) => ({
@@ -37,16 +52,16 @@ const ChangePassword = ({ title }) => {
     if (!inputData.newPassword) {
       errors.newPassword = "กรุณากรอกรหัสผ่าน";
     } else {
-      if (inputData.newPassword.length < 8) {
-        errors.newPassword = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+      if (inputData.newPassword.length < 4) {
+        errors.newPassword = "กรุณากรอกรหัสผ่าน 4 ตัวอักษรขึ้นไป";
       }
     }
     if (!inputData.defaultPassword) {
       errors.defaultPassword = "กรุณากรอกรหัสผ่าน";
     } else {
       // วัดความ match กับ password ที่เก็บไว้
-      if (inputData.defaultPassword.length < 8) {
-        errors.defaultPassword = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+      if (inputData.defaultPassword.length < 4) {
+        errors.defaultPassword = "กรุณากรอกรหัสผ่าน 4 ตัวอักษรขึ้นไป";
       }
     }
 
@@ -55,34 +70,48 @@ const ChangePassword = ({ title }) => {
     } else {
       if (inputData.confirmPassword !== inputData.newPassword) {
         errors.confirmPassword = "กรอกรหัสผ่านไม่ถูกต้อง";
-      } else if (inputData.confirmPassword.length < 8) {
-        errors.confirmPassword = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+      } else if (inputData.confirmPassword.length < 4) {
+        errors.confirmPassword = "กรุณากรอกรหัสผ่าน 4 ตัวอักษรขึ้นไป";
       }
     }
 
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+
+    const reqData = {
+      currentPassword: inputData.defaultPassword,
+      newPassword: inputData.newPassword,
+    };
     const errorList = validateForm(inputData) || [];
     setError(errorList);
-    console.log("error list",error);
-       //api post
+    //api post
+
     if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      Swal.fire({
-        title: "Drag me!",
-        icon: "success",
-        draggable: true,
-      });
-      ClearInput();
+      const response = await changePassword(reqData, authdata?.user.publicUserId);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "เปลี่ยนรหัสผ่านสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        ClearInput();
+      } else {
+        Swal.fire({
+          index: "เปลี่ยนรหัสผ่านไม่สำเร็จไม่สำเร็จ",
+          text: userError || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
+      }
     }
   };
 
   const finishSubmit = () => {
-    console.log("submit data", inputData);
+    // console.log("submit data", inputData);
   };
 
   useEffect(() => {
@@ -92,11 +121,11 @@ const ChangePassword = ({ title }) => {
   }, [error, isSubmit]);
 
   return (
-    < div>
+    <div className="mt-5 px-4">
       <HeaderPage pageName={title} />
       <div className="content-box">
         <div
-          className="card h-100 shadow-sm card-hover card--soft mx-auto w-100"
+          className="card h-100 shadow-sm card-hover card--soft mx-auto w-100 mt-5"
           style={{ maxWidth: 500 }}
         >
           <div className="card-body d-flex flex-column justifyContent-center p-4">
@@ -242,7 +271,9 @@ const ChangePassword = ({ title }) => {
                     type="submit"
                     onClick={handleSubmit}
                   >
-                    ยืนยันการเปลียนรหัสผ่านใหม่
+                    {userIsLoading
+                      ? "...กำลังโหลด"
+                      : "ยืนยันการเปลียนรหัสผ่านใหม่"}
                   </button>
                 </div>
               </form>

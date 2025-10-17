@@ -680,186 +680,51 @@ export default function EmployeeManagementModal({
                       <div
                         className={`alert alert-info alert-dismissible fade ${
                           isFlow ? "show" : ""
-                        } mt-3 d-inline-block`}
+                        } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
                         role="alert"
                       >
-                        <div className="d-flex flex-wrap justify-content-start gap-4 ">
-                          {flowById.approvalSteps.map((item, index) => (
-                            <>
-                              <div
-                                className="d-flex flex-column align-items-center"
-                                key={index}
-                              >
+                          <p className="text-center">ลำดับสายอนุมัติ</p>
+                          <div className="d-flex flex-wrap justify-content-start gap-4 mt-3">
+                            {flowById.approvalSteps.map((item, index) => (
+                              <>
                                 <div
-                                  className="mb-2"
-                                  style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    backgroundColor: "#ffffffff",
-                                    borderRadius: "50%",
-                                    position: "relative",
-                                  }}
+                                  className="d-flex flex-column align-items-center"
+                                  key={index}
                                 >
-                                  <p
+                                  <div
+                                    className="mb-2"
                                     style={{
-                                      position: "absolute",
-                                      left: "15px",
-                                      top: "9px",
+                                      width: "40px",
+                                      height: "40px",
+                                      backgroundColor: "#ffffffff",
+                                      borderRadius: "50%",
+                                      position: "relative",
                                     }}
                                   >
-                                    {item.flowId}
+                                    <p
+                                      style={{
+                                        position: "absolute",
+                                        left: "15px",
+                                        top: "9px",
+                                      }}
+                                    >
+                                      {item.stepNumber}
+                                    </p>
+                                  </div>
+                                  <p style={{ fontWeight: "bold" }}>
+                                    {item.stepName}
+                                  </p>
+                                  <p
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      lineHeight: "0.1rem",
+                                    }}
+                                  >
+                                    {item.fullName}
                                   </p>
                                 </div>
-                                <p style={{ fontWeight: "bold" }}>
-                                  {item.stepName}
-                                </p>
-                                <p
-                                  style={{
-                                    fontSize: "0.9rem",
-                                    lineHeight: "0.1rem",
-                                  }}
-                                >
-                                  {item.fullName}
-                                </p>
-                              </div>
-                            </>
-                          ))}
-
-                          {/* <div className="d-flex align-items-center gap-3">
-                          <div className="d-flex flex-column align-items-center">
-                            <div
-                              className="mb-2"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                backgroundColor: "#ffffffff",
-                                borderRadius: "50%",
-                                position: "relative",
-                              }}
-                            >
-                              <p
-                                style={{
-                                  position: "absolute",
-                                  left: "15px",
-                                  top: "9px",
-                                }}
-                              >
-                                1
-                              </p>
-                            </div>
-                            <p style={{ fontWeight: "bold" }}>item.stepName</p>
-                            <p
-                              style={{
-                                fontSize: "0.9rem",
-                                lineHeight: "0.1rem",
-                              }}
-                            >
-                              item.fullName
-                            </p>
-                          </div>
-                        </div>
-                          <div className="d-flex align-items-center gap-3">
-                          <div className="d-flex flex-column align-items-center">
-                            <div
-                              className="mb-2"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                backgroundColor: "#ffffffff",
-                                borderRadius: "50%",
-                                position: "relative",
-                              }}
-                            >
-                              <p
-                                style={{
-                                  position: "absolute",
-                                  left: "15px",
-                                  top: "9px",
-                                }}
-                              >
-                                1
-                              </p>
-                            </div>
-                            <p style={{ fontWeight: "bold" }}>item.stepName</p>
-                            <p
-                              style={{
-                                fontSize: "0.9rem",
-                                lineHeight: "0.1rem",
-                              }}
-                            >
-                              item.fullName
-                            </p>
-                          </div>
-                          
-                        </div>
-                         <div className="d-flex align-items-center gap-3">
-                          <div className="d-flex flex-column align-items-center">
-                            <div
-                              className="mb-2"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                backgroundColor: "#ffffffff",
-                                borderRadius: "50%",
-                                position: "relative",
-                              }}
-                            >
-                              <p
-                                style={{
-                                  position: "absolute",
-                                  left: "15px",
-                                  top: "9px",
-                                }}
-                              >
-                                1
-                              </p>
-                            </div>
-                            <p style={{ fontWeight: "bold" }}>item.stepName</p>
-                            <p
-                              style={{
-                                fontSize: "0.9rem",
-                                lineHeight: "0.1rem",
-                              }}
-                            >
-                              item.fullName
-                            </p>
-                          </div>
-          
-                          
-                        </div>
-                         <div className="d-flex align-items-center gap-3">
-                          <div className="d-flex flex-column align-items-center">
-                            <div
-                              className="mb-2"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                backgroundColor: "#ffffffff",
-                                borderRadius: "50%",
-                                position: "relative",
-                              }}
-                            >
-                              <p
-                                style={{
-                                  position: "absolute",
-                                  left: "15px",
-                                  top: "9px",
-                                }}
-                              >
-                                1
-                              </p>
-                            </div>
-                            <p style={{ fontWeight: "bold" }}>item.stepName</p>
-                            <p
-                              style={{
-                                fontSize: "0.9rem",
-                                lineHeight: "0.1rem",
-                              }}
-                            >
-                              item.fullName
-                            </p>
-                          </div>
-                        </div> */}
+                              </>
+                            ))}
                         </div>
 
                         {/* <button

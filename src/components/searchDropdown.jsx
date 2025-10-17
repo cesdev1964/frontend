@@ -6,7 +6,8 @@ export const SearchDropdown = ({
   value = null,
   placeholder = "",
   className = "",
-  customComponent = {}
+  customComponent = {},
+  style
 }) => {
   return (
     <>
@@ -19,6 +20,7 @@ export const SearchDropdown = ({
         placeholder={placeholder}
         className={className}
         components={customComponent}
+        // styles={style}
       />
     </>
   );

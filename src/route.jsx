@@ -41,16 +41,13 @@ export default function RouterPage() {
         { index: true, element: <Home title="หน้าหลัก" /> },
         { path: "working", element: <Working title="ข้อมูลการทำงาน" /> },
         {
-          path: "working/summary",
-          element: <WorkingSummary title="สรุปการทำงาน" />,
+          path: "working/summary",element: <WorkingSummary title="สรุปการทำงาน" />,
         },
           {
-          path: "working/OT",
-          element: <OT title="บันทึกโอที" />,
+          path: "working/OT",element: <OT title="บันทึกโอที" />,
         },
         {
-          path: "changePassword",
-          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />,
+          path: "changePassword",element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
         { path: "settings/employees", element: <Employees title="จัดการข้อมูลพนักงาน" /> },
