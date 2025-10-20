@@ -5,7 +5,7 @@ import { useProfile } from "../hooks/profileStore";
 import { useEffect, useState } from "react";
 
 function AppSidebar({ isOpen, toggleSidebar }) {
-  const { logout } = useAuth();
+  const { logout, authdata, loading } = useAuth();
   const [isWorkOpen, setIsWorkOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { data, isLoading, error, getProfileData } = useProfile();
@@ -55,7 +55,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
         </div>
 
         <div className="profile">
-          {isLoading ? (
+          {loading ? (
             <div className="spinner-grow loadingImage" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
@@ -65,7 +65,12 @@ function AppSidebar({ isOpen, toggleSidebar }) {
           <div>
             <div style={{ fontWeight: 600 }}>ยินดีต้อนรับสู่ CES</div>
             <div className="muted">
-              คุณ {isLoading ? "..." : data.name ? data.name : "N/A"}
+              คุณ{" "}
+              {loading
+                ? "..."
+                : authdata
+                ? authdata.firstname + " " + authdata.lastname
+                : "N/A"}
             </div>
           </div>
         </div>
@@ -99,26 +104,19 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-             <li>
-                <NavLink
-                  to="/working/OT"
-                  className="nav-link dropdown-link"
-                >
+              <li>
+                <NavLink to="/working/OT" className="nav-link dropdown-link">
                   บันทึกโอที
                 </NavLink>
               </li>
-               <li>
-                <NavLink
-                  to="#"
-                  className="nav-link dropdown-link"
-                >
+              <li>
+                <NavLink to="#" className="nav-link dropdown-link">
                   อนุมติโอที
                 </NavLink>
               </li>
-
             </ul>
           </li>
-             <li className="dropdown-container">
+          <li className="dropdown-container">
             <button
               // to="/working"
               onClick={() => setIsReportOpen((prev) => !prev)}
@@ -134,20 +132,14 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               </span>
             </button>
             <ul className={`submenu ${isReportOpen ? "show" : ""}`}>
-             <li>
-              {/* แสดงเป็นรายชื่อให้เลือกดูได้ */}
-                <NavLink
-                  to="#"
-                  className="nav-link dropdown-link"
-                >
+              <li>
+                {/* แสดงเป็นรายชื่อให้เลือกดูได้ */}
+                <NavLink to="#" className="nav-link dropdown-link">
                   รายงานการขอโอที
                 </NavLink>
               </li>
-               <li>
-                <NavLink
-                  to="#"
-                  className="nav-link dropdown-link"
-                >
+              <li>
+                <NavLink to="#" className="nav-link dropdown-link">
                   รายงานหลังประมวลผล
                 </NavLink>
               </li>

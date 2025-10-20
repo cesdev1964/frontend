@@ -87,14 +87,23 @@ export default function Flows({ title }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-  // useEffect(() => {
-  //   if (contratorById) {
-  //     setInput({
-  //       contractorname: contratorById.contractorName ?? "",
-  //       isactive: contratorById.isActive ?? false,
-  //     });
-  //   }
-  // }, [contratorById]);
+  useEffect(() => {
+    if (flowById) {
+      setInput({
+       flowName:flowById.flowName,
+       isactive : flowById.isActive
+      });
+      // setListItem({
+      //    flowById.approvalSteps.map((item)=>(
+      //     {
+      //        stepNumber: item.stepNumber,
+      //        stepName: item.stepName,
+      //        userId: item.userId 
+      //     }
+      //   ))
+      // })
+    }
+  }, [flowById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -185,16 +194,17 @@ export default function Flows({ title }) {
     }
   };
 
-  const handleEdit = async (id, modalId) => {
+  const handleEdit = async (flowId, modalId) => {
     ClearInput();
-    setGetId(id);
-    setEditMode(true);
-
+    await getFlowById(flowId);
+    setGetId(flowId);
+    
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
     }
+    setEditMode(true);
   };
 
   const validateInput = (input) => {
@@ -367,7 +377,7 @@ export default function Flows({ title }) {
               <div className="modal-header">
                 <h1 className="modal-index fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
+                  {title}
                 </h1>
                 <button
                   type="button"
@@ -453,7 +463,7 @@ export default function Flows({ title }) {
                       {/* ส่วนของ card สายอนุมัติ */}
                       {listItem.map((item, index) => (
                         <div
-                          className="w-100 bg-white my-2 p-3 border rounded-3"
+                          className="filter-container"
                           key={index}
                         >
                           <div className="d-flex align-items-top justify-content-between">

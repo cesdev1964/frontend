@@ -5,12 +5,12 @@ import AppSidebar from "./AppSidebar";
 import "../../public/assets/css/bootstrap-custom.min.css";
 import "../../public/assets/css/style.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { useUser } from "../hooks/userStore";
+
+
 
 function AppNavbar({ toggleSidebar }) {
-  const { logout, authdata} = useAuth();
+  const { logout, authdata,loading} = useAuth();
   const { data, isLoading, error, getProfileData } = useProfile();
-  const { getUserByIdData, userById, userIsLoading, userError } = useUser();
   const [openSideBar, setOpenSideBar] = useState(false);
   const btnRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -27,7 +27,7 @@ function AppNavbar({ toggleSidebar }) {
     };
 
     fetchProfile();
-  }, [authdata, getProfileData, getUserByIdData]);
+  }, [authdata, getProfileData]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -83,7 +83,7 @@ function AppNavbar({ toggleSidebar }) {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {isLoading ? (
+                {loading ? (
                   <>
                     <div className="spinner-grow" role="status">
                       <span className="visually-hidden">Loading...</span>
@@ -94,8 +94,8 @@ function AppNavbar({ toggleSidebar }) {
                   <>
                     <img src={avatarUrl} alt="avatar" />
                     <div className="muted">
-                      {data.id ? data.id : "N/A"} : คุณ{" "}
-                      {data.name ? data.name : "N/A"}
+                      คุณ{" "}
+                      {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
                     </div>
                   </>
                 )}
@@ -112,7 +112,7 @@ function AppNavbar({ toggleSidebar }) {
                 ) : (
                   <>
                     <div className="profile-card">
-                   {userById.employeeId != null?(
+                   {authdata.publicEmployeeId?(
                     <>
                       <p
                         className="text-end"
@@ -131,11 +131,8 @@ function AppNavbar({ toggleSidebar }) {
                           }}
                         >
                           <div className="fs-5">
-                            คุณ {data.name ? data.name : "N/A"}
+                            คุณ {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
                           </div>
-                          <p className="text-muted">
-                            {data.email ? data.email : "N/A"}
-                          </p>
                         </div>
                         <div
                           style={{
@@ -157,9 +154,22 @@ function AppNavbar({ toggleSidebar }) {
                     </>
                    ):(
                      <>
-                       <p>สำหรับผู้ที่ไม่ใช่พนักงาน</p>
-                       <p>{authdata.firstname}</p>
-                     </>
+                      {/* <div className="profile-content mt-3">
+                        <DefaultAvatarImage username={authdata.firstname+" "+authdata.lastname}/>
+                        <div
+                          className="my-3"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div className="fs-5">
+                            คุณ {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
+                          </div>
+                        </div>
+                      </div> */}
+                    </>
                    )}
                    </div>
                     <div className="dropdown-divider"></div>

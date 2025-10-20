@@ -463,8 +463,6 @@ export default function Users({ title }) {
                             dis
                           >
                             <option value={0}>เลือกคำนำหน้า</option>
-                            {/* <option value={1}>นาย</option>
-                            <option value={2}>นางสาว</option> */}
                             {titleData.map((item) => (
                               <option value={item.titleId} key={item.titleId}>
                                 {item.titleNameTH}

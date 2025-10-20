@@ -59,7 +59,7 @@ export const useEmployee = create((set) => ({
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
       const response = await api.get(`${url}/${id}`);
-      //   console.log("role data", response.data.data);
+        console.log("emp data", response.data.data);
       set({
         employeeById: response.data.data ?? {},
         employeeIsLoading: false,

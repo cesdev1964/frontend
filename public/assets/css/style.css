@@ -35,7 +35,11 @@
   /* strong pink/red */
   --logout-text: #ffffff;
   --logout-ring: rgba(255, 122, 136, 0.45);
+
+  --transitionLength: 0.4s;
+  --transitionTiming: ease;
 }
+
 
 * {
   box-sizing: border-box;
@@ -430,7 +434,7 @@ body {
 }
 
 .searchBar {
-  width: 300px;
+  width: 250px;
   display: flex;
   flex-direction: row;
   margin-bottom: 20px;
@@ -2072,4 +2076,145 @@ thead th:last-child {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.avartarImageDefault{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--content-bg);
+  color: var(--pink-active);
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accordion {
+  min-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+  background: white;
+}
+
+.accordion-item {
+  border: 1px solid var(--pink);
+  border-radius: 10px;
+  margin-bottom: -2px;
+  overflow: hidden;
+}
+
+.accordion-trigger-input {
+  clip: rect(0 0 0 0); 
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap; 
+  width: 1px;
+}
+
+
+.accordion-trigger {
+  display: block;
+  position: relative;
+  padding: 16px;
+  transition: box-shadow var(--transitionLength) var(--transitionTiming);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.accordion-label{
+  color: var(--pink-active);
+}
+
+.accordion-trigger-input:focus-visible ~ .accordion-trigger {
+  outline: 1px solid;
+  outline-offset: -2px;
+}
+
+.accordion-trigger::after {
+  display: block;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  content: '';
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--pink);
+  border-bottom: transparent;
+  border-left: transparent;
+  transform: rotate(135deg);
+  transition: transform var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked ~ .accordion-trigger::after {
+  transform: rotate(135deg) rotateX(180deg) rotateY(180deg) translateY(4px) translateX(-4px);
+}
+
+.accordion-trigger-input:checked ~ .accordion-trigger {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: box-shadow calc(var(--transitionLength) / 4) var(--transitionTiming);
+}
+
+.accordion-content {
+  padding: 16px;
+  background: white;
+}
+
+.accordion-content h2 {
+  padding-bottom: 0.75em;
+}
+
+.accordion-content p {
+  padding-bottom: 1.5em;
+}
+
+.accordion-content p:last-of-type {
+  padding-bottom: 0;
+}
+
+.accordion-content img {
+  max-width: 100%;
+}
+
+.accordion-animation-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked ~ .accordion-animation-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.accordion-animation {
+  min-height: 0;
+}
+
+.accordion-transform-wrapper {
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform var(--transitionLength) var(--transitionTiming), visibility 0s var(--transitionLength) var(--transitionTiming);
+}
+
+.accordion-trigger-input:checked ~ .accordion-animation-wrapper .accordion-transform-wrapper {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform var(--transitionLength) var(--transitionTiming), visibility 0s linear;
+}
+
+/* Margins inside the container will throw animation height calculations off, better use paddings */
+.accordion-content * {
+  margin: 0;
+}
+
+.filter-container{
+  background-color: white;
+  border: 1px solid var(--pink);
+  padding: 16px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  width: 100%;
 }

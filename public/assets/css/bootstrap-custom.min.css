@@ -3418,7 +3418,7 @@ textarea.form-control.is-invalid {
 
 
 
-.accordion-button {
+/* .accordion-button {
     position: relative;
     display: flex;
     align-items: center;
@@ -3542,7 +3542,7 @@ textarea.form-control.is-invalid {
 
 .accordion-flush .accordion-item .accordion-button {
     border-radius: 0
-}
+} */
 
 .breadcrumb {
     display: flex;
