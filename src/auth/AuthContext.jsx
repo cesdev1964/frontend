@@ -20,8 +20,7 @@ export function AuthProvider({ children }) {
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
       console.log("data form login", data);
-      // setAuthData({data : data,accessToken:data.access_token});
-      // console.log("data form login", authdata);
+
       localStorage.setItem("access_token", data.access_token);
       setToken(data.access_token);
       const Toast = Swal.mixin({

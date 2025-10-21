@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
 import LoadingSpin from "../../components/loadingSpin";
 import handleDelete from "../../util/handleDelete";
+import { handleCancel } from "../../util/handleCloseModal";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -416,7 +417,7 @@ export default function Users({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={handleClear}
+                  onClick={()=>handleCancel("addModal")}
                 ></button>
               </div>
               <div class="modal-body">
@@ -448,7 +449,7 @@ export default function Users({ title }) {
 
                       <div className="mt-3">
                         <div className="mb-2">
-                          <label class="form-label">
+                          <label className="form-label">
                             คำนำหน้า
                             <span style={{ color: "red" }}>*</span>
                           </label>
@@ -494,7 +495,7 @@ export default function Users({ title }) {
                           ) : null}
                         </div>
                         <div className="mb-2">
-                          <label class="form-label">
+                          <label className="form-label">
                             นามสกุล
                             <span style={{ color: "red" }}>*</span>
                           </label>
@@ -512,11 +513,11 @@ export default function Users({ title }) {
                           {error.lastname ? (
                             <p className="text-danger">{error.lastname}</p>
                           ) : null}
-                          <div class=" d-flex justify-content-end align-items-center w-100 mt-2">
+                          <div className=" d-flex justify-content-end align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
+                            <div className="form-check form-switch form-switch-md ms-3">
                               <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="isActive-toggle"
                                 name="isactive"
@@ -536,7 +537,7 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
-                        <label for="StartDate" class="form-label">
+                        <label  className="form-label">
                           รหัสผ่าน
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -547,7 +548,7 @@ export default function Users({ title }) {
                             }`}
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            value={input.password}
+                            value={input.password ?? ""}
                             onChange={handleChangeInput}
                           />
 
@@ -569,11 +570,11 @@ export default function Users({ title }) {
                         {error.password ? (
                           <p className="text-danger">{error.password}</p>
                         ) : null}
-                        <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                        <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                           <label className="mb-2">บังคับเปลี่ยนรหัส</label>
-                          <div class="form-check form-switch form-switch-md ms-3">
+                          <div className="form-check form-switch form-switch-md ms-3">
                             <input
-                              class="form-check-input"
+                              className="form-check-input"
                               type="checkbox"
                               id="isActive-toggle"
                               name="mustchangepassword"
@@ -634,7 +635,7 @@ export default function Users({ title }) {
               </div>
 
               <SubmitOrCancelButton
-                handleCancel={handleClear}
+                handleCancel={()=>handleCancel("addModal")}
                 handleSubmit={handleSubmit}
                 isLoading={userIsLoading}
               />

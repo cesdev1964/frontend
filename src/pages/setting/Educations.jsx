@@ -301,7 +301,7 @@ export default function Educations({ title }) {
                   onClick={ClearInput}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -317,7 +317,7 @@ export default function Educations({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
+                            <label  class="form-label">
                               ระดับการศึกษา
                               <span style={{ color: "red" }}>*</span>
                             </label>

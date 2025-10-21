@@ -8,7 +8,7 @@ export default function SearchBox({ search, onChange ,placeholder}) {
             autoComplete="current-password"
             placeholder={placeholder}
             className={`searchInput form-control`}
-            value={search}
+            value={search ?? ""}
             onChange={onChange}
           />
           <i className="bi bi-search text-muted searchIcon"></i>

@@ -9,6 +9,7 @@ import { useRole } from "../../hooks/roleStore";
 import { useNavigate } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
 import { Link } from "react-router-dom";
+import { handleCancel } from "../../util/handleCloseModal";
 
 export const tableHead = [
   { colName: "ลำดับ" },
@@ -235,6 +236,7 @@ export default function Roles({ title }) {
   };
 
   const handleOpenModal = () => {
+    ClearInput()
     setEditMode(false);
     const currentModal = document.getElementById("notModal");
     if (currentModal) {
@@ -244,6 +246,7 @@ export default function Roles({ title }) {
   };
 
   const handleEdit = async (roleId) => {
+    ClearInput()
     await getRoleByIdData(roleId); 
     setEditRoleId(roleId);
 
@@ -331,7 +334,7 @@ export default function Roles({ title }) {
             onClick={handleOpenModal}
           >
             <span>
-              <i class="bi bi-plus-circle fs-4"></i>
+              <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
@@ -368,10 +371,10 @@ export default function Roles({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={ClearInput}
+                  onClick={()=>handleCancel("notModal")}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div
                     style={{
@@ -385,7 +388,7 @@ export default function Roles({ title }) {
                       {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="mb-3">
-                          <label class="form-label">
+                          <label className="form-label">
                             ชื่อบทบาท
                             <span style={{ color: "red" }}>*</span>
                           </label>
@@ -427,7 +430,7 @@ export default function Roles({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
+                handleCancel={()=>handleCancel("notModal")}
                 isLoading={isLoading}
               />
               {isLoading && <span className="loader"></span>}

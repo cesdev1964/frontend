@@ -8,17 +8,18 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 import { Link } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
-import handleDelete from "../../util/handleDelete";
 import { useFlow } from "../../hooks/flowStore";
 import { useUser } from "../../hooks/userStore";
 import { SearchDropdown } from "../../components/searchDropdown";
+import MainButton from "../../components/MainButton";
+import { handleCancel } from "../../util/handleCloseModal";
 
 export const stepList = [
-  { value: "หัวหน้าคนที่ 1", index: 1 },
-  { value: "หัวหน้าคนที่ 2", index: 2 },
-  { value: "หัวหน้าคนที่ 3", index: 3 },
-  { value: "หัวหน้าคนที่ 4", index: 4 },
-  { value: "หัวหน้าคนที่ 5", index: 5 },
+  { value: "หัวหน้าคนที่ 1" },
+  { value: "หัวหน้าคนที่ 2" },
+  { value: "หัวหน้าคนที่ 3" },
+  { value: "หัวหน้าคนที่ 4" },
+  { value: "หัวหน้าคนที่ 5" },
 ];
 
 export const tableHead = [
@@ -43,7 +44,16 @@ export default function Flows({ title }) {
     isactive: false,
   });
 
-  const { getFlowById, flowById, getFlowData, flowData, flowIsLoading , createFlow,flowErrorMessage} = useFlow();
+  const {
+    getFlowById,
+    flowById,
+    getFlowData,
+    flowData,
+    flowIsLoading,
+    createFlow,
+    flowErrorMessage,
+    updateFlow,
+  } = useFlow();
   const { getUserDropdown, userDropdown } = useUser();
 
   const handleChangeInput = (e) => {
@@ -85,23 +95,31 @@ export default function Flows({ title }) {
 
   useEffect(() => {
     fetchDataTable();
-  }, [fetchDataTable]);
+    console.log("fetch data", flowData);
+  }, []);
 
   useEffect(() => {
-    if (flowById) {
-      setInput({
-       flowName:flowById.flowName,
-       isactive : flowById.isActive
+    if (!flowById) return;
+
+    setInput({
+      flowName: flowById.flowName ? flowById.flowName : "",
+      isactive: flowById.isActive ? flowById.isActive : false,
+    });
+
+    const approveList = flowById.approvalSteps || [];
+    if (approveList.length > 0) {
+      setIsOpenNewApproveStep(true);
+
+      setListItem((prev) => {
+        const newList = approveList.map((item) => ({
+          stepNumber: item.stepNumber,
+          stepName: item.stepName,
+          userId: item.userId,
+        }));
+        return JSON.stringify(prev) === JSON.stringify(newList)
+          ? prev
+          : newList;
       });
-      // setListItem({
-      //    flowById.approvalSteps.map((item)=>(
-      //     {
-      //        stepNumber: item.stepNumber,
-      //        stepName: item.stepName,
-      //        userId: item.userId 
-      //     }
-      //   ))
-      // })
     }
   }, [flowById]);
 
@@ -173,7 +191,6 @@ export default function Flows({ title }) {
   ];
 
   const handleOpenModal = (modalId) => {
-    setEditMode(false);
     ClearInput();
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
@@ -184,13 +201,7 @@ export default function Flows({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-        handleEdit(id, "flowModal");
-    } else if (action === "delete") {
-      //   handleDelete(
-      //     contratorIsLoading,
-      //     () => deleteContrator(id),
-      //     () => getContratorData()
-      //   );
+      handleEdit(id, "flowModal");
     }
   };
 
@@ -198,7 +209,7 @@ export default function Flows({ title }) {
     ClearInput();
     await getFlowById(flowId);
     setGetId(flowId);
-    
+
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
@@ -218,33 +229,32 @@ export default function Flows({ title }) {
   const validateStepInput = (listItem) => {
     let errors = {};
     // check error ตาม stepid
-    listItem.forEach(
-      (item, index) => {
-        if (!item.userId || item.userId === null) {
-          errors[`userId_${index}`] = "กรุณาเลือกชื่อผู้อนุมัติ";
-        }
-        if (!item.stepName || item.stepName === '') {
-          errors[`stepName_${index}`] = "กรุณาเลือกลำดับของผู้อนุมัติ";
-        }
+    listItem.forEach((item, index) => {
+      if (!item.userId || item.userId === null) {
+        errors[`userId_${index}`] = "กรุณาเลือกชื่อผู้อนุมัติ";
       }
-    )
+      if (!item.stepName || item.stepName === "") {
+        errors[`stepName_${index}`] = "กรุณาเลือกลำดับของผู้อนุมัติ";
+      }
+    });
     return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const reqData = {
-       flowName : input.flowName,
-       isActive : input.isactive,
-       approveSteps : listItem
-    }
+      flowName: input.flowName,
+      isActive: input.isactive,
+      approveSteps: listItem,
+    };
+    console.log("data req", reqData);
 
     const errorInput = validateInput(input);
     const errorStepInput = validateStepInput(listItem);
     const errorList = { ...errorInput, ...errorStepInput };
     setError(errorList);
-    console.log("Error list",error);
+    console.log("Error list", error);
     if (listItem.length === 0) {
       Swal.fire({
         index: "บันทึกข้อมูลไม่สำเร็จ",
@@ -258,14 +268,13 @@ export default function Flows({ title }) {
     console.log("data", input);
 
     if (Object.keys(errorList).length === 0) {
-      const response = await createFlow(reqData)
-        // editmode
-        // ? await updateContrator(reqData, getId)
-        // : await createContrator(reqData);
+      const response = editmode
+        ? await updateFlow(reqData, getId)
+        : await await createFlow(reqData);
       if (response.success) {
         setIsSubmit(true);
         Swal.fire({
-          index: "บันทึกข้อมูลสำเร็จ",
+          title: "บันทึกข้อมูลสำเร็จ",
           icon: "success",
           draggable: true,
           buttonsStyling: "w-100",
@@ -297,18 +306,15 @@ export default function Flows({ title }) {
     setListItem([]);
     setError({});
     setEditMode(false);
-    setIsOpenNewApproveStep(false)
+    setIsOpenNewApproveStep(false);
   };
 
   const handleAddApproveStep = () => {
-    // การเพิ่ม form เปล่าใน set ใหม่
     setListItem([
       ...listItem,
       { stepNumber: listItem.length + 1, stepName: "", userId: null },
     ]); //ตอนเปิด
   };
-
-
 
   const handleDeleteApproveStep = (index) => {
     // console.log(index);
@@ -317,12 +323,10 @@ export default function Flows({ title }) {
 
   const handleOpenApproveStepSection = () => {
     setIsOpenNewApproveStep(true);
-    // setListItem([...listItem, { stepId: listItem.length + 1 }]);
     setListItem([
       ...listItem,
       { stepNumber: listItem.length + 1, stepName: "", userId: null },
     ]);
-    // console.log("first item",listItem)
   };
 
   return (
@@ -340,18 +344,11 @@ export default function Flows({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "400px" }}
-            onClick={() => handleOpenModal("flowModal")}
-          >
-            <span>
-              <i class="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+        <MainButton
+          btnName={addBtnName}
+          icon={"bi bi-plus-circle"}
+          onClick={() => handleOpenModal("flowModal")}
+        />
         <DataTableComponent
           column={columns}
           data={flowData}
@@ -384,7 +381,7 @@ export default function Flows({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={ClearInput}
+                  onClick={() => handleCancel("flowModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -462,10 +459,7 @@ export default function Flows({ title }) {
                       </div>
                       {/* ส่วนของ card สายอนุมัติ */}
                       {listItem.map((item, index) => (
-                        <div
-                          className="filter-container"
-                          key={index}
-                        >
+                        <div className="filter-container" key={index}>
                           <div className="d-flex align-items-top justify-content-between">
                             <p style={{ fontSize: "0.9rem" }}>
                               ลำดับ {item.stepNumber}
@@ -488,8 +482,11 @@ export default function Flows({ title }) {
                                 style={{ width: "150px" }}
                                 name="stepName"
                                 id="stepName"
-                                className={`form-control ${error[`stepName_${index}`]?"border-danger":""}`}
-                                // onChange={handleChangeInputStepFlow}
+                                className={`form-control ${
+                                  error[`stepName_${index}`]
+                                    ? "border-danger"
+                                    : ""
+                                }`}
                                 onChange={(e) =>
                                   handleChangeEaseItem(
                                     index,
@@ -500,15 +497,20 @@ export default function Flows({ title }) {
                                 value={item.stepName}
                               >
                                 <option value={""}>เลือกลำดับ</option>
-                                {stepList.map((item) => (
-                                  <option value={item.value} key={item.index}>
+                                {stepList.map((item, index) => (
+                                  <option value={item.value} key={index}>
                                     {item.value}
                                   </option>
                                 ))}
                               </select>
-                               {error[`stepName_${index}`] ? (
-                              <p className="text-danger" style={{fontSize:"0.8rem"}}>{error[`stepName_${index}`]}</p>
-                            ) : null}
+                              {error[`stepName_${index}`] ? (
+                                <p
+                                  className="text-danger"
+                                  style={{ fontSize: "0.8rem" }}
+                                >
+                                  {error[`stepName_${index}`]}
+                                </p>
+                              ) : null}
                             </div>
                             <div className="col-7">
                               <SearchDropdown
@@ -521,20 +523,23 @@ export default function Flows({ title }) {
                                   )
                                 }
                                 placeholder="เลือกผู้อนุมัติ"
-                                value={
-                                  userDropdown.find(
-                                    (i) => i.value === item.userId
-                                  ) || null
-                                }
+                                value={userDropdown.find(
+                                  (i) => i.value === item.userId
+                                )}
                                 className={`${
                                   error[`userId_${index}`]
                                     ? "border border-danger rounded-2"
                                     : ""
                                 }`}
                               />
-                               {error[`userId_${index}`] ? (
-                              <p className="text-danger" style={{fontSize:"0.8rem"}}>{error[`userId_${index}`]}</p>
-                            ) : null}
+                              {error[`userId_${index}`] ? (
+                                <p
+                                  className="text-danger"
+                                  style={{ fontSize: "0.8rem" }}
+                                >
+                                  {error[`userId_${index}`]}
+                                </p>
+                              ) : null}
                               <a
                                 style={{ cursor: "pointer" }}
                                 onClick={() =>
@@ -559,7 +564,7 @@ export default function Flows({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
+                handleCancel={() => handleCancel("flowModal")}
                 isLoading={flowIsLoading}
               />
             </div>

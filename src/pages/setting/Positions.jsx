@@ -44,19 +44,6 @@ export default function Positions({ title }) {
     setData(mockeTitletableData);
   }, []);
 
-  // useEffect(() => {
-  //   try {
-  //     if (!data) {
-  //       return;
-  //     } else {
-  //       GetDataTable();
-  //     }
-  //   } catch (error) {
-  //     console.log("ไม่สามารถโหลดข้อมูลได้", error.message);
-  //   }
-  // }, [data]);
-
-
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -236,7 +223,7 @@ export default function Positions({ title }) {
             data-bs-target="#notModal"
           >
             <span>
-              <i class="bi bi-plus-circle fs-4"></i>
+              <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
@@ -289,7 +276,7 @@ export default function Positions({ title }) {
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -305,7 +292,7 @@ export default function Positions({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
+                            <label  className="form-label">
                               ตำแหน่ง
                               <span style={{ color: "red" }}>*</span>
                             </label>

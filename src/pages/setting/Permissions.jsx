@@ -71,10 +71,12 @@ export default function Permissions({ title }) {
 
   useEffect(() => {
     fetchDataTable();
+    
   }, [fetchDataTable]);
 
   useEffect(() => {
     if (permissionDataById) {
+      console.log("permission data",permissionDataById)
       setInput({
         permissioncode: permissionDataById.permissionCode ?? "",
         permissionname: permissionDataById.permissionName ?? "",

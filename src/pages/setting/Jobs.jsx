@@ -13,6 +13,7 @@ import { useJob } from "../../hooks/jobStore";
 import handleDelete from "../../util/handleDelete";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
+import { handleCancel } from "../../util/handleCloseModal";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -180,6 +181,7 @@ export default function Jobs({ title }) {
   ];
 
   const handleOpenModal = (modalId) => {
+    ClearInput();
     setEditMode(false);
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
@@ -197,6 +199,7 @@ export default function Jobs({ title }) {
   };
 
   const handleEdit = async (id, modalId) => {
+    ClearInput();
     await getJobById(id);
     setGetId(id);
     setEditMode(true);
@@ -295,7 +298,7 @@ export default function Jobs({ title }) {
             onClick={() => handleOpenModal("jobModal")}
           >
             <span>
-              <i class="bi bi-plus-circle fs-4"></i>
+              <i className="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
@@ -332,10 +335,10 @@ export default function Jobs({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={ClearInput}
+                  onClick={()=>handleCancel("jobModal")}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -404,7 +407,7 @@ export default function Jobs({ title }) {
                             ) : null}
                           </div>
                           <div className="col-12">
-                            <label class="form-label">
+                            <label className="form-label">
                               ชื่อหน่วยงาน (เพิ่มเติม)
                             </label>
                             <input
@@ -434,11 +437,11 @@ export default function Jobs({ title }) {
                               <p className="text-danger">{error.jobname2}</p>
                             ) : null}
                           </div>
-                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
+                            <div className="form-check form-switch form-switch-md ms-3">
                               <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="isActive-toggle"
                                 name="isactive"
@@ -456,7 +459,7 @@ export default function Jobs({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
+                handleCancel={()=>handleCancel("jobModal")}
                 isLoading={jobIsLoading}
               />
             </div>

@@ -39,14 +39,14 @@ export default function EmployeeCard() {
 
   return (
     <>
-      <div class="accordion">
-        <div class="accordion-item">
+      <div className="accordion">
+        <div className="accordion-item">
           <input
             id="accordion-trigger-2"
-            class="accordion-trigger-input"
+            className="accordion-trigger-input"
             type="checkbox"
             checked = {onClickAccordian === true}
-            onClick={handleChangeCheckbox}
+            onChange={handleChangeCheckbox}
           ></input>
           <label
             class="accordion-trigger accordion-label"
@@ -54,10 +54,10 @@ export default function EmployeeCard() {
           >
             <strong>บริษัท ซีอีเอส จำกัด {authdata.username}</strong>
           </label>
-          <section class="accordion-animation-wrapper">
-            <div class="accordion-animation">
-              <div class="accordion-transform-wrapper">
-                <div class="accordion-content">
+          <section className="accordion-animation-wrapper">
+            <div className ="accordion-animation">
+              <div className="accordion-transform-wrapper">
+                <div className="accordion-content">
                   <div
                     style={{
                       maxWidth: authdata.publicEmployeeId ? "650px" : "100%",

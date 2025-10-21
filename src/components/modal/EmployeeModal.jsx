@@ -239,7 +239,7 @@ export default function EmployeeManagementModal({
                           }`}
                           id="employeeCode"
                           placeholder="กรอกรหัสพนักงาน"
-                          value={input.employeeCode}
+                          value={input.employeeCode ?? ""}
                           onChange={handleChangeInput}
                         />
                         {error.employeeCode ? (
@@ -258,7 +258,7 @@ export default function EmployeeManagementModal({
                             error.titleId ? "border border-danger" : ""
                           }`}
                           onChange={handleChangeInput}
-                          value={input.titleId}
+                          value={input.titleId ?? 0}
                         >
                           <option value={""}>เลือกคำนำหน้า</option>
                           {titleData.map((item) => (
@@ -306,7 +306,7 @@ export default function EmployeeManagementModal({
                           }`}
                           id="lastname"
                           placeholder="กรอกนามสกุล"
-                          value={input.lastname}
+                          value={input.lastname ??  ""}
                           onChange={handleChangeInput}
                         />
                         {error.lastname ? (
@@ -379,7 +379,7 @@ export default function EmployeeManagementModal({
                             error.telephoneNo ? "border border-danger" : ""
                           }`}
                           maxLength={12}
-                          value={input.telephoneNo}
+                          value={input.telephoneNo ?? ""}
                           placeholder="กรอกหมายเลขโทรศัพท์"
                           onChange={(e) =>
                             setInput((prevData) => ({
@@ -413,7 +413,7 @@ export default function EmployeeManagementModal({
                           aria-required="true"
                           required
                           maxLength={17}
-                          value={input.cardId}
+                          value={input.cardId ?? ""}
                           onChange={(e) =>
                             setInput((prevData) => ({
                               ...prevData,

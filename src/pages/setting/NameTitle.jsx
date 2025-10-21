@@ -29,13 +29,11 @@ export default function NameTitle({ title }) {
     getTitleNameData,
     titleData,
     titleIsLoading,
-    titleErrorMessage,
     getNameTitleById,
     titleById,
     createTitle,
     deleteTitle,
     updateTitle,
-    success,
   } = useTitltName();
   const [editMode, setEditMode] = useState(false);
   const [editTitleId, setEditTitleId] = useState(null);
@@ -69,8 +67,8 @@ export default function NameTitle({ title }) {
     if (titleById) {
       setInput((prevData) => ({
         ...prevData,
-        titleNameTH: titleById.titleNameTH,
-        titleNameEng: titleById.titleNameEng,
+        titleNameTH: titleById.titleNameTH ?? "",
+        titleNameEng: titleById.titleNameEng ?? "",
       }));
     }
   }, [titleById]);

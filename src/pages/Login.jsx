@@ -77,7 +77,7 @@ export default function Login() {
             <input
               className="form-control"
               placeholder="กรอกชื่อผู้ใช้หรือรหัสพนักงาน"
-              value={username}
+              value={username ?? ""}
               onChange={(e) => setUsername(e.target.value)}
               autoFocus
             />
@@ -92,7 +92,7 @@ export default function Login() {
                 autoComplete="current-password"
                 placeholder="กรอกรหัสผ่าน"
                 className="form-control"
-                value={password}
+                value={password ?? ""}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button

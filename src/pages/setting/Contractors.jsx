@@ -298,7 +298,7 @@ export default function Contrators({ title }) {
                   onClick={ClearInput}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="employee-content p-4">
                   <div className="col-lg-3 "></div>
                   <div
@@ -314,7 +314,7 @@ export default function Contrators({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
+                            <label className="form-label">
                               ชื่อผู้รับเหมา
                               <span style={{ color: "red" }}>*</span>
                             </label>
@@ -328,7 +328,7 @@ export default function Contrators({ title }) {
                               }`}
                               id="educationname"
                               placeholder="กรอกชื่อผู้รับเหมา"
-                              value={input.contractorname}
+                              value={input.contractorname ?? ""}
                               onChange={handleChangeInput}
                             />
                             {error.contractorname ? (
@@ -337,11 +337,11 @@ export default function Contrators({ title }) {
                               </p>
                             ) : null}
                           </div>
-                          <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
                             <div class="form-check form-switch form-switch-md ms-3">
                               <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="isActive-toggle"
                                 name="isactive"

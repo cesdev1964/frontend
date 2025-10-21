@@ -90,7 +90,10 @@ const ChangePassword = ({ title }) => {
     //api post
 
     if (Object.keys(errorList).length === 0) {
-      const response = await changePassword(reqData, authdata?.user.publicUserId);
+      const response = await changePassword(
+        reqData,
+        authdata?.user.publicUserId
+      );
       if (response.success) {
         setIsSubmit(true);
         Swal.fire({
@@ -146,7 +149,7 @@ const ChangePassword = ({ title }) => {
                   <input
                     className={`form-control`}
                     name="userName"
-                    value={inputData.userName}
+                    value={inputData.userName ?? ""}
                     onChange={(e) => handleChangeInput(e)}
                     autoFocus
                   />
@@ -165,7 +168,7 @@ const ChangePassword = ({ title }) => {
                       }`}
                       name="defaultPassword"
                       type={showPassword ? "text" : "password"}
-                      value={inputData.defaultPassword}
+                      value={inputData.defaultPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
                     />
                     <button
@@ -201,7 +204,7 @@ const ChangePassword = ({ title }) => {
                       }`}
                       name="newPassword"
                       type={showPassword ? "text" : "password"}
-                      value={inputData.newPassword}
+                      value={inputData.newPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
                     />
                     <button
@@ -237,7 +240,7 @@ const ChangePassword = ({ title }) => {
                       }`}
                       name="confirmPassword"
                       type={showPassword ? "text" : "password"}
-                      value={inputData.confirmPassword}
+                      value={inputData.confirmPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
                     />
                     <button

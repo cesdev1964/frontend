@@ -31,7 +31,7 @@ export default function AnnouncementCard() {
             class="accordion-trigger-input"
             type="checkbox"
             checked={onClickAccordian === true}
-            onClick={handleChangeCheckbox}
+            onChange={handleChangeCheckbox}
           ></input>
           <label
             class="accordion-trigger accordion-label"

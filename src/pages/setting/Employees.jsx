@@ -427,11 +427,6 @@ const Employees = ({ title }) => {
     setOpenCopperModal(true);
   };
 
-  const levelSelect = [
-    { value: 1, label: "PC1" },
-    { value: 2, label: "PC2" },
-    { value: 3, label: "PC3" },
-  ];
 
   return (
     <div>

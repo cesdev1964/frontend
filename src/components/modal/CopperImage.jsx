@@ -103,7 +103,7 @@ export default function CopperImage({
       >
         <Modal.Header closeButton className="bg-white">
           <Modal.Title>
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
+            <h1 className="modal-title fs-5" id="exampleModalLabel">
               อัปโหลดภาพประจำตัว
             </h1>
           </Modal.Title>
