@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem("access_token"));
   const [loading, setLoading] = useState(false);
   const [authdata, setAuthData] = useState({});
+  const [loginData,setLoginData] = useState({});
   const login = async ({ username, password }) => {
     setLoading(true);
     try {
@@ -20,6 +21,7 @@ export function AuthProvider({ children }) {
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
       console.log("data form login", data);
+      setLoginData(data);
 
       localStorage.setItem("access_token", data.access_token);
       setToken(data.access_token);
@@ -84,7 +86,8 @@ export function AuthProvider({ children }) {
         logout,
         loading,
         authdata,
-        loadUser
+        loadUser,
+        loginData
       }}
     >
       {children}

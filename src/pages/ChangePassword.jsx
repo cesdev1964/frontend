@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useAuth } from "../auth/AuthContext";
 import { useUser } from "../hooks/userStore";
+import { useNavigate } from "react-router-dom";
 
 const ChangePassword = ({ title }) => {
   useTitle(title);
@@ -20,7 +21,9 @@ const ChangePassword = ({ title }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { authdata } = useAuth();
   const { changePassword, userError, userIsLoading } = useUser();
-  // console.log("userData", userData);
+  const navigate = useNavigate();
+
+  console.log("userData", authdata);
 
   useEffect(() => {
     if (authdata) {
@@ -92,7 +95,7 @@ const ChangePassword = ({ title }) => {
     if (Object.keys(errorList).length === 0) {
       const response = await changePassword(
         reqData,
-        authdata?.user.publicUserId
+        authdata?.publicUserId
       );
       if (response.success) {
         setIsSubmit(true);
@@ -102,7 +105,9 @@ const ChangePassword = ({ title }) => {
           draggable: true,
           buttonsStyling: "w-100",
         });
+        navigate("/");
         ClearInput();
+        {/* สำเร็จแล้ว ให้ทำการ nevigate ไปหน้า home */}
       } else {
         Swal.fire({
           index: "เปลี่ยนรหัสผ่านไม่สำเร็จไม่สำเร็จ",
@@ -269,6 +274,7 @@ const ChangePassword = ({ title }) => {
                   >
                     ยกเลิก
                   </button>
+                  
                   <button
                     className="btn btn-primary"
                     type="submit"

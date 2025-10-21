@@ -1657,7 +1657,7 @@ thead th:last-child {
 .modal-body {
   position: relative;
   flex: 1 1 auto;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .modal-footer {
@@ -2218,3 +2218,6 @@ thead th:last-child {
   border-radius: 10px;
   width: 100%;
 }
+
+
+

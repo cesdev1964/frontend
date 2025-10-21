@@ -38,7 +38,7 @@ export default function SessionExpired({onSubmit}) {
                 ></i>
               </div>
               <h4 className="mb-3">Oops...</h4>
-              <p className="text-mute">Something went wrong!</p>
+              <p className="text-mute">Session หมดอายุ!</p>
               <button
                 className="btn btn-primary my-4 w-50"
                 data-bs-dismiss="modal"

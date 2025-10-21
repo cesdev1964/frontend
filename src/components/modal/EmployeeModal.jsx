@@ -247,7 +247,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-6 col-lg-4">
-                        <label for="StartDate" class="form-label">
+                        <label  class="form-label">
                           คำนำหน้า
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -261,8 +261,8 @@ export default function EmployeeManagementModal({
                           value={input.titleId ?? 0}
                         >
                           <option value={""}>เลือกคำนำหน้า</option>
-                          {titleData.map((item) => (
-                            <option value={item.titleId}>
+                          {titleData.map((item,index) => (
+                            <option value={item.titleId} key={index}>
                               {item.titleNameTH}
                             </option>
                           ))}
@@ -286,7 +286,7 @@ export default function EmployeeManagementModal({
                           }`}
                           id="firstname"
                           placeholder="กรอกชื่อจริง"
-                          value={input.firstname}
+                          value={input.firstname ?? ""}
                           onChange={handleChangeInput}
                         />
                         {error.firstname ? (
@@ -294,7 +294,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-6 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           นามสกุล
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -314,7 +314,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-8 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           วันเดือนปีเกิด
                           <span style={{ color: "red" }}>*</span>
                           <span className="sub-label">(ค.ศ.)</span>
@@ -368,7 +368,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-8 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           เบอร์โทรศัพท์
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -395,7 +395,7 @@ export default function EmployeeManagementModal({
                     </div>
                     <div className="row form-spacing g-2">
                       <div className="col-lg-6">
-                        <label class="form-label">
+                        <label className="form-label">
                           เลขบัตรประชาชน
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -406,7 +406,7 @@ export default function EmployeeManagementModal({
                           id="cardId"
                           name="cardId"
                           placeholder="กรอกเลขบัตรประชาชน"
-                          autofocus
+                          autoFocus
                           title="National ID Input"
                           aria-labelledby="InputLabel"
                           aria-invalid
@@ -459,7 +459,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-6 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           หน่วยงาน
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -482,7 +482,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-8 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           ตำแหน่ง
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -536,7 +536,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-6 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           ประเภท
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -560,7 +560,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-5 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           อัตราค่าจ้าง
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -570,7 +570,7 @@ export default function EmployeeManagementModal({
                           className={`form-control ${
                             error.rate ? "border border-danger" : ""
                           }`}
-                          value={input.rate}
+                          value={input.rate ?? ""}
                           placeholder="กรอกค่าจ้าง"
                           onChange={(e) =>
                             setInput((prevData) => ({
@@ -608,7 +608,7 @@ export default function EmployeeManagementModal({
                         <p className="text-danger">{error.startDate}</p>
                       ) : null}
                       <div className="col-md-6 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           วันที่ลาออก
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
@@ -629,7 +629,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-5 col-lg-4">
-                        <label class="form-label">
+                        <label className="form-label">
                           สถานะ
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -640,7 +640,7 @@ export default function EmployeeManagementModal({
                             error.statusId ? "border border-danger" : ""
                           }`}
                           onChange={handleChangeInput}
-                          value={input.statusId}
+                          value={input.statusId ?? null}
                         >
                           <option value={""}>เลือกสถานะ</option>
                           <option value={0}>ลาออก</option>
@@ -652,7 +652,7 @@ export default function EmployeeManagementModal({
                       </div>
                     </div>
                     <div className="col-md-12 col-lg-6">
-                      <label class="form-label">
+                      <label className="form-label">
                         สายอนุมัติ
                         <span style={{ color: "red" }}>*</span>
                       </label>

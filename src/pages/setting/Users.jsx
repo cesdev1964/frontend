@@ -400,7 +400,7 @@ export default function Users({ title }) {
         <div
           className="modal fade"
           id="addModal"
-          tabindex="-1"
+          tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
@@ -420,7 +420,7 @@ export default function Users({ title }) {
                   onClick={()=>handleCancel("addModal")}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="p-4">
                   <div className="row form-spacing g-3">
                     <div
@@ -611,10 +611,11 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex my-3 gap-2  flex-wrap">
-                        {input.roles?.map((item) => (
+                        {input.roles?.map((item,index) => (
                           <div
                             className="border border-danger p-1 pe-0 rounded-3 bg-light ps-2"
                             style={{ fontSize: "0.9rem" }}
+                            key={index}
                           >
                             {getRoleName(item)}
                             <button

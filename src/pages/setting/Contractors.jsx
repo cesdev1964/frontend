@@ -10,6 +10,7 @@ import { useContrator } from "../../hooks/contratorStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import handleDelete from "../../util/handleDelete";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -85,10 +86,10 @@ export default function Contrators({ title }) {
   }, [error, isSubmit]);
 
   const columnDefs = [
-    { width: "70px", targets: 0,className:"text-center" },
+    { width: "70px", targets: 0, className: "text-center" },
     { width: "230px", targets: 1 },
     { width: "100px", targets: 2 },
-    { width: "100px", targets: 3,className: "text-center" },
+    { width: "100px", targets: 3, className: "text-center" },
   ];
 
   const columns = [
@@ -213,7 +214,7 @@ export default function Contrators({ title }) {
         const modalInstance = bootstrap.Modal.getInstance(currentModal);
         modalInstance.hide();
         ClearInput();
-       await getContratorData();
+        await getContratorData();
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
@@ -252,18 +253,11 @@ export default function Contrators({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("notModal")}
-          >
-            <span>
-              <i class="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+        <MainButton
+          btnName={addBtnName}
+          icon="bi bi-plus-circle"
+          onClick={() => handleOpenModal("notModal")}
+        />
         <DataTableComponent
           column={columns}
           data={contratorData}

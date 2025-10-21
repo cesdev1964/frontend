@@ -12,7 +12,7 @@ function MainLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const navigate = useNavigate();
-  const { loading, token, authdata } = useAuth();
+  const { loading, token, authdata, loginData } = useAuth();
 
   const nevigateToLogin = () => {
     navigate("/login");
@@ -29,39 +29,49 @@ function MainLayout() {
     <>
       {/* ผู้ใช้เดิม */}
 
-      {/* {authdata?.user?.mustchangePassword === true ? (
-        <div className="app">
-          <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-          <div className="main">
-            <AppNavbar toggleSidebar={toggleSidebar} />
-            <div className="content">
-              <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
-                <Outlet />
+      {/* {authdata ? (
+        <>
+          {loginData?.user?.mustchangePassword === true ? (
+            <div className="app">
+              <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+              <div className="main">
+                <AppNavbar toggleSidebar={toggleSidebar} />
+                <div className="content">
+                  <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                    <Outlet />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <SessionExpired onSubmit={nevigateToLogin} />
-        </div>
+          ) : (
+            <>
+              <ChangePassword title="เปลี่ยนรหัสผ่าน" />
+            </>
+          )}
+        </>
       ) : (
         <>
-          <ChangePassword title="เปลี่ยนรหัสผ่าน" />
+          <SessionExpired onSubmit={nevigateToLogin} />
         </>
       )} */}
-      {authdata.access_token != null || authdata ? (
-        <div className="app">
-          <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-          <div className="main">
-            <AppNavbar toggleSidebar={toggleSidebar} />
-            <div className="content">
-              <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
-                <Outlet />
+
+      <div className="app">
+        {authdata ? (
+          <>
+            <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+            <div className="main">
+              <AppNavbar toggleSidebar={toggleSidebar} />
+              <div className="content">
+                <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                  <Outlet />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <SessionExpired onSubmit={nevigateToLogin} />
-      )}
+          </>
+        ) : (
+          <SessionExpired onSubmit={nevigateToLogin} />
+        )}
+      </div>
     </>
   );
 }

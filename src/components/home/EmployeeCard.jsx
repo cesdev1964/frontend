@@ -60,7 +60,7 @@ export default function EmployeeCard() {
                 <div className="accordion-content">
                   <div
                     style={{
-                      maxWidth: authdata.publicEmployeeId ? "650px" : "100%",
+                      maxHeight: authdata.publicEmployeeId ? "650px" : "100%",
                       overflowY: authdata.publicEmployeeId ? "auto" : "",
                     }}
                   >
