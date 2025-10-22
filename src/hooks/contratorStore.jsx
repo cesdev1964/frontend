@@ -100,29 +100,6 @@ export const useContrator = create((set) => ({
       };
     }
   },
-  deleteContrator: async (id) => {
-    console.log("id ", id);
-    set({ contratorIsLoading: true, contratorErrorMessage: null });
-    try {
-      await api.delete(`/api/contractors/${id}`);
-      return {
-        contratorIsLoading: false,
-        contratorErrorMessage: null,
-        success: true,
-      };
-    } catch (error) {
-      set({
-        contratorErrorMessage: error?.response?.data?.message || error.message,
-        contratorIsLoading: false,
-        success: false,
-      });
-      return {
-        contratorErrorMessage: error?.response?.data?.message || error.message,
-        contratorIsLoading: false,
-        success: false,
-      };
-    }
-  },
   updateContrator: async (requestData, id) => {
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {

@@ -32,7 +32,6 @@ export default function Educations({ title }) {
     educationData,
     educationIsLoading,
     educationErrorMessage,
-    success,
     educationById,
     getEducationData,
     getEducationById,

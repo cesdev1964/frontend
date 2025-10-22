@@ -37,7 +37,6 @@ export default function Users({ title }) {
     userError,
     getUserData,
     register,
-    success,
     deleteUser,
     getUserByIdData,
     userById,

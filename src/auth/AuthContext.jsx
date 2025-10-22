@@ -74,6 +74,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // คุณอาจเรียก /api/auth/me เพื่อตรวจสอบ token ที่ยังใช้ได้
     // ข้ามรายละเอียดเพื่อความสั้น
+    
     loadUser();
   }, [token]);
 

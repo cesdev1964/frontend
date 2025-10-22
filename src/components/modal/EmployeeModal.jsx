@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  Children,
-} from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import ImageComponent from "../../components/Image";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
@@ -20,6 +14,9 @@ import { useContrator } from "../../hooks/contratorStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useFlow } from "../../hooks/flowStore";
 import { maskIDCard, maskPhone, onlyDecimal } from "../../util/inputFormat";
+import { DateInput } from "../DateAndTimeInput";
+import { useDeduction } from "../../hooks/deductionTypeStore";
+import DeductionList from "./setting/DeductionList";
 
 var fileName = "";
 var filePath = "";
@@ -36,19 +33,28 @@ export default function EmployeeManagementModal({
   isFlow,
   setFlow,
 }) {
+  const inputImageRef = useRef(null);
   const [openCopperModal, setOpenCopperModal] = useState(false);
   const [src, setSrc] = useState(null);
   const [preview, setPreview] = useState(null);
-  const inputImageRef = useRef(null);
   const { getEducationDropdown, educationDropdown } = useEducation();
   const { titleData, getTitleNameData } = useTitltName();
   const { levelDropdown, getLevelDropdown } = useLevel();
   const { positionDropdown, getPositionDropdown } = usePosition();
   const { contratorDropdown, getContratorDropdown } = useContrator();
   const { jobDropdown, getJobDropdown } = useJob();
-  const { flowDropdown, getFlowDropdown, getFlowById, flowById } = useFlow();
+  const { deductionDropdown, getDeductionDropdown } = useDeduction();
+  const [isOpenNewDeduction, setIsOpenNewDeduction] = useState(false);
+  const [listItem, setListItem] = useState([]);
+  const {
+    flowDropdown,
+    getFlowDropdown,
+    getFlowById,
+    flowById,
+    flowIsLoading,
+  } = useFlow();
   const { employeeTypeDropdown, getEmployeeTypeDropdown } = useEmployeeType();
-  // const [isFlow, setIsFlow] = useState(false);
+
   const fetchDataTable = useCallback(async () => {
     try {
       await getEducationDropdown();
@@ -59,6 +65,7 @@ export default function EmployeeManagementModal({
       await getJobDropdown();
       await getEmployeeTypeDropdown();
       await getFlowDropdown();
+      await getDeductionDropdown();
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
     }
@@ -70,11 +77,11 @@ export default function EmployeeManagementModal({
     getContratorDropdown,
     getJobDropdown,
     getEmployeeTypeDropdown,
+    getDeductionDropdown,
   ]);
 
   useEffect(() => {
     fetchDataTable();
-    // setIsFlow(false);
   }, [fetchDataTable]);
 
   const handleChangeInput = (e) => {
@@ -91,22 +98,6 @@ export default function EmployeeManagementModal({
       [name]: selected ? selected.value : null,
     }));
   };
-
-  // const parseDate = (dateString) => {
-  //   const [day, month, year] = dateString.split("/");
-  //   return `${day}-${month}-${year}`;
-  // };
-
-  // const setformatDate = (dateString) => {
-  //   return new Date(parseDate(dateString)).toISOString().split("T")[0];
-  // };
-
-  // const handleDateChange = (name, dateString) => {
-  //   setInput((prevData) => ({
-  //     ...prevData,
-  //     [name]: setformatDate(dateString),
-  //   }));
-  // };
 
   const modalCopperName = "cooperModal";
 
@@ -160,11 +151,33 @@ export default function EmployeeManagementModal({
   const handleOpenFlow = async (flowId) => {
     setFlow(true);
     const response = await getFlowById(flowId);
-    console.log("flow description", response);
   };
 
-  const handleCloseFlow = () => {
-    setFlow(false);
+  const handleOpenSection = () => {
+    setIsOpenNewDeduction(true);
+    setListItem([
+      ...listItem,
+      { stepNumber: listItem.length + 1, deductionTypeId: null, amount: "" },
+    ]);
+  };
+
+  const handleAddItem = () => {
+    setListItem([
+      ...listItem,
+      { stepNumber: listItem.length + 1, deductionTypeId: null, amount: "" },
+    ]); //ตอนเปิด
+  };
+
+  const handleDeleteItem = (index) => {
+    // console.log(index);
+    setListItem(listItem.filter((select) => select.stepNumber !== index));
+  };
+
+  const handleChangeSelectEaseItem = (index, field, selected) => {
+    const updated = [...listItem];
+
+    updated[index][field] = selected ? selected.value : null;
+    setListItem(updated);
   };
 
   return (
@@ -175,6 +188,8 @@ export default function EmployeeManagementModal({
         show={isOpen}
         onHide={onClose}
         aria-labelledby="example-modal-sizes-title-lg"
+        backdrop="static"
+        keyboard={false}
       >
         <Modal.Header closeButton className="bg-primary">
           <Modal.Title id="example-modal-sizes-title-lg">
@@ -247,7 +262,7 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                       <div className="col-md-6 col-lg-4">
-                        <label  class="form-label">
+                        <label class="form-label">
                           คำนำหน้า
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -261,7 +276,7 @@ export default function EmployeeManagementModal({
                           value={input.titleId ?? 0}
                         >
                           <option value={""}>เลือกคำนำหน้า</option>
-                          {titleData.map((item,index) => (
+                          {titleData.map((item, index) => (
                             <option value={item.titleId} key={index}>
                               {item.titleNameTH}
                             </option>
@@ -306,7 +321,7 @@ export default function EmployeeManagementModal({
                           }`}
                           id="lastname"
                           placeholder="กรอกนามสกุล"
-                          value={input.lastname ??  ""}
+                          value={input.lastname ?? ""}
                           onChange={handleChangeInput}
                         />
                         {error.lastname ? (
@@ -319,25 +334,17 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-                        <div
-                          className="input-group date"
-                          data-date-format="mm-dd-yyyy"
-                        >
-                          <input
-                            type="date"
-                            className={`form-control ${
-                              error.birthday ? "border border-danger" : ""
-                            }`}
-                            placeholder="เลือกวันที่"
-                            name="birthday"
-                            onChange={handleChangeInput}
-                            value={input.birthday}
-                            onKeyDown={(e) => e.preventDefault()}
-                          />
-                        </div>
-                        {error.birthday ? (
-                          <p className="text-danger">{error.birthday}</p>
-                        ) : null}
+                        <DateInput
+                          onChange={([birthday]) => {
+                            setInput((prev) => ({
+                              ...prev,
+                              birthday,
+                            }));
+                          }}
+                          placeholder={"ลงเวลา"}
+                          value={input.birthday}
+                          error={error.birthday}
+                        />
                       </div>
                     </div>
                     <div className="row form-spacing g-2">
@@ -406,7 +413,6 @@ export default function EmployeeManagementModal({
                           id="cardId"
                           name="cardId"
                           placeholder="กรอกเลขบัตรประชาชน"
-                          autoFocus
                           title="National ID Input"
                           aria-labelledby="InputLabel"
                           aria-invalid
@@ -559,7 +565,7 @@ export default function EmployeeManagementModal({
                           <p className="text-danger">{error.typeId}</p>
                         ) : null}
                       </div>
-                      <div className="col-md-5 col-lg-4">
+                      <div className="col-md-7 col-lg-4">
                         <label className="form-label">
                           อัตราค่าจ้าง
                           <span style={{ color: "red" }}>*</span>
@@ -591,42 +597,42 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-                        <input
-                          type="date"
-                          className={`form-control ${
-                            error.startDate ? "border border-danger" : ""
-                          }`}
-                          id="startDate"
-                          name="startDate"
-                          placeholder="เลือกวันที่"
+
+                        <DateInput
+                          onChange={([startDate]) => {
+                            setInput((prev) => ({
+                              ...prev,
+                              startDate,
+                            }));
+                          }}
+                          placeholder={"ลงเวลา"}
                           value={input.startDate}
-                          onChange={handleChangeInput}
-                          onKeyDown={(e) => e.preventDefault()}
+                          error={error?.startDate}
                         />
                       </div>
-                      {error.startDate ? (
+                      {/* {error.startDate ? (
                         <p className="text-danger">{error.startDate}</p>
-                      ) : null}
+                      ) : null} */}
                       <div className="col-md-6 col-lg-4">
                         <label className="form-label">
                           วันที่ลาออก
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-                        <input
-                          name="endDate"
-                          type="date"
-                          className={`form-control ${
-                            error.endDate ? "border border-danger" : ""
-                          }`}
-                          id="endDate"
-                          placeholder="เลือกวันที่"
+
+                        <DateInput
+                          onChange={([endDate]) => {
+                            setInput((prev) => ({
+                              ...prev,
+                              endDate,
+                            }));
+                          }}
+                          placeholder={"ลงเวลา"}
                           value={input.endDate}
-                          onChange={handleChangeInput}
-                          onKeyDown={(e) => e.preventDefault()}
+                          error={error?.endDate}
                         />
-                        {error.endDate ? (
+                        {/* {error.endDate ? (
                           <p className="text-danger">{error.endDate}</p>
-                        ) : null}
+                        ) : null} */}
                       </div>
                       <div className="col-md-5 col-lg-4">
                         <label className="form-label">
@@ -651,6 +657,41 @@ export default function EmployeeManagementModal({
                         ) : null}
                       </div>
                     </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
+                    <div className="border-top border-danger my-3"></div>
+                  </div>
+                  {!isOpenNewDeduction || listItem.length === 0 ? (
+                    <>
+                      <div className="d-flex flex-column align-items-center justify-content-center mb-4">
+                        <button
+                          className="btn btn-primary mt-2"
+                          onClick={handleOpenSection}
+                        >
+                          <i className="bi bi-plus-circle fs-4"></i>
+                          เพิ่มประเภทการหักเงิน
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      
+                      <DeductionList
+                        deductionDropdown={deductionDropdown}
+                        deleteAll={() => {
+                          setIsOpenNewDeduction(false);
+                          setListItem([]);
+                        }}
+                        listItem={listItem}
+                        onAddItem={handleAddItem}
+                        setListItem={setListItem}
+                        propName="deductionTypeId"
+                      />
+                    </>
+                  )}
+                  <div className="row form-spacing g-2">
                     <div className="col-md-12 col-lg-6">
                       <label className="form-label">
                         สายอนุมัติ
@@ -683,49 +724,55 @@ export default function EmployeeManagementModal({
                         } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
                         role="alert"
                       >
-                          <p className="text-center">ลำดับสายอนุมัติ</p>
-                          <div className="d-flex flex-wrap justify-content-start gap-4 mt-3">
-                            {flowById.approvalSteps.map((item, index) => (
-                              <>
-                                <div
-                                  className="d-flex flex-column align-items-center"
-                                  key={index}
-                                >
+                        {flowIsLoading ? (
+                          <p className="text-center">...กำลังโหลดสายอนุมัติ</p>
+                        ) : (
+                          <>
+                            <p className="text-center">ลำดับสายอนุมัติ</p>
+                            <div className="d-flex flex-wrap justify-content-center gap-4 mt-3">
+                              {flowById.approvalSteps.map((item, index) => (
+                                <>
                                   <div
-                                    className="mb-2"
-                                    style={{
-                                      width: "40px",
-                                      height: "40px",
-                                      backgroundColor: "#ffffffff",
-                                      borderRadius: "50%",
-                                      position: "relative",
-                                    }}
+                                    className="d-flex flex-column align-items-center"
+                                    key={index}
                                   >
-                                    <p
+                                    <div
+                                      className="mb-2"
                                       style={{
-                                        position: "absolute",
-                                        left: "15px",
-                                        top: "9px",
+                                        width: "40px",
+                                        height: "40px",
+                                        backgroundColor: "#ffffffff",
+                                        borderRadius: "50%",
+                                        position: "relative",
                                       }}
                                     >
-                                      {item.stepNumber}
+                                      <p
+                                        style={{
+                                          position: "absolute",
+                                          left: "15px",
+                                          top: "9px",
+                                        }}
+                                      >
+                                        {item.stepNumber}
+                                      </p>
+                                    </div>
+                                    <p style={{ fontWeight: "bold" }}>
+                                      {item.stepName}
+                                    </p>
+                                    <p
+                                      style={{
+                                        fontSize: "0.9rem",
+                                        lineHeight: "0.1rem",
+                                      }}
+                                    >
+                                      {item.fullName}
                                     </p>
                                   </div>
-                                  <p style={{ fontWeight: "bold" }}>
-                                    {item.stepName}
-                                  </p>
-                                  <p
-                                    style={{
-                                      fontSize: "0.9rem",
-                                      lineHeight: "0.1rem",
-                                    }}
-                                  >
-                                    {item.fullName}
-                                  </p>
-                                </div>
-                              </>
-                            ))}
-                        </div>
+                                </>
+                              ))}
+                            </div>
+                          </>
+                        )}
 
                         {/* <button
                           type="button"

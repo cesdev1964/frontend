@@ -56,21 +56,24 @@ function MainLayout() {
       )} */}
 
       <div className="app">
-        {authdata ? (
-          <>
-            <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-            <div className="main">
-              <AppNavbar toggleSidebar={toggleSidebar} />
-              <div className="content">
-                <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+        <>
+          <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+          <div className="main">
+            <AppNavbar toggleSidebar={toggleSidebar} />
+            <div className="content">
+              <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                {authdata ? (
                   <Outlet />
-                </div>
+                ) : (
+                  // <SessionExpired onSubmit={nevigateToLogin} />
+                  <>
+                    <LoadingSpin />
+                  </>
+                )}
               </div>
             </div>
-          </>
-        ) : (
-          <SessionExpired onSubmit={nevigateToLogin} />
-        )}
+          </div>
+        </>
       </div>
     </>
   );

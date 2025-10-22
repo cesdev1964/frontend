@@ -289,7 +289,7 @@ export default function Contrators({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={ClearInput}
+                  onClick={()=>handleCancel("notModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -333,7 +333,7 @@ export default function Contrators({ title }) {
                           </div>
                           <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
+                            <div className="form-check form-switch form-switch-md ms-3">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
@@ -353,7 +353,7 @@ export default function Contrators({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
+                handleCancel={()=>handleCancel("notModal")}
                 isLoading={contratorIsLoading}
               />
             </div>

@@ -40,7 +40,6 @@
   --transitionTiming: ease;
 }
 
-
 * {
   box-sizing: border-box;
   font-family: "Noto Sans Thai";
@@ -2078,7 +2077,7 @@ thead th:last-child {
   }
 }
 
-.avartarImageDefault{
+.avartarImageDefault {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -2105,15 +2104,14 @@ thead th:last-child {
 }
 
 .accordion-trigger-input {
-  clip: rect(0 0 0 0); 
+  clip: rect(0 0 0 0);
   clip-path: inset(50%);
   height: 1px;
   overflow: hidden;
   position: absolute;
-  white-space: nowrap; 
+  white-space: nowrap;
   width: 1px;
 }
-
 
 .accordion-trigger {
   display: block;
@@ -2124,7 +2122,7 @@ thead th:last-child {
   cursor: pointer;
 }
 
-.accordion-label{
+.accordion-label {
   color: var(--pink-active);
 }
 
@@ -2138,7 +2136,7 @@ thead th:last-child {
   position: absolute;
   right: 16px;
   top: 18px;
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   border: 1px solid var(--pink);
@@ -2149,12 +2147,14 @@ thead th:last-child {
 }
 
 .accordion-trigger-input:checked ~ .accordion-trigger::after {
-  transform: rotate(135deg) rotateX(180deg) rotateY(180deg) translateY(4px) translateX(-4px);
+  transform: rotate(135deg) rotateX(180deg) rotateY(180deg) translateY(4px)
+    translateX(-4px);
 }
 
 .accordion-trigger-input:checked ~ .accordion-trigger {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  transition: box-shadow calc(var(--transitionLength) / 4) var(--transitionTiming);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: box-shadow calc(var(--transitionLength) / 4)
+    var(--transitionTiming);
 }
 
 .accordion-content {
@@ -2196,13 +2196,17 @@ thead th:last-child {
 .accordion-transform-wrapper {
   transform: translateY(-100%);
   visibility: hidden;
-  transition: transform var(--transitionLength) var(--transitionTiming), visibility 0s var(--transitionLength) var(--transitionTiming);
+  transition: transform var(--transitionLength) var(--transitionTiming),
+    visibility 0s var(--transitionLength) var(--transitionTiming);
 }
 
-.accordion-trigger-input:checked ~ .accordion-animation-wrapper .accordion-transform-wrapper {
+.accordion-trigger-input:checked
+  ~ .accordion-animation-wrapper
+  .accordion-transform-wrapper {
   transform: translateY(0);
   visibility: visible;
-  transition: transform var(--transitionLength) var(--transitionTiming), visibility 0s linear;
+  transition: transform var(--transitionLength) var(--transitionTiming),
+    visibility 0s linear;
 }
 
 /* Margins inside the container will throw animation height calculations off, better use paddings */
@@ -2210,14 +2214,39 @@ thead th:last-child {
   margin: 0;
 }
 
-.filter-container{
+.filter-container {
   background-color: white;
   border: 1px solid var(--pink);
-  padding: 16px;
+  padding: 10px;
   margin-bottom: 15px;
   border-radius: 10px;
   width: 100%;
 }
 
+.totalOTBanner {
+  background: #fff;
+  backdrop-filter: saturate(115%) blur(2px);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
-
+.totalOTBanner:hover {
+  border: 3px solid transparent;
+  /* rainbow linear-gradient */
+  border-image: linear-gradient(
+    to bottom right,
+    #b827fc 0%,
+    #2c90fc 25%,
+    #b8fd33 50%,
+    #fec837 75%,
+    #fd1892 100%
+  );
+  border-image-slice: 1;
+  border-radius: 10px;
+}
