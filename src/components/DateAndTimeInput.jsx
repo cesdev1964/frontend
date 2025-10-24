@@ -1,17 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import "flatpickr/dist/themes/material_red.css";
 import Flatpickr from "react-flatpickr";
 export function DateInput({ value, placeholder, onChange, error }) {
   // ตรวจสอบว่าค่าที่ input เข้ามาใช้ เวลาไหม
-  const normalizedValue =
-    value instanceof Date ? value : value ? new Date() : null;
-
+   const [tempValue,setTempValue] = useState(value);
+    
   return (
     <>
       <Flatpickr
-        value={value}
+        value={value || ""}
         onChange={(dates)=>{
-          const selected = dates && dates.length > 0? dates[0]:null;
+          setTempValue(dates[0]);
           onChange(selected?[selected]:[null])
         }}
         className={`form-control bg-white ${

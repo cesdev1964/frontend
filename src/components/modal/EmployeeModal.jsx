@@ -14,12 +14,11 @@ import { useContrator } from "../../hooks/contratorStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useFlow } from "../../hooks/flowStore";
 import { maskIDCard, maskPhone, onlyDecimal } from "../../util/inputFormat";
-import { DateInput } from "../DateAndTimeInput";
 import { useDeduction } from "../../hooks/deductionTypeStore";
 import DeductionList from "./setting/DeductionList";
 
-var fileName = "";
-var filePath = "";
+var photoName = "";
+var photoPath = "";
 
 export default function EmployeeManagementModal({
   input = {},
@@ -45,7 +44,8 @@ export default function EmployeeManagementModal({
   const { jobDropdown, getJobDropdown } = useJob();
   const { deductionDropdown, getDeductionDropdown } = useDeduction();
   const [isOpenNewDeduction, setIsOpenNewDeduction] = useState(false);
-  const [listItem, setListItem] = useState([]);
+  const [listItem, setListItem] = useState(input.deductions || []);
+  const [birthdayError, setBirthdayError] = useState("");
   const {
     flowDropdown,
     getFlowDropdown,
@@ -84,8 +84,30 @@ export default function EmployeeManagementModal({
     fetchDataTable();
   }, [fetchDataTable]);
 
+  const getAge = (datetime)=>{
+    const currentDateTime = new Date();
+    const birthDate = new Date(datetime);
+
+    let age = currentDateTime.getFullYear()-birthDate.getFullYear(); //ผลต่างปี
+    // const month = currentDateTime.getMonth() - birthDate.getMonth();
+    // // ตรวจสอบเดือน ถ้าเกิดในเดือนนั้น ให้ตรวจสอบวัน
+    // if (month <0 || month === 0 && currentDateTime.getDate() < birthDate.getDate()){
+    //   --age;
+    // }
+    return age;
+  }
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
+
+    if (name === "birthday") {
+      const age = getAge(value);
+     
+      if (age < 18) {
+        setBirthdayError("อายุ 18 ปีขึ้นไป");
+        return;
+      } else setBirthdayError("");
+    }
     setInput((prevData) => ({
       ...prevData,
       [name]: value,
@@ -103,31 +125,29 @@ export default function EmployeeManagementModal({
 
   const openCopperImageModal = (e) => {
     e.preventDefault();
+
     //การเปิดโฟลเดอร์
     const file = e.target.files?.[0];
     if (!file) return;
-
-    //  console.log("file data",file);
+    
     const fileSRC = URL.createObjectURL(file);
     const getFileName = file.name;
+    // ครวจสอบไฟล์รูปภาพ
+
     setSrc(fileSRC);
 
     // เก็ย fileName and filePath กว่าจะอัปเดตค่าใหม่ต้องทำการ render ก่อน
     setInput((prevData) => ({
       ...prevData,
-      filename: getFileName,
-      filepath: fileSRC,
+      photoname: getFileName,
+      photopath: fileSRC,
     }));
 
-    fileName = file.name;
-    filePath = URL.createObjectURL(file);
+    photoName = file.name;
+    photoPath = URL.createObjectURL(file);
 
-    console.log("only file path ", filePath);
-    console.log("only file name ", fileName);
-    // oprn modal
-    // const copperModal = document.getElementById(modalCopperName);
-    // const modal = bootstrap.Modal.getOrCreateInstance(copperModal);
-    // modal.show();
+    console.log("only file path ", photoPath);
+    console.log("only file name ", photoName);
     setOpenCopperModal(true);
   };
 
@@ -222,7 +242,7 @@ export default function EmployeeManagementModal({
                   <input
                     style={{ display: "none" }}
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,.jpg,.jpeg,.png"
                     ref={inputImageRef}
                     onChange={openCopperImageModal}
                   />
@@ -334,17 +354,37 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-                        <DateInput
-                          onChange={([birthday]) => {
-                            setInput((prev) => ({
-                              ...prev,
-                              birthday,
-                            }));
-                          }}
-                          placeholder={"ลงเวลา"}
+                        <input
+                          type="date"
+                          id="birthday"
+                          className={`form-control ${
+                            error.birthday || birthdayError
+                              ? "border border-danger"
+                              : ""
+                          }`}
+                          name="birthday"
                           value={input.birthday}
-                          error={error.birthday}
+                          onChange={handleChangeInput}
+                          defaultValue={Date.now()}
+                          onKeyDown={(e) => e.preventDefault()}
+                          max={
+                            new Date(
+                              new Date().setFullYear(
+                                new Date().getFullYear() - 18
+                              )
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          }
                         />
+                        {error.birthday ? (
+                          <p className="text-danger">{error.birthday}</p>
+                        ) : null}
+                        {birthdayError ? (
+                          <p className="text-danger">{birthdayError}</p>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                     <div className="row form-spacing g-2">
@@ -597,42 +637,44 @@ export default function EmployeeManagementModal({
                           <span style={{ color: "red" }}>*</span>
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-
-                        <DateInput
-                          onChange={([startDate]) => {
-                            setInput((prev) => ({
-                              ...prev,
-                              startDate,
-                            }));
-                          }}
-                          placeholder={"ลงเวลา"}
+                        <input
+                          type="date"
+                          id="startDate"
+                          className={`form-control ${
+                            error.startDate ? "border border-danger" : ""
+                          }`}
+                          name="startDate"
+                          placeholder="ลงวันที่สิ้นสุด"
                           value={input.startDate}
-                          error={error?.startDate}
+                          onChange={handleChangeInput}
+                          defaultValue={Date.now()}
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
-                      {/* {error.startDate ? (
+                      {error.startDate ? (
                         <p className="text-danger">{error.startDate}</p>
-                      ) : null} */}
+                      ) : null}
                       <div className="col-md-6 col-lg-4">
                         <label className="form-label">
                           วันที่ลาออก
                           <span className="sub-label">(ค.ศ.)</span>
                         </label>
-
-                        <DateInput
-                          onChange={([endDate]) => {
-                            setInput((prev) => ({
-                              ...prev,
-                              endDate,
-                            }));
-                          }}
-                          placeholder={"ลงเวลา"}
+                        <input
+                          type="date"
+                          id="endDate"
+                          className={`form-control ${
+                            error.endDate ? "border border-danger" : ""
+                          }`}
+                          name="endDate"
+                          placeholder="ลงวันที่สิ้นสุด"
                           value={input.endDate}
-                          error={error?.endDate}
+                          onChange={handleChangeInput}
+                          defaultValue={Date.now()}
+                          onKeyDown={(e) => e.preventDefault()}
                         />
-                        {/* {error.endDate ? (
+                        {error.endDate ? (
                           <p className="text-danger">{error.endDate}</p>
-                        ) : null} */}
+                        ) : null}
                       </div>
                       <div className="col-md-5 col-lg-4">
                         <label className="form-label">
@@ -677,7 +719,6 @@ export default function EmployeeManagementModal({
                     </>
                   ) : (
                     <>
-                      
                       <DeductionList
                         deductionDropdown={deductionDropdown}
                         deleteAll={() => {
@@ -791,15 +832,15 @@ export default function EmployeeManagementModal({
           <SubmitOrCancelButton handleCancel={clear} handleSubmit={submit} />
         </Modal.Body>
       </Modal>
-      {openCopperModal && (
+      {
         <CopperImage
           madalName={modalCopperName}
           setPreview={setPreview}
           src={src}
           handleClose={() => setOpenCopperModal(false)}
-          show={openCopperModal}
+          show={openCopperModal === true}
         />
-      )}
+      }
     </div>
   );
 }

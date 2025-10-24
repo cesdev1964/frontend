@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
-import { mockemployeetableData } from "../../MockData";
-import ImageComponent from "../../components/Image";
 import Swal from "sweetalert2";
-import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
-import CopperImage from "../../components/modal/CopperImage";
 import DataTableComponent from "../../components/DatatableComponent";
 import { Link } from "react-router-dom";
-import Modal from "react-bootstrap/Modal";
-import { SearchDropdown } from "../../components/searchDropdown";
 import { useTitltName } from "../../hooks/titleNameStore";
 import { useEducation } from "../../hooks/educationStore";
 import { useLevel } from "../../hooks/levelStore";
@@ -33,21 +27,23 @@ const Employees = ({ title }) => {
     lastname: "",
     telephoneNo: "",
     cardId: "",
-    birthday: null,
+    birthday: "",
     educationId: null,
     jobId: null,
     levelId: null,
-    startDate: null,
-    endDate: null,
+    startDate: "",
+    endDate: "",
     positionId: null,
     contractorId: null,
     rate: "",
     typeId: null,
     statusId: null,
-    filename: "",
-    filepath: "",
+    photoname: "",
+    photopath: "",
     flowId: null,
+    deductions : []
   });
+
   const [openModal, setOpenModal] = useState(false);
   const [error, setError] = useState({});
   const [addBtnName, setAddBtnName] = useState("เพิ่มพนักงานใหม่");
@@ -62,7 +58,7 @@ const Employees = ({ title }) => {
   const { contratorData, getContratorDropdown } = useContrator();
   const { jobData, getJobDropdown } = useJob();
   const { employeeTypeData, getEmployeeTypeDropdown } = useEmployeeType();
-  const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
+  const { employeeData, getEmployeeData, employeeIsLoading,createEmployee, updateEmployee ,employeeErrorMessage} = useEmployee();
   const [isFlow, setIsFlow] = useState(false);
 
   const fetchDataTable = useCallback(async () => {
@@ -244,20 +240,21 @@ const Employees = ({ title }) => {
       lastname: "",
       telephoneNo: "",
       cardId: "",
-      birthday: null,
+      birthday: "",
       educationId: null,
       jobId: null,
       levelId: null,
-      startDate: null,
-      endDate: null,
+      startDate: "",
+      endDate: "",
       positionId: null,
       contractorId: null,
       rate: "",
       typeId: null,
       statusId: null,
-      filename: "",
-      filepath: "",
+      photoname: "",
+      photopath: "",
       flowId: null,
+      deductions : []
     });
     setOpenModal(false);
     setError({});
@@ -347,8 +344,18 @@ const Employees = ({ title }) => {
     if (input.statusId === "0" && !input.endDate) {
       errors.endDate = "กรุณากรอกวันที่ลาออก";
     }
+  
+
     return errors;
   };
+
+  const onlyTextNumber=(value)=>{
+    if(!value) return "";
+    const newValue = value.replace(/[^a-zA-Z0-9]/g, "");
+    return newValue;
+  }
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -356,8 +363,8 @@ const Employees = ({ title }) => {
     // console.log("fileName", fileName);
 
     const formData = new FormData();
-    // formData.append("Status", btnType);
-    // formData.append("")
+    formData.append("Status", btnType);
+    formData.append("")
 
     console.log("employee data", input);
     const errorList = validateForm(input) || [];
@@ -366,27 +373,29 @@ const Employees = ({ title }) => {
       // const response = editMode
       //   ? await updateEducation(reqData, getId)
       //   : await createEducation(reqData);
-      // if (response.success) {
+      
+      const response =  await createEducation(formData);
+      if (response.success) {
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
         draggable: true,
         buttonsStyling: "w-100",
       });
-      // const currentModal = document.getElementById("educationmodal");
-      // const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      // modalInstance.hide();
+      const currentModal = document.getElementById("educationmodal");
+      const modalInstance = bootstrap.Modal.getInstance(currentModal);
+      modalInstance.hide();
       ClearInput();
       setOpenModal(false);
       setIsFlow(false);
-      // await getEducationData();
-      // } else {
-      //   Swal.fire({
-      //     title: "บันทึกข้อมูลไม่สำเร็จ",
-      //     text: educationErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-      //     icon: "error",
-      //   });
-      // }
+      await getEducationData();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: educationErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
+      }
     }
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
   };
@@ -472,383 +481,7 @@ const Employees = ({ title }) => {
 
         {/* modal */}
 
-        {/* <Modal
-          size="lg"
-          show={openModal}
-          onHide={() => {
-            handleClear();
-            setOpenModal(false);
-          }}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton className="bg-primary">
-            <Modal.Title id="example-modal-sizes-title-lg">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                <i className="bi bi-plus-circle fs-4 me-2"></i>
-                {title}
-              </h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="bg-primary">
-            <div className="employee-content p-4">
-              <div className="row">
-                <div className={`col-lg-3`}>
-                  <div className="employee-image-section">
-                    <ImageComponent
-                      imageSRC={preview || avatarUrl}
-                      borderRadius="50%"
-                      height="120px"
-                      width="120px"
-                      alt="profile-avatar"
-                      objectfit="cover"
-                      border="2px solid rgba(90, 45, 45, 0.15)"
-                    />
-                    <button
-                      className="btn btn-primary btn-sm my-4"
-                      onClick={() => inputImageRef.current.click()}
-                    >
-                      อัปโหลดรูปภาพ
-                    </button>
-                    <input
-                      style={{ display: "none" }}
-                      type="file"
-                      accept="image/*"
-                      ref={inputImageRef}
-                      onChange={openCopperImageModal}
-                    />
-                  </div>
-                </div>
-                <div
-                  className={`my-3 col-lg-9`}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <form>
-                    <div className="mb-3">
-                      <h5 className="group-label"># ข้อมูลทั่วไป</h5>
-                      <div className="border-top border-danger my-3"></div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
-                          <label for="StartDate" class="form-label">
-                            คำนำหน้า
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <select
-                            name="titleId"
-                            id="titleId"
-                            className="form-select"
-                            onChange={handleChangeInput}
-                            value={input.titleId}
-                          >
-                            <option value={""}>เลือกคำนำหน้า</option>
-                            {titleData.map((item) => (
-                              <option value={item.titleId}>
-                                {item.titleNameTH}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
-                          <label className="form-label">
-                            ชื่อจริง
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            name="firstname"
-                            type="text"
-                            className="form-control"
-                            id="firstname"
-                            placeholder="กรอกชื่อจริง"
-                            value={input.firstname}
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label class="form-label">
-                            นามสกุล
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            name="lastname"
-                            type="text"
-                            className="form-control"
-                            id="lastname"
-                            placeholder="กรอกนามสกุล"
-                            value={input.lastname}
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                        <div className="col-md-8 col-lg-4">
-                          <label class="form-label">
-                            วันเดือนปีเกิด
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <div
-                            className="input-group date"
-                            data-date-format="mm-dd-yyyy"
-                          >
-                            <input
-                              type="date"
-                              className="form-control"
-                              placeholder="เลือกวันที่"
-                              onChange={handleChangeInput}
-                              value={input.birthday}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-8 col-lg-5">
-                          <label className="form-label">
-                            ระดับการศึกษา
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={educationDropdown}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("educationId", selected)
-                            }
-                            placeholder="เลือกระดับการศึกษา"
-                            value={
-                              educationDropdown.find(
-                                (i) => i.value === input.educationId
-                              ) || null
-                            }
-                          />
-                        </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label class="form-label">
-                            เบอร์โทรศัพท์
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            name="telephoneNo"
-                            type="tel"
-                            className="form-control"
-                            maxLength={10}
-                            value={input.telephoneNo}
-                            placeholder="000-000-0000"
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                      </div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-lg-6">
-                          <label class="form-label">
-                            เลขบัตรประชาชน
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            className="form-control"
-                            id="cardId"
-                            type="tel"
-                            name="cardId"
-                            placeholder="X-XXXX-XXXXX-XX-X"
-                            autocomplete="off"
-                            autofocus
-                            title="National ID Input"
-                            aria-labelledby="InputLabel"
-                            aria-invalid
-                            aria-required="true"
-                            required
-                            tabIndex="1"
-                            maxLength={13}
-                            value={input.cardId}
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
-                      <div className="border-top border-danger my-3"></div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
-                          <label className="form-label">
-                            ระดับ
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={levelData}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("levelId", selected)
-                            }
-                            placeholder="เลือกระดับ"
-                            value={
-                              levelData.find(
-                                (i) => i.value === input.levelId
-                              ) || null
-                            }
-                          />
-                        </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label class="form-label">
-                            หน่วยงาน
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={jobData}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("jobId", selected)
-                            }
-                            placeholder="เลือกหน่วยงาน"
-                            value={
-                              jobData.find(
-                                (i) => i.value === input.jobId
-                              ) || null
-                            }
-                          />
-                        </div>
-                        <div className="col-md-8 col-lg-4">
-                          <label class="form-label">
-                            ตำแหน่ง
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={positionData}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("positionId", selected)
-                            }
-                            placeholder="เลือกตำแหน่ง"
-                            value={
-                              positionData.find(
-                                (i) => i.value === input.positionId
-                              ) || null
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
-                          <label className="form-label">
-                            ผู้รับเหมา
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={contratorData}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("contractorId", selected)
-                            }
-                            placeholder="เลือกผู้รับเหมา"
-                            value={
-                              contratorData.find(
-                                (i) => i.value === input.contractorId
-                              ) || null
-                            }
-                          />
-                        </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label class="form-label">
-                            ประเภท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={employeeTypeData}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("typeId", selected)
-                            }
-                            placeholder="เลือกประเภท"
-                            value={
-                              employeeTypeData.find(
-                                (i) => i.value === input.typeId
-                              ) || null
-                            }
-                          />
-                        </div>
-                        <div className="col-md-5 col-lg-4">
-                          <label class="form-label">
-                            อัตราค่าจ้าง
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            id="rate"
-                            value={input.rate}
-                            placeholder="กรอกค่าจ้าง"
-                            step="0.01"
-                            min="0.00"
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                      </div>
-                      <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
-                          <label className="form-label">
-                            วันที่เริ่มงาน
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="StartDate"
-                            placeholder="เลือกวันที่"
-                            value={input.startDate}
-                            onChange={handleChangeInput}
-                            defaultValue={Date.now()}
-                          />
-                        </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label class="form-label">
-                            วันที่ลาออก
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="endDate"
-                            placeholder="เลือกวันที่"
-                            value={input.endDate}
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                        <div className="col-md-5 col-lg-4">
-                          <label class="form-label">
-                            สถานะ
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={{}}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("statusId", selected)
-                            }
-                            placeholder="เลือกสถานะ"
-                            value={
-                              levelSelect.find(
-                                (i) => i.value === input.statusId
-                              ) || null
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <SubmitOrCancelButton
-              handleCancel={handleClear}
-              handleSubmit={handleSubmit}
-            />
-          </Modal.Body>
-        </Modal> */}
       </div>
-      {/* {openCopperModal && (
-        <CopperImage
-          madalName={modalCopperName}
-          setPreview={setPreview}
-          src={src}
-          handleClose={() => setOpenCopperModal(false)}
-          show={openCopperModal}
-        />
-      )} */}
-
       <EmployeeManagementModal
         clear={handleClear}
         input={input}

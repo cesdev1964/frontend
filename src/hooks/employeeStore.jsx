@@ -100,29 +100,29 @@ export const useEmployee = create((set) => ({
       };
     }
   },
-  deleteEmployee: async (id) => {
-    console.log("id ", id);
-    set({ employeeIsLoading: true, employeeErrorMessage: null });
-    try {
-      await api.delete(`${url}/${id}`);
-      return {
-        employeeIsLoading: false,
-        employeeErrorMessage: null,
-        success: true,
-      };
-    } catch (error) {
-      set({
-        employeeErrorMessage: error?.response?.data?.message || error.message,
-        employeeIsLoading: false,
-        success: false,
-      });
-      return {
-        employeeErrorMessage: error?.response?.data?.message || error.message,
-        employeeIsLoading: false,
-        success: false,
-      };
-    }
-  },
+  // deleteEmployee: async (id) => {
+  //   console.log("id ", id);
+  //   set({ employeeIsLoading: true, employeeErrorMessage: null });
+  //   try {
+  //     await api.delete(`${url}/${id}`);
+  //     return {
+  //       employeeIsLoading: false,
+  //       employeeErrorMessage: null,
+  //       success: true,
+  //     };
+  //   } catch (error) {
+  //     set({
+  //       employeeErrorMessage: error?.response?.data?.message || error.message,
+  //       employeeIsLoading: false,
+  //       success: false,
+  //     });
+  //     return {
+  //       employeeErrorMessage: error?.response?.data?.message || error.message,
+  //       employeeIsLoading: false,
+  //       success: false,
+  //     };
+  //   }
+  // },
   updateEmployee: async (requestData, id) => {
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {

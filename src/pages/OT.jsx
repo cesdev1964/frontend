@@ -323,7 +323,7 @@ export default function OT({ title }) {
                     placeholder="ลงวันที่เริ่ม"
                     value={input.startDate}
                     onChange={handleChangeInput}
-                    // defaultValue={Date.now()}
+                    defaultValue={Date.now()}
                     onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
@@ -332,18 +332,6 @@ export default function OT({ title }) {
                     วันที่สิ้นสุดโอที
                     <span style={{ color: "red" }}>*</span>
                   </label>
-                  {/* <DateInput
-                    // onChange={([endDate]) => setStartDate(endDate)}
-                    onChange={([endDate]) =>
-                      setInput((prev) => ({
-                        ...prev,
-                        endDate: endDate ?? prev.endDate,
-                      }))
-                    }
-                    placeholder={"ลงวันที่สิ้นสุด"}
-                    value={input.endDate ?? null}
-                    error={error.endDate}
-                  /> */}
                    <input
                     type="date"
                     id="endDate"
