@@ -19,7 +19,7 @@ function MainLayout() {
   };
   useEffect(() => {
     if (loading === false) {
-      console.log("Auth data", authdata);
+      // console.log("Auth data", authdata);
       if (!authdata) {
         nevigateToLogin();
       }

@@ -18,20 +18,36 @@ export function maskPhone(value) {
     .replace(/(\d{4})/, "$1");
 }
 
-export function formatNumber(input){
+export function formatNumber(input) {
   return input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 export function onlyDecimal(input) {
-  if(!input || input <=0 || input.indexOf(0)===0) return "";
+  if (!input || input <= 0 || input.indexOf(0) === 0) return "";
   // check for decimal
-  if(input.indexOf(".")>=0){
+  if (input.indexOf(".") >= 0) {
     let [left_side, right_side] = input.split(".");
     left_side = formatNumber(left_side);
-    right_side = right_side.substring(0,2);
+    right_side = right_side.substring(0, 2);
     // right_side = right_side.padEnd(2,0);
-    return left_side+"."+right_side
-    
-  }else {
+    return left_side + "." + right_side;
+  } else {
     var left_side = formatNumber(input);
-    return left_side}
+    return left_side;
+  }
+}
+
+export function telephoneFormat(telephoneNumber) {
+  const cleaned = ("" + telephoneNumber).replace(/\D/g, "");
+  if (cleaned.length === 10) {
+    return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+  } else if (!cleaned) return "ไม่พบหมายเลขโทรศัพท์";
+  else return "หมายเลขของคุณไม่ใช่เบอร์โทรศัพท์ กรุณาตรวจสอบอีกครั้ง";
+}
+
+export function IDcardFormat(thaiIDNumber) {
+  const cleaned = ("" + thaiIDNumber).replace(/\D/g, "");
+  if (cleaned.length === 13) {
+    return cleaned.replace(/(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})/, "$1-$2-$3-$4-$5");
+  } else if (!cleaned) return "ไม่พบเลขบัตรประชาชน";
+  else return "หมายเลขของคุณไม่ใช่เลขบัตรประชาชน กรุณาตรวจสอบอีกครั้ง";
 }

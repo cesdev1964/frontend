@@ -10,9 +10,7 @@ export default function EmployeeCard() {
     "https://www.beartai.com/wp-content/uploads/2025/01/Sakamoto-Days.jpg";
   const { logout, authdata, loading } = useAuth();
   const { employeeById, getEmployeeById } = useEmployee();
-  const [onClickAccordian,setOnClickAccordian] = useState(true);
-   
-  
+  const [onClickAccordian, setOnClickAccordian] = useState(true);
 
   useEffect(() => {
     const fetchHome = async () => {
@@ -30,12 +28,13 @@ export default function EmployeeCard() {
 
   useEffect(() => {
     if (employeeById) {
-      console.log("Emp data", employeeById);
+      // console.log("Emp data", employeeById);
     }
   }, [employeeById]);
 
   const handleChangeCheckbox = () => {
-    setOnClickAccordian((prev) => !prev)};
+    setOnClickAccordian((prev) => !prev);
+  };
 
   return (
     <>
@@ -45,7 +44,7 @@ export default function EmployeeCard() {
             id="accordion-trigger-2"
             className="accordion-trigger-input"
             type="checkbox"
-            checked = {onClickAccordian === true}
+            checked={onClickAccordian === true}
             onChange={handleChangeCheckbox}
           ></input>
           <label
@@ -55,7 +54,7 @@ export default function EmployeeCard() {
             <strong>บริษัท ซีอีเอส จำกัด {authdata.username}</strong>
           </label>
           <section className="accordion-animation-wrapper">
-            <div className ="accordion-animation">
+            <div className="accordion-animation">
               <div className="accordion-transform-wrapper">
                 <div className="accordion-content">
                   <div
@@ -76,7 +75,7 @@ export default function EmployeeCard() {
                             objectfit="cover"
                           />
                           {/* <img src={avatarUrl} className="profile-image" /> */}
-                          <p className="lh-1 mt-3">
+                          <p className="mt-3">
                             <strong>
                               รหัสพนักงาน :{" "}
                               {employeeById.employeeCode
@@ -84,115 +83,36 @@ export default function EmployeeCard() {
                                 : "N/A"}
                             </strong>
                           </p>
-                          <h5 className="lh-base">
-                            {employeeById.titleId ? employeeById.titleId : ""}{" "}
+                          <h5 className="my-2">
+                            {/* {employeeById.titleId ? employeeById.titleId : ""}{" "}
                             {employeeById.firstname
                               ? employeeById.firstname
                               : "N/A" + " " + employeeById.lastname
                               ? employeeById.lastname
-                              : "N/A"}
+                              : "N/A"} */}
+                            นาย John Doe
                           </h5>
-                          <p style={{ lineHeight: "0.6rem" }}>
-                            <i class="fa-solid fa-phone me-2"></i>เบอร์โทรศัพท์
-                          </p>
-                          <p style={{ lineHeight: "0.6rem" }}>
-                            <i class="fa-regular fa-calendar-days me-2"></i>
-                            วันที่เริ่มงาน (อายุงาน)
-                          </p>
+                          <div className="row g-4 p-2 ">
+                            <div className="col-6  col-custom">
+                              <DetailItem
+                                icon="fa-solid fa-user-tie"
+                                title="ตำแหน่ง"
+                                value="xxxxxxxxxxxxx"
+                              />
+                            </div>
+                            <div className="col-6  col-custom">
+                              <DetailItem
+                                icon="fa-solid fa-users"
+                                title="หน่วยงาน"
+                                value="xxxxxxxxxxxxx"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="badge-style badge-stillWork">สถานะ</div>
                     </div>
                     {/* ส่วนที่แบ่งระหว่ง user employee กับ user ทั่วไป */}
-                    {authdata.publicEmployeeId ? (
-                      <>
-                        <div className="border-top border-danger my-3"></div>
-                        <div className="mb-3">
-                          <div className="w-100 bg-danger p-2 border-n rounded-3">
-                            <p>
-                              <strong>ข้อมูลทั่วไป</strong>
-                            </p>
-                            <div className="row g-2 p-2">
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-phone"
-                                  title="เลขบัตรประจำตัวประชาชน"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-cake-candles"
-                                  title="วันเดือนปีเกิด"
-                                  value="dd/mm/yyyy"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-graduation-cap"
-                                  title="ระดับการศึกษา"
-                                  value="ปริญญาตรี"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="w-100 bg-danger p-2 border-n rounded-3">
-                            <p>
-                              <strong>ข้อมูลการทำงาน</strong>
-                            </p>
-                            <div className="row g-2 p-2">
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-user-tie"
-                                  title="ตำแหน่ง"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-users"
-                                  title="หน่วยงาน"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-stairs"
-                                  title="ระดับ"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-sitemap"
-                                  title="ประเภท"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="bi bi-cash"
-                                  title="อัตราค่าจ้าง"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-sm-6 col-md-4 col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-user-tie"
-                                  title="ผู้รับเหมา"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <></>
-                    )}
                   </div>
                 </div>
               </div>

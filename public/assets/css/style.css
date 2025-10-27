@@ -1755,6 +1755,9 @@ thead th:last-child {
   .modal-xl {
     max-width: 1140px;
   }
+  .profile-box{
+    width: 700px;
+  }
 }
 
 .modal-fullscreen {

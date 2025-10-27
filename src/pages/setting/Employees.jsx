@@ -3,7 +3,7 @@ import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
 import Swal from "sweetalert2";
 import DataTableComponent from "../../components/DatatableComponent";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useTitltName } from "../../hooks/titleNameStore";
 import { useEducation } from "../../hooks/educationStore";
 import { useLevel } from "../../hooks/levelStore";
@@ -41,7 +41,7 @@ const Employees = ({ title }) => {
     photoname: "",
     photopath: "",
     flowId: null,
-    deductions : []
+    deductions: [],
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -58,7 +58,14 @@ const Employees = ({ title }) => {
   const { contratorData, getContratorDropdown } = useContrator();
   const { jobData, getJobDropdown } = useJob();
   const { employeeTypeData, getEmployeeTypeDropdown } = useEmployeeType();
-  const { employeeData, getEmployeeData, employeeIsLoading,createEmployee, updateEmployee ,employeeErrorMessage} = useEmployee();
+  const {
+    employeeData,
+    getEmployeeData,
+    employeeIsLoading,
+    createEmployee,
+    updateEmployee,
+    employeeErrorMessage,
+  } = useEmployee();
   const [isFlow, setIsFlow] = useState(false);
 
   const fetchDataTable = useCallback(async () => {
@@ -188,9 +195,8 @@ const Employees = ({ title }) => {
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li>
-              <a class="dropdown-item text-dark btn-edit"
-                 data-action="edit"
-                 data-id="${row.publicEmployeeId}" 
+              <a class="dropdown-item text-dark"
+                href="/settings/employees/form/${row.publicEmployeeId}"
               >
                 <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
               </a>
@@ -207,14 +213,13 @@ const Employees = ({ title }) => {
         </div>
         
         <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-          <button
-            class="btn btn-warning me-2 btn-edit"
-            title="แก้ไข"
-            data-action="edit"
-            data-id="${row.publicEmployeeId}" 
-          >
-            <i class="bi bi-pen-fill"></i>
-          </button>
+          <a
+              href="/settings/employees/form/${row.publicEmployeeIdd}"
+              class="btn btn-warning me-2"
+              title="แก้ไข"
+            >
+              <i class="bi bi-pen-fill"></i>
+            </a>
           <button
             class="btn btn-danger btn-delete"
             title="ลบ"
@@ -254,7 +259,7 @@ const Employees = ({ title }) => {
       photoname: "",
       photopath: "",
       flowId: null,
-      deductions : []
+      deductions: [],
     });
     setOpenModal(false);
     setError({});
@@ -344,18 +349,15 @@ const Employees = ({ title }) => {
     if (input.statusId === "0" && !input.endDate) {
       errors.endDate = "กรุณากรอกวันที่ลาออก";
     }
-  
 
     return errors;
   };
 
-  const onlyTextNumber=(value)=>{
-    if(!value) return "";
+  const onlyTextNumber = (value) => {
+    if (!value) return "";
     const newValue = value.replace(/[^a-zA-Z0-9]/g, "");
     return newValue;
-  }
-
-
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -363,32 +365,50 @@ const Employees = ({ title }) => {
     // console.log("fileName", fileName);
 
     const formData = new FormData();
-    formData.append("Status", btnType);
-    formData.append("")
+    formData.append("employeeCode", input.employeeCode);
+    formData.append("titleId", input.titleId);
+    formData.append("firstname", input.firstname);
+    formData.append("lastname", input.lastname);
+    formData.append("telephoneNo", input.telephoneNo);
+    formData.append("cardId", input.cardId);
+    formData.append("birthday", input.birthday);
+    formData.append("educationId", input.educationId);
+    formData.append("jobId", input.jobId);
+    formData.append("levelId", input.levelId);
+    formData.append("startDate", input.startDate);
+    formData.append("positionId", input.positionId);
+    formData.append("contractorId", input.contractorId);
+    formData.append("rate", input.rate);
+    formData.append("typeId", input.typeId);
+    formData.append("flowId", input.flowId);
+    formData.append("status", input.statusId);
+    // เหลือ file กับ deduction ที่เป็น list
 
-    console.log("employee data", input);
+    // เอาวันที่ลาออก ออกด้วย
+
+    console.log("employee data", ...formData.entries());
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
       // const response = editMode
       //   ? await updateEducation(reqData, getId)
       //   : await createEducation(reqData);
-      
-      const response =  await createEducation(formData);
+
+      // const response = await createEmployee(formData);
       if (response.success) {
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
-      const currentModal = document.getElementById("educationmodal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
-      setOpenModal(false);
-      setIsFlow(false);
-      await getEducationData();
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        const currentModal = document.getElementById("educationmodal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+        setOpenModal(false);
+        setIsFlow(false);
+        await getEducationData();
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
@@ -456,7 +476,7 @@ const Employees = ({ title }) => {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
+        {/* <div className="add-btn">
           <button
             type="button"
             className="power py-2"
@@ -468,7 +488,24 @@ const Employees = ({ title }) => {
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </button>
-        </div>
+        </div> */}
+        <NavLink
+          to="/settings/employees/form"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          <div className="add-btn">
+            <button
+              type="button"
+              className="power py-2 "
+              style={{ maxWidth: "500px" }}
+            >
+              <span>
+                <i className="bi bi-plus-circle fs-4"></i>
+              </span>{" "}
+              <span className="label">{title}</span>
+            </button>
+          </div>
+        </NavLink>
         {/* ตารางข้อมูล */}
         <DataTableComponent
           column={columnData}
@@ -480,7 +517,6 @@ const Employees = ({ title }) => {
         />
 
         {/* modal */}
-
       </div>
       <EmployeeManagementModal
         clear={handleClear}

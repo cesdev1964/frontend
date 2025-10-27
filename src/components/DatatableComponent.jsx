@@ -1,7 +1,7 @@
 import "../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import "datatables.net-bs5";
 import $ from "jquery";
-import { useRef, useEffect,useMemo } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import LoadingSpin from "./loadingSpin";
 
 export default function DataTableComponent({
@@ -13,18 +13,15 @@ export default function DataTableComponent({
   isLoading = false,
   columnDefs = [],
 }) {
-
-
   useEffect(() => {
     if (data) {
       GetDataTable();
-      console.log("data to datatable",data);
+      console.log("data to datatable", data);
     }
   }, [data]);
 
-
   const GetDataTable = () => {
-    if(!$.fn.DataTable.isDataTable(tableRef.current)){
+    if (!$.fn.DataTable.isDataTable(tableRef.current)) {
       $(tableRef.current).DataTable({
         data: data,
         destroy: true,
@@ -52,7 +49,7 @@ export default function DataTableComponent({
           data: col.data,
           orderable: col.orderable ?? true,
           render: col.render,
-          className : col.className
+          className: col.className,
         })),
         dom:
           window.innerWidth <= 570
@@ -64,13 +61,10 @@ export default function DataTableComponent({
         const rowId = $(this).data("id");
         if (onAction) onAction(action, rowId);
       });
-      
-    }else{
-     const table =  $(tableRef.current).DataTable();
+    } else {
+      const table = $(tableRef.current).DataTable();
       table.clear().rows.add(data).draw();
     }
-
-    
 
     // return () => {
     //   table.destroy(true);
@@ -79,7 +73,13 @@ export default function DataTableComponent({
 
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-4 position-relative">
+        {/* {isLoading && (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <LoadingSpin />
+          </div>
+        )} */}
+
         <table
           ref={tableRef}
           className="table table-striped"
@@ -103,7 +103,6 @@ export default function DataTableComponent({
             </tr>
           </thead>
         </table>
-        {isLoading&&(<LoadingSpin/>)}
       </div>
     </>
   );

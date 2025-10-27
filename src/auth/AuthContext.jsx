@@ -24,6 +24,8 @@ export function AuthProvider({ children }) {
       setLoginData(data);
 
       localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("expires_in", data.expires_in);
+      
       setToken(data.access_token);
       const Toast = Swal.mixin({
         toast: true,

@@ -35,7 +35,7 @@ export default function DeductionList({
           listItem.map((item, index) => (
             <div
               className="filter-container"
-              key={index}
+              key={item.stepNumber}
               style={{ width: "400px" }}
             >
               <div className="d-flex align-items-top justify-content-end mb-2">
@@ -51,6 +51,10 @@ export default function DeductionList({
               </div>
               <div className="row">
                 <div className="col-7">
+                   <label className="form-label">
+                        ประเภทการหักเงิน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
                   <SearchDropdown
                     data={deductionDropdown}
                     handleSelectChange={(selected) =>
@@ -80,6 +84,10 @@ export default function DeductionList({
                   ></a>
                 </div>
                 <div className="col-5">
+                   <label className="form-label">
+                        จำนวนเงิน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
                   <input
                     type="text"
                     name="amount"

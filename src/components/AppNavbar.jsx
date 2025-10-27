@@ -1,4 +1,5 @@
 import { React, useEffect, useState, useRef } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import AppSidebar from "./AppSidebar";
 import "../../public/assets/css/bootstrap-custom.min.css";
@@ -6,15 +7,13 @@ import "../../public/assets/css/style.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 
-
 function AppNavbar({ toggleSidebar }) {
-  const { logout, authdata,loading} = useAuth();
+  const { logout, authdata, loading } = useAuth();
   const [openSideBar, setOpenSideBar] = useState(false);
   const btnRef = useRef(null);
   const sidebarRef = useRef(null);
 
-  useEffect(() => {
-  }, [authdata]);
+  useEffect(() => {}, [authdata]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -80,7 +79,9 @@ function AppNavbar({ toggleSidebar }) {
                     <img src={avatarUrl} alt="avatar" />
                     <div className="muted">
                       คุณ{" "}
-                      {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
+                      {authdata
+                        ? authdata.firstname + " " + authdata.lastname
+                        : "N/A"}
                     </div>
                   </>
                 )}
@@ -97,50 +98,55 @@ function AppNavbar({ toggleSidebar }) {
                 ) : (
                   <>
                     <div className="profile-card">
-                   {authdata.publicEmployeeId?(
-                    <>
-                      <p
-                        className="text-end"
-                        style={{ fontSize: "0.8rem", color: "#ff1414" }}
-                      >
-                        {/* EmpID : {data.id ? data.id : "N/A"} */}
-                        EmpID : N/A
-                      </p>
-                      <div className="profile-content">
-                        <img src={avatarUrl} alt="profile-image" />
-                        <div
-                          className="my-3"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div className="fs-5">
-                            คุณ {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
+                      {authdata.publicEmployeeId ?  (
+                        <>
+                          <p
+                            className="text-end"
+                            style={{ fontSize: "0.8rem", color: "#ff1414" }}
+                          >
+                            {/* EmpID : {data.id ? data.id : "N/A"} */}
+                            EmpID : N/A
+                          </p>
+                          <div className="profile-content">
+                            <img src={avatarUrl} alt="profile-image" />
+                            <div
+                              className="my-3"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div className="fs-5">
+                                คุณ{" "}
+                                {authdata
+                                  ? authdata.firstname + " " + authdata.lastname
+                                  : "N/A"}
+                              </div>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                lineHeight: "10px",
+                              }}
+                            >
+                              <p className="position-content fs-6">
+                                เจ้าหน้าที่พัฒนาซอฟแวร์
+                              </p>
+                              <p className="position-content">
+                                เทคโนโลยีสารสนเทศ{" "}
+                              </p>
+                              <p style={{ color: "#FF7584" }}>
+                                (Information Technology)
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            lineHeight: "10px",
-                          }}
-                        >
-                          <p className="position-content fs-6">
-                            เจ้าหน้าที่พัฒนาซอฟแวร์
-                          </p>
-                          <p className="position-content">เทคโนโลยีสารสนเทศ </p>
-                          <p style={{ color: "#FF7584" }}>
-                            (Information Technology)
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                   ):(
-                     <>
-                      {/* <div className="profile-content mt-3">
+                        </>
+                      ) : (
+                        <>
+                          {/* <div className="profile-content mt-3">
                         <DefaultAvatarImage username={authdata.firstname+" "+authdata.lastname}/>
                         <div
                           className="my-3"
@@ -155,10 +161,23 @@ function AppNavbar({ toggleSidebar }) {
                           </div>
                         </div>
                       </div> */}
-                    </>
-                   )}
-                   </div>
+                        </>
+                      )}
+                    </div>
                     <div className="dropdown-divider"></div>
+                    {authdata.publicEmployeeId != "" && authdata.permissions?.includes("EMPLOYEE_VIEW")
+                     && (
+                      <Link
+                        to={`/profile/${authdata.publicEmployeeId}`}
+                        className="d-flex justify-content-between dropdown-item"
+                      >
+                        <span className="label fw-bold">ข้อมูลของคุณ</span>
+                        <span className="icon">
+                          <i className="bi bi-house-door-fill"></i>
+                        </span>
+                      </Link>
+                    )}
+
                     <div>
                       <a
                         className="d-flex justify-content-between dropdown-item"
