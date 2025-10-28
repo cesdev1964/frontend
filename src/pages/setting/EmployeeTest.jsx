@@ -3,16 +3,10 @@ import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
 import DataTableComponent from "../../components/DatatableComponent";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useTitltName } from "../../hooks/titleNameStore";
-import { useEducation } from "../../hooks/educationStore";
-import { useLevel } from "../../hooks/levelStore";
 import { usePosition } from "../../hooks/positionStore";
-import { useJob } from "../../hooks/jobStore";
-import { useContrator } from "../../hooks/contratorStore";
-import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useEmployee } from "../../hooks/employeeStore";
 import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
-
+import MainButton from "../../components/MainButton";
 
 const EmployeesTest = ({ title }) => {
   useTitle(title);
@@ -39,27 +33,9 @@ const EmployeesTest = ({ title }) => {
     flowId: null,
     deductions: [],
   });
-
-  const [openModal, setOpenModal] = useState(false);
-  const [error, setError] = useState({});
-  const [addBtnName, setAddBtnName] = useState("เพิ่มพนักงานใหม่");
-  const [src, setSrc] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const inputImageRef = useRef(null);
-  const [openCopperModal, setOpenCopperModal] = useState(false);
-  const { educationDropdown, getEducationDropdown } = useEducation();
-  const { titleData, getTitleNameData } = useTitltName();
-  const { levelDropdown, getLevelDropdown } = useLevel();
   const { positionDropdown, getPositionDropdown } = usePosition();
-  const { contratorData, getContratorDropdown } = useContrator();
-  const { jobData, getJobDropdown } = useJob();
-  const { employeeTypeData, getEmployeeTypeDropdown } = useEmployeeType();
   const location = useLocation();
-  const {
-    employeeData,
-    getEmployeeData,
-    employeeIsLoading,
-  } = useEmployee();
+  const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
   const [isFlow, setIsFlow] = useState(false);
 
   const fetchDataTable = useCallback(async () => {
@@ -68,10 +44,7 @@ const EmployeesTest = ({ title }) => {
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
     }
-  }, [
-    getEmployeeData,
-    location.state,
-  ]);
+  }, [getEmployeeData, location.state]);
 
   useEffect(() => {
     fetchDataTable();
@@ -180,10 +153,8 @@ const EmployeesTest = ({ title }) => {
       },
     },
   ];
-  
-  const handleEdit = () => {
-    
-  };
+
+  const handleEdit = () => {};
 
   return (
     <div>
@@ -203,32 +174,20 @@ const EmployeesTest = ({ title }) => {
         {/* ปุ่มเพิ่ม */}
         <NavLink
           to="/settings/employees/form"
+          style={{ textDecoration: "none" }}
         >
-          <div className="add-btn">
-            <button
-              type="button"
-              className="power py-2 "
-              style={{ maxWidth: "500px" }}
-            >
-              <span>
-                <i className="bi bi-plus-circle fs-4"></i>
-              </span>{" "}
-              <span className="label">{title}</span>
-            </button>
-          </div>
+          <MainButton btnName={title} icon={"bi bi-plus-circle"} />
         </NavLink>
         {/* ตารางข้อมูล */}
         {/* โหลดข้อมูลในตารางเรียบร้อยตารางจะปรากฏ */}
-          <DataTableComponent
-            column={columnData}
-            data={employeeData}
-            onAction={handleAction}
-            tableHead={tableHead}
-            tableRef={tableRef}
-            isLoading={employeeIsLoading}
-          />
-
-        {/* modal */}
+        <DataTableComponent
+          column={columnData}
+          data={employeeData}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+          isLoading={employeeIsLoading}
+        />
       </div>
     </div>
   );

@@ -167,15 +167,15 @@ function AppNavbar({ toggleSidebar }) {
                     <div className="dropdown-divider"></div>
                     {authdata.publicEmployeeId != "" && authdata.permissions?.includes("EMPLOYEE_VIEW")
                      && (
-                      <Link
-                        to={`/profile/${authdata.publicEmployeeId}`}
+                      <a
+                        href={`/profile/${authdata.publicEmployeeId}`}
                         className="d-flex justify-content-between dropdown-item"
                       >
                         <span className="label fw-bold">ข้อมูลของคุณ</span>
                         <span className="icon">
                           <i className="bi bi-house-door-fill"></i>
                         </span>
-                      </Link>
+                      </a>
                     )}
 
                     <div>

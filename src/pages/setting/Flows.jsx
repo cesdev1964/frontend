@@ -309,7 +309,8 @@ export default function Flows({ title }) {
     setIsOpenNewApproveStep(false);
   };
 
-  const handleAddApproveStep = () => {
+  const handleAddApproveStep = (e) => {
+    e.preventDefault();
     setListItem([
       ...listItem,
       { stepNumber: listItem.length + 1, stepName: "", userId: null },
@@ -552,7 +553,7 @@ export default function Flows({ title }) {
                       ))}
                       <button
                         className="btn btn-primary mt-2"
-                        onClick={handleAddApproveStep}
+                        onClick={(e)=>handleAddApproveStep(e)}
                         disabled={listItem.length === 5}
                       >
                         <i className="bi bi-plus-circle fs-4"></i>

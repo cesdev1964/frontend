@@ -79,10 +79,12 @@ export const useEmployee = create((set) => ({
       };
     }
   },
-  createEmployee: async (requestData) => {
+  createEmployee: async (formData) => {
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
-      const response = await api.post(url, requestData);
+      const response = await api.post(url, formData,{
+        headers:{"content-Type":"mutipart/form-data"}
+      });
       return {
         employeeIsLoading: false,
         success: response.data.success,
@@ -126,7 +128,9 @@ export const useEmployee = create((set) => ({
   updateEmployee: async (requestData, id) => {
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
-      await api.put(`${url}/${id}`, requestData);
+      await api.put(`${url}/${id}`, requestData,{
+        headers:{"content-Type":"mutipart/form-data"}
+      });
       return {
         employeeIsLoading: false,
         success: true,

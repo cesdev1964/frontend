@@ -6,7 +6,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useUser } from "../hooks/userStore";
 import { useNavigate } from "react-router-dom";
 
-const ChangePassword = ({ title }) => {
+const ChangePassword = ({ title ,isForce = false}) => {
   useTitle(title);
 
   const [inputData, setInputData] = useState({
@@ -23,7 +23,7 @@ const ChangePassword = ({ title }) => {
   const { changePassword, userError, userIsLoading } = useUser();
   const navigate = useNavigate();
 
-  console.log("userData", authdata);
+  // console.log("userData", authdata);
 
   useEffect(() => {
     if (authdata) {
@@ -97,6 +97,7 @@ const ChangePassword = ({ title }) => {
         reqData,
         authdata?.publicUserId
       );
+      
       if (response.success) {
         setIsSubmit(true);
         Swal.fire({
@@ -104,8 +105,17 @@ const ChangePassword = ({ title }) => {
           icon: "success",
           draggable: true,
           buttonsStyling: "w-100",
+        }).then(()=>{
+          // console.log("response",response)
+          if(userIsLoading === false){
+            // สำหรับคนที่ยังไม่เปลี่ยนรหัสผ่าน
+            if(isForce === true){
+              navigate("/");
+            }else{
+              navigate("/changePassword");
+            }
+          }
         });
-        navigate("/");
         ClearInput();
         {/* สำเร็จแล้ว ให้ทำการ nevigate ไปหน้า home */}
       } else {
@@ -280,7 +290,7 @@ const ChangePassword = ({ title }) => {
                     type="submit"
                     onClick={handleSubmit}
                   >
-                    {userIsLoading
+                    {userIsLoading === true
                       ? "...กำลังโหลด"
                       : "ยืนยันการเปลียนรหัสผ่านใหม่"}
                   </button>

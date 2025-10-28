@@ -7,7 +7,7 @@ export const useTitltName = create((set) => ({
   titleErrorMessage: null,
   success: false,
   titleById: {},
-
+  titleDropdown:[],
   getTitleNameData: async () => {
     set({ titleIsLoading: true, titleErrorMessage: null });
     try {
@@ -42,6 +42,30 @@ export const useTitltName = create((set) => ({
         titleIsLoading: false,
         titleErrorMessage: errorMessage.response?.data?.message,
       };
+    }
+  },
+
+   getTitleDropdown: async () => {
+    set({ titleIsLoading: true, titleErrorMessage: null });
+    try {
+      const response = await api.get("/api/titles");
+      const data = response.data.data ?? [];
+      const option = data
+        .map((item) => ({
+          value: item.titleId,
+          label: item.titleNameTH,
+        }));
+      set({
+        titleDropdown: option,
+        titleErrorMessage: false,
+      });
+      return { success: response.data.success };
+    } catch (errorMessage) {
+      set({
+        jobErrorMessage: error?.response?.data?.message,
+        jobIsLoading: false,
+      });
+      return { success: response.data.success };
     }
   },
   createTitle: async (requestData) => {

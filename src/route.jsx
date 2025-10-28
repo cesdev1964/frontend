@@ -29,6 +29,7 @@ import Flows from "./pages/setting/Flows";
 import Profile from "./pages/Profile";
 import EmployeeForm from "./pages/setting/EmployeeForm";
 import EmployeesTest from "./pages/setting/EmployeeTest";
+import CheckChangePassword from "./auth/CheckChangePassword";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -36,13 +37,18 @@ export default function RouterPage() {
       path: "/",
       element: (
         <RequireAuth>
-          <MainLayout />
+          <CheckChangePassword>
+            <MainLayout />
+          </CheckChangePassword>
         </RequireAuth>
       ),
       children: [
         // หน้าแรกหลง login
         { index: true, element: <Home title="หน้าหลัก" /> },
-        { path: "profile/:publicEmployeeId", element: <Profile title="ข้อมูลของคุณ" /> },
+        {
+          path: "profile/:publicEmployeeId",
+          element: <Profile title="ข้อมูลของคุณ" />,
+        },
         { path: "working", element: <Working title="ข้อมูลการทำงาน" /> },
         {
           path: "working/summary",
@@ -53,8 +59,12 @@ export default function RouterPage() {
           element: <OT title="บันทึกโอที" />,
         },
         {
+          path: "forchChangePassword",
+          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" isForce = {true}/>, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน
+        },
+         {
           path: "changePassword",
-          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน
+          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />, //ใช้เมื่อ user อยากเปลี่ยนรหัสผ่าน
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
         // {

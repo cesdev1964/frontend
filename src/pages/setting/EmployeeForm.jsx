@@ -48,6 +48,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
     flowId: null,
     deductions: [],
   });
+
   const { publicEmployeeId } = useParams();
   const inputImageRef = useRef(null);
   const [openCopperModal, setOpenCopperModal] = useState(false);
@@ -94,12 +95,13 @@ export default function EmployeeForm({ title, isEdit = false }) {
       await getEmployeeTypeDropdown();
       await getFlowDropdown();
       await getDeductionDropdown();
-      if (publicEmployeeId) {
+
+      if (isEdit && publicEmployeeId) {
         await getEmployeeById(publicEmployeeId);
       }
+      
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
-      
     }
   }, [
     getEducationDropdown,
@@ -117,28 +119,28 @@ export default function EmployeeForm({ title, isEdit = false }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-  // useEffect(() => {
-  //   if (employeeById) {
-  //     setInput({
-  //       employeeCode: employeeById.employeeCode ?? "",
-  //       titleId: employeeById.titleId ?? 0,
-  //       firstname: employeeById.firstname ?? "",
-  //       lastname: employeeById.lastname ?? "",
-  //       jobId: employeeById.jobId ?? null,
-  //       levelId: employeeById.levelId ?? null,
-  //       startDate: employeeById.startDate ?? null,
-  //       endDate: employeeById.endDate ??  null,
-  //       positionId: employeeById.positionId ?? null,
-  //       contractorId: employeeById.contractorId ?? null,
-  //       rate: employeeById.rate ?? "",
-  //       typeId: employeeById.typeId ?? null,
-  //       statusId: employeeById.statusId ?? null,
-  //       file: employeeById.files ?? [],
-  //       flowId: employeeById.flowId ?? null,
-  //       deductions: employeeById.deductions ?? [],
-  //     });
-  //   }
-  // }, [employeeById]);
+  useEffect(() => {
+    if (employeeById && isEdit) {
+      setInput({
+        employeeCode: employeeById.employeeCode ?? "",
+        titleId: employeeById.titleId ?? 0,
+        firstname: employeeById.firstname ?? "",
+        lastname: employeeById.lastname ?? "",
+        jobId: employeeById.jobId ?? null,
+        levelId: employeeById.levelId ?? null,
+        startDate: employeeById.startDate ?? null,
+        endDate: employeeById.endDate ?? null,
+        positionId: employeeById.positionId ?? null,
+        contractorId: employeeById.contractorId ?? null,
+        rate: employeeById.rate ?? "",
+        typeId: employeeById.typeId ?? null,
+        statusId: employeeById.statusId ?? null,
+        file: employeeById.files ?? [],
+        flowId: employeeById.flowId ?? null,
+        // deductions: employeeById.deductions ?? [],
+      });
+    }
+  }, [employeeById,isEdit]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -243,6 +245,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
     ]);
   };
 
+  // กดอันนี้แล้ว refrest ใหม่หมด
   const handleAddItem = () => {
     setListItem([
       ...listItem,
@@ -371,7 +374,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     formData.append("typeId", input.typeId);
     formData.append("flowId", input.flowId);
     formData.append("status", input.statusId);
-    // formData.append("deductions",listItem);
     listItem.forEach((item) => {
       formData.append(
         [`deductions[${item.stepNumber}].deductionTypeId`],
@@ -379,7 +381,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
       );
       formData.append([`deductions[${item.stepNumber}].amount`], item.amount);
     });
-    formData.append("file", input.file);
+    formData.append("files", input.file);
 
     // เหลือ file
     // เอาวันที่ลาออก ออกด้วย
@@ -430,6 +432,10 @@ export default function EmployeeForm({ title, isEdit = false }) {
           </li>
         </ol>
       </nav>
+      {isEdit && 
+      (
+        <p>{publicEmployeeId ?? "ไม่ระบุ"}</p>  
+      )}
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="employee-content p-4">
@@ -911,37 +917,26 @@ export default function EmployeeForm({ title, isEdit = false }) {
                   </div>
                 </div>
 
+                {/*error ที่เจอคือ มันจะ refrest เมื่อมีการกดปุ่ม  handleAddItem*/}
+
+                {/* ค่อยทำ */}
+
                 <div className="mt-3">
                   <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
                   <div className="border-top border-danger my-3"></div>
                 </div>
-                {!isOpenNewDeduction || listItem.length === 0 ? (
-                  <>
-                    <div className="d-flex flex-column align-items-center justify-content-center mb-4">
-                      <button
-                        className="btn btn-primary mt-2"
-                        onClick={handleOpenSection}
-                      >
-                        <i className="bi bi-plus-circle fs-4"></i>
-                        เพิ่มประเภทการหักเงิน
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <DeductionList
-                      deductionDropdown={deductionDropdown}
-                      deleteAll={() => {
-                        setIsOpenNewDeduction(false);
-                        setListItem([]);
-                      }}
-                      listItem={listItem}
-                      onAddItem={handleAddItem}
-                      setListItem={setListItem}
-                      propName="deductionTypeId"
-                    />
-                  </>
-                )}
+
+                <DeductionList
+                  deductionDropdown={deductionDropdown}
+                  // deleteAll={() => {
+                  //   setIsOpenNewDeduction(false);
+                  //   setListItem([]);
+                  // }}
+                  listItem={listItem}
+                  // onAddItem={handleAddItem}
+                  setListItem={setListItem}
+                  propName="deductionTypeId"
+                />
 
                 <div>
                   <h5 className="group-label"># สายอนุมัติ</h5>

@@ -5,57 +5,57 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SessionExpired from "../components/modal/SessionExpiredModal";
-import ChangePassword from "../pages/ChangePassword.jsx";
-import Login from "../pages/Login.jsx";
 
 function MainLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const navigate = useNavigate();
-  const { loading, token, authdata, loginData } = useAuth();
+  const { loading, token, authdata, loginData,loadUser } = useAuth();
 
   const nevigateToLogin = () => {
     navigate("/login");
   };
-  useEffect(() => {
-    if (loading === false) {
-      // console.log("Auth data", authdata);
-      if (!authdata) {
-        nevigateToLogin();
-      }
-    }
-  }, [authdata]);
+  const isChangePassword = loginData?.user?.mustchangePassword;
+
+  // useEffect(() => {
+  //   if (!loginData || typeof isChangePassword === undefined) return; // ถ้ายังไม่มีข้อมูล อย่า navigate
+    
+  //   // await loadUser();
+
+  //   if (isChangePassword === true && location.pathname !== "/changePassword") {
+  //     navigate("/changePassword", { replace: true });
+  //   }
+  //   // มีปัญหากรณีถ้าไม่ได้
+  //   else if (isChangePassword === false && location.pathname !== "/") {
+  //     navigate("/", { replace: true });
+  //   }
+  // }, [loginData, isChangePassword, location.pathname]);
+
   return (
     <>
       {/* ผู้ใช้เดิม */}
 
-      {/* {authdata ? (
+      {authdata ? (
         <>
-          {loginData?.user?.mustchangePassword === true ? (
-            <div className="app">
-              <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-              <div className="main">
-                <AppNavbar toggleSidebar={toggleSidebar} />
-                <div className="content">
-                  <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
-                    <Outlet />
-                  </div>
+          <div className="app">
+            <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+            <div className="main">
+              <AppNavbar toggleSidebar={toggleSidebar} />
+              <div className="content">
+                <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                  <Outlet />
                 </div>
               </div>
             </div>
-          ) : (
-            <>
-              <ChangePassword title="เปลี่ยนรหัสผ่าน" />
-            </>
-          )}
+          </div>
         </>
       ) : (
         <>
           <SessionExpired onSubmit={nevigateToLogin} />
         </>
-      )} */}
+      )}
 
-      <div className="app">
+      {/* <div className="app">
         <>
           <AppSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
           <div className="main">
@@ -74,7 +74,7 @@ function MainLayout() {
             </div>
           </div>
         </>
-      </div>
+      </div> */}
     </>
   );
 }

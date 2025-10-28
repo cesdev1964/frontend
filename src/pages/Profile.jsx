@@ -15,6 +15,8 @@ import { useJob } from "../hooks/jobStore.jsx";
 import { useEmployeeType } from "../hooks/employeeTypeStore.jsx";
 import { useContrator } from "../hooks/contratorStore.jsx";
 import { useLevel } from "../hooks/levelStore.jsx";
+import { useFlow } from "../hooks/flowStore.jsx";
+import FlowIcon from "../assets/icon/FlowIcon.jsx";
 
 export default function Profile({ title }) {
   const { publicEmployeeId } = useParams();
@@ -28,6 +30,7 @@ export default function Profile({ title }) {
   const { jobDropdown, getJobDropdown } = useJob();
   const { employeeTypeDropdown, getEmployeeTypeDropdown } = useEmployeeType();
   const { getEducationDropdown, educationDropdown } = useEducation();
+  const { getFlowById, flowById, flowIsLoading } = useFlow();
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -52,6 +55,8 @@ export default function Profile({ title }) {
     getContratorDropdown,
     getJobDropdown,
     getEmployeeTypeDropdown,
+    getFlowById,
+    publicEmployeeId,
   ]);
 
   useEffect(() => {
@@ -60,15 +65,30 @@ export default function Profile({ title }) {
 
   // น่าจะต้องนำค่าใส่ในนี้ เพราะค่าไม่อัปเดตเลย ทำเหมือนการ edit
   useEffect(() => {
-    if (employeeById !== undefined) {
+    if (employeeById) {
       setEmpData(employeeById);
     } else {
       setEmpData({});
     }
     // console.log("EmpData",empData);
   }, [employeeById]);
+  
+
+  useEffect(() => {
+    // console.log("โหลด flow:", employeeById.employee.flowId);
+    const fetchFlowData = async () => {
+      if (employeeById.employee?.flowId) {
+        await getFlowById(employeeById.employee?.flowId);
+      }
+    };
+    
+    if(!flowIsLoading) {
+      fetchFlowData();
+    }
+  }, [employeeById, getFlowById]);
 
   const avatarUrl =
+    //  employeeById.files?employeeById.files[0].photoPath[0]:
     "https://www.beartai.com/wp-content/uploads/2025/01/Sakamoto-Days.jpg";
 
   const handleChangeCheckbox = () => {
@@ -129,19 +149,16 @@ export default function Profile({ title }) {
                         </div>
                         <div>
                           <p className="my-3 fw-bold">
-                            รหัสพนักงาน :{" "}
-                            {empData?.employee?.employeeCode ?? "ไม่พบข้อมูล"}
+                            รหัสพนักงาน : {empData?.employee?.employeeCode}
                           </p>
                           <h5 className="mb-2">
-                            {empData?.employee?.firstname ?? "ไม่พบข้อมูล"}
+                            {empData?.employee?.firstname}
                             {"  "}
-                            {empData?.employee?.lastname ?? "ไม่พบข้อมูล"}
+                            {empData?.employee?.lastname}
                           </h5>
                           <p className="my-3">
                             <i className="bi bi-telephone-fill"></i> :{" "}
-                            {telephoneFormat(
-                              empData?.employee?.telephoneNo ?? "ไม่พบข้อมูล"
-                            )}
+                            {telephoneFormat(empData?.employee?.telephoneNo)}
                           </p>
                         </div>
                       </div>
@@ -190,9 +207,8 @@ export default function Profile({ title }) {
                               icon="fa-solid fa-graduation-cap"
                               title="ระดับการศึกษา"
                               value={
-                                // empData?.employee?.employeeCode ?? "ไม่พบข้อมูล"
                                 educationDropdown.find(
-                                  item =>
+                                  (item) =>
                                     item.value ===
                                     Number(empData?.employee?.educationId)
                                 )?.label ?? "ไม่พบข้อมูล"
@@ -213,28 +229,52 @@ export default function Profile({ title }) {
                             <DetailItem
                               icon="fa-solid fa-user-tie"
                               title="ตำแหน่ง"
-                              value="เจ้าหน้าที่พัฒนาซอฟแวร์"
+                              value={
+                                positionDropdown.find(
+                                  (item) =>
+                                    item.value ===
+                                    Number(empData?.employee?.positionId)
+                                )?.label ?? "ไม่พบข้อมูล"
+                              }
                             />
                           </div>
                           <div className="col-sm-6 col-md-4 ">
                             <DetailItem
                               icon="fa-solid fa-users"
                               title="หน่วยงาน"
-                              value="เทคโนโลยีสารสนเทศ"
+                              value={
+                                jobDropdown.find(
+                                  (item) =>
+                                    item.value ===
+                                    Number(empData?.employee?.jobId)
+                                )?.label ?? "ไม่พบข้อมูล"
+                              }
                             />
                           </div>
                           <div className="col-sm-6 col-md-4 ">
                             <DetailItem
                               icon="fa-solid fa-stairs"
                               title="ระดับ"
-                              value="PC-4"
+                              value={
+                                levelDropdown.find(
+                                  (item) =>
+                                    item.value ===
+                                    Number(empData?.employee?.levelId)
+                                )?.label ?? "ไม่พบข้อมูล"
+                              }
                             />
                           </div>
                           <div className="col-sm-6 col-md-4 ">
                             <DetailItem
                               icon="fa-solid fa-sitemap"
                               title="ประเภท"
-                              value="xxxxxxxxxxxxx"
+                              value={
+                                employeeTypeDropdown.find(
+                                  (item) =>
+                                    item.value ===
+                                    Number(empData?.employee?.typeId)
+                                )?.label ?? "ไม่พบข้อมูล"
+                              }
                             />
                           </div>
                           <div className="col-sm-6 col-md-4 ">
@@ -248,7 +288,13 @@ export default function Profile({ title }) {
                             <DetailItem
                               icon="fa-solid fa-user-tie"
                               title="ผู้รับเหมา"
-                              value="xxxxxxxxxxxxx"
+                              value={
+                                contratorDropdown.find(
+                                  (item) =>
+                                    item.value ===
+                                    Number(empData?.employee?.contractorId)
+                                )?.label ?? "ไม่พบข้อมูล"
+                              }
                             />
                           </div>
                           <div className="col-sm-6 col-md-4 ">
@@ -276,6 +322,59 @@ export default function Profile({ title }) {
                     <div>
                       <div className="w-100 bg-danger p-2 border-n rounded-3">
                         <p className="my-2 text-center fw-bold">สายอนุมัติ</p>
+                        <div className="d-flex flex-wrap justify-content-center gap-4 my-3">
+                          {flowById.approvalSteps ? (
+                            <>
+                              {flowById.approvalSteps?.map((item, index) => (
+                                <>
+                                  <div
+                                    className="d-flex flex-column align-items-center"
+                                    key={index}
+                                  >
+                                    <div
+                                      className="mb-2"
+                                      style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        backgroundColor: "#ffffffff",
+                                        borderRadius: "50%",
+                                        position: "relative",
+                                      }}
+                                    >
+                                      <p
+                                        style={{
+                                          position: "absolute",
+                                          left: "15px",
+                                          top: "9px",
+                                        }}
+                                      >
+                                        {item.stepNumber}
+                                      </p>
+                                    </div>
+                                    <p style={{ fontWeight: "bold" }}>
+                                      {item.stepName}
+                                    </p>
+                                    <p
+                                      style={{
+                                        fontSize: "0.9rem",
+                                        lineHeight: "0.1rem",
+                                      }}
+                                    >
+                                      {item.fullName}
+                                    </p>
+                                  </div>
+                                </>
+                              ))}
+                            </>
+                          ) : (
+                            <>
+                              <div className="d-flex flex-column align-items-center justify-content-center p-4">
+                                <FlowIcon width="60" colorFill="#f19999"/>
+                                <h5 className="text-danger mt-4">ไม่พบสายอนุมัติ</h5>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

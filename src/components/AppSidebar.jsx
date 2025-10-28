@@ -157,6 +157,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                     <i className="bi bi-gear-fill"></i>
                   </span>
                   <span className="label">ตั้งค่า</span>
+
                 </NavLink>
               </li>
             </>
@@ -166,6 +167,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               to="/test"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
+              
               <span className="icon">
                 <i className="bi bi-android2"></i>
               </span>
