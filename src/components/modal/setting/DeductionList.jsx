@@ -10,14 +10,17 @@ export default function DeductionList({
   onChangeSelect,
   setListItem,
   propName,
+  isOpenNewDeduction,
+  setIsOpenNewDeduction,
+  error = {},
 }) {
   const [itemData, setItemData] = useState({
     stepNumber: 0,
     deductionTypeId: null,
     amount: "",
   });
-  const [isOpenNewDeduction, setIsOpenNewDeduction] = useState(false);
-
+  // const [isOpenNewDeduction, setIsOpenNewDeduction] = useState(false);
+  console.log("error from deduction com",error)
   const handleAllItem = () => {
     setIsOpenNewDeduction(false);
     setListItem([]);
@@ -38,20 +41,19 @@ export default function DeductionList({
     setIsOpenNewDeduction(true);
     setListItem([
       ...listItem,
-      { stepNumber: listItem.length + 1, deductionTypeId: null, amount: "" },
+      { stepNumber: 0, deductionTypeId: null, amount: "" },
     ]);
   };
 
   const handleAddItem = (e) => {
-
-    //e.preventDefault(); เป็นคำสั่งที่ช่วยไม่ให้ r-render เวลาใช้งานปุ่ม  
+    //e.preventDefault(); เป็นคำสั่งที่ช่วยไม่ให้ r-render เวลาใช้งานปุ่ม
     e.preventDefault();
 
     setListItem([...listItem, itemData]);
 
     setListItem([
       ...listItem,
-      { stepNumber: listItem.length + 1, deductionTypeId: null, amount: "" },
+      { stepNumber: listItem.length, deductionTypeId: null, amount: "" },
     ]); //ตอนเปิด
   };
 
@@ -114,20 +116,20 @@ export default function DeductionList({
                         value={deductionDropdown.find(
                           (i) => i.value === item.deductionTypeId
                         )}
-                        // className={`${
-                        //   error[`userId_${index}`]
-                        //     ? "border border-danger rounded-2"
-                        //     : ""
-                        // }`}
+                        className={`${
+                          error[`deductionType_${index}`]
+                            ? "border border-danger rounded-2"
+                            : ""
+                        }`}
                       />
-                      {/* {error[`userId_${index}`] ? (
-                                       <p
-                                         className="text-danger"
-                                         style={{ fontSize: "0.8rem" }}
-                                       >
-                                         {error[`userId_${index}`]}
-                                       </p>
-                                     ) : null} */}
+                       {error[`deductionType_${index}`] ? (
+                        <p
+                          className="text-danger"
+                          style={{ fontSize: "0.8rem" }}
+                        >
+                          {error[`deductionType_${index}`]}
+                        </p>
+                      ) : null}
                       <a
                         style={{ cursor: "pointer" }}
                         onClick={() => handleDeleteItem(item.stepNumber)}
@@ -141,10 +143,10 @@ export default function DeductionList({
                       <input
                         type="text"
                         name="amount"
-                        // className={`form-control ${
-                        //   error.rate ? "border border-danger" : ""
-                        // }`}
-                        className="form-control"
+                        className={`form-control ${
+                          error[`amount_${index}`]  ? "border border-danger" : ""
+                        }`}
+                        // className="form-control"
                         value={item.amount ?? ""}
                         placeholder="กรอกจำนวนเงิน"
                         onChange={(e) =>
@@ -162,16 +164,21 @@ export default function DeductionList({
                           })
                         }
                       />
-                      {/* {error.rate ? (
-                                       <p className="text-danger">{error.rate}</p>
-                                     ) : null} */}
+                      {error[`amount_${index}`] ? (
+                        <p
+                          className="text-danger"
+                          style={{ fontSize: "0.8rem" }}
+                        >
+                          {error[`amount_${index}`]}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </div>
               ))}
             <button
               className="btn btn-primary mt-2"
-              onClick={(e)=>handleAddItem(e)}
+              onClick={(e) => handleAddItem(e)}
               disabled={listItem.length === 5}
             >
               <i className="bi bi-plus-circle fs-4"></i>

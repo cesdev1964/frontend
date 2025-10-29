@@ -111,14 +111,14 @@ export default function Flows({ title }) {
       setIsOpenNewApproveStep(true);
 
       setListItem((prev) => {
-        const newList = approveList.map((item) => ({
+        const prevList = approveList.map((item) => ({
           stepNumber: item.stepNumber,
           stepName: item.stepName,
           userId: item.userId,
         }));
-        return JSON.stringify(prev) === JSON.stringify(newList)
+        return JSON.stringify(prev) === JSON.stringify(prevList)
           ? prev
-          : newList;
+          : prevList;
       });
     }
   }, [flowById]);
@@ -248,13 +248,15 @@ export default function Flows({ title }) {
       isActive: input.isactive,
       approveSteps: listItem,
     };
-    console.log("data req", reqData);
+    // console.log("data req", reqData);
 
     const errorInput = validateInput(input);
     const errorStepInput = validateStepInput(listItem);
     const errorList = { ...errorInput, ...errorStepInput };
     setError(errorList);
-    console.log("Error list", error);
+
+
+    // console.log("Error list", error);
     if (listItem.length === 0) {
       Swal.fire({
         index: "บันทึกข้อมูลไม่สำเร็จ",
@@ -264,8 +266,8 @@ export default function Flows({ title }) {
       return;
     }
 
-    console.log("approve flow data", listItem);
-    console.log("data", input);
+    // console.log("approve flow data", listItem);
+    // console.log("data", input);
 
     if (Object.keys(errorList).length === 0) {
       const response = editmode

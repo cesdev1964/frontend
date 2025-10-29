@@ -14,7 +14,13 @@ import { useJob } from "../../hooks/jobStore";
 import { useContrator } from "../../hooks/contratorStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useFlow } from "../../hooks/flowStore";
-import { maskIDCard, maskPhone, onlyDecimal } from "../../util/inputFormat";
+import {
+  IDcardFormat,
+  maskIDCard,
+  maskPhone,
+  onlyDecimal,
+  telephoneFormat,
+} from "../../util/inputFormat";
 import { useDeduction } from "../../hooks/deductionTypeStore";
 import DeductionList from "../../components/modal/setting/DeductionList";
 import { SearchDropdown } from "../../components/searchDropdown";
@@ -63,6 +69,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
   const { deductionDropdown, getDeductionDropdown } = useDeduction();
   const {
     createEmployee,
+    updateEmployee,
     employeeIsLoading,
     employeeErrorMessage,
     getEmployeeById,
@@ -74,6 +81,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
   const [error, setError] = useState({});
   const [isFlow, setIsFlow] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     flowDropdown,
     getFlowDropdown,
@@ -86,6 +94,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
   const fetchDataTable = useCallback(async () => {
     try {
+      setIsLoading(true);
       await getEducationDropdown();
       await getTitleNameData();
       await getLevelDropdown();
@@ -96,12 +105,14 @@ export default function EmployeeForm({ title, isEdit = false }) {
       await getFlowDropdown();
       await getDeductionDropdown();
 
-      if (isEdit && publicEmployeeId) {
+      if (isEdit) {
         await getEmployeeById(publicEmployeeId);
+        // setIsLoading(false);
       }
-      
+      setIsLoading(false);
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
+      setIsLoading(false);
     }
   }, [
     getEducationDropdown,
@@ -120,27 +131,57 @@ export default function EmployeeForm({ title, isEdit = false }) {
   }, [fetchDataTable]);
 
   useEffect(() => {
-    if (employeeById && isEdit) {
-      setInput({
-        employeeCode: employeeById.employeeCode ?? "",
-        titleId: employeeById.titleId ?? 0,
-        firstname: employeeById.firstname ?? "",
-        lastname: employeeById.lastname ?? "",
-        jobId: employeeById.jobId ?? null,
-        levelId: employeeById.levelId ?? null,
-        startDate: employeeById.startDate ?? null,
-        endDate: employeeById.endDate ?? null,
-        positionId: employeeById.positionId ?? null,
-        contractorId: employeeById.contractorId ?? null,
-        rate: employeeById.rate ?? "",
-        typeId: employeeById.typeId ?? null,
-        statusId: employeeById.statusId ?? null,
-        file: employeeById.files ?? [],
-        flowId: employeeById.flowId ?? null,
-        // deductions: employeeById.deductions ?? [],
-      });
+    // console.log("edit data :",employeeById);
+    if (isEdit === true) {
+      if (employeeById && employeeIsLoading === false) {
+        const empData = employeeById.employee;
+        setInput({
+          employeeCode: empData?.employeeCode ?? "",
+          titleId: empData?.titleId ?? 0,
+          firstname: empData?.firstname ?? "",
+          lastname: empData?.lastname ?? "",
+          jobId: empData?.jobId ?? null,
+          levelId: empData?.levelId ?? null,
+          startDate: empData?.startDate ?? null,
+          endDate: empData?.endDate ?? null,
+          positionId: empData?.positionId ?? null,
+          contractorId: empData?.contractorId ?? null,
+          rate: empData?.rate ?? "",
+          typeId: empData?.typeId ?? null,
+          statusId: empData?.status ?? null,
+          file: employeeById?.files ?? [],
+          flowId: empData?.flowId ?? null,
+          birthday: empData?.birthday ?? null,
+          cardId: IDcardFormat(empData?.cardId) ?? "",
+          educationId: empData?.educationId ?? null,
+          telephoneNo: telephoneFormat(empData?.telephoneNo) ?? "",
+        });
+        const deductionList = employeeById.deductions || [];
+        if (deductionList.length > 0) {
+          setIsOpenNewDeduction(true);
+
+          setListItem((prev) => {
+            const prevList = deductionList.map((item, index) => ({
+              stepNumber: index,
+              deductionTypeId: item.deductionTypeId,
+              amount: item.amount,
+            }));
+            return JSON.stringify(prev) === JSON.stringify(prevList)
+              ? prev
+              : prevList;
+          });
+        }
+
+        // console.log("edit data :",input);
+      } else {
+        return;
+      }
+    } else {
+      return;
     }
-  }, [employeeById,isEdit]);
+  }, [employeeById, isEdit, employeeIsLoading]);
+
+  // console.log("edit data :",employeeById);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -181,28 +222,52 @@ export default function EmployeeForm({ title, isEdit = false }) {
   };
 
   const handleClear = () => {
-    setInput({
-      employeeCode: "",
-      titleId: 0,
-      firstname: "",
-      lastname: "",
-      telephoneNo: "",
-      cardId: "",
-      birthday: "",
-      educationId: null,
-      jobId: null,
-      levelId: null,
-      startDate: "",
-      endDate: "",
-      positionId: null,
-      contractorId: null,
-      rate: "",
-      typeId: null,
-      statusId: null,
-      flowId: null,
-      deductions: [],
-      file: [],
-    });
+    if (!isEdit) {
+      setInput({
+        employeeCode: "",
+        titleId: 0,
+        firstname: "",
+        lastname: "",
+        telephoneNo: "",
+        cardId: "",
+        birthday: "",
+        educationId: null,
+        jobId: null,
+        levelId: null,
+        startDate: "",
+        endDate: "",
+        positionId: null,
+        contractorId: null,
+        rate: "",
+        typeId: null,
+        statusId: null,
+        flowId: null,
+        deductions: [],
+        file: [],
+      });
+    } else {
+      setInput({
+        titleId: 0,
+        firstname: "",
+        lastname: "",
+        telephoneNo: "",
+        cardId: "",
+        birthday: "",
+        educationId: null,
+        jobId: null,
+        levelId: null,
+        startDate: "",
+        endDate: "",
+        positionId: null,
+        contractorId: null,
+        rate: "",
+        typeId: null,
+        statusId: null,
+        flowId: null,
+        deductions: [],
+        file: [],
+      });
+    }
     setError({});
     setIsFlow(false);
     // setSetEditMode(false)
@@ -265,7 +330,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
     } else return null;
   };
 
-  const validateForm = () => {
+  const validateFormInput = (input) => {
     let errors = {};
     if (!input.firstname) {
       errors.firstname = "กรุณากรอกชื่อจริง";
@@ -331,7 +396,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
       errors.statusId = "กรุณาเลือกสถานะ";
     }
 
-    if (!input.flowId || input.flowId === "" || input.flowIdo === null) {
+    if (!input.flowId || input.flowId === "" || input.flowId === null) {
       errors.flowId = "กรุณาเลือกสายอนุมัติ";
     }
 
@@ -349,6 +414,24 @@ export default function EmployeeForm({ title, isEdit = false }) {
     }
 
     return errors;
+  };
+
+  const validateDeductionInput = (listItem) => {
+    let errors = {};
+
+    listItem.forEach((item) => {
+      // ถ้าเป็นกรณี edit จะใช้เป็นเลข index
+      listItem.forEach((item, index) => {
+        if (!item.deductionTypeId || item.deductionTypeId === null) {
+          // console.log(item[index])
+          errors[`deductionType_${index}`] = "กรุณาเลือกประเภทการหักเงิน";
+        }
+
+        if (!item.amount || item.amount === "") {
+          errors[`amount_${index}`] = "กรุณากรอกจำนวนเงิน";
+        }
+      });
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -374,12 +457,12 @@ export default function EmployeeForm({ title, isEdit = false }) {
     formData.append("typeId", input.typeId);
     formData.append("flowId", input.flowId);
     formData.append("status", input.statusId);
-    listItem.forEach((item) => {
+    listItem.forEach((item, index) => {
       formData.append(
-        [`deductions[${item.stepNumber}].deductionTypeId`],
+        `deductions[${index}].deductionTypeId`,
         item.deductionTypeId
       );
-      formData.append([`deductions[${item.stepNumber}].amount`], item.amount);
+      formData.append(`deductions[${index}].amount`, item.amount);
     });
     formData.append("files", input.file);
 
@@ -387,14 +470,19 @@ export default function EmployeeForm({ title, isEdit = false }) {
     // เอาวันที่ลาออก ออกด้วย
 
     console.log("employee data", ...formData.entries());
-    const errorList = validateForm(input) || [];
-    setError(errorList);
-    if (Object.keys(errorList).length === 0) {
-      // const response = editMode
-      //   ? await updateEducation(reqData, getId)
-      //   : await createEducation(reqData);
+    const errorForm = validateFormInput(input);
+    const errorDeduction = validateDeductionInput(listItem);
+    const errorTotal = { ...errorForm, ...errorDeduction };
+    setError(errorTotal);
 
-      const response = await createEmployee(formData);
+    console.log("error from deduction", errorDeduction);
+
+    if (Object.keys(errorTotal).length === 0) {
+      const response = isEdit
+        ? await updateEmployee(formData, publicEmployeeId)
+        : await createEmployee(formData);
+
+      // const response = await createEmployee(formData);
       if (response.success) {
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -408,16 +496,12 @@ export default function EmployeeForm({ title, isEdit = false }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: educationErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: employeeErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
           icon: "error",
         });
       }
     }
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
-  };
-
-  const testNevigate = () => {
-    navigate("/settings/employees", { state: { refresh: true } });
   };
 
   return (
@@ -432,616 +516,645 @@ export default function EmployeeForm({ title, isEdit = false }) {
           </li>
         </ol>
       </nav>
-      {isEdit && 
-      (
-        <p>{publicEmployeeId ?? "ไม่ระบุ"}</p>  
-      )}
       <HeaderPage pageName={title} />
       <div className="container">
-        <div className="employee-content p-4">
-          <div className="row">
-            <div className="col-lg-3 ">
-              <div className="employee-image-section">
-                <ImageComponent
-                  imageSRC={preview || avatarUrl}
-                  borderRadius="50%"
-                  height="120px"
-                  width="120px"
-                  alt="profile-avatar"
-                  objectfit="cover"
-                  border="2px solid rgba(90, 45, 45, 0.15)"
-                />
-                <button
-                  className="btn btn-primary btn-sm my-4"
-                  onClick={() => inputImageRef.current.click()}
+        {!isLoading ? (
+          <>
+            <div className="employee-content p-4">
+              <div className="row">
+                <div className="col-lg-3 ">
+                  <div className="employee-image-section">
+                    <ImageComponent
+                      imageSRC={preview || avatarUrl}
+                      borderRadius="50%"
+                      height="120px"
+                      width="120px"
+                      alt="profile-avatar"
+                      objectfit="cover"
+                      border="2px solid rgba(90, 45, 45, 0.15)"
+                    />
+                    <button
+                      className="btn btn-primary btn-sm my-4"
+                      onClick={() => inputImageRef.current.click()}
+                    >
+                      อัปโหลดรูปภาพ
+                    </button>
+                    <input
+                      style={{ display: "none" }}
+                      type="file"
+                      accept="image/jpeg,image/png,.jpg,.jpeg,.png"
+                      ref={inputImageRef}
+                      onChange={openCopperImageModal}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="my-3 col-lg-9 "
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
                 >
-                  อัปโหลดรูปภาพ
-                </button>
-                <input
-                  style={{ display: "none" }}
-                  type="file"
-                  accept="image/jpeg,image/png,.jpg,.jpeg,.png"
-                  ref={inputImageRef}
-                  onChange={openCopperImageModal}
-                />
-              </div>
-            </div>
-            <div
-              className="my-3 col-lg-9 "
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <form>
-                {/* ข้อมูลทั่วไป */}
-                <div className="mb-3">
-                  <h5 className="group-label"># ข้อมูลทั่วไป</h5>
-                  <div className="border-top border-danger my-3"></div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        รหัสพนักงาน
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="employeeCode"
-                        type="text"
-                        className={`form-control ${
-                          error.employeeCode ? "border border-danger" : ""
-                        }`}
-                        id="employeeCode"
-                        placeholder="กรอกรหัสพนักงาน"
-                        value={input.employeeCode ?? ""}
-                        onChange={handleChangeInput}
-                      />
-                      {error.employeeCode ? (
-                        <p className="text-danger">{error.employeeCode}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        คำนำหน้า
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <select
-                        name="titleId"
-                        id="titleId"
-                        className={`form-control ${
-                          error.titleId ? "border border-danger" : ""
-                        }`}
-                        onChange={handleChangeInput}
-                        value={input.titleId ?? 0}
-                      >
-                        <option value={""}>เลือกคำนำหน้า</option>
-                        {titleData.map((item, index) => (
-                          <option value={item.titleId} key={index}>
-                            {item.titleNameTH}
-                          </option>
-                        ))}
-                      </select>
-                      {error.titleId ? (
-                        <p className="text-danger">{error.titleId}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        ชื่อจริง
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="firstname"
-                        type="text"
-                        className={`form-control ${
-                          error.firstname ? "border border-danger" : ""
-                        }`}
-                        id="firstname"
-                        placeholder="กรอกชื่อจริง"
-                        value={input.firstname ?? ""}
-                        onChange={handleChangeInput}
-                      />
-                      {error.firstname ? (
-                        <p className="text-danger">{error.firstname}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        นามสกุล
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="lastname"
-                        type="text"
-                        className={`form-control ${
-                          error.lastname ? "border border-danger" : ""
-                        }`}
-                        id="lastname"
-                        placeholder="กรอกนามสกุล"
-                        value={input.lastname ?? ""}
-                        onChange={handleChangeInput}
-                      />
-                      {error.lastname ? (
-                        <p className="text-danger">{error.lastname}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-8 col-lg-4">
-                      <label className="form-label">
-                        วันเดือนปีเกิด
-                        <span style={{ color: "red" }}>*</span>
-                        <span className="sub-label">(ค.ศ.)</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="birthday"
-                        className={`form-control ${
-                          error.birthday || birthdayError
-                            ? "border border-danger"
-                            : ""
-                        }`}
-                        name="birthday"
-                        value={input.birthday}
-                        onChange={handleChangeInput}
-                        defaultValue={Date.now()}
-                        onKeyDown={(e) => e.preventDefault()}
-                        max={
-                          new Date(
-                            new Date().setFullYear(
-                              new Date().getFullYear() - 18
-                            )
-                          )
-                            .toISOString()
-                            .split("T")[0]
-                        }
-                      />
-                      {error.birthday ? (
-                        <p className="text-danger">{error.birthday}</p>
-                      ) : null}
-                      {birthdayError ? (
-                        <p className="text-danger">{birthdayError}</p>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-8 col-lg-5">
-                      <label className="form-label">
-                        ระดับการศึกษา
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={educationDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("educationId", selected)
-                        }
-                        placeholder="เลือกระดับการศึกษา"
-                        value={
-                          educationDropdown.find(
-                            (i) => i.value === input.educationId
-                          ) || null
-                        }
-                        className={`${
-                          error.educationId
-                            ? "border border-danger rounded-2"
-                            : ""
-                        }`}
-                      />
-                      {error.educationId ? (
-                        <p className="text-danger">{error.educationId}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-8 col-lg-4">
-                      <label className="form-label">
-                        เบอร์โทรศัพท์
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        name="telephoneNo"
-                        type="tel"
-                        className={`form-control ${
-                          error.telephoneNo ? "border border-danger" : ""
-                        }`}
-                        maxLength={12}
-                        value={input.telephoneNo ?? ""}
-                        placeholder="กรอกหมายเลขโทรศัพท์"
-                        onChange={(e) =>
-                          setInput((prevData) => ({
-                            ...prevData,
-                            telephoneNo: maskPhone(e.target.value),
-                          }))
-                        }
-                      />
-                      {error.telephoneNo ? (
-                        <p className="text-danger">{error.telephoneNo}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-lg-6">
-                      <label className="form-label">
-                        เลขบัตรประชาชน
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        className={`form-control ${
-                          error.cardId ? "border border-danger" : ""
-                        }`}
-                        id="cardId"
-                        name="cardId"
-                        placeholder="กรอกเลขบัตรประชาชน"
-                        title="National ID Input"
-                        aria-labelledby="InputLabel"
-                        aria-invalid
-                        aria-required="true"
-                        maxLength={17}
-                        value={input.cardId ?? ""}
-                        onChange={(e) =>
-                          setInput((prevData) => ({
-                            ...prevData,
-                            cardId: maskIDCard(e.target.value),
-                          }))
-                        }
-                      />
-                      {error.cardId ? (
-                        <p className="text-danger">{error.cardId}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
+                  <form>
+                    {/* ข้อมูลทั่วไป */}
+                    <div className="mb-3">
+                      <h5 className="group-label"># ข้อมูลทั่วไป</h5>
+                      <div className="border-top border-danger my-3"></div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            รหัสพนักงาน
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="employeeCode"
+                            type="text"
+                            className={`form-control ${
+                              error.employeeCode ? "border border-danger" : ""
+                            }`}
+                            id="employeeCode"
+                            placeholder="กรอกรหัสพนักงาน"
+                            value={input.employeeCode ?? ""}
+                            onChange={handleChangeInput}
+                            disabled={isEdit}
+                          />
+                          {error.employeeCode ? (
+                            <p className="text-danger">{error.employeeCode}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            คำนำหน้า
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <select
+                            name="titleId"
+                            id="titleId"
+                            className={`form-control ${
+                              error.titleId ? "border border-danger" : ""
+                            }`}
+                            onChange={handleChangeInput}
+                            value={input.titleId ?? 0}
+                          >
+                            <option value={""}>เลือกคำนำหน้า</option>
+                            {titleData.map((item, index) => (
+                              <option value={item.titleId} key={index}>
+                                {item.titleNameTH}
+                              </option>
+                            ))}
+                          </select>
+                          {error.titleId ? (
+                            <p className="text-danger">{error.titleId}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            ชื่อจริง
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="firstname"
+                            type="text"
+                            className={`form-control ${
+                              error.firstname ? "border border-danger" : ""
+                            }`}
+                            id="firstname"
+                            placeholder="กรอกชื่อจริง"
+                            value={input.firstname ?? ""}
+                            onChange={handleChangeInput}
+                          />
+                          {error.firstname ? (
+                            <p className="text-danger">{error.firstname}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            นามสกุล
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="lastname"
+                            type="text"
+                            className={`form-control ${
+                              error.lastname ? "border border-danger" : ""
+                            }`}
+                            id="lastname"
+                            placeholder="กรอกนามสกุล"
+                            value={input.lastname ?? ""}
+                            onChange={handleChangeInput}
+                          />
+                          {error.lastname ? (
+                            <p className="text-danger">{error.lastname}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-8 col-lg-4">
+                          <label className="form-label">
+                            วันเดือนปีเกิด
+                            <span style={{ color: "red" }}>*</span>
+                            <span className="sub-label">(ค.ศ.)</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="birthday"
+                            className={`form-control ${
+                              error.birthday || birthdayError
+                                ? "border border-danger"
+                                : ""
+                            }`}
+                            name="birthday"
+                            value={input.birthday}
+                            onChange={handleChangeInput}
+                            defaultValue={Date.now()}
+                            onKeyDown={(e) => e.preventDefault()}
+                            max={
+                              new Date(
+                                new Date().setFullYear(
+                                  new Date().getFullYear() - 18
+                                )
+                              )
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          />
+                          {error.birthday ? (
+                            <p className="text-danger">{error.birthday}</p>
+                          ) : null}
+                          {birthdayError ? (
+                            <p className="text-danger">{birthdayError}</p>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-8 col-lg-5">
+                          <label className="form-label">
+                            ระดับการศึกษา
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={educationDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("educationId", selected)
+                            }
+                            placeholder="เลือกระดับการศึกษา"
+                            value={
+                              educationDropdown.find(
+                                (i) => i.value === input.educationId
+                              ) || null
+                            }
+                            className={`${
+                              error.educationId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.educationId ? (
+                            <p className="text-danger">{error.educationId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-8 col-lg-4">
+                          <label className="form-label">
+                            เบอร์โทรศัพท์
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            name="telephoneNo"
+                            type="tel"
+                            className={`form-control ${
+                              error.telephoneNo ? "border border-danger" : ""
+                            }`}
+                            maxLength={12}
+                            value={input.telephoneNo ?? ""}
+                            placeholder="กรอกหมายเลขโทรศัพท์"
+                            onChange={(e) =>
+                              setInput((prevData) => ({
+                                ...prevData,
+                                telephoneNo: maskPhone(e.target.value),
+                              }))
+                            }
+                          />
+                          {error.telephoneNo ? (
+                            <p className="text-danger">{error.telephoneNo}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-lg-6">
+                          <label className="form-label">
+                            เลขบัตรประชาชน
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            className={`form-control ${
+                              error.cardId ? "border border-danger" : ""
+                            }`}
+                            id="cardId"
+                            name="cardId"
+                            placeholder="กรอกเลขบัตรประชาชน"
+                            title="National ID Input"
+                            aria-labelledby="InputLabel"
+                            aria-invalid
+                            aria-required="true"
+                            maxLength={17}
+                            value={input.cardId ?? ""}
+                            onChange={(e) =>
+                              setInput((prevData) => ({
+                                ...prevData,
+                                cardId: maskIDCard(e.target.value),
+                              }))
+                            }
+                          />
 
-                <div>
-                  <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
-                  <div className="border-top border-danger my-3"></div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        ระดับ
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={levelDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("levelId", selected)
-                        }
-                        placeholder="เลือกระดับ"
-                        value={
-                          levelDropdown.find(
-                            (i) => i.value === input.levelId
-                          ) || null
-                        }
-                        className={`${
-                          error.levelId ? "border border-danger rounded-2" : ""
-                        }`}
-                      />
-                      {error.levelId ? (
-                        <p className="text-danger">{error.levelId}</p>
-                      ) : null}
+                          {error.cardId ? (
+                            <p className="text-danger">{error.cardId}</p>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        หน่วยงาน
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={jobDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("jobId", selected)
-                        }
-                        placeholder="เลือกหน่วยงาน"
-                        value={
-                          jobDropdown.find((i) => i.value === input.jobId) ||
-                          null
-                        }
-                        className={`${
-                          error.jobId ? "border border-danger rounded-2" : ""
-                        }`}
-                      />
-                      {error.jobId ? (
-                        <p className="text-danger">{error.jobId}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-8 col-lg-4">
-                      <label className="form-label">
-                        ตำแหน่ง
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={positionDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("positionId", selected)
-                        }
-                        placeholder="เลือกตำแหน่ง"
-                        value={
-                          positionDropdown.find(
-                            (i) => i.value === input.positionId
-                          ) || null
-                        }
-                        className={`${
-                          error.positionId
-                            ? "border border-danger rounded-2"
-                            : ""
-                        }`}
-                      />
-                      {error.positionId ? (
-                        <p className="text-danger">{error.positionId}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        ผู้รับเหมา
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={contratorDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("contractorId", selected)
-                        }
-                        placeholder="เลือกผู้รับเหมา"
-                        value={
-                          contratorDropdown.find(
-                            (i) => i.value === input.contractorId
-                          ) || null
-                        }
-                        className={`${
-                          error.contractorId
-                            ? "border border-danger rounded-2"
-                            : ""
-                        }`}
-                      />
-                      {error.contractorId ? (
-                        <p className="text-danger">{error.contractorId}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        ประเภท
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={employeeTypeDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("typeId", selected)
-                        }
-                        placeholder="เลือกประเภท"
-                        value={
-                          employeeTypeDropdown.find(
-                            (i) => i.value === input.typeId
-                          ) || null
-                        }
-                        className={`${
-                          error.typeId ? "border border-danger rounded-2" : ""
-                        }`}
-                      />
-                      {error.typeId ? (
-                        <p className="text-danger">{error.typeId}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-7 col-lg-4">
-                      <label className="form-label">
-                        อัตราค่าจ้าง
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="rate"
-                        className={`form-control ${
-                          error.rate ? "border border-danger" : ""
-                        }`}
-                        value={input.rate ?? ""}
-                        placeholder="กรอกค่าจ้าง"
-                        onChange={(e) =>
-                          setInput((prevData) => ({
-                            ...prevData,
-                            rate: onlyDecimal(e.target.value),
-                          }))
-                        }
-                      />
-                      {error.rate ? (
-                        <p className="text-danger">{error.rate}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        วันที่เริ่มงาน
-                        <span style={{ color: "red" }}>*</span>
-                        <span className="sub-label">(ค.ศ.)</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="startDate"
-                        className={`form-control ${
-                          error.startDate ? "border border-danger" : ""
-                        }`}
-                        name="startDate"
-                        placeholder="ลงวันที่สิ้นสุด"
-                        value={input.startDate}
-                        onChange={handleChangeInput}
-                        defaultValue={Date.now()}
-                        onKeyDown={(e) => e.preventDefault()}
-                      />
-                    </div>
-                    {error.startDate ? (
-                      <p className="text-danger">{error.startDate}</p>
-                    ) : null}
-                    <div className="col-md-6 col-lg-4">
-                      <label className="form-label">
-                        วันที่ลาออก
-                        <span className="sub-label">(ค.ศ.)</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="endDate"
-                        className={`form-control ${
-                          error.endDate ? "border border-danger" : ""
-                        }`}
-                        name="endDate"
-                        placeholder="ลงวันที่สิ้นสุด"
-                        value={input.endDate}
-                        onChange={handleChangeInput}
-                        defaultValue={Date.now()}
-                        onKeyDown={(e) => e.preventDefault()}
-                      />
-                      {error.endDate ? (
-                        <p className="text-danger">{error.endDate}</p>
-                      ) : null}
-                    </div>
-                    <div className="col-md-5 col-lg-4">
-                      <label className="form-label">
-                        สถานะ
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <select
-                        name="statusId"
-                        id="statusId"
-                        className={`form-control ${
-                          error.statusId ? "border border-danger" : ""
-                        }`}
-                        onChange={handleChangeInput}
-                        value={input.statusId ?? null}
-                      >
-                        <option value={""}>เลือกสถานะ</option>
-                        <option value={0}>ลาออก</option>
-                        <option value={1}>ปกติ</option>
-                      </select>
-                      {error.statusId ? (
-                        <p className="text-danger">{error.statusId}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
 
-                {/*error ที่เจอคือ มันจะ refrest เมื่อมีการกดปุ่ม  handleAddItem*/}
-
-                {/* ค่อยทำ */}
-
-                <div className="mt-3">
-                  <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
-                  <div className="border-top border-danger my-3"></div>
-                </div>
-
-                <DeductionList
-                  deductionDropdown={deductionDropdown}
-                  // deleteAll={() => {
-                  //   setIsOpenNewDeduction(false);
-                  //   setListItem([]);
-                  // }}
-                  listItem={listItem}
-                  // onAddItem={handleAddItem}
-                  setListItem={setListItem}
-                  propName="deductionTypeId"
-                />
-
-                <div>
-                  <h5 className="group-label"># สายอนุมัติ</h5>
-                  <div className="border-top border-danger my-3"></div>
-                  <div className="row form-spacing g-2">
-                    <div className="col-md-12 col-lg-6">
-                      <label className="form-label">
-                        สายอนุมัติ
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={flowDropdown}
-                        handleSelectChange={(selected) => {
-                          handleSelectChange("flowId", selected);
-                          handleOpenFlow(selected.value);
-                        }}
-                        placeholder="เลือกสายอนุมัติ"
-                        customComponent={{ Option: customComponentOption }}
-                        value={
-                          flowDropdown.find((i) => i.value === input.flowId) ||
-                          null
-                        }
-                        className={`${
-                          error.flowId ? "border border-danger rounded-2" : ""
-                        }`}
-                      />
-                      {error.flowId ? (
-                        <p className="text-danger">{error.flowId}</p>
-                      ) : null}
+                    <div>
+                      <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
+                      <div className="border-top border-danger my-3"></div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            ระดับ
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={levelDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("levelId", selected)
+                            }
+                            placeholder="เลือกระดับ"
+                            value={
+                              levelDropdown.find(
+                                (i) => i.value === input.levelId
+                              ) || null
+                            }
+                            className={`${
+                              error.levelId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.levelId ? (
+                            <p className="text-danger">{error.levelId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            หน่วยงาน
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={jobDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("jobId", selected)
+                            }
+                            placeholder="เลือกหน่วยงาน"
+                            value={
+                              jobDropdown.find(
+                                (i) => i.value === input.jobId
+                              ) || null
+                            }
+                            className={`${
+                              error.jobId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.jobId ? (
+                            <p className="text-danger">{error.jobId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-8 col-lg-4">
+                          <label className="form-label">
+                            ตำแหน่ง
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={positionDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("positionId", selected)
+                            }
+                            placeholder="เลือกตำแหน่ง"
+                            value={
+                              positionDropdown.find(
+                                (i) => i.value === input.positionId
+                              ) || null
+                            }
+                            className={`${
+                              error.positionId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.positionId ? (
+                            <p className="text-danger">{error.positionId}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            ผู้รับเหมา
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={contratorDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("contractorId", selected)
+                            }
+                            placeholder="เลือกผู้รับเหมา"
+                            value={
+                              contratorDropdown.find(
+                                (i) => i.value === input.contractorId
+                              ) || null
+                            }
+                            className={`${
+                              error.contractorId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.contractorId ? (
+                            <p className="text-danger">{error.contractorId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            ประเภท
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={employeeTypeDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("typeId", selected)
+                            }
+                            placeholder="เลือกประเภท"
+                            value={
+                              employeeTypeDropdown.find(
+                                (i) => i.value === input.typeId
+                              ) || null
+                            }
+                            className={`${
+                              error.typeId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.typeId ? (
+                            <p className="text-danger">{error.typeId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-7 col-lg-4">
+                          <label className="form-label">
+                            อัตราค่าจ้าง
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="rate"
+                            className={`form-control ${
+                              error.rate ? "border border-danger" : ""
+                            }`}
+                            value={input.rate ?? ""}
+                            placeholder="กรอกค่าจ้าง"
+                            onChange={(e) =>
+                              setInput((prevData) => ({
+                                ...prevData,
+                                rate: onlyDecimal(e.target.value),
+                              }))
+                            }
+                          />
+                          {error.rate ? (
+                            <p className="text-danger">{error.rate}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            วันที่เริ่มงาน
+                            <span style={{ color: "red" }}>*</span>
+                            <span className="sub-label">(ค.ศ.)</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="startDate"
+                            className={`form-control ${
+                              error.startDate ? "border border-danger" : ""
+                            }`}
+                            name="startDate"
+                            placeholder="ลงวันที่สิ้นสุด"
+                            value={input.startDate}
+                            onChange={handleChangeInput}
+                            defaultValue={Date.now()}
+                            onKeyDown={(e) => e.preventDefault()}
+                          />
+                        </div>
+                        {error.startDate ? (
+                          <p className="text-danger">{error.startDate}</p>
+                        ) : null}
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
+                            วันที่ลาออก
+                            <span className="sub-label">(ค.ศ.)</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="endDate"
+                            className={`form-control ${
+                              error.endDate ? "border border-danger" : ""
+                            }`}
+                            name="endDate"
+                            placeholder="ลงวันที่สิ้นสุด"
+                            value={input.endDate}
+                            onChange={handleChangeInput}
+                            defaultValue={Date.now()}
+                            onKeyDown={(e) => e.preventDefault()}
+                          />
+                          {error.endDate ? (
+                            <p className="text-danger">{error.endDate}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-5 col-lg-4">
+                          <label className="form-label">
+                            สถานะ
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <select
+                            name="statusId"
+                            id="statusId"
+                            className={`form-control ${
+                              error.statusId ? "border border-danger" : ""
+                            }`}
+                            onChange={handleChangeInput}
+                            value={input.statusId ?? ""}
+                          >
+                            <option value={""}>เลือกสถานะ</option>
+                            <option value={0}>ลาออก</option>
+                            <option value={1}>ปกติ</option>
+                          </select>
+                          {error.statusId ? (
+                            <p className="text-danger">{error.statusId}</p>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
-                    {flowById.approvalSteps && (
-                      <div
-                        className={`alert alert-info alert-dismissible fade ${
-                          isFlow ? "show" : ""
-                        } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
-                        role="alert"
-                      >
-                        {flowIsLoading ? (
-                          <p className="text-center">...กำลังโหลดสายอนุมัติ</p>
-                        ) : (
-                          <>
-                            <p className="text-center">ลำดับสายอนุมัติ</p>
-                            <div className="d-flex flex-wrap justify-content-center gap-4 mt-3">
-                              {flowById.approvalSteps.map((item, index) => (
-                                <>
-                                  <div
-                                    className="d-flex flex-column align-items-center"
-                                    key={index}
-                                  >
-                                    <div
-                                      className="mb-2"
-                                      style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        backgroundColor: "#ffffffff",
-                                        borderRadius: "50%",
-                                        position: "relative",
-                                      }}
-                                    >
-                                      <p
-                                        style={{
-                                          position: "absolute",
-                                          left: "15px",
-                                          top: "9px",
-                                        }}
+
+                    {/*error ที่เจอคือ มันจะ refrest เมื่อมีการกดปุ่ม  handleAddItem*/}
+
+                    {/* ค่อยทำ */}
+
+                    <div className="mt-3">
+                      <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
+                      <div className="border-top border-danger my-3"></div>
+                    </div>
+
+                    <DeductionList
+                      deductionDropdown={deductionDropdown}
+                      // deleteAll={() => {
+                      //   setIsOpenNewDeduction(false);
+                      //   setListItem([]);
+                      // }}
+                      listItem={listItem}
+                      // onAddItem={handleAddItem}
+                      setListItem={setListItem}
+                      propName="deductionTypeId"
+                      isOpenNewDeduction={isOpenNewDeduction}
+                      setIsOpenNewDeduction={setIsOpenNewDeduction}
+                      error={error}
+                    />
+
+                    <div>
+                      <h5 className="group-label"># สายอนุมัติ</h5>
+                      <div className="border-top border-danger my-3"></div>
+                      <div className="row form-spacing g-2">
+                        <div className="col-md-12 col-lg-6">
+                          <label className="form-label">
+                            สายอนุมัติ
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={flowDropdown}
+                            handleSelectChange={(selected) => {
+                              handleSelectChange("flowId", selected);
+                              handleOpenFlow(selected.value);
+                            }}
+                            placeholder="เลือกสายอนุมัติ"
+                            customComponent={{ Option: customComponentOption }}
+                            value={
+                              flowDropdown.find(
+                                (i) => i.value === input.flowId
+                              ) || null
+                            }
+                            className={`${
+                              error.flowId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.flowId ? (
+                            <p className="text-danger">{error.flowId}</p>
+                          ) : null}
+                        </div>
+                        {flowById.approvalSteps && (
+                          <div
+                            className={`alert alert-info alert-dismissible fade ${
+                              isFlow ? "show" : ""
+                            } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
+                            role="alert"
+                          >
+                            {flowIsLoading ? (
+                              <p className="text-center">
+                                ...กำลังโหลดสายอนุมัติ
+                              </p>
+                            ) : (
+                              <>
+                                <p className="text-center">ลำดับสายอนุมัติ</p>
+                                <div className="d-flex flex-wrap justify-content-center gap-4 mt-3">
+                                  {flowById.approvalSteps.map((item, index) => (
+                                    <>
+                                      <div
+                                        className="d-flex flex-column align-items-center"
+                                        key={index}
                                       >
-                                        {item.stepNumber}
-                                      </p>
-                                    </div>
-                                    <p style={{ fontWeight: "bold" }}>
-                                      {item.stepName}
-                                    </p>
-                                    <p
-                                      style={{
-                                        fontSize: "0.9rem",
-                                        lineHeight: "0.1rem",
-                                      }}
-                                    >
-                                      {item.fullName}
-                                    </p>
-                                  </div>
-                                </>
-                              ))}
-                            </div>
-                          </>
+                                        <div
+                                          className="mb-2"
+                                          style={{
+                                            width: "40px",
+                                            height: "40px",
+                                            backgroundColor: "#ffffffff",
+                                            borderRadius: "50%",
+                                            position: "relative",
+                                          }}
+                                        >
+                                          <p
+                                            style={{
+                                              position: "absolute",
+                                              left: "15px",
+                                              top: "9px",
+                                            }}
+                                          >
+                                            {item.stepNumber}
+                                          </p>
+                                        </div>
+                                        <p style={{ fontWeight: "bold" }}>
+                                          {item.stepName}
+                                        </p>
+                                        <p
+                                          style={{
+                                            fontSize: "0.9rem",
+                                            lineHeight: "0.1rem",
+                                          }}
+                                        >
+                                          {item.fullName}
+                                        </p>
+                                      </div>
+                                    </>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
-          </div>
-        </div>
+            <SubmitOrCancelButton
+              handleCancel={handleClear}
+              handleSubmit={handleSubmit}
+            />
+          </>
+        ) : (
+          <>
+            <div className="d-flex align-items-center justify-content-center">
+              <div
+                className="spinner-border text-danger"
+                role="status"
+                style={{ width: "3rem", height: "3rem", marginTop: "300px" }}
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
-      <SubmitOrCancelButton
-        handleCancel={handleClear}
-        handleSubmit={handleSubmit}
-      />
       <CopperImage
         madalName={modalCopperName}
         setPreview={setPreview}
         src={src}
         handleClose={() => setOpenCopperModal(false)}
-        show={openCopperModal === true}
+        show={openCopperModal}
       />
     </div>
   );
