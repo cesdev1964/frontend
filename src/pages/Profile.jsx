@@ -2,7 +2,7 @@ import { useTitle } from "../hooks/useTitle";
 import HeaderPage from "../components/HeaderPage";
 import { Link } from "react-router-dom";
 import ImageComponent from "../components/Image";
-import DetailItem from "../components/home/detailItem";
+import DetailItem from "../components/home/DetailItem.jsx";
 import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
 import { useParams } from "react-router-dom";
@@ -331,7 +331,56 @@ export default function Profile({ title }) {
                             </div>
                           </div>
                         </div>
-
+                        <div className="w-100 bg-danger p-2 border-n rounded-3 mb-3">
+                          <p className="mt-2 text-center fw-bold">
+                            รายการการหักเงิน
+                          </p>
+                          <div className="d-flex justify-content-center px-5 py-3">
+                            
+                              <table
+                                className="table table-bordered"
+                                // style={{ width: "100%" }}
+                              >
+                                <thead>
+                                  <tr className="text-white">
+                                    <th
+                                      style={{
+                                        background: "#ff7a88",
+                                        fontWeight: "600",
+                                        padding: "12px 8px",
+                                        width: "200px",
+                                      }}
+                                      className="text-center"
+                                    >
+                                      ชื่อประเภทการหัก
+                                    </th>
+                                    <th
+                                      style={{
+                                        background: "#ff7a88",
+                                        fontWeight: "600",
+                                        padding: "12px 8px",
+                                        width: "200px",
+                                      }}
+                                      className="text-center"
+                                    >
+                                      จำนวนเงิน
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr className="bg-white">
+                                    <td>John</td>
+                                    <td>Doe</td>
+                                  </tr>
+                                  <tr className="bg-white">
+                                    <td>John</td>
+                                    <td>Doe</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        
+                          </div>
+                        </div>
                         <div>
                           <div className="w-100 bg-danger p-2 border-n rounded-3">
                             <p className="my-2 text-center fw-bold">

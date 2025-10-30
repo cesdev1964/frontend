@@ -12,6 +12,45 @@ import { useJob } from "../hooks/jobStore";
 import { SearchDropdown } from "../components/searchDropdown";
 import { TimeInput, DateInput } from "../components/DateAndTimeInput";
 import { useOTType } from "../hooks/otTypeStore";
+import OTcard from "../components/OT/OTcard";
+import { handleCancel } from "../util/handleCloseModal";
+
+let OTtimeOptions = {
+  otStart: [
+    { time: "04:00", timeType: 0 },
+    { time: "04:30", timeType: 0 },
+    { time: "05:00", timeType: 0 },
+    { time: "05:30", timeType: 0 },
+    { time: "06:00", timeType: 0 },
+    { time: "06:30", timeType: 0 },
+    { time: "07.00", timeType: 0 },
+    { time: "07:30", timeType: 0 },
+    { time: "08:00", timeType: 0 },
+    { time: "10:00", timeType: 0 },
+    { time: "12:00", timeType: 0 },
+    { time: "13:00", timeType: 0 },
+    { time: "17:00", timeType: 0 },
+    { time: "18:00", timeType: 0 },
+  ],
+  otEnd: [
+    { time: "8:00", timeType: 0 },
+    { time: "12:00", timeType: 0 },
+    { time: "13:00", timeType: 0 },
+    { time: "17:00", timeType: 0 },
+    { time: "18:00", timeType: 0 },
+    { time: "19:00", timeType: 0 },
+    { time: "20:00", timeType: 0 },
+    { time: "21:00", timeType: 0 },
+    { time: "21:30", timeType: 0 },
+    { time: "22:00", timeType: 0 },
+    { time: "23:00", timeType: 0 },
+    { time: "00:00", timeType: 1 },
+    { time: "00:30", timeType: 1 },
+    { time: "01:00", timeType: 1 },
+    { time: "01:30", timeType: 1 },
+    { time: "02:00", timeType: 1 },
+  ],
+};
 
 export default function OT({ title }) {
   useTitle(title);
@@ -20,12 +59,12 @@ export default function OT({ title }) {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const { jobDropdown, getJobDropdown } = useJob();
   const [isSubmit, setIsSubmit] = useState(false);
-  const currentDate  = new Date().toISOString().split("T")[0]
+  const currentDate = new Date().toISOString().split("T")[0];
   const [input, setInput] = useState({
-    startDate:  currentDate,
+    startDate: currentDate,
     endDate: currentDate,
-    startTime: null,
-    endTime: null,
+    startTime: OTtimeOptions.otStart[0].time,
+    endTime: OTtimeOptions.otEnd[0].time,
     breakOverrideRequested: false,
     breakOverrideMinites: 0,
     totalMinutes: 0,
@@ -34,17 +73,26 @@ export default function OT({ title }) {
     reason: "",
   });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
+  const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
 
+  // กำหนดวันบนปฏิทิน
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
+  const dataOnly = (date) => {
+    return date.toISOString().split("T")[0];
+  };
 
   const fetchDataTable = useCallback(async () => {
     try {
       await getJobDropdown();
       await getOtTypeDropdown();
+      setOtTimeList(OTtimeOptions);
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
     }
-  }, [getJobDropdown, getOtTypeDropdown]);
+  }, [getJobDropdown, getOtTypeDropdown, setOtTimeList]);
 
   useEffect(() => {
     fetchDataTable();
@@ -80,8 +128,6 @@ export default function OT({ title }) {
   };
 
   const handleOpenModal = (modalId) => {
-    // setEditMode(false);
-    // ClearInput();
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
@@ -91,12 +137,6 @@ export default function OT({ title }) {
 
   const validateForm = () => {
     let errors = {};
-    // if (!input.startDate) {
-    //   errors.startDate = "กรุณาเลือกวันที่เริ่ม";
-    // }
-    // if (!input.endDate) {
-    //   errors.endDate = "กรุณาเลือกวันที่สิ้นสุด";
-    // }
     if (!input.startTime) {
       errors.startTime = "กรุณาเลือกเวลาเริ่ม";
     }
@@ -114,10 +154,7 @@ export default function OT({ title }) {
 
   const handleSubmit = (e, modalId) => {
     e.preventDefault();
-
-    // const reqData = {
-    //   educationName: input.educationname,
-    // };
+    console.log("OT req data", input);
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
@@ -161,9 +198,9 @@ export default function OT({ title }) {
   const ClearInput = () => {
     setInput({
       startDate: currentDate,
-      endDate:  currentDate,
-      startTime: null,
-      endTime: null,
+      endDate: currentDate,
+      startTime: OTtimeOptions.otStart[0].time,
+      endTime: OTtimeOptions.otEnd[0].time,
       breakOverrideRequested: false,
       breakOverrideMinites: 0,
       totalMinutes: 0,
@@ -171,25 +208,59 @@ export default function OT({ title }) {
       jobId: null,
       reason: "",
     });
+  };
+
+  //datetime
+
+  const convertTominute = (DateElement) => {};
   
+  const calTimeToMinute = (starttime, endtime) => {
+    // console.log(starttime);
+    const totalMinute = 0;
+
+    if (
+      !starttime ||
+      !endtime ||
+      !starttime.includes(":") ||
+      !endtime.includes(":")
+    ) {
+      return "0 ชั่วโมง 0 นาที";
+    } else {
+      var [startHr, startMin] = starttime.split(":").map(Number);
+      var [endHr, endMin] = endtime.split(":").map(Number);
+
+      const start = new Date();
+      start.setHours(startHr, startMin, 0, 0);
+      const end = new Date();
+      end.setHours(endHr, endMin, 0, 0);
+
+      if (end < start) {
+        end.setDate(end.getDate() + 1);
+      }
+
+      var diffTime = end - start;
+      var convertHr = Math.floor(diffTime / (1000 * 3600));
+      const convertMin = Math.floor((diffTime % (1000 * 3600)) / (1000 * 60));
+
+      //การดึงค่ารวมนาทีทั้งหมด
+
+      // console.log("time array",timeArray)
+      return convertHr + " ชั่วโมง " + convertMin + " นาที";
+    }
   };
 
-  const getTime = (time)=>{
-    const timeOnly = time.toISOString().split(" ")[4]
-    return timeOnly;
-  }
-
-  // console.log("get Time",getTime({Wed Oct 22 2025 15:00:00 GMT+0700 (Indochina Time)}));
-
-  const totalTime = (startTime, endTime) => {
-    //  ทำการคำนวณหาจำนวนชั่วโมง
-    // แบ่งออกเป็นนาทีกับวินาที
-
-  };
-
-  const convertToMinute = (startTime, endTime) => {
-    // แปลงเป็นนาที
-    
+  // ตรวจสอบวันที่เลือก > วันปัจจบันไหม ถ้าใช่ ให้เวลาได้หมด ถ้าไม่ ให้เลือกเฉพาะเวลาในวันปัจจุบัน
+  const checkIsNextDay = (datetime, OTtimeOptions) => {
+    const today = new Date();
+    const inputDate = new Date(datetime);
+    if (inputDate > today) {
+      return setOtTimeList(otTimeList);
+    } else {
+      setOtTimeList((prev) => ({
+        ...prev,
+        otEnd: OTtimeOptions.otEnd.filter((item) => item.timeType !== 1),
+      }));
+    }
   };
 
   const finishSubmit = () => {
@@ -200,16 +271,45 @@ export default function OT({ title }) {
     <div>
       <HeaderPage pageName={title} />
       <div className="container">
-        <div className="border-danger  border-1 rounded-3 bg-danger p-4 d-flex mb-3 align-items-center justify-content-between">
-          <h5>รายการโอทีที่ผ่านมา</h5>
-          <MainButton
-            btnName="บันทึกโอที"
-            onClick={() => handleOpenModal("addOTModal")}
-          />
+        <div className="bg-white mb-3 p-3 border rounded-3 border-danger filter-display">
+          <div className="row">
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <div className="d-flex flex-column align-items-start ">
+                <label class="form-label">กรอง 1</label>
+                <input
+                  name="levelname"
+                  type="text"
+                  className={"form-control"}
+                  id="educationname"
+                  placeholder="กรอง 1"
+                  // value={input.levelname}
+                  // onChange={handleChangeInput}
+                />
+              </div>
+            </div>
+            <div className="col-sm-12 col-md-6 col-lg-6">
+              <div className="d-flex flex-column align-items-start ">
+                <label class="form-label">กรอง 2</label>
+                <input
+                  name="levelname"
+                  type="text"
+                  className={"form-control"}
+                  id="educationname"
+                  placeholder="กรอง 2"
+                  // value={input.levelname}
+                  // onChange={handleChangeInput}
+                />
+              </div>
+            </div>
+          </div>
+          <div id="button">
+            <MainButton
+              btnName="ทำการขอโอที"
+              onClick={() => handleOpenModal("addOTModal")}
+              icon="bi bi-plus"
+            />
+          </div>
         </div>
-
-        <div className="filter-container">ส่วนของการกรอง</div>
-        {/* <MainButton btnName="บันทึกโอที" /> */}
 
         <div className="flex-grow-1 d-flex align-items-start justify-content-center">
           <div className="accordion">
@@ -255,7 +355,11 @@ export default function OT({ title }) {
                             </div>
                           </div>
                         ) : (
-                          <></>
+                          <>
+                            <OTcard status={0} />
+                            <OTcard status={1} />
+                            <OTcard status={2} />
+                          </>
                         )}
                       </div>
                     </div>
@@ -266,6 +370,7 @@ export default function OT({ title }) {
           </div>
         </div>
       </div>
+
       {/* modal add */}
       <div
         className="modal fade"
@@ -319,6 +424,8 @@ export default function OT({ title }) {
                     className={`form-control ${
                       error.startDate ? "border border-danger" : ""
                     }`}
+                    min={dataOnly(today)}
+                    max={dataOnly(tomorrow)}
                     name="startDate"
                     placeholder="ลงวันที่เริ่ม"
                     value={input.startDate}
@@ -332,16 +439,21 @@ export default function OT({ title }) {
                     วันที่สิ้นสุดโอที
                     <span style={{ color: "red" }}>*</span>
                   </label>
-                   <input
+                  <input
                     type="date"
                     id="endDate"
                     className={`form-control ${
                       error.endDate ? "border border-danger" : ""
                     }`}
+                    min={dataOnly(today)}
+                    max={dataOnly(tomorrow)}
                     name="endDate"
                     placeholder="ลงวันที่สิ้นสุด"
                     value={input.endDate}
-                    onChange={handleChangeInput}
+                    onChange={
+                      handleChangeInput
+                      // checkIsNextDay(e.target.value,otTimeList)
+                    }
                     defaultValue={Date.now()}
                     onKeyDown={(e) => e.preventDefault()}
                   />
@@ -400,8 +512,23 @@ export default function OT({ title }) {
                     เริ่มเวลา
                     <span style={{ color: "red" }}>*</span>
                   </label>
-
-                  <TimeInput
+                  <select
+                    name="startTime"
+                    id="startTime"
+                    className={`form-control ${
+                      error.startTime ? "border border-danger" : ""
+                    }`}
+                    onChange={handleChangeInput}
+                    value={input.startTime || ""}
+                    // defaultValue={OTtimeOptions.otStart[0]}
+                  >
+                    {otTimeList.otStart?.map((item, index) => (
+                      <option value={item.time} key={index}>
+                        {item.time}
+                      </option>
+                    ))}
+                  </select>
+                  {/* <TimeInput
                     onChange={([startTime]) => {
                       setInput((prev) => ({
                         ...prev,
@@ -411,15 +538,29 @@ export default function OT({ title }) {
                     placeholder={"ลงเวลา"}
                     value={input.startTime}
                     error={error.startTime}
-                  />
+                  /> */}
                 </div>
                 <div className="col-6">
                   <label className="form-label">
                     ถึงเวลา
                     <span style={{ color: "red" }}>*</span>
                   </label>
-
-                  <TimeInput
+                  <select
+                    name="endTime"
+                    id="endTime"
+                    className={`form-control ${
+                      error.startTime ? "border border-danger" : ""
+                    }`}
+                    onChange={handleChangeInput}
+                    value={input.endTime || ""}
+                  >
+                    {otTimeList.otEnd?.map((item, index) => (
+                      <option value={item.time} key={index}>
+                        {item.time}
+                      </option>
+                    ))}
+                  </select>
+                  {/* <TimeInput
                     onChange={([endTime]) => {
                       setInput((prev) => ({
                         ...prev,
@@ -429,25 +570,25 @@ export default function OT({ title }) {
                     placeholder={"ลงเวลา"}
                     value={input.endTime}
                     error={error.endTime}
-                  />
+                  /> */}
                 </div>
-              </div>
-              <div className="totalOTBanner">
-                {/* กล่องแสดงเวลารวม */}
-                <div className="d-flex align-items-center">
-                  <span className="me-2 fw-semibold fs-5">
-                    รวมแล้วเป็นเวลา :{" "}
-                  </span>
-                  {/* แสดงผลเป็นชั่วโมง นาที แต่ส่งเข้าหลังบ้านเป็นนาที เมื่อมีการ input แล้วทั้ง 2 แล้ว ให้แสดงผลด้านล่างนี้ */}
-                  <div
-                    className="px-3 py-2 bg-danger text-dark fw-bold rounded fs-4"
-                    style={{ minWidth: "70px", textAlign: "center" }}
-                  >
-                    240
+                <div className="totalOTBanner">
+                  {/* กล่องแสดงเวลารวม */}
+                  <div className="d-flex align-items-center">
+                    <span className="me-2 fw-semibold fs-5">
+                      รวมแล้วเป็นเวลา :
+                    </span>
+                    {/* แสดงผลเป็นชั่วโมง นาที แต่ส่งเข้าหลังบ้านเป็นนาที เมื่อมีการ input แล้วทั้ง 2 แล้ว ให้แสดงผลด้านล่างนี้ */}
+                    <div
+                      className="px-3 py-2 bg-danger text-dark fw-bold rounded fs-4"
+                      style={{ minWidth: "70px", textAlign: "center" }}
+                    >
+                      {calTimeToMinute(input.startTime, input.endTime)}
+                    </div>
                   </div>
-                </div>
 
-                {/* ปุ่มคำนวณเวลา */}
+                  {/* ปุ่มคำนวณเวลา */}
+                </div>
               </div>
 
               <div className="col-12">
@@ -455,15 +596,17 @@ export default function OT({ title }) {
                 <textarea
                   style={{ resize: "none" }}
                   maxLength="100"
-                  name="employeeCode"
+                  name="reason"
                   type="text"
                   rows="4"
                   cols="30"
+                  value={input.reason}
+                  onChange={handleChangeInput}
                   // className={`form-control ${
                   //   error.employeeCode ? "border border-danger" : ""
                   // }`}
                   className="form-control mb-5"
-                  id="employeeCode"
+                  id="reason"
                   // value={input.employeeCode ?? ""}
                   // onChange={handleChangeInput}
                 ></textarea>

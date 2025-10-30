@@ -5443,7 +5443,7 @@ textarea.form-control.is-invalid {
     border-left: 0 !important
 }
 
-.border-primary {
+/* .border-primary {
     border-color: #0d6efd !important
 }
 
@@ -5477,7 +5477,7 @@ textarea.form-control.is-invalid {
 
 .border-white {
     border-color: #fff !important
-}
+} */
 
 .border-1 {
     border-width: 1px !important

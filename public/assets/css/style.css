@@ -430,6 +430,7 @@ body {
 .search-box {
   display: flex;
   justify-content: end;
+  position: relative;
 }
 
 .searchBar {
@@ -450,8 +451,13 @@ body {
 }
 
 .searchIcon {
-  margin-left: -2rem;
+  position: absolute;
+  margin-left:220px;
   margin-top: 10px;
+}
+
+.search-icon{
+  position: absolute;
 }
 
 .card.settingCard {
@@ -1502,6 +1508,44 @@ thead th:last-child {
   color: var(--rose-btm) !important;
 }
 
+/* border */
+
+.border-primary {
+    border-color: var(--pink) !important
+}
+
+.border-secondary {
+    border-color: #687fe5 !important
+}
+
+.border-success {
+    border-color: #a3dc9a !important
+}
+
+.border-info {
+    border-color: #789dbc !important
+}
+
+.border-warning {
+    border-color: #ffc107 !important
+}
+
+.border-danger {
+    border-color: var(--pink-active) !important
+}
+
+.border-light {
+    border-color: #f8f9fa !important
+}
+
+.border-dark {
+    border-color: #212529 !important
+}
+
+.border-white {
+    border-color: #fff !important
+}
+
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -1845,6 +1889,15 @@ thead th:last-child {
   .table-conteiner td {
     padding: 4px 6px;
   }
+
+  .filter-display{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-display #button{
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -1957,6 +2010,49 @@ thead th:last-child {
   .profile-container {
     max-height: 650px;
     overflow-y: auto;
+  }
+}
+
+@media (max-width: 991px) {
+  .ot-time-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1023px) and (max-width: 1153px) {
+  .OT-flex-Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .OT-center{
+    width: 100%;
+  }
+}
+
+@media (min-width: 545px) and (max-width: 767px) {
+  .OT-flex-Container {
+    display: flex;
+    flex-direction: column; /* เรียงบน-ล่าง */
+    align-items: center; /* กึ่งกลางแนวนอน */
+    justify-content: center; /* กึ่งกลางแนวตั้ง */
+  }
+  .OT-center{
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .OT-flex-Container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -2226,6 +2322,8 @@ thead th:last-child {
   width: 100%;
 }
 
+/* สำหรับหน้าการขอ OT */
+
 .totalOTBanner {
   background: #fff;
   backdrop-filter: saturate(115%) blur(2px);
@@ -2253,3 +2351,56 @@ thead th:last-child {
   border-image-slice: 1;
   border-radius: 10px;
 }
+
+.my-icon-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: transparent;
+}
+
+.OT-flex-Container {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+.ot-time-section {
+  display: flex;
+  align-items: start;
+  /* justify-content: center; */
+  gap: 15px;
+}
+
+.OT-description-label{
+  font-size: 0.9rem;
+  line-height: 0.3;
+}
+
+.OT-description-value{
+  font-size: 0.9rem;
+  line-height: 0.3;
+  color:var(--pink-active)
+}
+.OT-card-container{
+  border: 1px solid transparent;
+  padding: 5px;
+   /* transition: box-shadow 0.3s ease */
+}
+.OT-card-container:hover{
+  background-color: white;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 15px;
+    transform: translateY(-1px);
+}
+
+.filter-display{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* d-flex align-items-center justify-content-between */
