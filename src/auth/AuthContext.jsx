@@ -65,6 +65,8 @@ export function AuthProvider({ children }) {
       const data = await res.json();
       setAuthData(data.user);
       setLoading(false);
+
+      console.log("aute data",authdata);
     } catch (error) {}
   };
 

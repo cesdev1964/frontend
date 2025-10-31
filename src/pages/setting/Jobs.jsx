@@ -231,6 +231,7 @@ export default function Jobs({ title }) {
       jobName2: input.jobname2,
       isActive: input.isactive,
     };
+
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
@@ -254,7 +255,7 @@ export default function Jobs({ title }) {
       } else {
         Swal.fire({
           title : "บันทึกข้อมูลไม่สำเร็จ",
-          text: jobErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: jobErrorMessage,
           icon: "error",
         });
       }

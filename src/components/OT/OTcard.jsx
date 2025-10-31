@@ -6,12 +6,25 @@ export default function OTcard({ status }) {
     <div>
       <div className="OT-card-container">
         <div className="d-flex align-items-center justify-content-between">
-          <a style={{cursor:"pointer"}} data-bs-toggle="tooltip" title="คลิกดูสายอนุมัติ">
+          <a
+            style={{ cursor: "pointer" }}
+            data-bs-toggle="tooltip"
+            title="คลิกดูสายอนุมัติ"
+          >
             <div className="d-flex align-items-center gap-1">
               <OTapproveStatusBadge status={status} />
               <i class="bi bi-dot"></i>
               <h5 className="">ประเภทโอทีที่ขอ</h5>
             </div>
+          </a>
+          <a
+            style={{ cursor: "pointer", marginTop: 0 }}
+            // onClick={() => handleDeleteItem(item.stepNumber)}
+          >
+            <i
+              className="bi bi-trash-fill text-center text-danger fs-3"
+              title="ลบ"
+            ></i>
           </a>
         </div>
         <div className="border-top border-danger mb-4"></div>

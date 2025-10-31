@@ -90,11 +90,13 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-              <li>
-                <NavLink to="/working/OT" className="nav-link dropdown-link">
-                  บันทึกโอที
-                </NavLink>
-              </li>
+              {rolePermissionRequire.includes("Employee") && (
+                <li>
+                  <NavLink to="/working/OT" className="nav-link dropdown-link">
+                    บันทึกโอที
+                  </NavLink>
+                </li>
+              )}
               {rolePermissionRequire.includes("SUPER") && (
                 <>
                   <li>
@@ -146,7 +148,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               <span className="label">เปลี่ยนรหัสผ่าน</span>
             </NavLink>
           </li>
-          {rolePermissionRequire.includes("SUPER") &&  (
+          {rolePermissionRequire.includes("SUPER") && (
             <>
               <li>
                 <NavLink
@@ -157,7 +159,6 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                     <i className="bi bi-gear-fill"></i>
                   </span>
                   <span className="label">ตั้งค่า</span>
-
                 </NavLink>
               </li>
             </>
@@ -167,7 +168,6 @@ function AppSidebar({ isOpen, toggleSidebar }) {
               to="/test"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              
               <span className="icon">
                 <i className="bi bi-android2"></i>
               </span>

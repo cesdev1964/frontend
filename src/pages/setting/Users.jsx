@@ -333,7 +333,7 @@ export default function Users({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: userError || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: userError,
           icon: "error",
         });
       }

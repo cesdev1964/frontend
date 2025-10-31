@@ -19,13 +19,13 @@ export const useOTType = create((set) => ({
         otTypeData: response.data.data ?? [],
         otTypeIsLoading: false,
       });
-      return { success: response.data.success };
+      return { success: true };
     } catch (errorMessage) {
       set({
         otTypeErrorMessage: errorMessage.message,
         otTypeIsLoading: false,
       });
-      return { success: response.data.success };
+      return { success: false };
     }
   },
 
@@ -85,7 +85,7 @@ export const useOTType = create((set) => ({
       const response = await api.post(url, requestData);
       return {
         otTypeIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
       set({

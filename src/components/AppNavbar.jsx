@@ -100,13 +100,6 @@ function AppNavbar({ toggleSidebar }) {
                     <div className="profile-card">
                       {authdata.publicEmployeeId ?  (
                         <>
-                          <p
-                            className="text-end"
-                            style={{ fontSize: "0.8rem", color: "#ff1414" }}
-                          >
-                            {/* EmpID : {data.id ? data.id : "N/A"} */}
-                            EmpID : N/A
-                          </p>
                           <div className="profile-content">
                             <img src={avatarUrl} alt="profile-image" />
                             <div
@@ -171,7 +164,7 @@ function AppNavbar({ toggleSidebar }) {
                         href={`/profile/${authdata.publicEmployeeId}`}
                         className="d-flex justify-content-between dropdown-item"
                       >
-                        <span className="label fw-bold">ข้อมูลของคุณ</span>
+                        <span className="label fw-bold">ข้อมูลของฉัน</span>
                         <span className="icon">
                           <i className="bi bi-house-door-fill"></i>
                         </span>
@@ -180,7 +173,7 @@ function AppNavbar({ toggleSidebar }) {
 
                     <div>
                       <a
-                        className="d-flex justify-content-between dropdown-item"
+                        className="d-flex justify-content-between dropdown-item text-danger"
                         style={{ textDecoration: "none", cursor: "pointer" }}
                         onClick={logout}
                       >

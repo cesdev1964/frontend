@@ -267,7 +267,7 @@ export default function Levels({ title }) {
           columnDefs={columnDefs}
           isLoading={levelIsLoading}
         />
-
+        
         {/* modal */}
         <div
           className="modal fade"

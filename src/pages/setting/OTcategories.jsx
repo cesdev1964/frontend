@@ -13,6 +13,8 @@ import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import { useOTType } from "../../hooks/otTypeStore";
 import MainButton from "../../components/MainButton";
+import { handleCancel } from "../../util/handleCloseModal";
+import InputTextField from "../../components/inputTextField";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -34,13 +36,11 @@ export default function OTCategories({ title }) {
   const {
     otTypeData,
     otTypeIsLoading,
-    otTypeErrorMessage,
-    success,
-    otTypeById,
     getOtTypeData,
-    getOtTypeById,
+    otTypeErrorMessage,
     createOtType,
     updateOtType,
+    success,
   } = useOTType();
 
   const [input, setInput] = useState({
@@ -83,7 +83,7 @@ export default function OTCategories({ title }) {
 
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
-    { width: "70px", targets: 1 , className: "text-center" },
+    { width: "70px", targets: 1, className: "text-center" },
     { width: "200px", targets: 2 },
     { width: "100px", targets: 3, className: "text-center" },
     { width: "100px", targets: 4, className: "text-center" },
@@ -160,43 +160,66 @@ export default function OTCategories({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      // handleEdit(id, "OTModal");
+      handleEdit(id, "OTModal");
+    }
+  };
+
+  const handleEdit = async (id, modalId) => {
+    ClearInput();
+    // await g(id);
+    setGetId(id);
+    setEditMode(true);
+
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
     }
   };
 
   const validateForm = () => {
     let errors = {};
     const hasThai = /[ก-ฮ]/;
-    if (!input.OTtypecode) {
-      errors.OTtypecode = "กรุณากรอกรหัสโอที";
-    }
-
     if (!input.OTtypename) {
       errors.OTtypename = "กรุณากรอกชื่อโอที";
     }
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ตรวจสอบโดย sweetalert 2
+    const reqData = {
+      otTypeCode: input.OTtypecode,
+      otTypeName: input.OTtypename,
+      isActive: input.isActive,
+    };
     const errorList = validateForm(input) || [];
     setError(errorList);
-    //api post
-    // setData(data.res)
-    if (Object.keys(errorList).length === 0) {
-      setIsSubmit(true);
-      Swal.fire({
-        title: "บันทึกข้อมูลสำเร็จ",
-        icon: "success",
-        draggable: true,
-        buttonsStyling: "w-100",
-      });
 
-      const currentModal = document.getElementById("notModal");
-      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-      modalInstance.hide();
-      ClearInput();
+    if (Object.keys(errorList).length === 0) {
+      const response = editMode
+        ? await updateOtType(reqData, getId)
+        : await createOtType(reqData);
+      if (response.success) {
+        setIsSubmit(true);
+        Swal.fire({
+          title: "บันทึกข้อมูลสำเร็จ",
+          icon: "success",
+          draggable: true,
+          buttonsStyling: "w-100",
+        });
+        await getOtTypeData();
+        const currentModal = document.getElementById("OTModal");
+        const modalInstance = bootstrap.Modal.getInstance(currentModal);
+        modalInstance.hide();
+        ClearInput();
+      } else {
+        Swal.fire({
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: otTypeErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          icon: "error",
+        });
+      }
     }
   };
 
@@ -281,10 +304,7 @@ export default function OTCategories({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-12">
-                            <label className="form-label">
-                              รหัสโอที
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
+                            {/* <label className="form-label">โค้ดโอที</label>
                             <input
                               name="OTtypecode"
                               type="text"
@@ -292,18 +312,32 @@ export default function OTCategories({ title }) {
                                 error.OTtypecode ? "border border-danger" : ""
                               }`}
                               id="categoryname"
-                              placeholder="กรอกรหัสโอที"
+                              placeholder="กรอกโค้ดโอที"
                               value={input.OTtypecode}
                               onChange={handleChangeInput}
+                            /> */}
+                            <InputTextField
+                              onChange={handleChangeInput}
+                              isRequire={false}
+                              label="โค้ดโอที"
+                              name="OTtypecode"
+                              placeholder="กรอกโค้ดโอที"
+                              value={input.OTtypecode}
                             />
-                            {error.OTtypecode ? (
-                              <p className="text-danger">{error.OTtypecode}</p>
-                            ) : null}
                           </div>
                         </div>
                         <div className="row form-spacing g-3">
                           <div className="col-12">
-                            <label htmlFor="StartDate" class="form-label">
+                             <InputTextField
+                              onChange={handleChangeInput}
+                              isRequire={true}
+                              label="ชื่อโอที"
+                              name="OTtypename"
+                              placeholder="กรอกชื่อโอที"
+                              value={input.OTtypename}
+                              error={error.OTtypename}
+                            />
+                            {/* <label htmlFor="StartDate" class="form-label">
                               ชื่อโอที
                               <span style={{ color: "red" }}>*</span>
                             </label>
@@ -320,7 +354,8 @@ export default function OTCategories({ title }) {
                             />
                             {error.OTtypename ? (
                               <p className="text-danger">{error.OTtypename}</p>
-                            ) : null}
+                            ) : null} */}
+
                           </div>
                           <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
