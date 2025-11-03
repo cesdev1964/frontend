@@ -173,11 +173,11 @@ export default function Roles({ title }) {
     },
   ];
 
-    const columnDefs = [
-    { width: "70px", targets: 0 ,className:"text-center"},
+  const columnDefs = [
+    { width: "70px", targets: 0, className: "text-center" },
     { width: "100px", targets: 1 },
     { width: "150px", targets: 2 },
-    { width: "90px", targets: 3},
+    { width: "90px", targets: 3 },
   ];
 
   const handleAction = (action, id) => {
@@ -229,6 +229,7 @@ export default function Roles({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -236,7 +237,7 @@ export default function Roles({ title }) {
   };
 
   const handleOpenModal = () => {
-    ClearInput()
+    ClearInput();
     setEditMode(false);
     const currentModal = document.getElementById("notModal");
     if (currentModal) {
@@ -246,8 +247,8 @@ export default function Roles({ title }) {
   };
 
   const handleEdit = async (roleId) => {
-    ClearInput()
-    await getRoleByIdData(roleId); 
+    ClearInput();
+    await getRoleByIdData(roleId);
     setEditRoleId(roleId);
 
     const currentModal = document.getElementById("notModal");
@@ -371,7 +372,7 @@ export default function Roles({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>handleCancel("notModal")}
+                  onClick={() => handleCancel("notModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -430,7 +431,7 @@ export default function Roles({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={()=>handleCancel("notModal")}
+                handleCancel={() => handleCancel("notModal")}
                 isLoading={isLoading}
               />
               {isLoading && <span className="loader"></span>}

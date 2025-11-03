@@ -110,9 +110,9 @@ const ChangePassword = ({ title ,isForce = false}) => {
           if(userIsLoading === false){
             // สำหรับคนที่ยังไม่เปลี่ยนรหัสผ่าน
             if(isForce === true){
-              navigate("/");
+              navigate("/login");
             }else{
-              navigate("/changePassword");
+              navigate("/login");
             }
           }
         });
@@ -146,7 +146,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
           className="card h-100 shadow-sm card-hover card--soft mx-auto w-100 mt-5"
           style={{ maxWidth: 500 }}
         >
-          <div className="card-body d-flex flex-column justifyContent-center p-4">
+          <div className="card-body d-flex flex-column justify-content-center p-4">
             <div className="d-flex  mx-auto w-100 card-title">
               <i class="bi bi-shield-lock me-2"></i>
               <h5>เปลี่ยนรหัสผ่าน</h5>
@@ -277,7 +277,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
                     <p className="text-danger">{error.confirmPassword}</p>
                   ) : null}
                 </div>
-                <div className="d-flex flex-row mt-3 justifyContent-end">
+                <div className="d-flex flex-row mt-3 justify-content-end">
                   <button
                     className="btn btn-outline-primary bg-white me-3"
                     onClick={ClearInput}

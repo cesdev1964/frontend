@@ -222,8 +222,8 @@ export default function EmployeeTypes({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text:
-            employeeTypeErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
+
           icon: "error",
         });
       }

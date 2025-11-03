@@ -255,7 +255,6 @@ export default function Flows({ title }) {
     const errorList = { ...errorInput, ...errorStepInput };
     setError(errorList);
 
-
     // console.log("Error list", error);
     if (listItem.length === 0) {
       Swal.fire({
@@ -289,7 +288,7 @@ export default function Flows({ title }) {
       } else {
         Swal.fire({
           index: "บันทึกข้อมูลไม่สำเร็จ",
-          text: flowErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -555,7 +554,7 @@ export default function Flows({ title }) {
                       ))}
                       <button
                         className="btn btn-primary mt-2"
-                        onClick={(e)=>handleAddApproveStep(e)}
+                        onClick={(e) => handleAddApproveStep(e)}
                         disabled={listItem.length === 5}
                       >
                         <i className="bi bi-plus-circle fs-4"></i>

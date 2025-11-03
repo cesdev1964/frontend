@@ -1,7 +1,8 @@
 import React from "react";
 import { OTapproveStatusBadge } from "../../util/isActiveBadge.jsx";
+import { OTApproveEnum } from "../../enum/otApproveEnum.js";
 
-export default function OTcard({ status }) {
+export default function OTcard({ status, otType, reason }) {
   return (
     <div>
       <div className="OT-card-container">
@@ -14,18 +15,20 @@ export default function OTcard({ status }) {
             <div className="d-flex align-items-center gap-1">
               <OTapproveStatusBadge status={status} />
               <i class="bi bi-dot"></i>
-              <h5 className="">ประเภทโอทีที่ขอ</h5>
+              <h5 className="">{otType}</h5>
             </div>
           </a>
-          <a
-            style={{ cursor: "pointer", marginTop: 0 }}
-            // onClick={() => handleDeleteItem(item.stepNumber)}
-          >
-            <i
-              className="bi bi-trash-fill text-center text-danger fs-3"
-              title="ลบ"
-            ></i>
-          </a>
+          {status != OTApproveEnum.APPROVE && (
+            <a
+              style={{ cursor: "pointer", marginTop: 0 }}
+              // onClick={() => handleDeleteItem(item.stepNumber)}
+            >
+              <i
+                className="bi bi-trash-fill text-center text-danger fs-3"
+                title="ลบ"
+              ></i>
+            </a>
+          )}
         </div>
         <div className="border-top border-danger mb-4"></div>
         <div className="row g-3">
@@ -60,22 +63,24 @@ export default function OTcard({ status }) {
                   lineHeight: "1.5",
                 }}
               >
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Recusandae consectetur expedita aliquid id, facilis quis
-                molestias ab necessitatibus, cum, sequi voluptatem inventore
-                consequuntur numquam hic? Voluptas possimus similique nulla
-                quis.
+                {reason}
               </span>
             </p>
           </div>
         </div>
         <div className="border-top border-danger my-3"></div>
-        <div className="d-flex justify-content-end gap-3">
+        <div className="OT-footer mb-1">
           {/* <p className="OT-description-label">
               วันที่เริ่มขอโอที :{" "}
               <span className="OT-description-value">xx/xx/xxxx</span>
             </p> */}
           <p className="OT-description-label">
+            ผู้อนุมัติ :{" "}
+            <span className="OT-description-value">
+              กมลฉันท์ออออออออออออ วงศ์วัฒนxxxxxxxxxxxxxxxxx
+            </span>
+          </p>
+          <p className="OT-description-label" id="menter">
             วันที่ดำเนินการขอ :{" "}
             <span className="OT-description-value">xx/xx/xxxx</span>
           </p>

@@ -220,7 +220,7 @@ export default function Educations({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: educationErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีการบันทึกข้อมูลการศึกษานี้ในระบบแล้ว",
           icon: "error",
         });
       }

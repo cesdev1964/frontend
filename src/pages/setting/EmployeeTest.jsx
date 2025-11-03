@@ -154,8 +154,6 @@ const EmployeesTest = ({ title }) => {
     },
   ];
 
-  const handleEdit = () => {};
-
   return (
     <div>
       {/* Breadcrumb */}

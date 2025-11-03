@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { SubmitOrCancelButton } from "../../SubmitOrCancelBtnForModal";
 import { SearchDropdown } from "../../searchDropdown";
-import { useEmployee } from "../../../hooks/employeeStore";
 import { OTtimeOptions } from "../../../Data";
 import { useOTType } from "../../../hooks/otTypeStore";
-import { useAuth } from "../../../auth/AuthContext";
 
 export default function CreateOTmodal({
   input,
@@ -15,12 +13,11 @@ export default function CreateOTmodal({
   IsLoading,
   handleCancel,
   error,
+  handleClear
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
-  const { employeeById, getEmployeeById } = useEmployee();
   const [displayTime, setDisplayTime] = useState("");
-  const { authdata } = useAuth();
   //date
   const today = new Date();
   const tomorrow = new Date();
@@ -34,21 +31,18 @@ export default function CreateOTmodal({
     try {
       //   await getJobDropdown();
       await getOtTypeDropdown();
-      if (authdata.publicEmployeeId) {
-        await getEmployeeById(authdata.publicEmployeeId);
-      }
     } catch (error) {
       alert("โหลด API ไม่สำเร็จ", error);
     }
-  }, [getOtTypeDropdown, getEmployeeById]);
+  }, [getOtTypeDropdown]);
 
   useEffect(() => {
     fetchDataTable();
   }, [fetchDataTable]);
+
+
   useEffect(() => {
     setOtTimeList(OTtimeOptions);
-
-    if (!employeeById) return;
 
     if (!input.startTime || !input.endTime) {
       return;
@@ -61,11 +55,11 @@ export default function CreateOTmodal({
     setInput((prev) => ({
       ...prev,
       totalMinutes: totalMin,
-      jobId: employeeById?.employee?.jobId,
     }));
 
     setDisplayTime(display);
-  }, [input.startTime, input.endTime, employeeById]);
+  }, [input.startTime, input.endTime]);
+
 
   const calculateOTTime = (starttime, endtime) => {
     if (

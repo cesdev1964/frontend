@@ -1,4 +1,4 @@
-import React, {useRef } from "react";
+import React, { useRef } from "react";
 import { useEffect } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
@@ -7,10 +7,10 @@ import Swal from "sweetalert2";
 import { useTitltName } from "../../hooks/titleNameStore";
 import { NameTitleModal } from "../../components/modal/setting/nameTitleModal";
 import DataTableComponent from "../../components/DatatableComponent";
-import * as bootstrap from 'bootstrap';  
+import * as bootstrap from "bootstrap";
 import { Link } from "react-router-dom";
 import handleDelete from "../../util/handleDelete";
-window.bootstrap = bootstrap;   
+window.bootstrap = bootstrap;
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -37,7 +37,7 @@ export default function NameTitle({ title }) {
   } = useTitltName();
   const [editMode, setEditMode] = useState(false);
   const [editTitleId, setEditTitleId] = useState(null);
-  
+
   const [input, setInput] = useState({
     titleNameTH: "",
     titleNameEng: "",
@@ -60,7 +60,7 @@ export default function NameTitle({ title }) {
       }
     };
     fetchDataTable();
-    setEditMode(false)
+    setEditMode(false);
   }, [getTitleNameData]);
 
   useEffect(() => {
@@ -152,8 +152,8 @@ export default function NameTitle({ title }) {
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
     { width: "150px", targets: 1 },
-    { width: "150px", targets: 2},
-     { width: "100px", targets: 3, className: "text-center" },
+    { width: "150px", targets: 2 },
+    { width: "100px", targets: 3, className: "text-center" },
   ];
 
   const handleAction = (action, id) => {
@@ -162,7 +162,11 @@ export default function NameTitle({ title }) {
       handleEdit(id);
     } else if (action === "delete") {
       console.log("Delete:", id);
-      handleDelete(titleIsLoading,()=>deleteTitle(id),()=>getTitleNameData())
+      handleDelete(
+        titleIsLoading,
+        () => deleteTitle(id),
+        () => getTitleNameData()
+      );
     }
   };
 
@@ -186,15 +190,15 @@ export default function NameTitle({ title }) {
     }
     return errors;
   };
- 
-   const handleOpenModal = ()=>{
+
+  const handleOpenModal = () => {
     setEditMode(false);
     const currentModal = document.getElementById("notModal");
     if (currentModal) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -230,6 +234,7 @@ export default function NameTitle({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: "มีการบันทึกข้อมูลคำนำหน้านี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -259,7 +264,6 @@ export default function NameTitle({ title }) {
     });
     setError({});
     setEditMode(false);
-
   };
 
   return (
@@ -289,25 +293,25 @@ export default function NameTitle({ title }) {
           </button>
         </div>
         {/* ตารางข้อมูล */}
-          <DataTableComponent
-            column={columnData}
-            data={titleData}
-            onAction={handleAction}
-            tableHead={tableHead}
-            tableRef={tableRef}
-            columnDefs={columnDefs}
-          />
+        <DataTableComponent
+          column={columnData}
+          data={titleData}
+          onAction={handleAction}
+          tableHead={tableHead}
+          tableRef={tableRef}
+          columnDefs={columnDefs}
+        />
 
         {/* modal */}
-           <NameTitleModal
-             ClearInput={ClearInput}
-             IsLoading={titleIsLoading}
-             error={error}
-             handleChangeInput={handleChangeInput}
-             handleSubmit={handleSubmit}
-             input={input}
-             title={title}
-           />
+        <NameTitleModal
+          ClearInput={ClearInput}
+          IsLoading={titleIsLoading}
+          error={error}
+          handleChangeInput={handleChangeInput}
+          handleSubmit={handleSubmit}
+          input={input}
+          title={title}
+        />
       </div>
     </div>
   );

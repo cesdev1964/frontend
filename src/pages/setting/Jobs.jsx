@@ -120,9 +120,9 @@ export default function Jobs({ title }) {
     },
     {
       data: null,
-      title : "ชื่อหน่วยงาน",
+      title: "ชื่อหน่วยงาน",
       render: function (data, type, row, meta) {
-        return row.jobName+" "+row.jobName2;
+        return row.jobName + " " + row.jobName2;
       },
     },
     {
@@ -194,7 +194,11 @@ export default function Jobs({ title }) {
     if (action === "edit") {
       handleEdit(id, "jobModal");
     } else if (action === "delete") {
-      handleDelete(jobIsLoading,()=> deleteJob(id),()=> getJobData());
+      handleDelete(
+        jobIsLoading,
+        () => deleteJob(id),
+        () => getJobData()
+      );
     }
   };
 
@@ -254,8 +258,8 @@ export default function Jobs({ title }) {
         await getJobData();
       } else {
         Swal.fire({
-          title : "บันทึกข้อมูลไม่สำเร็จ",
-          text: jobErrorMessage,
+          title: "บันทึกข้อมูลไม่สำเร็จ",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -274,7 +278,7 @@ export default function Jobs({ title }) {
       jobno: "",
     });
     setError({});
-    setEditMode(false)
+    setEditMode(false);
   };
 
   return (
@@ -304,7 +308,7 @@ export default function Jobs({ title }) {
             <span className="label">{addBtnName}</span>
           </a>
         </div>
-   
+
         <DataTableComponent
           column={columns}
           data={jobData}
@@ -336,7 +340,7 @@ export default function Jobs({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>handleCancel("jobModal")}
+                  onClick={() => handleCancel("jobModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -460,7 +464,7 @@ export default function Jobs({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={()=>handleCancel("jobModal")}
+                handleCancel={() => handleCancel("jobModal")}
                 isLoading={jobIsLoading}
               />
             </div>

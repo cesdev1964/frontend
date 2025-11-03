@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
 import Swal from "sweetalert2";
@@ -41,6 +41,7 @@ export default function Users({ title }) {
     getUserByIdData,
     userById,
     updateUser,
+    resetPassword,
   } = useUser();
   const [input, setInput] = useState({
     titleId: 0,
@@ -102,7 +103,6 @@ export default function Users({ title }) {
     fetchDataTable();
   }, [fetchDataTable]);
 
-
   //ใส่ใน input ของ edit mode
   useEffect(() => {
     if (userById) {
@@ -119,11 +119,11 @@ export default function Users({ title }) {
   }, [userById]);
 
   const columnDefs = [
-    { width: "70px", targets: 0 , className: "text-center"  },
+    { width: "70px", targets: 0, className: "text-center" },
     { width: "70px", targets: 1 },
     { width: "200px", targets: 2 },
     { width: "100px", targets: 3 },
-    { width: "120px", targets: 4 , className: "text-center"  },
+    { width: "120px", targets: 4, className: "text-center" },
   ];
 
   const columns = [
@@ -170,6 +170,14 @@ export default function Users({ title }) {
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
+               <li>
+                <a class="dropdown-item text-dark btn-permission" 
+                   data-id="${row.userId}"
+                   data-action="reset"
+                   >
+                  <i class="bi bi-person-fill-lock me-2"></i>reset password
+                </a>
+              </li>
               <li>
                 <a class="dropdown-item text-dark btn-delete" data--id="${row.userId}" data-action="delete">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
@@ -186,6 +194,14 @@ export default function Users({ title }) {
               data-action="edit"
             >
               <i class="bi bi-pen-fill"></i>
+            </a>
+            <a
+              class="btn btn-info me-2 btn-permission"
+              title="reset password"
+              data-id="${row.userId}"
+               data-action="reset"
+            >
+              <i class="bi bi-person-fill-lock"></i>
             </a>
             <a
               
@@ -213,11 +229,19 @@ export default function Users({ title }) {
     }
   };
 
-  const handleAction = (action, id) => {
+  const handleAction = async (action, id) => {
     if (action === "edit") {
       handleEdit(id, "addModal");
     } else if (action === "delete") {
-      handleDelete(userIsLoading,()=>deleteUser(id),()=>getUserData())
+      handleDelete(
+        userIsLoading,
+        () => deleteUser(id),
+        () => getUserData()
+      );
+    } else if (action === "reset") {
+     const {userById} =  await getUserByIdData(id);
+      // console.log("userData",userById);
+      handleResetPassword(id, userById.username);
     }
   };
 
@@ -333,7 +357,7 @@ export default function Users({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: userError,
+          text: "มีผู้ใช้นี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -352,6 +376,56 @@ export default function Users({ title }) {
       modal.show();
       setEditMode(true);
     }
+  };
+
+  const handleResetPassword = async (userId, userName) => {
+    setEditMode(false);
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการ reset password ใช่หรือไม่",
+        text: "คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ใช่",
+        cancelButtonText: "ยกเลิก",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await resetPassword(userId);
+          if (response.success) {
+            swalWithBootstrapButtons.fire({
+              title: "reset password สำเร็จ!",
+              text: `คุณทำการ reset password ของคุณ ${
+                userName ?? "ไม่พบชื่อผู้ใช้"
+              } รายการเรียบร้อยแล้ว`,
+              icon: "success",
+            });
+            await getUserData();
+          } else {
+            Swal.fire({
+              title: `เกิดข้อผิดผลาดในการ reset password ของคุณ ${
+                userName ?? "ไม่พบชื่อผู้ใช้"
+              } กรุณาลองใหม่อีกครั้ง`,
+              icon: "error",
+            });
+          }
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire({
+            title: "ยกเลิก",
+            text: "คุณทำการยกเลิกการ reset password เรียบร้อยแล้ว",
+            icon: "error",
+          });
+        }
+      });
   };
 
   return (
@@ -416,7 +490,7 @@ export default function Users({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>handleCancel("addModal")}
+                  onClick={() => handleCancel("addModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -536,7 +610,7 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
-                        <label  className="form-label">
+                        <label className="form-label">
                           รหัสผ่าน
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -610,7 +684,7 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex my-3 gap-2  flex-wrap">
-                        {input.roles?.map((item,index) => (
+                        {input.roles?.map((item, index) => (
                           <div
                             className="border border-danger p-1 pe-0 rounded-3 bg-light ps-2"
                             style={{ fontSize: "0.9rem" }}
@@ -635,7 +709,7 @@ export default function Users({ title }) {
               </div>
 
               <SubmitOrCancelButton
-                handleCancel={()=>handleCancel("addModal")}
+                handleCancel={() => handleCancel("addModal")}
                 handleSubmit={handleSubmit}
                 isLoading={userIsLoading}
               />

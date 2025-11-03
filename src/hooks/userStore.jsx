@@ -117,6 +117,23 @@ export const useUser = create((set) => ({
       };
     }
   },
+
+   resetPassword: async (userId) => {
+    set({ userIsLoading: true, userError: null });
+    try {
+      const response = await api.put(`/api/users/reset-password/${userId}`);
+      return {
+        userIsLoading: false,
+        success: response.data.success,
+      };
+    } catch (error) {
+      set({ userError: error.response.data.message, userIsLoading: false });
+      return {
+        success: false,
+        userError: error?.response?.data?.message,
+      };
+    }
+  },
   //   ทำ update พรุ่งนี้
   updateUser: async (requestData, userId) => {
     set({ userIsLoading: true, userError: null });

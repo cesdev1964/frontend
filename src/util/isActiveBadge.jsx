@@ -1,3 +1,5 @@
+import { OTApproveEnum } from "../enum/otApproveEnum";
+
 export default function IsActiveBadgeReact({ status }) {
   switch (status) {
     case false:
@@ -11,7 +13,7 @@ export default function IsActiveBadgeReact({ status }) {
   }
 }
 
-export function IsEmployeeStatusBadge({ status }) {
+export  function IsEmployeeStatusBadge({ status }) {
   console.log("value in badge", status);
   const isNumber = parseInt(status);
   switch (isNumber) {
@@ -25,23 +27,22 @@ export function IsEmployeeStatusBadge({ status }) {
 }
 
 export function OTapproveStatusBadge({ status }) {
-  const isNumber = parseInt(status);
-  switch (isNumber) {
-    case 0:
+  switch (status) {
+    case OTApproveEnum.PENDING:
       return (
         <span className="badge-style">
           <i class="bi bi-hourglass-split me-2 text-warning"></i>{" "}
           <strong className="text-primary">รออนุมัติ</strong>
         </span>
       );
-    case 1:
+    case OTApproveEnum.APPROVE:
       return (
         <span className="badge-style">
           <i class="bi bi-patch-check-fill me-2 text-success"></i>{" "}
           <strong className="text-primary">อนุมัติแล้ว</strong>
         </span>
       );
-    case 2:
+    case OTApproveEnum.REJECT:
       return (
         <span className="badge-style">
           <i class="bi bi-x-circle-fill me-2 text-danger"></i>{" "}

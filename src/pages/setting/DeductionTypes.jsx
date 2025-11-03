@@ -215,7 +215,7 @@ export default function DeductionTypes({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: deductionErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -287,7 +287,7 @@ export default function DeductionTypes({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>handleCancel("deductionModal")}
+                  onClick={() => handleCancel("deductionModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -350,7 +350,7 @@ export default function DeductionTypes({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={()=>handleCancel("deductionModal")}
+                handleCancel={() => handleCancel("deductionModal")}
               />
             </div>
           </div>

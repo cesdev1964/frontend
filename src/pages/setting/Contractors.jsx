@@ -218,7 +218,7 @@ export default function Contrators({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: contratorErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -289,7 +289,7 @@ export default function Contrators({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={()=>handleCancel("notModal")}
+                  onClick={() => handleCancel("notModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -353,7 +353,7 @@ export default function Contrators({ title }) {
               </div>
               <SubmitOrCancelButton
                 handleSubmit={handleSubmit}
-                handleCancel={()=>handleCancel("notModal")}
+                handleCancel={() => handleCancel("notModal")}
                 isLoading={contratorIsLoading}
               />
             </div>

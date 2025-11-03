@@ -186,8 +186,8 @@ export default function Levels({ title }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const reqData = {
-      levelName : input.levelname ?? ""
-    }
+      levelName: input.levelname ?? "",
+    };
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
@@ -211,7 +211,7 @@ export default function Levels({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: levelErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: "มีข้อมูลนี้ในระบบแล้ว",
           icon: "error",
         });
       }
@@ -267,7 +267,7 @@ export default function Levels({ title }) {
           columnDefs={columnDefs}
           isLoading={levelIsLoading}
         />
-        
+
         {/* modal */}
         <div
           className="modal fade"

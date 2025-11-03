@@ -8,10 +8,8 @@ import WorkingSummary from "../src/pages/WorkingSummary";
 import ChangePassword from "../src/pages/ChangePassword";
 import Settings from "../src/pages/Setting";
 import { useRoutes } from "react-router-dom";
-import Employees from "./pages/setting/Employees";
 import NameTitle from "./pages/setting/NameTitle";
 import TestComponent from "./pages/TestComponent";
-import OT from "./pages/OT";
 import Users from "./pages/setting/Users";
 import Educations from "./pages/setting/Educations";
 import Jobs from "./pages/setting/Jobs";
@@ -30,6 +28,7 @@ import Profile from "./pages/Profile";
 import EmployeeForm from "./pages/setting/EmployeeForm";
 import EmployeesTest from "./pages/setting/EmployeeTest";
 import CheckChangePassword from "./auth/CheckChangePassword";
+import OTRequest from "./pages/OTRequest";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -56,7 +55,7 @@ export default function RouterPage() {
         },
         {
           path: "working/OT",
-          element: <OT title="บันทึกโอที" />,
+          element: <OTRequest title="บันทึกโอที" />,
         },
         {
           path: "forchChangePassword",

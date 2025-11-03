@@ -7,7 +7,7 @@ export const useOTrequest = create((set) => ({
   otIsLoading: false,
   otErrorMessage: null,
   success: false,
-  otById: {},
+  otById: [],
 
   getOTrequestData: async () => {
     set({ otIsLoading: true, otErrorMessage: null });
@@ -34,11 +34,11 @@ export const useOTrequest = create((set) => ({
       const response = await api.get(`${url}/${OTid}`);
         // console.log("emp data", response.data.data);
       set({
-        otById: response.data.data ?? {},
+        otById: response.data.data ?? [],
         otIsLoading: false,
       });
       return {
-        otById: response.data.data ?? {},
+        otById: response.data.data ?? [],
         otIsLoading: false,
       };
     } catch (errorMessage) {

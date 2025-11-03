@@ -4,10 +4,8 @@ import EmployeeCard from "../components/home/EmployeeCard";
 import AnnouncementCard from "../components/home/AnnouncementCard";
 
 
-
 export default function Home({ title }) {
   useTitle(title);
-
 
   return (
     <div>
