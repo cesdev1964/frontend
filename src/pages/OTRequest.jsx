@@ -9,17 +9,16 @@ import { handleCancel } from "../util/handleCloseModal";
 import { useEmployee } from "../hooks/employeeStore";
 import { useOTrequest } from "../hooks/otRequestStore";
 import CreateOTmodal from "../components/modal/OT/createOTmodal";
-import { OTApproveEnum } from "../enum/otApproveEnum";
 import Pagination from "../components/Pagination";
 import { mockOTreq } from "../MockData";
 
 export default function OTRequest({ title }) {
   useTitle(title);
   const { authdata } = useAuth();
-  const [OTdata, setOTData] = useState([]);
   const [error, setError] = useState({});
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [displayTime, setDisplayTime] = useState("");
   const currentDate = new Date().toISOString().split("T")[0];
   const [input, setInput] = useState({
     startDate: currentDate,
@@ -34,45 +33,13 @@ export default function OTRequest({ title }) {
     reason: "",
   });
   const { employeeById, getEmployeeById } = useEmployee();
-  const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
-  const [displayTime, setDisplayTime] = useState("");
-  const {
-    createOTrequest,
-    getOTrequestData,
-    otData,
-    otErrorMessage,
-    otIsLoading,
-    success,
-  } = useOTrequest();
-  
-  
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const { createOTrequest, getOTrequestData, otIsLoading } = useOTrequest();
+
   // กำหนดวันบนปฏิทิน
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
-  
-  const dataOnly = (date) => {
-    return date.toISOString().split("T")[0];
-  };
-  
-  //เกี่ยวกับ pagination
-  const [currentPage, setcurrentPage] = useState(1);
-  const pages = 10; //ตามจำนวนควมเยอะของข้อมูล
-  const itemPerPage = 6;
-  const totalData = OTdata.length;
-
-  const onPageChange = useCallback(
-    (e,page)=>{
-      e.preventDefault();
-      setcurrentPage(page);
-    },[currentPage]
-  )
-
-  const currentData = OTdata.slice(
-    (currentPage-1)*itemPerPage,
-    (currentPage-1)*(itemPerPage*2),
-  )
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -80,14 +47,23 @@ export default function OTRequest({ title }) {
     }
   }, [error, isSubmit]);
 
-  useEffect(() => {
-    if(mockOTreq){
-      setOTData(mockOTreq)
-    }
-  }, [mockOTreq,currentPage]);
+  //เกี่ยวกับ pagination
+  let NUM_OF_RECORDS = mockOTreq.length;
+  let LIMIT = 5;
 
+  const onPageChanged = useCallback(
+    (event, page) => {
+      event.preventDefault();
+      setCurrentPage(page);
+    },
+    [setCurrentPage]
+  );
+  const currentData = mockOTreq.slice(
+    (currentPage - 1) * LIMIT,
+    (currentPage - 1) * LIMIT + LIMIT
+  );
 
-  const handleChangeCheckbox = () => {
+  const handleChangeAccordian = () => {
     setOnClickAccordian((prev) => !prev);
   };
 
@@ -123,9 +99,6 @@ export default function OTRequest({ title }) {
     if (!input.endTime) {
       errors.endTime = "กรุณาเลือกเวลาสิ้นสุด";
     }
-    // if (!input.jobId || input.jobId === "" || input.jobId === null) {
-    //   errors.jobId = "กรุณาเลือกหน่วยงาน";
-    // }
     if (!input.otTypeId || input.otTypeId === "" || input.otTypeId === null) {
       errors.otTypeId = "กรุณาเลือกประเภทโอที";
     }
@@ -140,6 +113,21 @@ export default function OTRequest({ title }) {
       errors.endTime = "กรุณาเลือกเวลาสิ้นสุดโอที";
     }
     return errors;
+  };
+
+  const compareDate = (startDateInput, endDateInput) => {
+    const startDate = new Date(startDateInput).toISOString().split("T")[0];
+    const endDate = new Date(endDateInput).toISOString().split("T")[0];
+
+    //  แยกเป็น วัน เดือน ปี แล้วค่อยเอามาบวกกัน จากนั้นก็ค่อยเปรียบเทียบ
+    var [startYear, startMonth, startDay] = startDate.split("-").map(Number);
+    var [endYear, endMonth, endDay] = endDate.split("-").map(Number);
+
+    var startSum = startYear + startMonth + startDay;
+    var endSum = endYear + endMonth + endDay;
+
+    if (endSum < startSum) return true;
+    else return false;
   };
 
   const handleSubmit = async (e) => {
@@ -157,6 +145,15 @@ export default function OTRequest({ title }) {
       reason: input.reason,
     };
     e.preventDefault();
+
+    if (compareDate(input.startDate, input.endDate)) {
+      Swal.fire({
+        title: "กรุณาเลือกวันที่ใหม่ค่ะ/ครับ",
+        text: "วันที่เริ่ม ควรน้อยกว่า วันที่สิ้นสุด",
+        icon: "error",
+      });
+      return;
+    }
 
     const errorList = validateForm(input) || [];
     setError(errorList);
@@ -213,20 +210,7 @@ export default function OTRequest({ title }) {
       jobId: null,
       reason: "",
     });
-  };
-
-  // ตรวจสอบวันที่เลือก > วันปัจจบันไหม ถ้าใช่ ให้เวลาได้หมด ถ้าไม่ ให้เลือกเฉพาะเวลาในวันปัจจุบัน
-  const checkIsNextDay = (datetime, OTtimeOptions) => {
-    const today = new Date();
-    const inputDate = new Date(datetime);
-    if (inputDate > today) {
-      return setOtTimeList(otTimeList);
-    } else {
-      setOtTimeList((prev) => ({
-        ...prev,
-        otEnd: OTtimeOptions.otEnd.filter((item) => item.timeType !== 1),
-      }));
-    }
+    setDisplayTime("")
   };
 
   const finishSubmit = () => {
@@ -285,7 +269,7 @@ export default function OTRequest({ title }) {
                 className="accordion-trigger-input"
                 type="checkbox"
                 checked={onClickAccordian === true}
-                onChange={handleChangeCheckbox}
+                onChange={handleChangeAccordian}
               ></input>
               <label
                 className="accordion-trigger accordion-label"
@@ -299,23 +283,28 @@ export default function OTRequest({ title }) {
                   <div className="accordion-transform-wrapper">
                     <div className="accordion-content">
                       <div className="ot-container">
-                        {OTdata.length === 0 ? (
+                        {mockOTreq.length === 0 ? (
                           <div className="d-flex flex-column align-items-center justify-content-center p-4">
                             <i
                               className="bi bi-hourglass-split mb-2 text-danger"
                               style={{ fontSize: "60px" }}
                             ></i>
                             <h4 className="text-danger">ไม่พบการขอโอที</h4>
-
                           </div>
-                       
                         ) : (
                           <>
-                          {/* เอาสัก 6 รายการต่อหน้า */}
-                            {OTdata.map((item,index)=>{
-                              return(
-                                <OTcard status={item.status} otType={item.OTheader} reason={item.reson} key={index}/>
-                              )
+                            {/* เอาสัก 6 รายการต่อหน้า */}
+                            {currentData.map((item, index) => {
+                              return (
+                                <>
+                                  <OTcard
+                                    status={item.status}
+                                    otType={item.OTheader}
+                                    reason={item.reson}
+                                    key={index}
+                                  />
+                                </>
+                              );
                             })}
                           </>
                         )}
@@ -327,15 +316,15 @@ export default function OTRequest({ title }) {
             </div>
           </div>
         </div>
-        {/* <Pagination
-          page={currentPage}
-          setPage={setcurrentPage}
-          hasNextPage={currentPage < pages} 
-          pages={pages} //กำหนดจำนวนหน้าเอง
-          onPageChange={onPageChange}
-          totalData={totalData} //จำนวนข้อมูลทั้งหมด
-          limitItem={itemPerPage} // 1 หน้ามีกี่  item
-        /> */}
+        <div className="pagination-wrapper">
+          <Pagination
+            totalRecords={NUM_OF_RECORDS}
+            pageLimit={LIMIT}
+            pageNeighbours={2}
+            onPageChanged={onPageChanged}
+            currentPage={currentPage}
+          />
+        </div>
       </div>
 
       {/* modal add */}
@@ -350,6 +339,8 @@ export default function OTRequest({ title }) {
         input={input}
         setInput={setInput}
         IsLoading={otIsLoading}
+        displayTime={displayTime}
+        setDisplayTime={setDisplayTime}
       />
     </div>
   );

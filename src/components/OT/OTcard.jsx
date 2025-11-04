@@ -1,4 +1,4 @@
-import React from "react";
+
 import { OTapproveStatusBadge } from "../../util/isActiveBadge.jsx";
 import { OTApproveEnum } from "../../enum/otApproveEnum.js";
 
@@ -7,17 +7,12 @@ export default function OTcard({ status, otType, reason }) {
     <div>
       <div className="OT-card-container">
         <div className="d-flex align-items-center justify-content-between">
-          <a
-            style={{ cursor: "pointer" }}
-            data-bs-toggle="tooltip"
-            title="คลิกดูสายอนุมัติ"
-          >
-            <div className="d-flex align-items-center gap-1">
-              <OTapproveStatusBadge status={status} />
-              <i class="bi bi-dot"></i>
-              <h5 className="">{otType}</h5>
-            </div>
-          </a>
+          <div className="d-flex align-items-center gap-1">
+            <OTapproveStatusBadge status={status} />
+            <i class="bi bi-dot"></i>
+            <h5 className="">{otType}</h5>
+          </div>
+
           {status != OTApproveEnum.APPROVE && (
             <a
               style={{ cursor: "pointer", marginTop: 0 }}

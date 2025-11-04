@@ -13,11 +13,12 @@ export default function CreateOTmodal({
   IsLoading,
   handleCancel,
   error,
-  handleClear
+  displayTime,
+  setDisplayTime
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
-  const [displayTime, setDisplayTime] = useState("");
+  // const [displayTime, setDisplayTime] = useState("");
   //date
   const today = new Date();
   const tomorrow = new Date();
@@ -40,7 +41,6 @@ export default function CreateOTmodal({
     fetchDataTable();
   }, [fetchDataTable]);
 
-
   useEffect(() => {
     setOtTimeList(OTtimeOptions);
 
@@ -59,7 +59,6 @@ export default function CreateOTmodal({
 
     setDisplayTime(display);
   }, [input.startTime, input.endTime]);
-
 
   const calculateOTTime = (starttime, endtime) => {
     if (
@@ -254,11 +253,25 @@ export default function CreateOTmodal({
                   value={input.endTime || ""}
                 >
                   <option value="">เลือกเวลา</option>
-                  {otTimeList.otEnd?.map((item, index) => (
-                    <option value={item.time} key={index}>
-                      {item.time}
-                    </option>
-                  ))}
+                  {input.startDate === input.endDate ? (
+                    <>
+                      {otTimeList.otEnd
+                        ?.filter((item) => item.timeType === 0)
+                        .map((item, index) => (
+                          <option value={item.time} key={index}>
+                            {item.time}
+                          </option>
+                        ))}
+                    </>
+                  ) : (
+                    <>
+                      {otTimeList.otEnd?.map((item, index) => (
+                        <option value={item.time} key={index}>
+                          {item.time}
+                        </option>
+                      ))}
+                    </>
+                  )}
                 </select>
                 {error.endTime ? (
                   <p className="text-danger">{error.endTime}</p>
@@ -275,7 +288,6 @@ export default function CreateOTmodal({
                     className="px-3 py-2 bg-danger text-dark fw-bold rounded fs-4"
                     style={{ minWidth: "70px", textAlign: "center" }}
                   >
-                    {/* {input.startTime && input.endTime?calTimeToMinute(input.startTime, input.endTime):"-"} */}
                     {displayTime ?? "-"}
                     {/* {input.totalMinutes} */}
                   </div>
