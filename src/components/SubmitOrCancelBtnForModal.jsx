@@ -6,9 +6,6 @@ import LoadingSpin from "./loadingSpin";
 export const SubmitOrCancelButton = ({ handleSubmit, handleCancel,isLoading = false }) => {
   return (
     <>
-      {isLoading&&
-       <LoadingSpin/>
-        }
       <div className="d-flex flex-column align-items-center mb-4">
         <div className="d-flex gap-2 w-75">
           <button

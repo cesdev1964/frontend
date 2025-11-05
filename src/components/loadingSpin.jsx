@@ -4,7 +4,7 @@ export default function LoadingSpin() {
     //   <span className="loader"></span>
     // </div>
      <>
-            <div className="d-flex align-items-center justify-content-center">
+            <div className="d-flex align-items-center justify-content-center" style={{position:"absolute", top:"30%" ,left:"50%"}}>
               <div
                 className="spinner-border text-danger"
                 role="status"

@@ -186,7 +186,7 @@ export default function OTCategories({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
     const reqData = {
       otTypeCode: input.OTtypecode,
@@ -197,29 +197,54 @@ export default function OTCategories({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const {otTypeErrorMessage,success} = editMode
-        ? await updateOtType(reqData, getId)
-        : await createOtType(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { otTypeErrorMessage, success } = editMode
+              ? await updateOtType(reqData, getId)
+              : await createOtType(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              await getOtTypeData();
+              ClearInput();
+              await getUserData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: otTypeErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-        await getOtTypeData();
-        const currentModal = document.getElementById("OTModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: otTypeErrorMessage,
-          icon: "error",
-        });
-      }
     }
   };
 
@@ -328,7 +353,7 @@ export default function OTCategories({ title }) {
                         </div>
                         <div className="row form-spacing g-3">
                           <div className="col-12">
-                             <InputTextField
+                            <InputTextField
                               onChange={handleChangeInput}
                               isRequire={true}
                               label="ชื่อโอที"
@@ -355,7 +380,6 @@ export default function OTCategories({ title }) {
                             {error.OTtypename ? (
                               <p className="text-danger">{error.OTtypename}</p>
                             ) : null} */}
-
                           </div>
                           <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
@@ -378,7 +402,7 @@ export default function OTCategories({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
+                handleSubmit={(e) => handleSubmit(e, "OTModal")}
                 handleCancel={() => handleCancel("OTModal")}
               />
             </div>

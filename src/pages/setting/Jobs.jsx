@@ -22,15 +22,10 @@ export const tableHead = [
   { index: 3, colName: "เปิดใช้งาน" },
   { index: 4, colName: "การจัดการ" },
 ];
-export const mockeTitletableData = [
-  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
-  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
-  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
-];
+
 export default function Jobs({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลหน่วยงาน");
@@ -51,7 +46,6 @@ export default function Jobs({ title }) {
     createJob,
     deleteJob,
     updateJob,
-    jobErrorMessage,
   } = useJob();
 
   const handleChangeInput = (e) => {
@@ -226,7 +220,7 @@ export default function Jobs({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e,modalId) => {
     e.preventDefault();
 
     const reqData = {
@@ -239,30 +233,55 @@ export default function Jobs({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const {jobErrorMessage,success} = editmode
-        ? await updateJob(reqData, getId)
-        : await createJob(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
-        });
 
-        const currentModal = document.getElementById("jobModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        await getJobData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: jobErrorMessage,
-          icon: "error",
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { jobErrorMessage, success } = editmode
+              ? await updateJob(reqData, getId)
+              : await createJob(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              ClearInput();
+              await getJobData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text:jobErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-      }
     }
   };
 
@@ -463,7 +482,7 @@ export default function Jobs({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
+                handleSubmit={(e)=>handleSubmit(e,"jobModal")}
                 handleCancel={() => handleCancel("jobModal")}
                 isLoading={jobIsLoading}
               />

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useLevel } from "../../hooks/levelStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import handleDelete from "../../util/handleDelete";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -152,7 +153,7 @@ export default function Levels({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      handleEdit(id, "notModal");
+      handleEdit(id, "levelModal");
     } else if (action === "delete") {
       handleDelete(
         levelIsLoading,
@@ -179,42 +180,70 @@ export default function Levels({ title }) {
     let errors = {};
     if (!input.levelname) {
       errors.levelname = "กรุณากรอกระดับในองค์กร";
+    }else if(!editmode){
+      if (input.levelname <= 0) {
+        errors.levelname = "กรุณากรอกระดับให้มากกว่า 0";
+      }
     }
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
     const reqData = {
-      levelName: input.levelname ?? "",
+      levelName: editmode ? input.levelname : `PC-${input.levelname}`,
     };
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const {levelErrorMessage,success} = editmode
-        ? await updateLevel(reqData, getId)
-        : await createLevel(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
-        });
+      
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { levelErrorMessage, success } = editmode
+              ? await updateLevel(reqData, getId)
+              : await createLevel(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
 
-        const currentModal = document.getElementById("notModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        getLevelData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: levelErrorMessage,
-          icon: "error",
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              ClearInput();
+              await getLevelData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: levelErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-      }
     }
   };
 
@@ -245,18 +274,24 @@ export default function Levels({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
+        {/* <div className="add-btn">
           <a
             className="power py-2"
             style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("notModal")}
+            onClick={() => handleOpenModal("levelModal")}
           >
             <span>
               <i class="bi bi-plus-circle fs-4"></i>
             </span>{" "}
             <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+          </a> */}
+
+        <MainButton
+          btnName={addBtnName}
+          icon={"bi bi-plus-circle"}
+          onClick={() => handleOpenModal("levelModal")}
+        />
+        {/* </div> */}
 
         <DataTableComponent
           column={columns}
@@ -271,7 +306,7 @@ export default function Levels({ title }) {
         {/* modal */}
         <div
           className="modal fade"
-          id="notModal"
+          id="levelModal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -293,47 +328,47 @@ export default function Levels({ title }) {
               </div>
               <div class="modal-body">
                 <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
                   <div
-                    className="col-lg-9 "
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                      width: "250px",
                     }}
                   >
                     <form>
                       {/* ข้อมูลทั่วไป */}
                       <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label htmlFor="StartDate" class="form-label">
-                              ระดับในองค์กร
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="levelname"
-                              type="text"
-                              className={`form-control ${
-                                error.levelname ? "border border-danger" : ""
-                              }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อระดับ"
-                              value={input.levelname}
-                              onChange={handleChangeInput}
-                            />
-                            {error.levelname ? (
-                              <p className="text-danger">{error.levelname}</p>
-                            ) : null}
-                          </div>
+                        <label class="form-label">
+                          ระดับในองค์กร
+                          <span style={{ color: "red" }}>*</span>
+                        </label>
+                        <div className="input-group">
+                          {!editmode && (
+                            <span className="input-group-text">PC -</span>
+                          )}
+                          <input
+                            name="levelname"
+                            type={editmode ? "text" : "number"}
+                            className={`form-control ${
+                              error.levelname ? "border border-danger" : ""
+                            }`}
+                            id="educationname"
+                            placeholder="กรอกระดับ"
+                            value={input.levelname}
+                            onChange={handleChangeInput}
+                          />
                         </div>
+                        {error.levelname ? (
+                          <p className="text-danger">{error.levelname}</p>
+                        ) : null}
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
+                handleSubmit={(e) => handleSubmit(e, "levelModal")}
                 handleCancel={ClearInput}
                 isLoading={levelIsLoading}
               />

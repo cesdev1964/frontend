@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useEducation } from "../../hooks/educationStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import handleDelete from "../../util/handleDelete";
+import handleSubmitAlertModal from "../../util/handleSubmitAlertModal";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -151,7 +152,11 @@ export default function Educations({ title }) {
       handleEdit(id, "educationmodal");
     } else if (action === "delete") {
       // handleDelete(id);
-      handleDelete(educationIsLoading,()=>deleteEducation(id),()=>h=getEducationData())
+      handleDelete(
+        educationIsLoading,
+        () => deleteEducation(id),
+        () => getEducationData()
+      );
     }
   };
 
@@ -190,7 +195,6 @@ export default function Educations({ title }) {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -199,36 +203,27 @@ export default function Educations({ title }) {
     };
     const errorList = validateForm(input) || [];
     setError(errorList);
-    console.log("error list", error);
+    // console.log("error list", error);
     if (Object.keys(errorList).length === 0) {
-      const {educationErrorMessage,success}= editMode
-        ? await updateEducation(reqData, getId)
-        : await createEducation(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
-        });
-        const currentModal = document.getElementById("educationmodal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        await getEducationData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: educationErrorMessage,
-          icon: "error",
-        });
-      }
+
+      const handleSentAPI = async () => {
+        const { educationErrorMessage, success } = editMode
+          ? await updateEducation(reqData, getId)
+          : await createEducation(reqData);
+        return { success: success, errorMassage: educationErrorMessage };
+      };
+
+     handleSubmitAlertModal({
+        ClearInput,
+        handleFetchData: getEducationData,
+        handleSentAPI,
+        modalId: "educationmodal",
+      });
     }
   };
 
   const finishSubmit = () => {
-    console.log("submit data", input);
+    // console.log("submit data", input);
   };
 
   const ClearInput = () => {
@@ -316,7 +311,7 @@ export default function Educations({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label  class="form-label">
+                            <label class="form-label">
                               ระดับการศึกษา
                               <span style={{ color: "red" }}>*</span>
                             </label>

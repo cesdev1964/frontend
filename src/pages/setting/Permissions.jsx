@@ -71,12 +71,11 @@ export default function Permissions({ title }) {
 
   useEffect(() => {
     fetchDataTable();
-    
   }, [fetchDataTable]);
 
   useEffect(() => {
     if (permissionDataById) {
-      console.log("permission data",permissionDataById)
+      console.log("permission data", permissionDataById);
       setInput({
         permissioncode: permissionDataById.permissionCode ?? "",
         permissionname: permissionDataById.permissionName ?? "",
@@ -217,31 +216,54 @@ export default function Permissions({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const {success,permissionError} = editMode
-        ? await updatePermission(reqData, editPermissionId)
-        : await createPermission(reqData);
 
-      if (success) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { success, permissionError } = editMode
+              ? await updatePermission(reqData, editPermissionId)
+              : await createPermission(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
 
-        await getPermission();
-        ClearInput();
-        const currentModal = document.getElementById("permissionModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              await getPermission();
+              ClearInput();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: permissionError,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: permissionError,
-          icon: "error",
-        });
-      }
     }
   };
 

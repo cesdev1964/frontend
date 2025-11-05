@@ -24,7 +24,7 @@ export const useRole = create((set) => ({
     set({ isLoading: true, errorMessage: null });
     try {
       const response = await api.get(`/api/roles/${roleId}`);
-      console.log("role data", response.data.data);
+      // console.log("role data", response.data.data);
       set({
         dataById: response.data.data ?? {},
         isLoading: false,

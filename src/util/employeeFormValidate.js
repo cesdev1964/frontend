@@ -18,6 +18,8 @@ export function validateFormInput(input) {
   }
   if (!input.rate) {
     errors.rate = "กรุณากรอกอัตราค่าจ้าง";
+  }else if(input.rate.length > 12){
+    errors.rate = "กรุณากรอกจำนวนเงินไม่เกิน 9,999,999.99 บาท";
   }
   if (!input.employeeCode) {
     errors.employeeCode = "กรุณากรอกรหัสพนักงาน";
@@ -95,6 +97,8 @@ export function validateDeductionInput(listItem) {
 
     if (!item.amount || item.amount === "") {
       errors[`amount_${index}`] = "กรุณากรอกจำนวนเงิน";
+    }else if(item.amount.length > 12){
+       errors[`amount_${index}`] = "กรุณากรอกจำนวนเงินไม่เกิน 9,999,999.99 บาท";
     }
   });
 

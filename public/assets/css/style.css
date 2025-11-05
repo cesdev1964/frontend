@@ -46,6 +46,19 @@
   font-size: 16px;
 }
 
+/* แก้ไข กรณี component ไม่นิ่ง */
+@media (prefers-reduced-motion:no-preference) {
+    :root {
+        scroll-behavior: smooth
+    }
+}
+
+html,
+body {
+    height: 100%;
+    scrollbar-gutter: stable;
+}
+
 /* html,
 body {
     height: 100%
@@ -559,7 +572,7 @@ body {
 }
 
 .custom-width-btn-alert {
-  width: 150px !important;
+  max-width: 200px !important;
   /* border:1px solid #000; */
 }
 
@@ -2347,20 +2360,6 @@ thead th:last-child {
   margin-bottom: 10px;
 }
 
-.totalOTBanner:hover {
-  border: 3px solid transparent;
-  /* rainbow linear-gradient */
-  border-image: linear-gradient(
-    to bottom right,
-    #b827fc 0%,
-    #2c90fc 25%,
-    #b8fd33 50%,
-    #fec837 75%,
-    #fd1892 100%
-  );
-  border-image-slice: 1;
-  border-radius: 10px;
-}
 
 .my-icon-button {
   padding: 10px 15px;
@@ -2469,3 +2468,4 @@ ul.pagination li.page-item:last-child a.page-link {
 ul.pagination a.page-link:hover {
   background-color: var(--cream);
 }
+

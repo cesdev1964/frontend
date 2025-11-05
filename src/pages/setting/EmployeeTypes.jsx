@@ -159,7 +159,7 @@ export default function EmployeeTypes({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      handleEdit(id, "notModal");
+      handleEdit(id, "employeeTypeModal");
     } else if (action === "delete") {
       handleDelete(
         employeeTypeIsLoading,
@@ -190,7 +190,7 @@ export default function EmployeeTypes({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
 
     const reqData = {
@@ -201,32 +201,53 @@ export default function EmployeeTypes({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const {success, employeeTypeErrorMessage} = editmode
-        ? await updateEmployeeType(reqData, getId)
-        : await createEmployeeType(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { success, employeeTypeErrorMessage } = editmode
+              ? await updateEmployeeType(reqData, getId)
+              : await createEmployeeType(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              ClearInput();
+              await getEmployeeType();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: employeeTypeErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-
-        const currentModal = document.getElementById("notModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-
-        ClearInput();
-        await getEmployeeType();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text:  employeeTypeErrorMessage,
-
-          icon: "error",
-        });
-      }
     }
   };
 
@@ -262,7 +283,7 @@ export default function EmployeeTypes({ title }) {
           <a
             className="power py-2"
             style={{ maxWidth: "400px" }}
-            onClick={() => handleOpenModal("notModal")}
+            onClick={() => handleOpenModal("employeeTypeModal")}
           >
             <span>
               <i class="bi bi-plus-circle fs-4"></i>
@@ -283,7 +304,7 @@ export default function EmployeeTypes({ title }) {
         {/* modal */}
         <div
           className="modal fade"
-          id="notModal"
+          id="employeeTypeModal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -359,8 +380,8 @@ export default function EmployeeTypes({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
+                handleSubmit={(e) => handleSubmit(e, "employeeTypeModal")}
+                handleCancel={() => handleCancel("employeeTypeModal")}
               />
             </div>
           </div>

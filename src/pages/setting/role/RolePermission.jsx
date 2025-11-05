@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTitle } from "../../../hooks/useTitle";
 import Swal from "sweetalert2";
 import HeaderPage from "../../../components/HeaderPage";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DataTableComponent from "../../../components/DatatableComponent";
 import { useRolePermission } from "../../../hooks/rolePermissionStore";
 import { useParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import { SubmitOrCancelButton } from "../../../components/SubmitOrCancelBtnForMo
 import { usePermission } from "../../../hooks/permissionStore";
 import LoadingSpin from "../../../components/loadingSpin";
 import SearchBox from "../../../components/SearchBox";
+import {useRole} from "../../../hooks/roleStore";
 
 export const tableHead = [{ colName: "รหัสสิทธิ์เข้าใช้งาน" }];
 export default function RolePermission({ title }) {
@@ -19,13 +20,11 @@ export default function RolePermission({ title }) {
   const [isSelectAll, setIsSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [search2, setSearch2] = useState("");
   useTitle(title);
 
   const {
     rolePermissionisLoading,
-    rolePermissionerrorMessage,
-    success,
-    rolePermissionMessage,
     rolePermissiondataById,
     getRolePermissionByRoleId,
     getRolePermission,
@@ -33,6 +32,7 @@ export default function RolePermission({ title }) {
   } = useRolePermission();
 
   const { getPermission, permissionData } = usePermission();
+  const {getRoleByIdData,dataById} = useRole();
 
   const { roleid } = useParams();
 
@@ -41,10 +41,11 @@ export default function RolePermission({ title }) {
       await getRolePermissionByRoleId(roleid);
       await getRolePermission();
       await getPermission();
+      await getRoleByIdData(roleid);
     } catch (error) {
       alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
     }
-  }, [getRolePermissionByRoleId, getRolePermission]);
+  }, [getRolePermissionByRoleId, getRolePermission,getRoleByIdData]);
 
   useEffect(() => {
     fetchDataTable();
@@ -64,7 +65,8 @@ export default function RolePermission({ title }) {
     } else {
       setSelectPermission([]);
     }
-  }, [rolePermissiondataById, permissionData.length]);
+   if(!dataById) return "";
+  }, [rolePermissiondataById, permissionData.length,dataById]);
 
   //ทำการเก็บค่าเฉยๆ
   const columnData2 = [
@@ -97,7 +99,10 @@ export default function RolePermission({ title }) {
       setSelectPermission(permissionData.map((item) => item.permissionId));
     } else {
       setIsSelectAll(false);
-      setSelectPermission([]);
+      const { rolePermissiondataById } = getRolePermissionByRoleId(roleid);
+      setSelectPermission(
+        rolePermissiondataById.map((item) => item.permissionId) ?? []
+      );
     }
   };
 
@@ -107,8 +112,11 @@ export default function RolePermission({ title }) {
     const reqData = {
       permissionIds: selectPermission,
     };
-    const response = await updateRolePermission(reqData, roleid);
-    if (response.success) {
+    const { success, rolePermissionerrorMessage } = await updateRolePermission(
+      reqData,
+      roleid
+    );
+    if (success) {
       Swal.fire({
         title: "บันทึกข้อมูลสำเร็จ",
         icon: "success",
@@ -120,7 +128,7 @@ export default function RolePermission({ title }) {
     } else {
       Swal.fire({
         title: "บันทึกข้อมูลไม่สำเร็จ",
-        text: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+        text: rolePermissionerrorMessage,
         icon: "error",
       });
     }
@@ -130,10 +138,14 @@ export default function RolePermission({ title }) {
     setSelectPermission([]);
   };
 
-    const filterPermission = permissionData.filter((item) => {
-    if (
-      item.permissionCode.toLocaleLowerCase().includes(search)
-    ) {
+  const filterPermissionSelect = permissionData.filter((item) => {
+    if (item.permissionCode.toLocaleLowerCase().includes(search)) {
+      return item;
+    }
+  });
+
+  const filterPermissionTotal = rolePermissiondataById.filter((item) => {
+    if (item.permissionCode.includes(search2)) {
       return item;
     }
   });
@@ -143,17 +155,17 @@ export default function RolePermission({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/settings">ตั้งค่า</Link>
+            <a href="/settings">ตั้งค่า</a>
           </li>
           <li className="breadcrumb-item">
-            <Link to="/settings/role">จัดการข้อมูลบทบาท</Link>
+            <a href="/settings/role">จัดการข้อมูลบทบาท</a>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
           </li>
         </ol>
       </nav>
-      <HeaderPage pageName="รายการสิทธ์การใช้งาน" />
+      <HeaderPage pageName={`รายการสิทธ์การใช้งาน -  ${dataById.roleName ?? "..."}`} />
 
       <div className="container">
         <div className="row g-3">
@@ -164,16 +176,12 @@ export default function RolePermission({ title }) {
                 search={search}
                 placeholder="ค้นหาสิทธิ์เข้าใช้งาน"
               />
-              <div
-                className="table-container-horizontal-scorll table-responsive"
-                // style={{ marginTop: "65px" }}
-              >
-                {isLoading && <LoadingSpin />}
+              <div className="table-container-horizontal-scorll table-responsive">
                 <table
                   className="table table-striped table-hover text-nowrap"
                   style={{ width: "100%", tableLayout: "fixed" }}
                 >
-                  <thead>
+                  <thead className="sticky-top top-0">
                     <tr
                       style={{
                         background: "#ffe8da",
@@ -184,7 +192,8 @@ export default function RolePermission({ title }) {
                       <th>รหัสสิทธิ์เข้าใช้งาน</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{ position: "relative" }}>
+                    {isLoading && <LoadingSpin />}
                     <tr>
                       <td td className="p-2">
                         <input
@@ -192,20 +201,24 @@ export default function RolePermission({ title }) {
                           type="checkbox"
                           checked={isSelectAll === true}
                           onChange={(e) => handleSelectAll(e)}
+                          id="checkAll"
+                          style={{ cursor: "pointer" }}
                         />
-                        <label className="form-check-label ms-2">
+                        <label className="form-check-label ms-2" for="checkAll">
                           เลือกทั้งหมด
                         </label>
                       </td>
                     </tr>
-                    {filterPermission.map((row, index) => (
+                    {filterPermissionSelect.map((row, index) => (
                       <tr key={index}>
                         <td className="p-2">
                           <div className="form-check">
                             <input
                               className="form-check-input"
+                              id="permissionCheck"
                               type="checkbox"
                               value={row.permissionId}
+                              style={{ cursor: "pointer" }}
                               checked={selectPermission.includes(
                                 row.permissionId
                               )}
@@ -213,7 +226,10 @@ export default function RolePermission({ title }) {
                                 handleChangeSelect(e, row.permissionId)
                               }
                             />
-                            <label className="form-check-label">
+                            <label
+                              className="form-check-label"
+                              for="permissionCheck"
+                            >
                               {row.permissionCode}
                             </label>
                           </div>
@@ -224,24 +240,69 @@ export default function RolePermission({ title }) {
                 </table>
               </div>
               <div className="mt-4 d-flex justify-content-end me-4">
-                <SubmitOrCancelButton
-                  handleSubmit={handleSubmit}
-                  handleCancel={ClearInput}
-                  isLoading={rolePermissionisLoading}
-                />
+                <div className="d-flex flex-column align-items-center mb-4">
+                  <div className="d-flex gap-2 w-75">
+                    <button
+                      className="btn btn-outline-primary w-100"
+                      data-bs-dismiss="modal"
+                      onClick={ClearInput}
+                    >
+                      ล้างทั้งหมด
+                    </button>
+                    <button
+                      className="btn btn-primary w-100"
+                      onClick={handleSubmit}
+                    >
+                      {rolePermissionisLoading ? "กำลังบันทึก..." : "บันทึก"}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="col-lg-6 col-sm-12 ">
-            <DataTableComponent
+            <div className="mt-4">
+              <SearchBox
+                onChange={(e) => setSearch2(e.target.value)}
+                search={search2}
+                placeholder="ค้นหาสิทธิ์เข้าใช้งาน"
+              />
+              <div className="table-container-horizontal-scorll table-responsive">
+                <table
+                  className="table table-striped table-hover text-nowrap"
+                  style={{ width: "100%", tableLayout: "fixed" }}
+                >
+                  <thead className="sticky-top top-0">
+                    <tr
+                      style={{
+                        background: "#ffe8da",
+                        fontWeight: "600",
+                      }}
+                      className="text-center"
+                    >
+                      <th>สิทธิ์ที่สามารถเข้าใช้งานทั้งหมด</th>
+                    </tr>
+                  </thead>
+                  {isLoading && <LoadingSpin />}
+                  <tbody>
+                    {filterPermissionTotal.map((row, index) => (
+                      <tr key={index}>
+                        <td className="p-2">{row.permissionCode}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {/* <DataTableComponent
               column={columnData2}
               tableRef={tableRef2}
               tableHead={tableHead}
               data={rolePermissiondataById}
               isLoading={rolePermissionisLoading}
               columnDefs={columnDefs}
-            />
+            /> */}
           </div>
         </div>
       </div>

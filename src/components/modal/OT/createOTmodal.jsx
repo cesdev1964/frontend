@@ -18,7 +18,7 @@ export default function CreateOTmodal({
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
-  // const [displayTime, setDisplayTime] = useState("");
+
   //date
   const today = new Date();
   const tomorrow = new Date();
@@ -225,7 +225,6 @@ export default function CreateOTmodal({
                   }`}
                   onChange={handleChangeInput}
                   value={input.startTime || ""}
-                  // defaultValue={OTtimeOptions.otStart[0]}
                 >
                   <option value="">เลือกเวลา</option>
                   {otTimeList.otStart?.map((item, index) => (

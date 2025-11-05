@@ -198,7 +198,7 @@ export default function Roles({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e,modalId) => {
     e.preventDefault();
     const reqData = {
       roleName: input.roleName,
@@ -209,30 +209,55 @@ export default function Roles({ title }) {
     setError(errorList);
     //api post
     if (Object.keys(errorList).length === 0) {
-      const { errorMessage, success } = editMode
-        ? await updateRole(reqData, editRoleId)
-        : await createRole(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
-        });
 
-        const currentModal = document.getElementById("notModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        await getRoleData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: errorMessage,
-          icon: "error",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { errorMessage, success } = editMode
+              ? await updateRole(reqData, editRoleId)
+              : await createRole(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+
+              ClearInput();
+              await getRoleData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: errorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-      }
     }
   };
 
@@ -430,8 +455,8 @@ export default function Roles({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={() => handleCancel("notModal")}
+                handleSubmit={()=>handleSubmit("notModal")}
+                handleCancel={()=>handleCancel("notModal")}
                 isLoading={isLoading}
               />
               {isLoading && <span className="loader"></span>}

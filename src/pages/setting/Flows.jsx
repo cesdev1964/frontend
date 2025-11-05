@@ -240,7 +240,7 @@ export default function Flows({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
 
     const reqData = {
@@ -266,29 +266,54 @@ export default function Flows({ title }) {
     }
 
     if (Object.keys(errorList).length === 0) {
-      const { flowErrorMessage,success} = editmode
-        ? await updateFlow(reqData, getId)
-        : await await createFlow(reqData);
-      if (success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { flowErrorMessage, success } = editmode
+              ? await updateFlow(reqData, getId)
+              : await await createFlow(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              ClearInput();
+              await getFlowData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: flowErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-        const currentModal = document.getElementById("flowModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        ClearInput();
-        await getFlowData();
-      } else {
-        Swal.fire({
-          index: "บันทึกข้อมูลไม่สำเร็จ",
-          text:  flowErrorMessage,
-          icon: "error",
-        });
-      }
     }
   };
 
@@ -562,7 +587,7 @@ export default function Flows({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
+                handleSubmit={(e)=>handleSubmit(e,"flowModal")}
                 handleCancel={() => handleCancel("flowModal")}
                 isLoading={flowIsLoading}
               />

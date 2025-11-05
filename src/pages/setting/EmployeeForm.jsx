@@ -17,6 +17,8 @@ import { useFlow } from "../../hooks/flowStore";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 import {
+  decimalFormat,
+  formatNumber,
   IDcardFormat,
   maskIDCard,
   maskPhone,
@@ -33,7 +35,6 @@ import {
   validateFormInput,
 } from "../../util/employeeFormValidate";
 import LoadingSpin from "../../components/loadingSpin";
-
 
 var photoName = "";
 var photoPath = "";
@@ -173,7 +174,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
             const prevList = deductionList.map((item, index) => ({
               stepNumber: index,
               deductionTypeId: item.deductionTypeId,
-              amount: item.amount,
+              amount: decimalFormat(item.amount),
             }));
             return JSON.stringify(prev) === JSON.stringify(prevList)
               ? prev
@@ -224,59 +225,33 @@ export default function EmployeeForm({ title, isEdit = false }) {
     photoName = file.name;
     photoPath = URL.createObjectURL(file);
 
-    // console.log("only file data ", file);
-    // console.log("only file path ", photoPath);
-    // console.log("only file name ", photoName);
     setOpenCopperModal(true);
   };
 
   const handleClear = () => {
-    if (!isEdit) {
-      setInput({
-        employeeCode: "",
-        titleId: 0,
-        firstname: "",
-        lastname: "",
-        telephoneNo: "",
-        cardId: "",
-        birthday: "",
-        educationId: null,
-        jobId: null,
-        levelId: null,
-        startDate: "",
-        endDate: "",
-        positionId: null,
-        contractorId: null,
-        rate: "",
-        typeId: null,
-        statusId: null,
-        flowId: null,
-        deductions: [],
-        file: [],
-      });
-    } else {
-      setInput({
-        titleId: 0,
-        firstname: "",
-        lastname: "",
-        telephoneNo: "",
-        cardId: "",
-        birthday: "",
-        educationId: null,
-        jobId: null,
-        levelId: null,
-        startDate: "",
-        endDate: "",
-        positionId: null,
-        contractorId: null,
-        rate: "",
-        typeId: null,
-        statusId: null,
-        flowId: null,
-        deductions: [],
-        file: [],
-      });
-    }
+    setInput({
+      employeeCode: isEdit ? employeeById?.employee.employeeCode : "",
+      titleId: 0,
+      firstname: "",
+      lastname: "",
+      telephoneNo: "",
+      cardId: "",
+      birthday: "",
+      educationId: null,
+      jobId: null,
+      levelId: null,
+      startDate: "",
+      endDate: "",
+      positionId: null,
+      contractorId: null,
+      rate: "",
+      typeId: null,
+      statusId: null,
+      flowId: null,
+      deductions: [],
+      file: [],
+    });
+    setListItem([]);
     setError({});
     setIsFlow(false);
   };
@@ -354,8 +329,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
     formData.append("files", input.file);
 
     if (listItem.length === 0) {
-      formData.append(`deductions`, "[]");
-      // formData.append(`deductions.amount`, "");
+      // formData.append(`deductions[0].deductionTypeId`,"");
+      // formData.append(`deductions[0].amount`, "");
+      // formData.append(`deductions`, []);
     } else {
       listItem.forEach((item, index) => {
         formData.append(
@@ -375,33 +351,57 @@ export default function EmployeeForm({ title, isEdit = false }) {
     console.log("error from errorform", errorForm);
 
     if (Object.keys(errorTotal).length === 0) {
-      const {success,employeeErrorMessage} = isEdit
-        ? await updateEmployee(formData, publicEmployeeId)
-        : await createEmployee(formData);
 
-      if (success) {
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { success, employeeErrorMessage } = isEdit
+              ? await updateEmployee(formData, publicEmployeeId)
+              : await createEmployee(formData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+              handleClear();
+              setIsFlow(false);
+              navigate("/settings/employees");
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: employeeErrorMessage,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-        handleClear();
-        setIsFlow(false);
-        navigate("/settings/employees");
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: employeeErrorMessage,
-          icon: "error",
-        });
-      }
     }
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
   };
 
   return (
-    <div className="container-fluid py-4 min-vh-100 d-flex flex-column">
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -413,7 +413,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
         </ol>
       </nav>
       <HeaderPage pageName={title} />
-      <div className="container">
+      <div>
         {!isLoading ? (
           <>
             <div className="employee-content p-4">
@@ -916,12 +916,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
                     <DeductionList
                       deductionDropdown={deductionDropdown}
-                      // deleteAll={() => {
-                      //   setIsOpenNewDeduction(false);
-                      //   setListItem([]);
-                      // }}
                       listItem={listItem}
-                      // onAddItem={handleAddItem}
                       setListItem={setListItem}
                       propName="deductionTypeId"
                       isOpenNewDeduction={isOpenNewDeduction}
