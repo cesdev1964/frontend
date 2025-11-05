@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
       });
       if (!res.ok) throw new Error("Invalid credentials");
       const data = await res.json();
-      console.log("data form login", data);
+      // console.log("data form login", data);
       setLoginData(data);
 
       localStorage.setItem("access_token", data.access_token);
@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
       setAuthData(data.user);
       setLoading(false);
 
-      console.log("aute data",authdata);
+      // console.log("aute data",authdata);
     } catch (error) {}
   };
 

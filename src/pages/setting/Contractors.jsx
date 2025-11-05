@@ -34,7 +34,6 @@ export default function Contrators({ title }) {
   const {
     contratorData,
     contratorIsLoading,
-    contratorErrorMessage,
     contratorById,
     getContratorData,
     getContratorById,

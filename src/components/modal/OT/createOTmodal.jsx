@@ -14,7 +14,7 @@ export default function CreateOTmodal({
   handleCancel,
   error,
   displayTime,
-  setDisplayTime
+  setDisplayTime,
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();

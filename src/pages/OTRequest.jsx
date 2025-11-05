@@ -11,15 +11,19 @@ import { useOTrequest } from "../hooks/otRequestStore";
 import CreateOTmodal from "../components/modal/OT/createOTmodal";
 import Pagination from "../components/Pagination";
 import { mockOTreq } from "../MockData";
+import LoadingSpin from "../components/loadingSpin";
+import handleDelete from "../util/handleDelete";
 
 export default function OTRequest({ title }) {
   useTitle(title);
   const { authdata } = useAuth();
+  const [otData, setOtData] = useState([]);
   const [error, setError] = useState({});
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [isSubmit, setIsSubmit] = useState(false);
   const [displayTime, setDisplayTime] = useState("");
   const currentDate = new Date().toISOString().split("T")[0];
+
   const [input, setInput] = useState({
     startDate: currentDate,
     endDate: currentDate,
@@ -34,12 +38,37 @@ export default function OTRequest({ title }) {
   });
   const { employeeById, getEmployeeById } = useEmployee();
   const [currentPage, setCurrentPage] = useState(1);
-  const { createOTrequest, getOTrequestData, otIsLoading } = useOTrequest();
+  const {
+    createOTrequest,
+    getOTrequestData,
+    otIsLoading,
+    getOTrequestByEmployeeID,
+    deleteOTrequest,
+  } = useOTrequest();
 
   // กำหนดวันบนปฏิทิน
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
+
+  // การ fetch data
+  const fetchData = useCallback(async () => {
+    console.log("authdata",authdata)
+    try {
+      if (authdata.publicEmployeeId) {
+        const { otById } = await getOTrequestByEmployeeID(
+          authdata.publicEmployeeId
+        );
+        setOtData(otById);
+      }
+    } catch (error) {
+      alert("โหลด API ไม่สำเร็จ", error);
+    }
+  }, [authdata.publicEmployeeId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -48,7 +77,7 @@ export default function OTRequest({ title }) {
   }, [error, isSubmit]);
 
   //เกี่ยวกับ pagination
-  let NUM_OF_RECORDS = mockOTreq.length;
+  let NUM_OF_RECORDS = otData.length;
   let LIMIT = 5;
 
   const onPageChanged = useCallback(
@@ -58,7 +87,7 @@ export default function OTRequest({ title }) {
     },
     [setCurrentPage]
   );
-  const currentData = mockOTreq.slice(
+  const currentData = otData.slice(
     (currentPage - 1) * LIMIT,
     (currentPage - 1) * LIMIT + LIMIT
   );
@@ -91,6 +120,21 @@ export default function OTRequest({ title }) {
     }
   };
 
+  const compareDate = (startDateInput, endDateInput) => {
+    const startDate = new Date(startDateInput).toISOString().split("T")[0];
+    const endDate = new Date(endDateInput).toISOString().split("T")[0];
+
+    //  แยกเป็น วัน เดือน ปี แล้วค่อยเอามาบวกกัน จากนั้นก็ค่อยเปรียบเทียบ
+    var [startYear, startMonth, startDay] = startDate.split("-").map(Number);
+    var [endYear, endMonth, endDay] = endDate.split("-").map(Number);
+
+    var startSum = startYear + startMonth + startDay;
+    var endSum = endYear + endMonth + endDay;
+
+    if (endSum < startSum) return true;
+    else return false;
+  };
+
   const validateForm = () => {
     let errors = {};
     if (!input.startTime) {
@@ -115,24 +159,9 @@ export default function OTRequest({ title }) {
     return errors;
   };
 
-  const compareDate = (startDateInput, endDateInput) => {
-    const startDate = new Date(startDateInput).toISOString().split("T")[0];
-    const endDate = new Date(endDateInput).toISOString().split("T")[0];
-
-    //  แยกเป็น วัน เดือน ปี แล้วค่อยเอามาบวกกัน จากนั้นก็ค่อยเปรียบเทียบ
-    var [startYear, startMonth, startDay] = startDate.split("-").map(Number);
-    var [endYear, endMonth, endDay] = endDate.split("-").map(Number);
-
-    var startSum = startYear + startMonth + startDay;
-    var endSum = endYear + endMonth + endDay;
-
-    if (endSum < startSum) return true;
-    else return false;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const { employeeById } = await getEmployeeById(authdata.publicEmployeeId);
 
     const reqData = {
@@ -163,49 +192,51 @@ export default function OTRequest({ title }) {
     try {
       if (Object.keys(errorList).length === 0) {
         const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success custom-width-btn-alert",
-          cancelButton: "btn btn-danger custom-width-btn-alert",
-        },
-        buttonsStyling: "w-100",
-      });
-      swalWithBootstrapButtons
-        .fire({
-          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "ยื่นยันการบันทึกรายการ",
-          cancelButtonText: "ยกเลิกการบันทึกรายการ",
-          reverseButtons: true,
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            const {otErrorMessage,success} = await createOTrequest(reqData);
-            if (success) {
+          customClass: {
+            confirmButton: "btn btn-success custom-width-btn-alert",
+            cancelButton: "btn btn-danger custom-width-btn-alert",
+          },
+          buttonsStyling: "w-100",
+        });
+        swalWithBootstrapButtons
+          .fire({
+            title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ยื่นยันการบันทึกรายการ",
+            cancelButtonText: "ยกเลิกการบันทึกรายการ",
+            reverseButtons: true,
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              const { otErrorMessage, success } = await createOTrequest(
+                reqData
+              );
+              if (success) {
+                swalWithBootstrapButtons.fire({
+                  title: "บึนทึกรายการสำเร็จ!",
+                  icon: "success",
+                });
+                const currentModal = document.getElementById("addOTModal");
+                const modalInstance = bootstrap.Modal.getInstance(currentModal);
+                modalInstance.hide();
+                fetchData();
+                ClearInput();
+              } else {
+                Swal.fire({
+                  title: "บันทึกข้อมูลไม่สำเร็จ",
+                  text: otErrorMessage,
+                  icon: "error",
+                });
+              }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
               swalWithBootstrapButtons.fire({
-                title: "บึนทึกรายการสำเร็จ!",
-                icon: "success",
-              });
-              const currentModal = document.getElementById("addOTModal");
-              const modalInstance = bootstrap.Modal.getInstance(currentModal);
-              modalInstance.hide();
-              ClearInput();
-
-            } else {
-              Swal.fire({
-                title: "บันทึกข้อมูลไม่สำเร็จ",
-                text: otErrorMessage,
+                title: "ยกเลิก",
+                text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
                 icon: "error",
               });
             }
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire({
-              title: "ยกเลิก",
-              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
-              icon: "error",
-            });
-          }
-        });
+          });
       }
     } catch (error) {
       Swal.fire({
@@ -229,7 +260,7 @@ export default function OTRequest({ title }) {
       jobId: null,
       reason: "",
     });
-    setDisplayTime("")
+    setDisplayTime("");
   };
 
   const finishSubmit = () => {
@@ -302,7 +333,7 @@ export default function OTRequest({ title }) {
                   <div className="accordion-transform-wrapper">
                     <div className="accordion-content">
                       <div className="ot-container">
-                        {mockOTreq.length === 0 ? (
+                        {otData.length === 0 ? (
                           <div className="d-flex flex-column align-items-center justify-content-center p-4">
                             <i
                               className="bi bi-hourglass-split mb-2 text-danger"
@@ -313,16 +344,22 @@ export default function OTRequest({ title }) {
                         ) : (
                           <>
                             {/* เอาสัก 6 รายการต่อหน้า */}
-                            {currentData.map((item, index) => {
+                            {currentData.map((item) => {
+                              {
+                                otIsLoading && <LoadingSpin />;
+                              }
                               return (
-                                <>
+                                <div>
                                   <OTcard
-                                    status={item.status}
-                                    otType={item.OTheader}
-                                    reason={item.reson}
-                                    key={index}
+                                    otData={item}
+                                    key={item.otRequestId}
+                                    handleDelete={()=>handleDelete(
+                                      otIsLoading,
+                                      () => deleteOTrequest(item.otRequestId),
+                                      fetchData
+                                    )}
                                   />
-                                </>
+                                </div>
                               );
                             })}
                           </>

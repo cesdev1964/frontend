@@ -16,10 +16,10 @@ function MainLayout() {
   // console.log("date now numbere ",dateNow)
   const checkExpiry = dateNow < expiryDate;
 
-  console.log("authdata",authdata);
-  console.log(checkExpiry);
-  console.log("Now "+dateNow+"expiry "+expiryDate);
-  console.log("login data",loginData);
+  // console.log("authdata",authdata);
+  // console.log(checkExpiry);
+  // console.log("Now "+dateNow+"expiry "+expiryDate);
+  // console.log("login data",loginData);
   
   // console
   return (
