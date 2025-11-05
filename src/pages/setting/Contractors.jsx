@@ -199,10 +199,10 @@ export default function Contrators({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const response = editmode
+      const {contratorErrorMessage,success} = editmode
         ? await updateContrator(reqData, getId)
         : await createContrator(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -218,7 +218,7 @@ export default function Contrators({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: contratorErrorMessage,
           icon: "error",
         });
       }

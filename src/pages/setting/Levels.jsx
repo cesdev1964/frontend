@@ -191,10 +191,10 @@ export default function Levels({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const response = editmode
+      const {levelErrorMessage,success} = editmode
         ? await updateLevel(reqData, getId)
         : await createLevel(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -211,7 +211,7 @@ export default function Levels({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: levelErrorMessage,
           icon: "error",
         });
       }

@@ -217,11 +217,11 @@ export default function Permissions({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const {success,permissionError} = editMode
         ? await updatePermission(reqData, editPermissionId)
         : await createPermission(reqData);
 
-      if (response.success) {
+      if (success) {
 
         await getPermission();
         ClearInput();
@@ -238,7 +238,7 @@ export default function Permissions({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: permissionError,
           icon: "error",
         });
       }

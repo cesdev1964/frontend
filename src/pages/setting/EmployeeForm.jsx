@@ -15,6 +15,7 @@ import { useContrator } from "../../hooks/contratorStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useFlow } from "../../hooks/flowStore";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
+
 import {
   IDcardFormat,
   maskIDCard,
@@ -32,6 +33,7 @@ import {
   validateFormInput,
 } from "../../util/employeeFormValidate";
 import LoadingSpin from "../../components/loadingSpin";
+
 
 var photoName = "";
 var photoPath = "";
@@ -117,8 +119,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
       }
       setIsLoading(false);
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
-      setIsLoading(false);
+      // alert("โหลด API ไม่สำเร็จ", error);
+      window.location.reload();
+      localStorage.clear();
     }
   }, [
     getEducationDropdown,
@@ -221,9 +224,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
     photoName = file.name;
     photoPath = URL.createObjectURL(file);
 
-    console.log("only file data ", file);
-    console.log("only file path ", photoPath);
-    console.log("only file name ", photoName);
+    // console.log("only file data ", file);
+    // console.log("only file path ", photoPath);
+    // console.log("only file name ", photoName);
     setOpenCopperModal(true);
   };
 
@@ -279,10 +282,12 @@ export default function EmployeeForm({ title, isEdit = false }) {
   };
 
   // const avatarUrl = `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8PEBIREhAQFhUQFw8SFg8QEhUQEBASFhEWFhUSExYYHSkgGRolGxUWITEiJSkrLi4vGCszOD8sNygtOjcBCgoKDg0OGxAQGysdHyYtLy0tKystLS0tLS0tLS0rKy0rLS0rLS0tLS0tKy0rLS0uLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABAUDBgcCAQj/xABFEAACAQICBwUFBQMJCQAAAAAAAQIDEQQhBQYSMUFRYTJxgZGhBxMiscEUQlJy0SPC4lRiY4KSk6LS8BUlM0NTc7Lh8f/EABkBAQADAQEAAAAAAAAAAAAAAAABAgMFBP/EACERAQACAgIDAAMBAAAAAAAAAAABAgMREjEEIUETMmFR/9oADAMBAAIRAxEAPwDrAAPO2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASM0MLN8Ld+ROjbCCXHAvjJeCuevsK/E/InjKOUIQJv2FfifkeXgXwkvFWHCTlCIDPLCTXC/cYZRa3rzImNJ2+AAgAAAAAAAAAAAAAAAAAAAAAAAz4fDOWbyXPn3ExGyZ0xQg5OyVyXSwX4n4L9SVTpqKskejSKR9ZzZ5hBR3JI9AF1QAAAAAPkop70n3n0ARauCT7OXTgQ6lNx3r9C2PkopqzRSaRK0WlTgk4jCuOcc1y4ojGcxppE7AAQAAAAAAAAAAAAAAAZ8LQ2nd7l69CYjZM6e8LhtrN7uXMngG0RplM7AASgBG0hi1QpyqOFSairuNKDqVH3RWbNJn7WcCm17jFuzavsUlu35OoVtete1q0tbqG/g5xpr2rUI019lpTnUkn/xo7EKX5kn8b6J26mn4HX/AB1OdWtObq1aiUIe8k1QoRveTjRjZOTtFXytbjcznPWJ00jBaYd3BwvQWvFaGK+04ypia2zGWxRpyUKSnLLacLqOUb2y3u/A3rR3tS0fUdqka9H+dOCnDzg2/NE1zVn+IthtH9b0DDg8XTrQVSlOE4SzU4SUovuaMxqyAAAIeKw33o+K+qJgImNpidKYErGULfEtz39GRTGY01idgAIAAAAAAAAAAAeoRbaS4lrTgopJcCLgKe+XgvqTDWkets7SAAuqAGre0XWCWAwblTdqtaSpU5b9htNynbpFO3Voi06jcprEzOoQ9edfKeBvQo7NTEWzTzp0L7nO2+XKPnbK/GMbi6lepKrVm5zqO8py3yfhl4Iwzk22222225NtuTbu2297b4nw8GTJN59vfTHFI9APsE27JNvks2TaGh8VPs4es+rpyivNqxm0QQW0tWcclf7NPwcG/JO5XYjD1KT2akJwfKcXB+CZG4TqVhq9rBidH1PeUJ2Ttt0pXdKquU48+qzR3fVfT9LSGHjXp5fdnTbvKlUSzi+e9NPimj85m6+ybSzoY5UW/gxUXBrgqkE5wl5KUf6yPRhyTE6+PPmxxMb+u3AA9rxAAA+SV1Z8SqrU9lteXcWxGx1O8b8Y/IpeNwtWdSrwAZNAAAAAAAAAJAzYSN5rpmTBKxpx2UlyPQBuxAAAOV+26q9rBw4WxMvG9JL6nVDlPtuh8eDl/NxS9aTMs36S1wfvDnmjMFLEVqdGLs6jtd57Ktdu3GyTZ0jR+qeDopXp+8l+Kt8d/wCr2V5Goag0trGJ/ghUl4u0f3jfdJ6WoYZJ1aijtdmOcpy/LFZs5d5neodSkRrcpdKlGCtGMYrlFKK8keypwGsWFrzVONRqb3QqRdOUvy339xbGUxP1rEx8DFicPCrFwqQjKL3xkk16mPH4+jh4bdWcYR3XlxfJLe30RXYfWnBzko+8cXLKLqwlTjLuk1bzJiJRMw1PWzVf7MvfUbuldKUXm6Tbyz4xvlzXUptAV3TxeGmn2K2Hl4KrHaXlc61isPGrCdOS+GcZRa6NWOQYejKGIjB9qFWMH+aNSz9UbYrbY5K6fpkAHXcgAAA+NH0AVFSOy2uR5JOPjaV+a+RGMJjUto6AAQAAAAAAS9HrNvovX/4RCbo7dLwLV7RbpMABsyAAAObe2yl+wws+VScPCVO/7iOkmge16lt4X/tuE/Oew35SMc86pLbBG7w072bUfjr1OUacE/zNt/8AijcK0aFFzxE/dwdltVptK0VkltPcum676lXqRgfc4SLfarN1X3NJQX9lJ+JS+1hT+zUWr7Cqvbtu2th7F+na8WjlxHK+nU3xpttzVDF00/2dWnLNSTU43T3xktzT4rNEpf64mjeyZT+z1277DqR2b7trY+O3+A3orevG2lqTyjbDPC05TVRwTnFbMZNXcVe72b7r8Wt9lyMNLGYbFKdONSjVUcpwUo1Uukln1MGssajweJVPa23Sq7Oz2r7D7PW17HMPZqpvSFNw7KhV22t3u9jK/Tb2C9MfKs230ra+rRDr9GlGEVGKsoqyV27LgsznmNwX++YU0sp4nCy71OdOUn6yOjGsVsG3prDz4Rpxqvvi5xXq4EY51b2ZY3V1wAHacUAAAAARNILJPrb/AF5EEsMf2PFFeY37aV6AAVWAAAAAAm6O3S8CES9HPOS7i1O0W6TgAbMgAACh1qwkakVtRUoSUoST3NPg/Uvj5KKas0mnweaM8tOdZq0xX4WizSopJWW5ZWW5Lkea1KM4uMoxlGWTjJKUWuTT3l3p/CKOzOKSXZaSsuafzKc5GSk47al18eSMleUPFGlGEVGEYxjHJRilGKXJJbj2AUXDDQwlKm5OFOnFzd5OEIxc3zlZZszAAe8FhFOvBqPxO0driobW013H3DUXUnGC+87dy4vyNtpUYQ7MUuF0km+89Hj4JyTv483kZ4xxr7LIADrOUAAAAAI+O7HiiuJ2kHkl1+hBMr9tK9AAKLAAAAAAZ8HK011ujAfYuzvyJglcA+RldJ8z6bsQAAAABjxFFVIuL3SXl1NSxNCVOTjLevJrg0biVWscV7na2byi42fGzefoeXysUXry+w9Xi5Zrbj8lV6Nxcabamk4TtdNXs+DsWz0Vh6i2o3SfGEsvW5rNOqpcfB7zNCpKO6TXc2vkeLHmiscbRuHtyYZmeVZ1LYP9m4ektqWaXGby8lvKfSGKVSWStGOUY7suLItSo3nKTfWTv8zJompGdeEXG8W3e+6+y7etibX/ACapWOMIrjmm72nlK70Hgtle8ks5blyjz8S2AOnjpFK8YczJeb25SAAuoAAAAAIGkJfElyXzIp7rT2pN8/keDCZ3LaI1AACAAAAAAAABOwFS62eXyJZU0p7LT5FrCSauuJrSfTO0e30AjY3HUqCvUqRiuF3m+5b34F1dpINXxWutGOVOnOfWTVOL7t79CI9eJfyeP96/8hfhZnOWn+tzIGmaTnBRja908+KV8jW1rxLjhl4Vf4C50bpSGKjtxya7UHvg+XVdSl8czXUr480ct17UdbD2dpRs+uTMfuVzl5m0VqMZq0kn9O4ra+ipX+DNcnk1+pzMvi3r7r7h1cXlVt+3qVUqMeV+/Mn6Ow03KMkrKLTu8k7PhzJ2F0bGOcvif+FeHEnGmLxJ7uzzeXHVE1M+mrYrXCnSk4Rpups5bakoxb5LJ3XUjvXjlhvOr/AdHhZy5y0j63EGlvXif8nj/eN/unuhrvn8dDLnCd35NfUn8dkfmp/rcQQNGaXoYlfs5q/GDymvD6rInlNaaRMT0GDGVNmNuLy/Uzsq8RV2pX4bkVtOoXrG5YgAYtAAAAAAAAAAACRhsSoX2t2bvyI4JidExtR6Y1wlK8cOrL/qyXxP8sXu8fQ1atVlOTlKTlJ75SbbfizYNYNC76tJdZQXDnKK+aNcPfjmsxuHMyxaLasAAuyDPgsXOjNTg7NeTXFNcUYAEt/0fpyjVpOo2ouCvOLeceq5p8CBHXSEb2w8n1dRJtd1sjTwU/HDWc1m86N1kp4ipsODpuXZvLaUny3KzKzWTT21ejSeW6dRfe5xj05viayBGOInaJzWmNAALsgAAeqc3FqUW01mpJ2afNNG6au607dqVdpSeUau6MukuT67n0NJLrQWhnVaqVF+z4J/8z+H5lMnHW5a4uXLVW9Y2v8AdXj+hDAPBM7dOI0AAgAAAAAAAAAAAAAAodMaAU7zpWUt7hujLquT9O4vgWraazuFb0i8alzmpTlFuMk01vTVmjyb9j9H0q6tOOa3SWUo9z+hrWP1drU7uHxx6ZTXhx8D10zVt36eHJ49q9e4UwPsotOzTTW9PJrvPhs84AAAAAAAAfUr5Le8rLe2WeB0DXq5tbEfxTWfhHf52Nm0doqlQziry/HLOXhy8DK+atf63x4LW/kKjRGr26dZdVS/z/p5mypAHkvebTuXupjikagABRcAAAAAAAAAAAAAAAAAAAAAYcThKdVWnCMu9Zrue9FViNWaMuzKcel9qPrn6l2C1b2r1Ktsdbdw1arqvU+7Ug/zJx+VzA9W8R/Rvuk/qjcAafnuynxqNPWreI/o/GX/AKM1PVeq+1Upru2pfRG1AfnuR41FFQ1YpLtznLorQX1fqWmFwFGl2KcU/wAVry/tPMkgpa9p7lpXHWvUAAKLgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//2Q==`;
-   const avatarUrl = employeeById?.files?.[employeeById?.files.length-1]?.photoPath
-    ? `${baseURL}${employeeById.files[employeeById?.files.length-1].photoPath}`
+  const avatarUrl = employeeById?.files?.[employeeById?.files.length - 1]
+    ?.photoPath
+    ? `${baseURL}${
+        employeeById.files[employeeById?.files.length - 1].photoPath
+      }`
     : `data:image/jpeg;base64,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`;
-
 
   const customComponentOption = ({ innerProps, label }) => {
     return (
@@ -324,9 +329,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
   };
 
   const handleSubmit = async (e) => {
-    console.log("list of deduction", listItem);
     e.preventDefault();
-    // console.log("input data", input);
+
+    console.log("input data", input);
 
     const formData = new FormData();
     formData.append("employeeCode", input.employeeCode);
@@ -346,33 +351,35 @@ export default function EmployeeForm({ title, isEdit = false }) {
     formData.append("typeId", input.typeId);
     formData.append("flowId", input.flowId);
     formData.append("status", input.statusId);
-    listItem.forEach((item, index) => {
-      formData.append(
-        `deductions[${index}].deductionTypeId`,
-        item.deductionTypeId
-      );
-      formData.append(`deductions[${index}].amount`, item.amount);
-    });
     formData.append("files", input.file);
 
-    // เหลือ file
-    // เอาวันที่ลาออก ออกด้วย
+    if (listItem.length === 0) {
+      formData.append(`deductions`, "[]");
+      // formData.append(`deductions.amount`, "");
+    } else {
+      listItem.forEach((item, index) => {
+        formData.append(
+          `deductions[${index}].deductionTypeId`,
+          item.deductionTypeId
+        );
+        formData.append(`deductions[${index}].amount`, item.amount);
+      });
+    }
 
-    console.log("employee data", ...formData.entries());
     const errorForm = validateFormInput(input);
     const errorDeduction = validateDeductionInput(listItem);
     const errorTotal = { ...errorForm, ...errorDeduction };
     setError(errorTotal);
 
-    console.log("error from deduction", errorDeduction);
+    console.log("input data", [...formData]);
+    console.log("error from errorform", errorForm);
 
     if (Object.keys(errorTotal).length === 0) {
-      const response = isEdit
+      const {success,employeeErrorMessage} = isEdit
         ? await updateEmployee(formData, publicEmployeeId)
         : await createEmployee(formData);
 
-     
-      if (response.success) {
+      if (success) {
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
           icon: "success",
@@ -385,7 +392,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีการบันทึกข้อมูลพนักงานท่านนี้ในระบบแล้ว",
+          text: employeeErrorMessage,
           icon: "error",
         });
       }
@@ -410,7 +417,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
         {!isLoading ? (
           <>
             <div className="employee-content p-4">
-              <div className="row">
+              <div className="row g-2">
                 <div className="col-lg-3 ">
                   <div className="employee-image-section">
                     <ImageComponent
@@ -579,7 +586,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                       </div>
                       <div className="row form-spacing g-2">
-                        <div className="col-md-8 col-lg-5">
+                        <div className="col-md-6 col-lg-5">
                           <label className="form-label">
                             ระดับการศึกษา
                             <span style={{ color: "red" }}>*</span>
@@ -605,7 +612,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.educationId}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-8 col-lg-4">
+                        <div className="col-md-6 col-lg-4">
                           <label className="form-label">
                             เบอร์โทรศัพท์
                             <span style={{ color: "red" }}>*</span>
@@ -749,7 +756,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                       </div>
                       <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
+                        <div className="col-md-12 col-lg-8">
                           <label className="form-label">
                             ผู้รับเหมา
                             <span style={{ color: "red" }}>*</span>
@@ -775,32 +782,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.contractorId}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-6 col-lg-4">
-                          <label className="form-label">
-                            ประเภท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <SearchDropdown
-                            data={employeeTypeDropdown}
-                            handleSelectChange={(selected) =>
-                              handleSelectChange("typeId", selected)
-                            }
-                            placeholder="เลือกประเภท"
-                            value={
-                              employeeTypeDropdown.find(
-                                (i) => i.value === input.typeId
-                              ) || null
-                            }
-                            className={`${
-                              error.typeId
-                                ? "border border-danger rounded-2"
-                                : ""
-                            }`}
-                          />
-                          {error.typeId ? (
-                            <p className="text-danger">{error.typeId}</p>
-                          ) : null}
-                        </div>
+
                         <div className="col-md-7 col-lg-4">
                           <label className="form-label">
                             อัตราค่าจ้าง
@@ -829,6 +811,32 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       <div className="row form-spacing g-2">
                         <div className="col-md-6 col-lg-4">
                           <label className="form-label">
+                            ประเภท
+                            <span style={{ color: "red" }}>*</span>
+                          </label>
+                          <SearchDropdown
+                            data={employeeTypeDropdown}
+                            handleSelectChange={(selected) =>
+                              handleSelectChange("typeId", selected)
+                            }
+                            placeholder="เลือกประเภท"
+                            value={
+                              employeeTypeDropdown.find(
+                                (i) => i.value === input.typeId
+                              ) || null
+                            }
+                            className={`${
+                              error.typeId
+                                ? "border border-danger rounded-2"
+                                : ""
+                            }`}
+                          />
+                          {error.typeId ? (
+                            <p className="text-danger">{error.typeId}</p>
+                          ) : null}
+                        </div>
+                        <div className="col-md-6 col-lg-4">
+                          <label className="form-label">
                             วันที่เริ่มงาน
                             <span style={{ color: "red" }}>*</span>
                             <span className="sub-label">(ค.ศ.)</span>
@@ -846,11 +854,11 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             defaultValue={Date.now()}
                             onKeyDown={(e) => e.preventDefault()}
                           />
+                          {error.startDate ? (
+                            <p className="text-danger">{error.startDate}</p>
+                          ) : null}
                         </div>
-                        {error.startDate ? (
-                          <p className="text-danger">{error.startDate}</p>
-                        ) : null}
-                        <div className="col-md-6 col-lg-4">
+                        {/* <div className="col-md-6 col-lg-4">
                           <label className="form-label">
                             วันที่ลาออก
                             <span className="sub-label">(ค.ศ.)</span>
@@ -871,7 +879,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                           {error.endDate ? (
                             <p className="text-danger">{error.endDate}</p>
                           ) : null}
-                        </div>
+                        </div> */}
                         <div className="col-md-5 col-lg-4">
                           <label className="form-label">
                             สถานะ
@@ -884,7 +892,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                               error.statusId ? "border border-danger" : ""
                             }`}
                             onChange={handleChangeInput}
-                            value={input.statusId ?? ""}
+                            value={input.statusId}
                           >
                             <option value={""}>เลือกสถานะ</option>
                             <option value={0}>ลาออก</option>
@@ -1026,7 +1034,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
           </>
         ) : (
           <>
-            <LoadingSpin/>
+            <LoadingSpin />
           </>
         )}
       </div>

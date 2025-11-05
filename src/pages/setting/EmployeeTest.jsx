@@ -7,6 +7,9 @@ import { usePosition } from "../../hooks/positionStore";
 import { useEmployee } from "../../hooks/employeeStore";
 import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
 import MainButton from "../../components/MainButton";
+import Swal from "sweetalert2";
+import { HttpStatusCode } from "axios";
+const token = localStorage.getItem("access_token");
 
 const EmployeesTest = ({ title }) => {
   useTitle(title);
@@ -42,12 +45,20 @@ const EmployeesTest = ({ title }) => {
     try {
       await getEmployeeData();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      // alert("โหลด API ไม่สำเร็จ", error);
+      Swal.fire({
+        title: "Seeion หมดอายุ",
+        text: "กรุณาเข้าสู่ระบบใหม่",
+        icon: "error",
+      });
+    
     }
   }, [getEmployeeData, location.state]);
-
+  
   useEffect(() => {
     fetchDataTable();
+
+    
   }, [fetchDataTable]);
 
   const tableHead = [

@@ -201,10 +201,10 @@ export default function EmployeeTypes({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const response = editmode
+      const {success, employeeTypeErrorMessage} = editmode
         ? await updateEmployeeType(reqData, getId)
         : await createEmployeeType(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -222,7 +222,7 @@ export default function EmployeeTypes({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text:  employeeTypeErrorMessage,
 
           icon: "error",
         });

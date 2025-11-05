@@ -25,6 +25,7 @@ export default function NameTitle({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มคำนำหน้าใหม่");
+  const [isLoading, setIsLoading] = useState(false);
   const {
     getTitleNameData,
     titleData,
@@ -75,7 +76,6 @@ export default function NameTitle({ title }) {
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
-      finishSubmit();
     }
   }, [error, isSubmit]);
 
@@ -173,19 +173,11 @@ export default function NameTitle({ title }) {
   const validateForm = () => {
     let errors = {};
     const hasEnglish = /[A-Za-z]/;
-    const hasThai = /[ก-ฮ]/;
     if (!input.titleNameTH) {
       errors.titleNameTH = "กรุณากรอกคำนำหน้า";
     } else {
       if (hasEnglish.test(input.titleNameTH)) {
         errors.titleNameTH = "กรุณากรอกเป็นภาษาไทย";
-      }
-    }
-    if (!input.titleNameEng) {
-      errors.titleNameEng = "กรุณากรอกคำนำหน้า";
-    } else {
-      if (hasThai.test(input.titleNameEng)) {
-        errors.titleNameEng = "กรุณากรอกเป็นภาษาอังกฤษ";
       }
     }
     return errors;
@@ -212,10 +204,11 @@ export default function NameTitle({ title }) {
 
     //api post
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const { success, titleErrorMessage } = editMode
         ? await updateTitle(reqData, editTitleId)
         : await createTitle(reqData);
-      if (response.success) {
+      if (success) {
+        console.log(success);
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -231,10 +224,10 @@ export default function NameTitle({ title }) {
         document.body.focus();
         await getTitleNameData();
         ClearInput();
-      } else {
+      } else if (!success) {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีการบันทึกข้อมูลคำนำหน้านี้ในระบบแล้ว",
+          text: titleErrorMessage,
           icon: "error",
         });
       }

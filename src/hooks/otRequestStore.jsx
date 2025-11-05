@@ -55,7 +55,7 @@ export const useOTrequest = create((set) => ({
   createOTrequest: async (reqData) => {
     set({ otIsLoading: true, otErrorMessage: null });
     try {
-      const response = await api.post(url, reqData);
+      await api.post(url, reqData);
       return {
         otIsLoading: false,
         success: true,

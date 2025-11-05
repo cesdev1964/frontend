@@ -160,9 +160,9 @@ export default function OTRequest({ title }) {
 
     try {
       if (Object.keys(errorList).length === 0) {
-        const response = await createOTrequest(reqData);
+        const {otErrorMessage,success} = await createOTrequest(reqData);
 
-        if (response.success) {
+        if (success) {
           setIsSubmit(true);
           Swal.fire({
             title: "บันทึกข้อมูลสำเร็จ",
@@ -183,7 +183,7 @@ export default function OTRequest({ title }) {
         } else {
           Swal.fire({
             title: "บันทึกข้อมูลไม่สำเร็จ",
-            text: "ไม่สามารถดำเนินการขอโอทีได้ เนื่องจากคุณได้ทำการขอโอทีในช่วงเวลานี้แล้ว",
+            text: otErrorMessage,
             icon: "error",
           });
         }

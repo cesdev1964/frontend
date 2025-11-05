@@ -60,7 +60,7 @@ export function validateFormInput(input) {
     errors.typeId = "กรุณาเลือกประเภทงาน";
   }
 
-  if (!input.statusId || input.statusId === "" || input.statusId === null) {
+  if (input.statusId === "" || input.statusId === null) {
     errors.statusId = "กรุณาเลือกสถานะ";
   }
 
@@ -77,9 +77,9 @@ export function validateFormInput(input) {
     errors.startDate = "กรุณากรอกวันเริ่มงาน";
   }
 
-  if (input.statusId === "0" && !input.endDate) {
-    errors.endDate = "กรุณากรอกวันที่ลาออก";
-  }
+  // if (input.statusId === "0" && !input.endDate) {
+  //   errors.endDate = "กรุณากรอกวันที่ลาออก";
+  // }
 
   return errors;
 }

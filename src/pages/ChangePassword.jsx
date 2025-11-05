@@ -19,7 +19,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { authdata } = useAuth();
+  const { authdata ,logout} = useAuth();
   const { changePassword, userError, userIsLoading } = useUser();
   const navigate = useNavigate();
 
@@ -108,12 +108,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
         }).then(()=>{
           // console.log("response",response)
           if(userIsLoading === false){
-            // สำหรับคนที่ยังไม่เปลี่ยนรหัสผ่าน
-            if(isForce === true){
-              navigate("/login");
-            }else{
-              navigate("/login");
-            }
+            logout();
           }
         });
         ClearInput();

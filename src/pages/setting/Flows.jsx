@@ -265,14 +265,11 @@ export default function Flows({ title }) {
       return;
     }
 
-    // console.log("approve flow data", listItem);
-    // console.log("data", input);
-
     if (Object.keys(errorList).length === 0) {
-      const response = editmode
+      const { flowErrorMessage,success} = editmode
         ? await updateFlow(reqData, getId)
         : await await createFlow(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -288,7 +285,7 @@ export default function Flows({ title }) {
       } else {
         Swal.fire({
           index: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text:  flowErrorMessage,
           icon: "error",
         });
       }

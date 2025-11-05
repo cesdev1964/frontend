@@ -95,7 +95,8 @@ export default function Users({ title }) {
       await getUserData();
       await getTitleNameData();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      window.location.reload();
+      localStorage.clear();
     }
   }, [getRoleData, getUserData, getTitleNameData]);
 
@@ -239,7 +240,7 @@ export default function Users({ title }) {
         () => getUserData()
       );
     } else if (action === "reset") {
-     const {userById} =  await getUserByIdData(id);
+      const { userById } = await getUserByIdData(id);
       // console.log("userData",userById);
       handleResetPassword(id, userById.username);
     }
@@ -336,10 +337,10 @@ export default function Users({ title }) {
     console.log("add new data", reqAddData);
     if (Object.keys(errorList).length === 0) {
       // console.log("input data to update",reqUpdateData)
-      const response = editMode
+      const {userError,success}= editMode
         ? await updateUser(reqUpdateData, editUserId)
         : await register(reqAddData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -357,7 +358,7 @@ export default function Users({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีผู้ใช้นี้ในระบบแล้ว",
+          text: userError,
           icon: "error",
         });
       }

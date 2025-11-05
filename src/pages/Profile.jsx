@@ -53,7 +53,8 @@ export default function Profile({ title }) {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      alert("โหลด API ไม่สำเร็จ", error);
+      window.location.reload();
+      localStorage.clear();
     }
   }, [
     getEmployeeById,

@@ -197,10 +197,10 @@ export default function OTCategories({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const {otTypeErrorMessage,success} = editMode
         ? await updateOtType(reqData, getId)
         : await createOtType(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -216,7 +216,7 @@ export default function OTCategories({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: otTypeErrorMessage || "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+          text: otTypeErrorMessage,
           icon: "error",
         });
       }

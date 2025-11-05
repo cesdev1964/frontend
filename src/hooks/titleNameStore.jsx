@@ -72,6 +72,7 @@ export const useTitltName = create((set) => ({
     set({ titleIsLoading: true, titleErrorMessage: null });
     try {
       const response = await api.post("/api/titles", requestData);
+      console.log("response",response);
       return {
         titleIsLoading: false,
         success: response.data.success,

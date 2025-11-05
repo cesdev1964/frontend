@@ -24,7 +24,10 @@ export function AuthProvider({ children }) {
       setLoginData(data);
 
       localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("expires_in", data.expires_in);
+      localStorage.setItem("expires_in", data.expiredAtUtc);
+      localStorage.setItem("User",JSON.stringify(data.user));
+      // เพราะ localStrorage เก็บได้แค่ string 
+      // การเก็บข้อมูลใน local strorage เป็นการเก็บข้อมูลได้นาน แต่ไม่ควรเก็บข้อมูลสำคัญ
       
       setToken(data.access_token);
       const Toast = Swal.mixin({
@@ -71,7 +74,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem("access_token");
+    localStorage.clear();
     setAuthData({});
     setToken(null);
   };

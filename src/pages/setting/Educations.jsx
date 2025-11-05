@@ -201,10 +201,10 @@ export default function Educations({ title }) {
     setError(errorList);
     console.log("error list", error);
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const {educationErrorMessage,success}= editMode
         ? await updateEducation(reqData, getId)
         : await createEducation(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -220,7 +220,7 @@ export default function Educations({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีการบันทึกข้อมูลการศึกษานี้ในระบบแล้ว",
+          text: educationErrorMessage,
           icon: "error",
         });
       }

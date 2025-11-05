@@ -34,7 +34,7 @@ export const useUser = create((set) => ({
         ?.filter((activeData) => activeData.isActive === true)
         .map((item) => ({
           value: item.userId,
-          label: item.titleName+" "+item.firstname +" "+item.lastname,
+          label: item.titleName + " " + item.firstname + " " + item.lastname,
         }));
       set({
         userDropdown: option,
@@ -80,22 +80,29 @@ export const useUser = create((set) => ({
       await api.post("/api/users/register", requestData);
       return { userIsLoading: false, success: true };
     } catch (error) {
-      set({ userError: error.response.data.message, userIsLoading: false });
-      return { success: false, error: error?.response?.data?.message };
+      set({
+        userError: error.response.data.message,
+        userIsLoading: false,
+        success: false,
+      });
+      return {
+        success: false,
+        error: error?.response?.data?.message,
+        userIsLoading: false,
+      };
     }
   },
   deleteUser: async (userId) => {
     set({ userIsLoading: true, userError: null });
     try {
       const response = await api.delete(`/api/users/${userId}`);
-      //   console.log("delete user response ",response.data.message)
       return {
         userIsLoading: false,
         message: response.data.message ?? "",
         success: true,
       };
     } catch (error) {
-      set({ userError: error.response.data.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false,success: false });
       return { success: false, error: error?.response?.data?.message };
     }
   },
@@ -103,14 +110,17 @@ export const useUser = create((set) => ({
   changePassword: async (requestData, userId) => {
     set({ userIsLoading: true, userError: null });
     try {
-      const response = await api.put(`/api/users/change-password/${userId}`,requestData);
+      const response = await api.put(
+        `/api/users/change-password/${userId}`,
+        requestData
+      );
       // console.log("message from change password",response.data.message)
       return {
         userIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
-      set({ userError: error.response.data.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false,success: false });
       return {
         success: false,
         userError: error?.response?.data?.message,
@@ -118,16 +128,16 @@ export const useUser = create((set) => ({
     }
   },
 
-   resetPassword: async (userId) => {
+  resetPassword: async (userId) => {
     set({ userIsLoading: true, userError: null });
     try {
       const response = await api.put(`/api/users/reset-password/${userId}`);
       return {
         userIsLoading: false,
-        success: response.data.success,
+        success: true,
       };
     } catch (error) {
-      set({ userError: error.response.data.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false ,success: false});
       return {
         success: false,
         userError: error?.response?.data?.message,
@@ -146,12 +156,11 @@ export const useUser = create((set) => ({
         success: true,
       };
     } catch (error) {
-      set({ userError: error.response.data.message, userIsLoading: false });
+      set({ userError: error.response.data.message, userIsLoading: false ,success: false});
       return {
         success: false,
         userError: error?.response?.data?.message,
       };
     }
   },
-  
 }));

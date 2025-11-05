@@ -71,22 +71,17 @@ export function NameTitleModal({
                         <div className="col-md-12">
                           <label className="form-label">
                             คำนำหน้า (ภาษาอังกฤษ)
-                            <span style={{ color: "red" }}>*</span>
                           </label>
                           <input
                             name="titleNameEng"
                             type="text"
-                            className={`form-control ${
-                              error.titleNameEng ? "border border-danger" : ""
-                            }`}
+                            className={`form-control`}
                             id="titleNameEng"
                             placeholder="กรอกคำนำหน้าเป็นภาษาอังกฤษ"
                             value={input.titleNameEng ?? ""}
                             onChange={handleChangeInput}
                           />
-                          {error.titleNameEng ? (
-                            <p className="text-danger">{error.titleNameEng}</p>
-                          ) : null}
+                          
                         </div>
                       </div>
                     </div>

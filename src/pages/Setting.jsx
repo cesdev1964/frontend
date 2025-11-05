@@ -6,6 +6,12 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import SearchBox from "../components/SearchBox";
 
 const Settings = ({ title }) => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+     window.location.reload();
+    localStorage.clear();
+   
+  }
   useTitle(title);
   const navigate = useNavigate();
   const cardColor = [
@@ -174,11 +180,11 @@ const Settings = ({ title }) => {
   return (
     <div>
       <HeaderPage pageName={title} />
-        <SearchBox
-          onChange={(e) => setSearch(e.target.value)}
-          search={search}
-          placeholder="ค้นหาเมนูตั้งค่า"
-        />
+      <SearchBox
+        onChange={(e) => setSearch(e.target.value)}
+        search={search}
+        placeholder="ค้นหาเมนูตั้งค่า"
+      />
       <div className="content-box mt-4">
         <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {filterItemSetting.length > 0 ? (
@@ -192,9 +198,7 @@ const Settings = ({ title }) => {
                     onClick={() => handleChagePage(item.path)}
                   >
                     <div className="card h-100 shadow-sm card--soft settingCard card-item">
-                      <div
-                        className="card-body text-center d-flex flex-column"
-                      >
+                      <div className="card-body text-center d-flex flex-column">
                         <div className="setting-icon pt-3">
                           <i
                             className={`${item.icon} text-danger`}

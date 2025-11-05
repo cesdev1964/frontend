@@ -19,8 +19,7 @@ export default function DeductionList({
     deductionTypeId: null,
     amount: "",
   });
-  // const [isOpenNewDeduction, setIsOpenNewDeduction] = useState(false);
-  console.log("error from deduction com",error)
+
   const handleAllItem = () => {
     setIsOpenNewDeduction(false);
     setListItem([]);

@@ -209,10 +209,10 @@ export default function Roles({ title }) {
     setError(errorList);
     //api post
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const { errorMessage, success } = editMode
         ? await updateRole(reqData, editRoleId)
         : await createRole(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -229,7 +229,7 @@ export default function Roles({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: errorMessage,
           icon: "error",
         });
       }

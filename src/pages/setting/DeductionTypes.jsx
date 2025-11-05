@@ -196,10 +196,10 @@ export default function DeductionTypes({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-      const response = editMode
+      const {success,deductionErrorMessage} = editMode
         ? await updateDeduction(reqData, getId)
         : await createDeduction(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -215,7 +215,7 @@ export default function DeductionTypes({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: deductionErrorMessage,
           icon: "error",
         });
       }

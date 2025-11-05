@@ -239,10 +239,10 @@ export default function Jobs({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      const response = editmode
+      const {jobErrorMessage,success} = editmode
         ? await updateJob(reqData, getId)
         : await createJob(reqData);
-      if (response.success) {
+      if (success) {
         setIsSubmit(true);
         Swal.fire({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -259,7 +259,7 @@ export default function Jobs({ title }) {
       } else {
         Swal.fire({
           title: "บันทึกข้อมูลไม่สำเร็จ",
-          text: "มีข้อมูลนี้ในระบบแล้ว",
+          text: jobErrorMessage,
           icon: "error",
         });
       }

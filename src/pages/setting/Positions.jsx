@@ -58,7 +58,6 @@ export default function Positions({ title }) {
       responsive: true,
       paging: true,
       searching: true,
-      // scrollX: true,
       autoWidth: true,
       language: {
         decimal: "",
