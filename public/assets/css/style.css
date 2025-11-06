@@ -47,16 +47,16 @@
 }
 
 /* แก้ไข กรณี component ไม่นิ่ง */
-@media (prefers-reduced-motion:no-preference) {
-    :root {
-        scroll-behavior: smooth
-    }
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
 }
 
 html,
 body {
-    height: 100%;
-    scrollbar-gutter: stable;
+  height: 100%;
+  scrollbar-gutter: stable;
 }
 
 /* html,
@@ -1771,6 +1771,10 @@ thead th:last-child {
   .add-btn {
     justify-content: start !important;
   }
+  .power {
+    width: 100%;
+  }
+
 }
 
 @media (max-width: 570px) {
@@ -1920,6 +1924,9 @@ thead th:last-child {
   }
   #menter {
     line-height: 0.1;
+  }
+    .approval-btn{
+    width: 100%;
   }
 }
 
@@ -2200,15 +2207,13 @@ thead th:last-child {
 }
 
 .avartarImageDefault {
-  width: 50px;
-  height: 50px;
   border-radius: 50%;
   background-color: var(--content-bg);
   color: var(--pink-active);
-  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--pink-active);
 }
 
 .accordion {
@@ -2360,7 +2365,6 @@ thead th:last-child {
   margin-bottom: 10px;
 }
 
-
 .my-icon-button {
   padding: 10px 15px;
   font-size: 16px;
@@ -2393,7 +2397,7 @@ thead th:last-child {
 .OT-description-value {
   font-size: 0.9rem;
   line-height: 0.3;
-  color: var(--pink-active);
+  color: var(--logout-bg);
 }
 .OT-card-container {
   border: 1px solid var(--border);
@@ -2403,7 +2407,7 @@ thead th:last-child {
   /* transition: box-shadow 0.3s ease */
 }
 .OT-card-container:hover {
-   border: 3px solid var(--pink-active);
+  border: 3px solid var(--pink-active);
 }
 
 .filter-display {
@@ -2430,9 +2434,9 @@ thead th:last-child {
   margin-top: 20px;
 }
 
-ul.pagination li.page-item{
+ul.pagination li.page-item {
   background-color: transparent;
-  border:none;
+  border: none;
   margin: 0;
   padding: 0;
 }
@@ -2457,7 +2461,6 @@ ul.pagination a.page-link {
 ul.pagination li.page-item:first-child a.page-link {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  
 }
 
 ul.pagination li.page-item:last-child a.page-link {
@@ -2469,3 +2472,10 @@ ul.pagination a.page-link:hover {
   background-color: var(--cream);
 }
 
+.icon-action {
+  color: var(--pink-active);
+}
+
+.icon-action:hover {
+  color: var(--logout-bg);
+}

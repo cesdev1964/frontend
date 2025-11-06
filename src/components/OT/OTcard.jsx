@@ -1,7 +1,8 @@
 import { OTapproveStatusBadge } from "../../util/isActiveBadge.jsx";
 import { OTApproveEnum } from "../../enum/otApproveEnum.js";
+import { shortDateFormate } from "../../util/inputFormat.js";
 
-export default function OTcard({ otData,handleDelete }) {
+export default function OTcard({ otData, handleDelete }) {
   const getDateAndTime = (datetime) => {
     const [date, timeFull] = new Date(datetime).toISOString().split("T");
     const time = timeFull.substring(0, 5);
@@ -11,17 +12,6 @@ export default function OTcard({ otData,handleDelete }) {
       const dateFormat = `${day}-${month}-${year}`;
       return `${dateFormat} / ${time} น.`;
     }
-  };
-
-  const dateFotmat = (dateObject) => {
-    const formattedDate = dateObject
-      .toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .replace(/\//g, "-");
-      return formattedDate;
   };
 
   return (
@@ -39,10 +29,9 @@ export default function OTcard({ otData,handleDelete }) {
               style={{ cursor: "pointer", marginTop: 0 }}
               onClick={handleDelete}
             >
-              <i
-                className="bi bi-trash-fill text-center text-danger fs-3"
-                title="ลบ"
-              ></i>
+              <span className="icon-action">
+                <i className="bi bi-trash-fill text-center fs-4" title="ลบ"></i>
+              </span>
             </a>
           )}
         </div>
@@ -51,13 +40,11 @@ export default function OTcard({ otData,handleDelete }) {
           <div className="col-md-12 col-lg-6 mb-4">
             <p className="OT-description-label">
               วันที่เริ่มขอโอที :{" "}
-              <span className="OT-description-value">
-               {otData.startDate}
-              </span>
+              <span className="OT-description-value">{shortDateFormate(otData.startDate)}</span>
             </p>
             <p className="OT-description-label">
               วันที่สิ้นสุดโอที :{" "}
-              <span className="OT-description-value">{otData.endDate}</span>
+              <span className="OT-description-value">{shortDateFormate(otData.endDate)}</span>
             </p>
             <p className="OT-description-label">
               ระยะเวลา :{" "}

@@ -94,10 +94,12 @@ export default function DeductionList({
                       style={{ cursor: "pointer", marginTop: 0 }}
                       onClick={() => handleDeleteItem(item.stepNumber)}
                     >
-                      <i
-                        className="bi bi-trash-fill text-center text-danger"
-                        title="ลบ"
-                      ></i>
+                      <span className="icon-action">
+                        <i
+                          className="bi bi-trash-fill text-center"
+                          title="ลบ"
+                        ></i>
+                      </span>
                     </a>
                   </div>
                   <div className="row">
@@ -121,7 +123,7 @@ export default function DeductionList({
                             : ""
                         }`}
                       />
-                       {error[`deductionType_${index}`] ? (
+                      {error[`deductionType_${index}`] ? (
                         <p
                           className="text-danger"
                           style={{ fontSize: "0.8rem" }}
@@ -143,7 +145,7 @@ export default function DeductionList({
                         type="text"
                         name="amount"
                         className={`form-control ${
-                          error[`amount_${index}`]  ? "border border-danger" : ""
+                          error[`amount_${index}`] ? "border border-danger" : ""
                         }`}
                         // className="form-control"
                         value={item.amount ?? ""}

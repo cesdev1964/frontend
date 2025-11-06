@@ -28,7 +28,8 @@ import Profile from "./pages/Profile";
 import EmployeeForm from "./pages/setting/EmployeeForm";
 import EmployeesTest from "./pages/setting/EmployeeTest";
 import CheckChangePassword from "./auth/CheckChangePassword";
-import OTRequest from "./pages/OTRequest";
+import OTRequest from "./pages/OT/OTRequest";
+import OTApproval from "./pages/OT/OTApproval";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -54,10 +55,13 @@ export default function RouterPage() {
           element: <WorkingSummary title="สรุปการทำงาน" />,
         },
         {
-          path: "working/OT",
+          path: "working/OTRequest",
           element: <OTRequest title="บันทึกโอที" />,
         },
-        
+         {
+          path: "working/OTApproval",
+          element: <OTApproval title="อนุมัติโอที" />,
+        },
         {
           path: "forchChangePassword",
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" isForce = {true}/>, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน

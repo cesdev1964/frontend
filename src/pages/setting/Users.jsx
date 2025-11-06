@@ -257,8 +257,8 @@ export default function Users({ title }) {
       if (!input.password) {
         errors.password = "กรุณากรอกรหัสผ่าน";
       } else {
-        if (input.password.length < 8) {
-          errors.password = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+        if (input.password.length < 4) {
+          errors.password = "กรุณากรอกรหัสผ่าน 4 ตัวอักษรขึ้นไป";
         }
       }
     }

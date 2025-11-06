@@ -19,7 +19,7 @@ export function maskPhone(value) {
 }
 
 export function formatNumber(input) {
-  if(input){
+  if (input) {
     return input.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
@@ -50,13 +50,27 @@ export function telephoneFormat(telephoneNumber) {
 export function IDcardFormat(thaiIDNumber) {
   const cleaned = ("" + thaiIDNumber).replace(/\D/g, "");
   if (cleaned.length === 13) {
-    return cleaned.replace(/(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})/, "$1-$2-$3-$4-$5");
+    return cleaned.replace(
+      /(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})/,
+      "$1-$2-$3-$4-$5"
+    );
   } else if (!cleaned) return "";
   else return "";
 }
 
-export function decimalFormat(stringNumber){
+export function decimalFormat(stringNumber) {
   let num = Number(stringNumber);
-  let decimalFormatter = new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
+  let decimalFormatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   return decimalFormatter.format(num);
+}
+
+export function shortDateFormate(inputdate) {
+  if (!inputdate) return;
+  const date = new Date(inputdate);
+  const formateDate = date.toLocaleDateString("en-GB");
+  const formateWithDateHtphens = formateDate.replace(/\//g, "-");
+  return formateWithDateHtphens;
 }

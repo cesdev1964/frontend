@@ -52,6 +52,29 @@ export const useJob = create((set) => ({
     }
   },
 
+  getJobDropdownAll: async () => {
+    set({ jobIsLoading: true, jobErrorMessage: null });
+    try {
+      const response = await api.get("/api/jobs");
+      const data = response.data.data ?? [];
+      const option = data.map((item) => ({
+          value: item.jobId,
+          label: item.jobNo,
+        }));
+      set({
+        jobDropdown: option,
+        jobIsLoading: false,
+      });
+      return { success: response.data.success };
+    } catch (errorMessage) {
+      set({
+        jobErrorMessage: error?.response?.data?.message,
+        jobIsLoading: false,
+      });
+      return { success: response.data.success };
+    }
+  },
+
   getJobById: async (id) => {
     set({ jobIsLoading: true, jobErrorMessage: null });
     try {

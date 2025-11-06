@@ -10,7 +10,7 @@ export const SearchDropdown = ({
   style
 }) => {
   return (
-    <>
+    <div style={{zIndex:999}}>
       <Select
         options={data}
         value={value}
@@ -20,8 +20,8 @@ export const SearchDropdown = ({
         placeholder={placeholder}
         className={className}
         components={customComponent}
-        // styles={style}
+        // style={{zIndex:999}}
       />
-    </>
+    </div>
   );
 };

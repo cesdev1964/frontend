@@ -8,7 +8,7 @@ export default function InputTextField({
   placeholder ="",
 }) {
   return (
-    <div>
+    <>
       <label className="form-label">
         {label}
         {isRequire && <span style={{ color: "red" }}>*</span>}
@@ -22,6 +22,6 @@ export default function InputTextField({
         onChange={onChange}
       />
       {error && isRequire ? <p className="text-danger">{error}</p> : null}
-    </div>
+    </>
   );
 }

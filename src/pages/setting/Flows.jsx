@@ -266,7 +266,6 @@ export default function Flows({ title }) {
     }
 
     if (Object.keys(errorList).length === 0) {
-
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",
@@ -494,10 +493,12 @@ export default function Flows({ title }) {
                                 handleDeleteApproveStep(item.stepNumber)
                               }
                             >
-                              <i
-                                className="bi bi-trash-fill text-center text-danger"
-                                title="ลบ"
-                              ></i>
+                              <span className="icon-action">
+                                <i
+                                  className="bi bi-trash-fill text-center"
+                                  title="ลบ"
+                                ></i>
+                              </span>
                             </a>
                           </div>
                           <div className="row">
@@ -587,7 +588,7 @@ export default function Flows({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={(e)=>handleSubmit(e,"flowModal")}
+                handleSubmit={(e) => handleSubmit(e, "flowModal")}
                 handleCancel={() => handleCancel("flowModal")}
                 isLoading={flowIsLoading}
               />

@@ -4,13 +4,14 @@ import { useTitle } from "../hooks/useTitle";
 import { useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import SearchBox from "../components/SearchBox";
+import SessionExpiryModal from "../components/modal/SessionExpiryModal";
 
 const Settings = ({ title }) => {
   const token = localStorage.getItem("access_token");
   if (!token) {
-     window.location.reload();
-    localStorage.clear();
-   
+    //  window.location.reload();
+    // localStorage.clear();
+    return <SessionExpiryModal/>
   }
   useTitle(title);
   const navigate = useNavigate();

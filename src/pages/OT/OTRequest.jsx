@@ -1,18 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../auth/AuthContext";
-import { useTitle } from "../hooks/useTitle";
+import { useAuth } from "../../auth/AuthContext";
+import { useTitle } from "../../hooks/useTitle";
 import Swal from "sweetalert2";
-import HeaderPage from "../components/HeaderPage";
-import MainButton from "../components/MainButton";
-import OTcard from "../components/OT/OTcard";
-import { handleCancel } from "../util/handleCloseModal";
-import { useEmployee } from "../hooks/employeeStore";
-import { useOTrequest } from "../hooks/otRequestStore";
-import CreateOTmodal from "../components/modal/OT/createOTmodal";
-import Pagination from "../components/Pagination";
-import { mockOTreq } from "../MockData";
-import LoadingSpin from "../components/loadingSpin";
-import handleDelete from "../util/handleDelete";
+import HeaderPage from "../../components/HeaderPage";
+import MainButton from "../../components/MainButton";
+import OTcard from "../../components/OT/OTcard";
+import { handleCancel } from "../../util/handleCloseModal";
+import { useEmployee } from "../../hooks/employeeStore";
+import { useOTrequest } from "../../hooks/otRequestStore";
+import CreateOTmodal from "../../components/modal/OT/createOTmodal";
+import Pagination from "../../components/Pagination";
+import LoadingSpin from "../../components/loadingSpin";
+import handleDelete from "../../util/handleDelete";
+import Filter from "../../components/Filter";
+import InputTextField from "../../components/inputTextField";
 
 export default function OTRequest({ title }) {
   useTitle(title);
@@ -53,7 +54,7 @@ export default function OTRequest({ title }) {
 
   // การ fetch data
   const fetchData = useCallback(async () => {
-    console.log("authdata",authdata)
+    console.log("authdata", authdata);
     try {
       if (authdata.publicEmployeeId) {
         const { otById } = await getOTrequestByEmployeeID(
@@ -271,46 +272,49 @@ export default function OTRequest({ title }) {
     <div>
       <HeaderPage pageName={title} />
       <div className="container">
-        <div className="bg-white mb-3 p-3 border rounded-3 border-danger filter-display">
-          <div className="row">
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <div className="d-flex flex-column align-items-start ">
-                <label class="form-label">กรอง 1</label>
-                <input
-                  name="levelname"
-                  type="text"
-                  className={"form-control"}
-                  id="educationname"
-                  placeholder="กรอง 1"
-                  // value={input.levelname}
-                  // onChange={handleChangeInput}
-                />
-              </div>
-            </div>
-            <div className="col-sm-12 col-md-6 col-lg-6">
-              <div className="d-flex flex-column align-items-start ">
-                <label class="form-label">กรอง 2</label>
-                <input
-                  name="levelname"
-                  type="text"
-                  className={"form-control"}
-                  id="educationname"
-                  placeholder="กรอง 2"
-                  // value={input.levelname}
-                  // onChange={handleChangeInput}
-                />
-              </div>
+        <Filter>
+          <div className="col-sm-12 col-md-6 col-lg-6">
+            <div className="d-flex flex-column align-items-start ">
+              {/* <label class="form-label">กรอง 1</label>
+              <input
+                name="levelname"
+                type="text"
+                className={"form-control"}
+                id="educationname"
+                placeholder="กรอง 1"
+                // value={input.levelname}
+                // onChange={handleChangeInput} 
+              />  */}
+              <InputTextField
+                isRequire={false}
+                label="กรอก 1.1"
+                placeholder="กรอง 1.1"
+              />
             </div>
           </div>
-          <div id="button">
-            <MainButton
-              btnName="ทำการขอโอที"
+          <div className="col-sm-12 col-md-6 col-lg-6">
+            <div className="d-flex flex-column align-items-start ">
+              <InputTextField
+                isRequire={false}
+                label="กรอก 1.2"
+                placeholder="กรอง 1.2"
+              />
+            </div>
+          </div>
+        </Filter>
+        <div className="mb-3 p-3 border rounded-3 border-0 filter-display">
+          <div className="d-flex justify-content-end  w-100">
+            <a
+              className="power py-2"
               onClick={() => handleOpenModal("addOTModal")}
-              icon="bi bi-plus"
-            />
+            >
+              <span>
+                <i class={`bi bi-plus fs-4`}></i>
+              </span>{" "}
+              <span className="label">ทำการขอโอที</span>
+            </a>
           </div>
         </div>
-
         <div className="flex-grow-1 d-flex align-items-start justify-content-center">
           <div className="accordion">
             <div className="accordion-item">
@@ -325,7 +329,7 @@ export default function OTRequest({ title }) {
                 className="accordion-trigger accordion-label"
                 htmlFor="accordion-trigger-1"
               >
-                <i className="bi bi-hourglass-split me-2 mb-1"></i>
+                <i className="bi bi-list-task me-2 mb-1"></i>
                 <strong>ประวัติโอที</strong>
               </label>
               <section className="accordion-animation-wrapper">
@@ -336,7 +340,7 @@ export default function OTRequest({ title }) {
                         {otData.length === 0 ? (
                           <div className="d-flex flex-column align-items-center justify-content-center p-4">
                             <i
-                              className="bi bi-hourglass-split mb-2 text-danger"
+                              className="bi bi-file-earmark mb-2 text-danger"
                               style={{ fontSize: "60px" }}
                             ></i>
                             <h4 className="text-danger">ไม่พบการขอโอที</h4>
@@ -353,11 +357,13 @@ export default function OTRequest({ title }) {
                                   <OTcard
                                     otData={item}
                                     key={item.otRequestId}
-                                    handleDelete={()=>handleDelete(
-                                      otIsLoading,
-                                      () => deleteOTrequest(item.otRequestId),
-                                      fetchData
-                                    )}
+                                    handleDelete={() =>
+                                      handleDelete(
+                                        otIsLoading,
+                                        () => deleteOTrequest(item.otRequestId),
+                                        fetchData
+                                      )
+                                    }
                                   />
                                 </div>
                               );

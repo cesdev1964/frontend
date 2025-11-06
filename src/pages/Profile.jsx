@@ -6,7 +6,7 @@ import DetailItem from "../components/home/detailItem.jsx";
 import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
 import { useParams } from "react-router-dom";
-import { IDcardFormat, telephoneFormat } from "../util/inputFormat";
+import { IDcardFormat, shortDateFormate, telephoneFormat } from "../util/inputFormat";
 import IsEmployeeStatusBadgeReact from "../util/isActiveBadge.jsx";
 import LoadingSpin from "../components/loadingSpin.jsx";
 import { useEducation } from "../hooks/educationStore.jsx";
@@ -172,15 +172,11 @@ export default function Profile({ title }) {
                                 {empData?.employee?.lastname}
                               </h5>
                               <p className="my-3">
-                                <i className="bi bi-telephone-fill"></i> :{" "}
+                                <i className="bi bi-telephone-fill me-2"></i>{" "}
                                 {telephoneFormat(
                                   empData?.employee?.telephoneNo
                                 )}{" "}
-                                {
-                                  telephoneFormat(
-                                    empData?.employee?.telephoneNo
-                                  ).length
-                                }
+                                
                               </p>
                             </div>
                           </div>
@@ -218,7 +214,7 @@ export default function Profile({ title }) {
                                   icon="fa-solid fa-cake-candles"
                                   title="วันเดือนปีเกิด"
                                   value={
-                                    empData?.employee?.birthday ?? "0000-00-00"
+                                    shortDateFormate(empData?.employee?.birthday ?? "00-00-0000")
                                   }
                                 />
                               </div>
@@ -322,12 +318,12 @@ export default function Profile({ title }) {
                                   icon="fa-regular fa-calendar-days"
                                   title="วันเริ่มการทำงาน"
                                   value={
-                                    empData?.employee?.startDate ??
-                                    "ไม่พบข้อมูล"
+                                    shortDateFormate(empData?.employee?.startDate ??
+                                    "ไม่พบข้อมูล")
                                   }
                                 />
                               </div>
-                              <div className="col-sm-6 col-md-4">
+                              {/* <div className="col-sm-6 col-md-4">
                                 <DetailItem
                                   icon="fa-regular fa-calendar-days"
                                   title="วันที่ลาออก"
@@ -335,7 +331,7 @@ export default function Profile({ title }) {
                                     empData?.employee?.endDate ?? "ไม่พบข้อมูล"
                                   }
                                 />
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>
@@ -416,9 +412,7 @@ export default function Profile({ title }) {
                         </div>
                         <div>
                           <div className="w-100 bg-danger p-2 border-n rounded-3">
-                            <p className="my-2 text-center fw-bold">
-                              สายอนุมัติ
-                            </p>
+                            <p className="my-2 text-center fw-bold">สายอนุมัติ : <span className="text-primary">{flowById.flowName}</span></p>
                             <div className="d-flex flex-wrap justify-content-center gap-4 my-3">
                               {flowById.approvalSteps ? (
                                 <>
@@ -449,7 +443,7 @@ export default function Profile({ title }) {
                                               {item.stepNumber}
                                             </p>
                                           </div>
-                                          <p style={{ fontWeight: "bold" }}>
+                                          <p style={{ fontWeight: "bold" }} className="text-danger">
                                             {item.stepName}
                                           </p>
                                           <p

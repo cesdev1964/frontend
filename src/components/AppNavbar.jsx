@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useEmployee } from "../hooks/employeeStore";
 import { usePosition } from "../hooks/positionStore";
 import { telephoneFormat } from "../util/inputFormat";
+import DefaultAvatalImage from "../components/defaultAvatarImage";
 // import {use}
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -115,7 +116,17 @@ function AppNavbar({ toggleSidebar }) {
                   </>
                 ) : (
                   <>
-                    <img src={avatarUrl} alt="avatar" />
+                    {authdata.publicEmployeeId ? (
+                      <img src={avatarUrl} alt="avatar" />
+                    ) : (
+                      <DefaultAvatalImage
+                        username={authdata.firstname + " " + authdata.lastname}
+                        height="30px"
+                        width="30px"
+                        fontSize="13px"
+                      />
+                    )}
+                    {/* <img src={avatarUrl} alt="avatar" /> */}
                     <div className="muted">
                       คุณ{" "}
                       {authdata
@@ -183,21 +194,24 @@ function AppNavbar({ toggleSidebar }) {
                         </>
                       ) : (
                         <>
-                          {/* <div className="profile-content mt-3">
-                        <DefaultAvatarImage username={authdata.firstname+" "+authdata.lastname}/>
-                        <div
-                          className="my-3"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div className="fs-5">
-                            คุณ {authdata ? authdata.firstname+" "+authdata.lastname : "N/A"}
+                          <div className="mt-3 d-flex align-items-center justify-content-center gap-3">
+                            <DefaultAvatalImage
+                              username={
+                                authdata.firstname + " " + authdata.lastname
+                              }
+                              height="50px"
+                              width="50px"
+                              fontSize="25px"
+                            />
+                            <div className="my-3">
+                              <div className="fs-5">
+                                คุณ{" "}
+                                {authdata
+                                  ? authdata.firstname + " " + authdata.lastname
+                                  : "N/A"}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div> */}
                         </>
                       )}
                     </div>
