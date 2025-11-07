@@ -683,6 +683,10 @@ thead th:last-child {
 .otReq-container {
   max-height: 400px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .text-slice-container {
@@ -2491,6 +2495,7 @@ ul.pagination a.page-link:hover {
   margin-bottom: 10px;
   border-radius: 6px;
   padding: 15px;
+  width: 100%;
 }
 
 .otReqCard:hover{
