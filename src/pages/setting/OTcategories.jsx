@@ -27,7 +27,6 @@ export const tableHead = [
 export default function OTCategories({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลโอที");
@@ -37,10 +36,10 @@ export default function OTCategories({ title }) {
     otTypeData,
     otTypeIsLoading,
     getOtTypeData,
-    otTypeErrorMessage,
     createOtType,
     updateOtType,
-    success,
+    getOtTypeById,
+    otTypeById
   } = useOTType();
 
   const [input, setInput] = useState({
@@ -60,6 +59,17 @@ export default function OTCategories({ title }) {
   useEffect(() => {
     fetchDataTable();
   }, [fetchDataTable]);
+
+  useEffect(() => {
+      if (otTypeById) {
+        setInput((prevData) => ({
+          ...prevData,
+          OTtypecode:  otTypeById.otTypeCode ?? "",
+          OTtypename: otTypeById.otTypeName ?? "",
+          isActive : otTypeById.isActive ?? false
+        }));
+      }
+    }, [otTypeById]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -166,7 +176,7 @@ export default function OTCategories({ title }) {
 
   const handleEdit = async (id, modalId) => {
     ClearInput();
-    // await g(id);
+    await getOtTypeById(id);
     setGetId(id);
     setEditMode(true);
 
@@ -179,7 +189,6 @@ export default function OTCategories({ title }) {
 
   const validateForm = () => {
     let errors = {};
-    const hasThai = /[ก-ฮ]/;
     if (!input.OTtypename) {
       errors.OTtypename = "กรุณากรอกชื่อโอที";
     }
@@ -315,90 +324,48 @@ export default function OTCategories({ title }) {
               </div>
               <div class="modal-body">
                 <div className="p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
+                  <form>
+                    <div className="row">
                       {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-12">
-                            {/* <label className="form-label">โค้ดโอที</label>
-                            <input
-                              name="OTtypecode"
-                              type="text"
-                              className={`form-control ${
-                                error.OTtypecode ? "border border-danger" : ""
-                              }`}
-                              id="categoryname"
-                              placeholder="กรอกโค้ดโอที"
-                              value={input.OTtypecode}
-                              onChange={handleChangeInput}
-                            /> */}
-                            <InputTextField
-                              onChange={handleChangeInput}
-                              isRequire={false}
-                              label="โค้ดโอที"
-                              name="OTtypecode"
-                              placeholder="กรอกโค้ดโอที"
-                              value={input.OTtypecode}
-                            />
-                          </div>
-                        </div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-12">
-                            <InputTextField
-                              onChange={handleChangeInput}
-                              isRequire={true}
-                              label="ชื่อโอที"
-                              name="OTtypename"
-                              placeholder="กรอกชื่อโอที"
-                              value={input.OTtypename}
-                              error={error.OTtypename}
-                            />
-                            {/* <label htmlFor="StartDate" class="form-label">
-                              ชื่อโอที
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="OTtypename"
-                              type="text"
-                              className={`form-control ${
-                                error.OTtypename ? "border border-danger" : ""
-                              }`}
-                              id="OTtypename"
-                              placeholder="กรอกชื่อโอที"
-                              value={input.OTtypename}
-                              onChange={(e) => handleChangeInput(e)}
-                            />
-                            {error.OTtypename ? (
-                              <p className="text-danger">{error.OTtypename}</p>
-                            ) : null} */}
-                          </div>
-                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div className="form-check form-switch form-switch-md ms-3">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isActive"
-                                value={input.isActive}
-                                onChange={(e) => handleChangeCheckbox(e)}
-                                checked={input.isActive === true}
-                              />
-                            </div>
-                          </div>
+
+                      <div className="col-12 mb-3">
+                        <InputTextField
+                          onChange={handleChangeInput}
+                          isRequire={false}
+                          label="โค้ดโอที"
+                          name="OTtypecode"
+                          placeholder="กรอกโค้ดโอที"
+                          value={input.OTtypecode}
+                        />
+                      </div>
+                      <div className="col-12">
+                      <InputTextField
+                        onChange={handleChangeInput}
+                        isRequire={true}
+                        label="ชื่อโอที"
+                        name="OTtypename"
+                        placeholder="กรอกชื่อโอที"
+                        value={input.OTtypename}
+                        error={error.OTtypename}
+                      />
+                      </div>
+
+                      <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                        <label className="mb-2">เปิดใช้งาน</label>
+                        <div className="form-check form-switch form-switch-md ms-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="isActive-toggle"
+                            name="isActive"
+                            value={input.isActive}
+                            onChange={(e) => handleChangeCheckbox(e)}
+                            checked={input.isActive === true}
+                          />
                         </div>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+                  </form>
                 </div>
               </div>
               <SubmitOrCancelButton

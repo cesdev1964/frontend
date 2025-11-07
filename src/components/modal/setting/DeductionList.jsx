@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { SearchDropdown } from "../../searchDropdown";
 import { onlyDecimal } from "../../../util/inputFormat";
+import Swal from "sweetalert2";
 
 export default function DeductionList({
   listItem,
@@ -20,9 +21,31 @@ export default function DeductionList({
     amount: "",
   });
 
-  const handleAllItem = () => {
-    setIsOpenNewDeduction(false);
-    setListItem([]);
+  const handleAllItem = (e) => {
+    e.preventDefault();
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการทั้งหมดใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `ใช่ ลบได้เลย"`,
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          setIsOpenNewDeduction(false);
+          setListItem([]);
+        }
+      });
   };
 
   const handleDeleteItem = (index) => {
@@ -76,7 +99,7 @@ export default function DeductionList({
             <div className="d-flex justify-content-end w-100">
               <button
                 className="btn btn-outline-primary mb-2"
-                onClick={handleAllItem}
+                onClick={(e)=>handleAllItem(e)}
               >
                 ลบทั้งหมด
               </button>

@@ -224,7 +224,7 @@ function AppNavbar({ toggleSidebar }) {
                         >
                           <span className="label fw-bold">ข้อมูลของฉัน</span>
                           <span className="icon">
-                            <i className="bi bi-house-door-fill"></i>
+                            <i class="bi bi-person-circle"></i>
                           </span>
                         </a>
                       )}

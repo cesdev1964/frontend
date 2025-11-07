@@ -189,7 +189,7 @@ export default function RolePermission({ title }) {
                       }}
                       className="text-center"
                     >
-                      <th>รหัสสิทธิ์เข้าใช้งาน</th>
+                      <th>สิทธิ์เข้าใช้งาน</th>
                     </tr>
                   </thead>
                   <tbody style={{ position: "relative" }}>
@@ -281,14 +281,14 @@ export default function RolePermission({ title }) {
                       }}
                       className="text-center"
                     >
-                      <th>สิทธิ์ที่สามารถเข้าใช้งานทั้งหมด</th>
+                      <th><i class="bi bi-check-circle me-2 text-primary"></i>สิทธิ์ที่สามารถเข้าใช้งานทั้งหมด</th>
                     </tr>
                   </thead>
                   {isLoading && <LoadingSpin />}
                   <tbody>
                     {filterPermissionTotal.map((row, index) => (
                       <tr key={index}>
-                        <td className="p-2">{row.permissionCode}</td>
+                        <td className="p-2"><i class="bi bi-check-circle me-2 text-primary"></i>{row.permissionCode}</td>
                       </tr>
                     ))}
                   </tbody>

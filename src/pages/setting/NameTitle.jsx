@@ -192,6 +192,18 @@ export default function NameTitle({ title }) {
     }
   };
 
+  const handleEdit = async (id) => {
+    await getNameTitleById(id);
+    setEditTitleId(id);
+    setEditMode(true);
+
+    const currentModal = document.getElementById("notModal");
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
+  };
+
   const handleSubmit = async (e, modalId) => {
     e.preventDefault();
     const reqData = {
@@ -257,17 +269,7 @@ export default function NameTitle({ title }) {
     }
   };
 
-  const handleEdit = async (id) => {
-    await getNameTitleById(id);
-    setEditTitleId(id);
-    setEditMode(true);
-
-    const currentModal = document.getElementById("notModal");
-    if (currentModal) {
-      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modal.show();
-    }
-  };
+  
 
   const ClearInput = () => {
     setInput({
