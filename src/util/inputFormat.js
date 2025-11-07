@@ -74,3 +74,14 @@ export function shortDateFormate(inputdate) {
   const formateWithDateHtphens = formateDate.replace(/\//g, "-");
   return formateWithDateHtphens;
 }
+
+ export const getDateAndTime = (datetime) => {
+    const [date, timeFull] = new Date(datetime).toISOString().split("T");
+    const time = timeFull.substring(0, 5);
+
+    if (date) {
+      const [year, month, day] = date.split("-");
+      const dateFormat = `${day}-${month}-${year}`;
+      return `${dateFormat} / ${time} น.`;
+    }
+  };

@@ -455,7 +455,7 @@ export default function Roles({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={()=>handleSubmit("notModal")}
+                handleSubmit={(e)=>handleSubmit(e,"notModal")}
                 handleCancel={()=>handleCancel("notModal")}
                 isLoading={isLoading}
               />

@@ -79,7 +79,7 @@ export default function AnnouncementCard() {
                             <p
                               style={{
                                 lineHeight: "0.6rem",
-                                fontSize: "0.9rem",
+                                fontSize: "0.8rem",
                               }}
                               className="text-secondary"
                             >

@@ -286,7 +286,7 @@ export default function Flows({ title }) {
           if (result.isConfirmed) {
             const { flowErrorMessage, success } = editmode
               ? await updateFlow(reqData, getId)
-              : await await createFlow(reqData);
+              : await createFlow(reqData);
             if (success) {
               swalWithBootstrapButtons.fire({
                 title: "บึนทึกรายการสำเร็จ!",

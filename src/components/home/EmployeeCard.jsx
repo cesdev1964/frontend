@@ -97,11 +97,6 @@ export default function EmployeeCard() {
       default:
         break;
     }
-    // if(properties === PropNameEnum.TitleName){
-
-    // }
-    // const titlename =  titleDropdown.find((item)=>item.value === titleId)
-    // return titlename?titlename.label:"ไม่ระบุ"
   };
 
   return (
@@ -213,22 +208,7 @@ export default function EmployeeCard() {
                                     คุณ
                                     {authdata.firstname} {authdata.lastname}
                                   </h5>
-                                  {/* <div className="row g-4 p-2 ">
-                              <div className="col-6  col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-user-tie"
-                                  title="ตำแหน่ง"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                              <div className="col-6  col-custom">
-                                <DetailItem
-                                  icon="fa-solid fa-users"
-                                  title="หน่วยงาน"
-                                  value="xxxxxxxxxxxxx"
-                                />
-                              </div>
-                            </div> */}
+                                 
                                 </div>
                               </div>
                               <div className="badge-style badge-stillWork">

@@ -54,7 +54,7 @@ export default function OTRequest({ title }) {
 
   // การ fetch data
   const fetchData = useCallback(async () => {
-    console.log("authdata", authdata);
+    // console.log("authdata", authdata);
     try {
       if (authdata.publicEmployeeId) {
         const { otById } = await getOTrequestByEmployeeID(
@@ -275,16 +275,6 @@ export default function OTRequest({ title }) {
         <Filter>
           <div className="col-sm-12 col-md-6 col-lg-6">
             <div className="d-flex flex-column align-items-start ">
-              {/* <label class="form-label">กรอง 1</label>
-              <input
-                name="levelname"
-                type="text"
-                className={"form-control"}
-                id="educationname"
-                placeholder="กรอง 1"
-                // value={input.levelname}
-                // onChange={handleChangeInput} 
-              />  */}
               <InputTextField
                 isRequire={false}
                 label="กรอก 1.1"
@@ -337,6 +327,15 @@ export default function OTRequest({ title }) {
                   <div className="accordion-transform-wrapper">
                     <div className="accordion-content">
                       <div className="ot-container">
+                        {otIsLoading?(
+                          <div className="d-flex flex-column align-items-center justify-content-center p-1">
+                            <div
+                                className="spinner-border text-danger"
+                                role="status"
+                                style={{ width: "3rem", height: "3rem" }}
+                              ></div>
+                          </div>
+                        ):<>
                         {otData.length === 0 ? (
                           <div className="d-flex flex-column align-items-center justify-content-center p-4">
                             <i
@@ -349,9 +348,6 @@ export default function OTRequest({ title }) {
                           <>
                             {/* เอาสัก 6 รายการต่อหน้า */}
                             {currentData.map((item) => {
-                              {
-                                otIsLoading && <LoadingSpin />;
-                              }
                               return (
                                 <div>
                                   <OTcard
@@ -370,6 +366,7 @@ export default function OTRequest({ title }) {
                             })}
                           </>
                         )}
+                        </>}
                       </div>
                     </div>
                   </div>
