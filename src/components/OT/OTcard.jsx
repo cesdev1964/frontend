@@ -73,16 +73,6 @@ export default function OTcard({ otData, handleDelete }) {
         </div>
         <div className="border-top border-danger my-3"></div>
         <div className="OT-footer mb-1">
-          {/* <p className="OT-description-label">
-              วันที่เริ่มขอโอที :{" "}
-              <span className="OT-description-value">xx/xx/xxxx</span>
-            </p> */}
-          {/* <p className="OT-description-label">
-            ผู้อนุมัติ :{" "}
-            <span className="OT-description-value">
-              กมลฉันท์ออออออออออออ วงศ์วัฒนxxxxxxxxxxxxxxxxx
-            </span>
-          </p> */}
           <p className="OT-description-label" id="menter">
             วัน และ เวลาที่ดำเนินการขอ :{" "}
             <span className="OT-description-value">

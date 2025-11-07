@@ -2,8 +2,10 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useOTApprove } from "../../hooks/otApproveStore";
 import FlowIcon from "../../assets/icon/FlowIcon";
 import { shortDateFormate } from "../../util/inputFormat";
+import { useNavigate } from "react-router-dom";
 
 export default function OTRequestPendingCard() {
+  const navigate = useNavigate();
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const { getOTApprovalPending, otApproveData } = useOTApprove();
   const [otData, setOtData] = useState([]);
@@ -42,8 +44,6 @@ export default function OTRequestPendingCard() {
     date: date,
     count: items.length,
   }));
-  // console.log("Ot list with", otReqList);
-  //   console.log("Ot count with same date ", otCountByDate);
 
   return (
     <div className="mt-4">
@@ -67,68 +67,61 @@ export default function OTRequestPendingCard() {
             <div class="accordion-animation">
               <div class="accordion-transform-wrapper">
                 <div class="accordion-content otReq-container">
-                  {/* <div className="card otReqCard">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div>
-                        <h6 className="fw-bold">
-                          จำนวนการขอโอที ที่คุณต้องทำการอนุมัติ
-                        </h6>
-                        <p
-                          style={{
-                            lineHeight: "0.8rem",
-                            fontSize: "0.9rem",
-                          }}
-                          className="text-secondary mt-2"
-                        >
-                          <i class="fa-regular fa-calendar-days me-2"></i>
-                          วันที่ขอโอที
-                        </p>
-                      </div>
-                      <span className="badge bg-secondary text-dark p-2 px-2 fs-6">
-                        100000
-                      </span>
-                    </div>
-                  </div> */}
-                  {otCountByDate.length > 0 ? (
+                  {isLoading ? (
                     <>
-                      {otCountByDate.map((item) => {
-                        return (
-                          <div className="card otReqCard">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <div>
-                                <h6 className="fw-bold">
-                                  จำนวนการขอโอที ที่คุณต้องทำการอนุมัติ
-                                </h6>
-                                <p
-                                  style={{
-                                    lineHeight: "0.8rem",
-                                    fontSize: "0.9rem",
-                                  }}
-                                  className="text-secondary mt-2"
-                                >
-                                  <i class="fa-regular fa-calendar-days me-2"></i>
-                                  {shortDateFormate(item.date)}
-                                </p>
-                              </div>
-                              <span className="badge bg-secondary text-dark p-2 px-2 fs-6">
-                                {item.count}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
+                      <div
+                        className="spinner-border text-danger"
+                        role="status"
+                        style={{ width: "3rem", height: "3rem" }}
+                      ></div>
                     </>
                   ) : (
                     <>
-                      <div className="d-flex flex-column align-items-center justify-content-center p-4">
-                        <i
-                          className="bi bi-file-earmark text-danger"
-                          style={{ fontSize: "60px" }}
-                        ></i>
-                        <h5 className="text-danger mt-4">
-                          ไม่พบรายการที่ต้องอนุมัติ
-                        </h5>
-                      </div>
+                      {otCountByDate.length > 0 ? (
+                        <>
+                          {otCountByDate.map((item) => {
+                            return (
+                              <div
+                                className="card otReqCard"
+                                onClick={() => navigate("/working/OTApproval")}
+                              >
+                                <div className="d-flex align-items-center justify-content-between">
+                                  <div>
+                                    <h6 className="fw-bold">
+                                      จำนวนการขอโอที ที่คุณต้องทำการอนุมัติ
+                                    </h6>
+                                    <p
+                                      style={{
+                                        lineHeight: "0.8rem",
+                                        fontSize: "0.9rem",
+                                      }}
+                                      className="text-secondary mt-2"
+                                    >
+                                      <i class="fa-regular fa-calendar-days me-2"></i>
+                                      {shortDateFormate(item.date)}
+                                    </p>
+                                  </div>
+                                  <span className="badge bg-secondary text-dark p-2 px-2 fs-6">
+                                    {item.count}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </>
+                      ) : (
+                        <div>
+                          <div className="d-flex flex-column align-items-center justify-content-center p-4">
+                            <i
+                              className="bi bi-file-earmark text-danger"
+                              style={{ fontSize: "60px" }}
+                            ></i>
+                            <h5 className="text-danger mt-4">
+                              ไม่พบรายการที่รออนุมัติ
+                            </h5>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
