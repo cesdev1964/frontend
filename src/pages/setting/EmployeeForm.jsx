@@ -331,6 +331,12 @@ export default function EmployeeForm({ title, isEdit = false }) {
       // formData.append(`deductions[0].deductionTypeId`,"");
       // formData.append(`deductions[0].amount`, "");
       // formData.append(`deductions`, []);
+      Swal.fire({
+        title: "บันทึกข้อมูลไม่สำเร็จ",
+        text: "ไม่พบการเพิ่มข้อมูลการหักเงิน กรุณาเพิ่มรายการหักเงิน อย่างน้อย 1 รายการ",
+        icon: "error",
+      });
+      return;
     } else {
       listItem.forEach((item, index) => {
         formData.append(
@@ -350,7 +356,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     console.log("error from errorform", errorForm);
 
     if (Object.keys(errorTotal).length === 0) {
-
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",
@@ -417,7 +422,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
           <>
             <div className="employee-content p-4">
               <div className="row g-2">
-                <div className="col-lg-3 ">
+                <div className="col-lg-3">
                   <div className="employee-image-section">
                     <ImageComponent
                       imageSRC={preview || avatarUrl}
@@ -904,8 +909,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       </div>
                     </div>
 
-                    {/*error ที่เจอคือ มันจะ refrest เมื่อมีการกดปุ่ม  handleAddItem*/}
-
                     {/* ค่อยทำ */}
 
                     <div className="mt-3">
@@ -1017,14 +1020,18 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         )}
                       </div>
                     </div>
+                    <center>
+                      <div className="action-button">
+                        <SubmitOrCancelButton
+                          handleCancel={handleClear}
+                          handleSubmit={handleSubmit}
+                        />
+                      </div>
+                    </center>
                   </form>
                 </div>
               </div>
             </div>
-            <SubmitOrCancelButton
-              handleCancel={handleClear}
-              handleSubmit={handleSubmit}
-            />
           </>
         ) : (
           <>

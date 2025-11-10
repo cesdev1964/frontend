@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../../auth/AuthContext";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
 import Pagination from "../../components/Pagination";
 import Filter from "../../components/Filter";
-import InputTextField from "../../components/inputTextField";
 import { SearchDropdown } from "../../components/searchDropdown";
 import OTApproveCard from "../../components/OT/OTApprovalCard";
 import { useJob } from "../../hooks/jobStore";

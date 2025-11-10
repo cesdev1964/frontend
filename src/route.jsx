@@ -71,10 +71,6 @@ export default function RouterPage() {
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />, //ใช้เมื่อ user อยากเปลี่ยนรหัสผ่าน
         },
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
-        // {
-        //   path: "settings/employees",
-        //   element: <Employees title="จัดการข้อมูลพนักงาน" />,
-        // },
         {
           path: "settings/employees",
           element: <EmployeesTest title="จัดการข้อมูลพนักงาน" />,

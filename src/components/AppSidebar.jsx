@@ -98,7 +98,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                     className="nav-link dropdown-link"
                   >
                     <span className="icon">
-                      <i class="bi bi-file-earmark-plus"></i>
+                    <i className="bi bi-calendar-plus-fill"></i>
                     </span>
                     บันทึกโอที
                   </NavLink>
@@ -112,7 +112,7 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                       className="nav-link dropdown-link"
                     >
                       <span className="icon">
-                        <i class="bi bi-clipboard-check"></i>
+                        <i className="bi bi-calendar-check-fill"></i>
                       </span>
                       อนุมัติโอที
                     </NavLink>
@@ -152,6 +152,14 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                     <i className="bi bi-folder-fill"></i>
                   </span>{" "}
                   รายงานหลังประมวลผล
+                </NavLink>
+              </li>
+               <li>
+                <NavLink to="#" className="nav-link dropdown-link">
+                  <span className="icon">
+                    <i className="bi bi-calendar-week-fill"></i>
+                  </span>{" "}
+                  รายงานวันหยุดประจำปี
                 </NavLink>
               </li>
             </ul>

@@ -173,6 +173,7 @@ export default function OTApproveCard({ data,fetchData}) {
               ดำเนินการขอเมื่อ :{" "}
               <span className="OT-description-value">
                 {getDateAndTime(data?.requestedAt) ?? "xx-xx-xxxx / xx:xx"}
+                {/* {data?.requestedAt} */}
               </span>
             </p>
           </div>
@@ -216,7 +217,7 @@ export default function OTApproveCard({ data,fetchData}) {
             <p className="d-inline-flex justify-content-end gap-3 w-100 pe-3 mt-3">
               <button
                 className={`btn btn-outline-danger approval-btn text-danger`}
-                onClick={() => { hadleSubMitApproval(false);
+                onClick={() => {hadleSubMitApproval(false);
                 }}
               >
                 ไม่อนุมัติ

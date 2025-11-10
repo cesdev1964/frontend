@@ -51,7 +51,6 @@ export default function Flows({ title }) {
     flowData,
     flowIsLoading,
     createFlow,
-    flowErrorMessage,
     updateFlow,
   } = useFlow();
   const { getUserDropdown, userDropdown } = useUser();
@@ -89,7 +88,7 @@ export default function Flows({ title }) {
       await getFlowData();
       await getUserDropdown();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+       return;
     }
   }, [getFlowData, getUserDropdown]);
 
@@ -352,6 +351,33 @@ export default function Flows({ title }) {
     ]);
   };
 
+  const handleAllItem = (e) => {
+    e.preventDefault();
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการทั้งหมดใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `ใช่ ลบได้เลย"`,
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          setIsOpenNewApproveStep(false);
+          setListItem([]);
+        }
+      });
+  };
+
   return (
     <div>
       <nav aria-label="breadcrumb">
@@ -472,10 +498,7 @@ export default function Flows({ title }) {
                       <div className="d-flex justify-content-end w-100">
                         <button
                           className="btn btn-outline-primary mb-2"
-                          onClick={() => {
-                            setIsOpenNewApproveStep(false);
-                            setListItem([]);
-                          }}
+                          onClick={(e)=>handleAllItem(e)}
                         >
                           ลบทั้งหมด
                         </button>
