@@ -34,6 +34,7 @@ import {
   validateFormInput,
 } from "../../util/employeeFormValidate";
 import LoadingSpin from "../../components/loadingSpin";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 var photoName = "";
 var photoPath = "";
@@ -120,8 +121,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
       setIsLoading(false);
     } catch (error) {
       // alert("โหลด API ไม่สำเร็จ", error);
-      window.location.reload();
-      localStorage.clear();
+      <SessionExpiryModal/>
+      setIsLoading(false);
+
     }
   }, [
     getEducationDropdown,

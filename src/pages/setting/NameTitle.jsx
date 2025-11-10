@@ -57,7 +57,7 @@ export default function NameTitle({ title }) {
       try {
         await getTitleNameData();
       } catch (error) {
-        alert("ดึงข้อมูลไม่สำเร็จ", error);
+       return;
       }
     };
     fetchDataTable();

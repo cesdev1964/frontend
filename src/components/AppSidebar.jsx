@@ -154,8 +154,16 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                   รายงานหลังประมวลผล
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/reports/specialdailywagereport" className="nav-link dropdown-link">
+                  <span className="icon">
+                    <i className="bi bi-folder-fill"></i>
+                  </span>{" "}
+                  รายงานสรุปค่าแรงรายวันพิเศษ
+                </NavLink>
+              </li>
                <li>
-                <NavLink to="#" className="nav-link dropdown-link">
+                <NavLink to="/reports/holiday" className="nav-link dropdown-link">
                   <span className="icon">
                     <i className="bi bi-calendar-week-fill"></i>
                   </span>{" "}

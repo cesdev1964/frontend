@@ -60,7 +60,7 @@ export default function Roles({ title }) {
     try {
       await getRoleData();
     } catch (error) {
-      alert("ดึงข้อมูลไม่สำเร็จ", errorMessage);
+     return;
     }
   }, [getRoleData]);
 

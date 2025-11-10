@@ -6,7 +6,7 @@ import DetailItem from "../components/home/detailItem.jsx";
 import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
 import { useParams } from "react-router-dom";
-import { IDcardFormat, shortDateFormate, telephoneFormat } from "../util/inputFormat";
+import { decimalFormat, IDcardFormat, shortDateFormate, telephoneFormat } from "../util/inputFormat";
 import IsEmployeeStatusBadgeReact from "../util/isActiveBadge.jsx";
 import LoadingSpin from "../components/loadingSpin.jsx";
 import { useEducation } from "../hooks/educationStore.jsx";
@@ -385,7 +385,7 @@ export default function Profile({ title }) {
                                               "ไม่พบข้อมูล"}
                                           </td>
                                           <td className="text-end">
-                                            {item.amount.toFixed(2)}
+                                            {decimalFormat(item.amount)}
                                           </td>
                                         </tr>
                                       );
@@ -397,13 +397,13 @@ export default function Profile({ title }) {
                                 <tr className="bg-white border-top-3 fw-bold">
                                   <td>รวมทั้งหมด</td>
                                   <td className="text-end">
-                                    {empData?.deductions
+                                    {decimalFormat(empData?.deductions
                                       ?.reduce(
                                         (total, row) =>
                                           total + Number(row.amount),
                                         0
-                                      )
-                                      .toFixed(2)}
+                                      ))
+                                      }
                                   </td>
                                 </tr>
                               </tbody>

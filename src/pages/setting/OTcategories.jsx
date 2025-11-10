@@ -52,7 +52,7 @@ export default function OTCategories({ title }) {
     try {
       await getOtTypeData();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      return;
     }
   }, [getOtTypeData]);
 

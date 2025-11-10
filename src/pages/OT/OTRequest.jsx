@@ -10,7 +10,6 @@ import { useEmployee } from "../../hooks/employeeStore";
 import { useOTrequest } from "../../hooks/otRequestStore";
 import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import Pagination from "../../components/Pagination";
-import LoadingSpin from "../../components/loadingSpin";
 import handleDelete from "../../util/handleDelete";
 import Filter from "../../components/Filter";
 import InputTextField from "../../components/inputTextField";

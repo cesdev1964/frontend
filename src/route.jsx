@@ -30,6 +30,10 @@ import EmployeesTest from "./pages/setting/EmployeeTest";
 import CheckChangePassword from "./auth/CheckChangePassword";
 import OTRequest from "./pages/OT/OTRequest";
 import OTApproval from "./pages/OT/OTApproval";
+import Holiday from "./pages/reports/Holiday";
+
+import SpecialDailyWagereport from "./pages/reports/SpecialDailyWagereport";
+import SpecialDailyWageReportPDF from "./pages/reports/SpecialDailyWageReportPDF";
 
 export default function RouterPage() {
   const routes = useRoutes([
@@ -139,6 +143,19 @@ export default function RouterPage() {
         {
           path: "settings/flow",
           element: <Flows title="จัดการข้อมูลสายอนุมัติ" />,
+        },
+        // report
+        {
+          path: "reports/specialdailywagereport",
+          element: <SpecialDailyWagereport title="รายงานสรุปค่าแรงรายวันพิเศษ" />,
+        },
+        {
+          path: "reports/specialdailywagereport/downloadPDF",
+          element: <SpecialDailyWageReportPDF/>,
+        },
+         {
+          path: "reports/holiday",
+          element: <Holiday title="รายงานวันหยุดประจำปี" />,
         },
 
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },

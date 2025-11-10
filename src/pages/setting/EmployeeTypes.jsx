@@ -63,7 +63,7 @@ export default function EmployeeTypes({ title }) {
     try {
       await getEmployeeType();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+     return;
     }
   }, [getEmployeeType]);
 

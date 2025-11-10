@@ -9,6 +9,7 @@ import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
 import MainButton from "../../components/MainButton";
 import Swal from "sweetalert2";
 import { HttpStatusCode } from "axios";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 const token = localStorage.getItem("access_token");
 
 const EmployeesTest = ({ title }) => {
@@ -46,11 +47,7 @@ const EmployeesTest = ({ title }) => {
       await getEmployeeData();
     } catch (error) {
       // alert("โหลด API ไม่สำเร็จ", error);
-      Swal.fire({
-        title: "Seeion หมดอายุ",
-        text: "กรุณาเข้าสู่ระบบใหม่",
-        icon: "error",
-      });
+      return;
     
     }
   }, [getEmployeeData, location.state]);

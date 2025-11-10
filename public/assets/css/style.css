@@ -1037,6 +1037,10 @@ thead th:last-child {
   width: var(--btn-h);
   padding: 0;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--nav-text);
+  cursor: pointer;
 }
 
 /* ===== Filled variants (เหมือน .btn-*) ===== */
@@ -1784,7 +1788,6 @@ thead th:last-child {
   .power {
     width: 100%;
   }
-
 }
 
 @media (max-width: 570px) {
@@ -1831,6 +1834,9 @@ thead th:last-child {
   }
   .profile-box {
     width: 700px;
+  }
+  .holiday-box {
+    width: 900px;
   }
 }
 
@@ -1935,7 +1941,7 @@ thead th:last-child {
   #menter {
     line-height: 0.1;
   }
-    .approval-btn{
+  .approval-btn {
     width: 100%;
   }
 }
@@ -2090,10 +2096,10 @@ thead th:last-child {
     width: 100%;
   }
 
-  .action-button{
-  display: flex;
-  flex-direction: column;
-}
+  .action-button {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 992px) {
@@ -2417,12 +2423,12 @@ thead th:last-child {
   line-height: 0.3;
   color: var(--logout-bg);
 }
-.OT-card-container {
+.OT-card-container,
+.holiday-card-container {
   border: 1px solid var(--border);
   padding: 9px;
   border-radius: 10px;
   margin-bottom: 10px;
-  /* transition: box-shadow 0.3s ease */
 }
 .OT-card-container:hover {
   border: 3px solid var(--pink-active);
@@ -2499,19 +2505,51 @@ ul.pagination a.page-link:hover {
 }
 
 /* otReq in Home page */
-.otReqCard{
-  border:none;
+.otReqCard {
+  border: none;
   margin-bottom: 10px;
   border-radius: 6px;
   padding: 15px;
   width: 100%;
 }
 
-.otReqCard:hover{
+.otReqCard:hover {
   border-left: 5px solid #ff7a88;
   cursor: pointer;
 }
 
-.action-button{
+.action-button {
   margin-top: 30px;
 }
+
+.report-daily-wage {
+  max-width: 1500px;
+  overflow-x: auto;
+}
+
+/* table */
+.detail-table {
+  font-size: 14px;
+  border: 2px solid #dee2e6;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.detail-table th {
+  background-color: #ff7a88;
+  padding: 12px 8px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.report--banner{
+  border:none;
+  background: linear-gradient(90deg, var(--nav-start), var(--nav-end));
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+/* my-4 bg-danger p-4  rounded-3 d-flex justify-content-between gap-4 border-start-4 */
