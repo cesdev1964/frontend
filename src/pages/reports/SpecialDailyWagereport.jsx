@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
 import DownloadPDFButton from "../../components/DownloadPDFButton";
 import SpecialDailyWageReportPDF from "./SpecialDailyWageReportPDF";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 export default function SpecialDailyWagereport({ title }) {
+
   return (
     <div>
       <nav aria-label="breadcrumb">
@@ -94,7 +96,7 @@ export default function SpecialDailyWagereport({ title }) {
                 <td>446.40</td>
                 <td className="fw-bold">4,371.00</td>
               </tr>
-               <tr className="text-dark bg-white ">
+              <tr className="text-dark bg-white ">
                 <td></td>
                 <td>วันทำงาน (วัน)</td>
                 <td></td>
@@ -110,7 +112,7 @@ export default function SpecialDailyWagereport({ title }) {
               </tr>
             </tbody>
             <tfoot>
-              <tr >
+              <tr>
                 <th colSpan="5" className="text-center bg-white">
                   จำนวนเงินรวม
                 </th>
@@ -118,7 +120,10 @@ export default function SpecialDailyWagereport({ title }) {
                   3,720.00
                 </th>
                 <th colSpan="5" className="text-center bg-white"></th>
-                <th colSpan="1" className="text-center bg-white fw-bold text-decoration-underline">
+                <th
+                  colSpan="1"
+                  className="text-center bg-white fw-bold text-decoration-underline"
+                >
                   4,371.00
                 </th>
               </tr>
@@ -142,7 +147,10 @@ export default function SpecialDailyWagereport({ title }) {
                 <th colSpan="11" className="bg-white text-end ">
                   รวมเป็นเงินทั้งสิ้น
                 </th>
-                <th colSpan="1" className="text-center bg-white fw-bold text-decoration-underline">
+                <th
+                  colSpan="1"
+                  className="text-center bg-white fw-bold text-decoration-underline"
+                >
                   3,720.00
                 </th>
               </tr>

@@ -65,7 +65,7 @@ export default function Permissions({ title }) {
     try {
       await getPermission();
     } catch (error) {
-      alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+      return;
     }
   }, [getPermission]);
 

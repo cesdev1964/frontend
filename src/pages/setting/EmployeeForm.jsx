@@ -80,7 +80,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     createEmployee,
     updateEmployee,
     employeeIsLoading,
-    employeeErrorMessage,
     getEmployeeById,
     employeeById,
   } = useEmployee();
@@ -121,7 +120,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
       setIsLoading(false);
     } catch (error) {
       // alert("โหลด API ไม่สำเร็จ", error);
-      <SessionExpiryModal/>
       setIsLoading(false);
 
     }
@@ -298,11 +296,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
     return newValue;
   };
 
-  const isShowDateTypeOnly = (datetime) => {
-    if (datetime) {
-      return new Date(datetime).toISOString().split("T")[0];
-    } else return null;
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -423,14 +417,14 @@ export default function EmployeeForm({ title, isEdit = false }) {
         {!isLoading ? (
           <>
             <div className="employee-content p-4">
-              <div className="row g-2">
-                <div className="col-lg-3">
+              <div className="row g-5">
+                <div className="col-lg-3 mt-5">
                   <div className="employee-image-section">
                     <ImageComponent
                       imageSRC={preview || avatarUrl}
                       borderRadius="50%"
-                      height="120px"
-                      width="120px"
+                      height="170px"
+                      width="170px"
                       alt="profile-avatar"
                       objectfit="cover"
                       border="2px solid rgba(90, 45, 45, 0.15)"
@@ -460,11 +454,11 @@ export default function EmployeeForm({ title, isEdit = false }) {
                 >
                   <form>
                     {/* ข้อมูลทั่วไป */}
-                    <div className="mb-3">
+                    <div className="my-4">
                       <h5 className="group-label"># ข้อมูลทั่วไป</h5>
                       <div className="border-top border-danger my-3"></div>
                       <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-4">
+                        <div className="col-md-6 col-lg-6">
                           <label className="form-label">
                             รหัสพนักงาน
                             <span style={{ color: "red" }}>*</span>
@@ -485,7 +479,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.employeeCode}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-6 col-lg-4">
+                        <div className="col-md-6 col-lg-6">
                           <label className="form-label">
                             คำนำหน้า
                             <span style={{ color: "red" }}>*</span>
@@ -552,7 +546,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.lastname}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-8 col-lg-4">
+                        <div className="col-md-12 col-lg-4">
                           <label className="form-label">
                             วันเดือนปีเกิด
                             <span style={{ color: "red" }}>*</span>
@@ -592,7 +586,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                       </div>
                       <div className="row form-spacing g-2">
-                        <div className="col-md-6 col-lg-5">
+                        <div className="col-md-6 col-lg-6">
                           <label className="form-label">
                             ระดับการศึกษา
                             <span style={{ color: "red" }}>*</span>
@@ -618,7 +612,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.educationId}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-6 col-lg-4">
+                        <div className="col-md-6 col-lg-6">
                           <label className="form-label">
                             เบอร์โทรศัพท์
                             <span style={{ color: "red" }}>*</span>
@@ -645,7 +639,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                       </div>
                       <div className="row form-spacing g-2">
-                        <div className="col-lg-6">
+                        <div className="col-lg-12">
                           <label className="form-label">
                             เลขบัตรประชาชน
                             <span style={{ color: "red" }}>*</span>
@@ -734,7 +728,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.jobId}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-8 col-lg-4">
+                        <div className="col-md-12 col-lg-4">
                           <label className="form-label">
                             ตำแหน่ง
                             <span style={{ color: "red" }}>*</span>
@@ -789,7 +783,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                           ) : null}
                         </div>
 
-                        <div className="col-md-7 col-lg-4">
+                        <div className="col-md-12 col-lg-4">
                           <label className="form-label">
                             อัตราค่าจ้าง
                             <span style={{ color: "red" }}>*</span>
@@ -886,7 +880,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.endDate}</p>
                           ) : null}
                         </div> */}
-                        <div className="col-md-5 col-lg-4">
+                        <div className="col-md-12 col-lg-4">
                           <label className="form-label">
                             สถานะ
                             <span style={{ color: "red" }}>*</span>

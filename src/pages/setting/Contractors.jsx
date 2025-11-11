@@ -11,6 +11,7 @@ import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import handleDelete from "../../util/handleDelete";
 import MainButton from "../../components/MainButton";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -21,6 +22,8 @@ export const tableHead = [
 
 export default function Contrators({ title }) {
   useTitle(title);
+
+  
   const tableRef = useRef();
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);

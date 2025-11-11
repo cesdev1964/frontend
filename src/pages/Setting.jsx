@@ -7,10 +7,10 @@ import SearchBox from "../components/SearchBox";
 import SessionExpiryModal from "../components/modal/SessionExpiryModal";
 
 const Settings = ({ title }) => {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    return <SessionExpiryModal/>
-  }
+  // const token = localStorage.getItem("access_token");
+  // if (!token) {
+  //   return <SessionExpiryModal/>
+  // }
   useTitle(title);
   const navigate = useNavigate();
   const cardColor = [

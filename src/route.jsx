@@ -34,15 +34,22 @@ import Holiday from "./pages/reports/Holiday";
 
 import SpecialDailyWagereport from "./pages/reports/SpecialDailyWagereport";
 import SpecialDailyWageReportPDF from "./pages/reports/SpecialDailyWageReportPDF";
+import SessionExpiryModal from "./components/modal/SessionExpiryModal";
 
 export default function RouterPage() {
+   const token = localStorage.getItem("access_token");
+    // if (!token) {
+    //   return <SessionExpiryModal/>
+    // }
+
   const routes = useRoutes([
     {
       path: "/",
       element: (
         <RequireAuth>
           <CheckChangePassword>
-            <MainLayout />
+            {token?<MainLayout /> : <SessionExpiryModal/>}
+             {/* <MainLayout /> */}
           </CheckChangePassword>
         </RequireAuth>
       ),

@@ -11,10 +11,6 @@ export default function Home({ title }) {
 
   useTitle(title);
 
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    return <SessionExpiryModal />;
-  }
 
   return (
     <div>

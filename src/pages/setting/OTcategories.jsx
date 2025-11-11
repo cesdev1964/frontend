@@ -15,6 +15,7 @@ import { useOTType } from "../../hooks/otTypeStore";
 import MainButton from "../../components/MainButton";
 import { handleCancel } from "../../util/handleCloseModal";
 import InputTextField from "../../components/inputTextField";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -39,7 +40,7 @@ export default function OTCategories({ title }) {
     createOtType,
     updateOtType,
     getOtTypeById,
-    otTypeById
+    otTypeById,
   } = useOTType();
 
   const [input, setInput] = useState({
@@ -52,6 +53,7 @@ export default function OTCategories({ title }) {
     try {
       await getOtTypeData();
     } catch (error) {
+      <SessionExpiryModal />;
       return;
     }
   }, [getOtTypeData]);
@@ -61,15 +63,15 @@ export default function OTCategories({ title }) {
   }, [fetchDataTable]);
 
   useEffect(() => {
-      if (otTypeById) {
-        setInput((prevData) => ({
-          ...prevData,
-          OTtypecode:  otTypeById.otTypeCode ?? "",
-          OTtypename: otTypeById.otTypeName ?? "",
-          isActive : otTypeById.isActive ?? false
-        }));
-      }
-    }, [otTypeById]);
+    if (otTypeById) {
+      setInput((prevData) => ({
+        ...prevData,
+        OTtypecode: otTypeById.otTypeCode ?? "",
+        OTtypename: otTypeById.otTypeName ?? "",
+        isActive: otTypeById.isActive ?? false,
+      }));
+    }
+  }, [otTypeById]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -339,15 +341,15 @@ export default function OTCategories({ title }) {
                         />
                       </div>
                       <div className="col-12">
-                      <InputTextField
-                        onChange={handleChangeInput}
-                        isRequire={true}
-                        label="ชื่อโอที"
-                        name="OTtypename"
-                        placeholder="กรอกชื่อโอที"
-                        value={input.OTtypename}
-                        error={error.OTtypename}
-                      />
+                        <InputTextField
+                          onChange={handleChangeInput}
+                          isRequire={true}
+                          label="ชื่อโอที"
+                          name="OTtypename"
+                          placeholder="กรอกชื่อโอที"
+                          value={input.OTtypename}
+                          error={error.OTtypename}
+                        />
                       </div>
 
                       <div className=" d-flex justify-content-between align-items-center w-100 mt-2">

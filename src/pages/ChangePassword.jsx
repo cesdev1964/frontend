@@ -5,8 +5,10 @@ import Swal from "sweetalert2";
 import { useAuth } from "../auth/AuthContext";
 import { useUser } from "../hooks/userStore";
 import { useNavigate } from "react-router-dom";
+import SessionExpiryModal from "../components/modal/SessionExpiryModal";
 
-const ChangePassword = ({ title ,isForce = false}) => {
+const ChangePassword = ({ title, isForce = false }) => {
+
   useTitle(title);
 
   const [inputData, setInputData] = useState({
@@ -19,7 +21,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { authdata ,logout} = useAuth();
+  const { authdata, logout } = useAuth();
   const { changePassword, userError, userIsLoading } = useUser();
   const navigate = useNavigate();
 
@@ -93,11 +95,8 @@ const ChangePassword = ({ title ,isForce = false}) => {
     //api post
 
     if (Object.keys(errorList).length === 0) {
-      const response = await changePassword(
-        reqData,
-        authdata?.publicUserId
-      );
-      
+      const response = await changePassword(reqData, authdata?.publicUserId);
+
       if (response.success) {
         setIsSubmit(true);
         Swal.fire({
@@ -105,14 +104,16 @@ const ChangePassword = ({ title ,isForce = false}) => {
           icon: "success",
           draggable: true,
           buttonsStyling: "w-100",
-        }).then(()=>{
+        }).then(() => {
           // console.log("response",response)
-          if(userIsLoading === false){
+          if (userIsLoading === false) {
             logout();
           }
         });
         ClearInput();
-        {/* สำเร็จแล้ว ให้ทำการ nevigate ไปหน้า home */}
+        {
+          /* สำเร็จแล้ว ให้ทำการ nevigate ไปหน้า home */
+        }
       } else {
         Swal.fire({
           index: "เปลี่ยนรหัสผ่านไม่สำเร็จไม่สำเร็จ",
@@ -279,7 +280,7 @@ const ChangePassword = ({ title ,isForce = false}) => {
                   >
                     ยกเลิก
                   </button>
-                  
+
                   <button
                     className="btn btn-primary"
                     type="submit"

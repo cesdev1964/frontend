@@ -2,21 +2,22 @@ import { React, useState, useEffect, useCallback } from "react";
 import HeaderPage from "../../components/HeaderPage";
 import { useTitle } from "../../hooks/useTitle";
 import LoadingSpin from "../../components/loadingSpin";
-
 import HolidayCard from "../../components/horiday/HolidayCard";
 import HolidayYearSlider from "../../components/horiday/HolidayYearSlider";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+
+
 export default function Weekend({ title }) {
   const year = new Date().getFullYear() + 543;
   useTitle(title);
+
+
   const [isLoading, setIsLoading] = useState(false);
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [yearDisplay, setDisplayTime] = useState(year);
 
   const navigateYear = (direction) => {
     setDisplayTime(yearDisplay + direction);
-    // console.log("direction", direction);
-
-    // console.log("year", yearDisplay);
   };
   const handleToggleAccordian = () => {
     setOnClickAccordian((prev) => !prev);

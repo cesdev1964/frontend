@@ -13,8 +13,14 @@ import Pagination from "../../components/Pagination";
 import handleDelete from "../../util/handleDelete";
 import Filter from "../../components/Filter";
 import InputTextField from "../../components/inputTextField";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 export default function OTRequest({ title }) {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    return <SessionExpiryModal/>
+  }
+
   useTitle(title);
   const { authdata } = useAuth();
   const [otData, setOtData] = useState([]);
@@ -62,7 +68,9 @@ export default function OTRequest({ title }) {
         setOtData(otById);
       }
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      // <SessionExpiryModal/>
+      // return;
+      // alert("โหลด API ไม่สำเร็จ", error);
     }
   }, [authdata.publicEmployeeId]);
 

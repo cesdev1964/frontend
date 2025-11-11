@@ -30,9 +30,7 @@ export default function DeductionTypes({ title }) {
   const {
     deductionData,
     deductionIsLoading,
-    deductionErrorMessage,
     deductionById,
-    deductionDropdown,
     getDeductionData,
     getDeductionById,
     createDeduction,
@@ -43,7 +41,7 @@ export default function DeductionTypes({ title }) {
     try {
       await getDeductionData();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      return;
     }
   }, [getDeductionData]);
 

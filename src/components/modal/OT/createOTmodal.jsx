@@ -33,7 +33,8 @@ export default function CreateOTmodal({
       //   await getJobDropdown();
       await getOtTypeDropdown();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      // alert("โหลด API ไม่สำเร็จ", error);
+      return;
     }
   }, [getOtTypeDropdown]);
 

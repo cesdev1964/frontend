@@ -45,7 +45,7 @@ export default function Educations({ title }) {
     try {
       await getEducationData();
     } catch (error) {
-      alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+     return;
     }
   }, [getEducationData]);
 

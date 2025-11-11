@@ -94,7 +94,7 @@ export default function Flows({ title }) {
 
   useEffect(() => {
     fetchDataTable();
-    console.log("fetch data", flowData);
+    // console.log("fetch data", flowData);
   }, []);
 
   useEffect(() => {

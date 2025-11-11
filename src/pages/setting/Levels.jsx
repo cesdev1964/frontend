@@ -53,7 +53,7 @@ export default function Levels({ title }) {
     try {
       await getLevelData();
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+     return;
     }
   }, [getLevelData]);
 

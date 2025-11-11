@@ -12,6 +12,7 @@ import { usePermission } from "../../../hooks/permissionStore";
 import LoadingSpin from "../../../components/loadingSpin";
 import SearchBox from "../../../components/SearchBox";
 import {useRole} from "../../../hooks/roleStore";
+import SessionExpiryModal from "../../../components/modal/SessionExpiryModal";
 
 export const tableHead = [{ colName: "รหัสสิทธิ์เข้าใช้งาน" }];
 export default function RolePermission({ title }) {
@@ -23,6 +24,8 @@ export default function RolePermission({ title }) {
   const [search2, setSearch2] = useState("");
   useTitle(title);
 
+
+  
   const {
     rolePermissionisLoading,
     rolePermissiondataById,
@@ -43,7 +46,8 @@ export default function RolePermission({ title }) {
       await getPermission();
       await getRoleByIdData(roleid);
     } catch (error) {
-      alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+      // alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
+      return;
     }
   }, [getRolePermissionByRoleId, getRolePermission,getRoleByIdData]);
 

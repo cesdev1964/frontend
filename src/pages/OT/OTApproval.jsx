@@ -7,8 +7,13 @@ import { SearchDropdown } from "../../components/searchDropdown";
 import OTApproveCard from "../../components/OT/OTApprovalCard";
 import { useJob } from "../../hooks/jobStore";
 import { useOTApprove } from "../../hooks/otApproveStore";
+import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 
 export default function OTApproval({ title }) {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    return <SessionExpiryModal />;
+  }
   useTitle(title);
   const [otData, setOtData] = useState([]);
   const [onClickAccordian, setOnClickAccordian] = useState(true);
@@ -24,7 +29,7 @@ export default function OTApproval({ title }) {
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { getOTApprovalPending,otApproveData } =useOTApprove();
+  const { getOTApprovalPending, otApproveData } = useOTApprove();
   // การ fetch data
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -33,7 +38,7 @@ export default function OTApproval({ title }) {
       await getJobDropdownAll();
       setIsLoading(false);
     } catch (error) {
-      alert("โหลด API ไม่สำเร็จ", error);
+      // alert("โหลด API ไม่สำเร็จ", error);
       setIsLoading(false);
     }
   }, [getOTApprovalPending, getJobDropdownAll]);

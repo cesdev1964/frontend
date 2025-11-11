@@ -95,8 +95,7 @@ export default function Users({ title }) {
       await getUserData();
       await getTitleNameData();
     } catch (error) {
-      window.location.reload();
-      localStorage.clear();
+        return;
     }
   }, [getRoleData, getUserData, getTitleNameData]);
 
@@ -309,7 +308,7 @@ export default function Users({ title }) {
     }
   };
 
-  const handleSubmit = async (e,modalId) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
 
     const reqAddData = {
@@ -726,7 +725,7 @@ export default function Users({ title }) {
 
               <SubmitOrCancelButton
                 handleCancel={() => handleCancel("addModal")}
-                handleSubmit={(e)=>handleSubmit(e,"addModal")}
+                handleSubmit={(e) => handleSubmit(e, "addModal")}
                 isLoading={userIsLoading}
               />
             </div>
