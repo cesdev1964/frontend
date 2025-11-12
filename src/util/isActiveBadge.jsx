@@ -58,3 +58,19 @@ export function OTapproveStatusBadge({ status }) {
       );
   }
 }
+
+export function AnnouncementStatusBadge({status}) {
+  switch (status) {
+    case "Published":
+      return (<span class="badge-style badge-stillWork">Published</span>);
+
+    case "Draft":
+      return (<span class="badge-style badge-unknown">Draft</span>);
+
+    case "Archived":
+      return (<span class="badge-style badge-formal">Archived</span>);
+
+    default:
+      return (<span class="badge-style badge-leave">Unknown</span>);
+  }
+}

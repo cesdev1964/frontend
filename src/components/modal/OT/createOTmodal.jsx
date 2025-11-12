@@ -189,28 +189,6 @@ export default function CreateOTmodal({
                   <p className="text-danger">{error.otTypeId}</p>
                 ) : null}
               </div>
-              {/* <div className="col-12">
-                      <label className="form-label">
-                        หน่วยงาน
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SearchDropdown
-                        data={jobDropdown}
-                        handleSelectChange={(selected) =>
-                          handleSelectChange("jobId", selected)
-                        }
-                        placeholder="เลือกหน่วยงาน"
-                        value={
-                          jobDropdown.find((i) => i.value === input.jobId) || null
-                        }
-                        className={`${
-                          error.jobId ? "border border-danger rounded-2" : ""
-                        }`}
-                      />
-                      {error.jobId ? (
-                        <p className="text-danger">{error.jobId}</p>
-                      ) : null}
-                    </div> */}
             </div>
             <div className="row form-spacing g-2">
               <div className="col-6">

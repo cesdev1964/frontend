@@ -146,7 +146,7 @@ const Settings = ({ title }) => {
     },
     {
       page: "6",
-      path: "#",
+      path: "/settings/announcement",
       icon: "fa-solid fa-newspaper",
       color: cardColor[5],
       title: "ข่าวสาร",

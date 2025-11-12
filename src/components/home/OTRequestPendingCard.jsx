@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useOTApprove } from "../../hooks/otApproveStore";
-import FlowIcon from "../../assets/icon/FlowIcon";
 import { shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";
 
@@ -101,7 +100,7 @@ export default function OTRequestPendingCard() {
                                       {shortDateFormate(item.date)}
                                     </p>
                                   </div>
-                                  <span className="badge bg-secondary text-dark p-2 px-2 fs-6">
+                                  <span className="badge border border-danger bg-danger text-dark p-2 px-2 fs-6">
                                     {item.count}
                                   </span>
                                 </div>

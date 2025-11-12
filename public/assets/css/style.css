@@ -38,6 +38,29 @@
 
   --transitionLength: 0.4s;
   --transitionTiming: ease;
+
+  /* bg badge */
+  --isActive-bg: #e7f6da;
+  --unActive-bg: #ffebeb;
+  --waiting-bg: #f6f8d5;
+  --formal-bg: #dcf2f1;
+  --unknown-bg: #f5f5f5;
+
+  /* border color badge */
+
+  --isActive-border: #9dad8e;
+  --unActive-border: #ff6f80;
+  --waiting-border: #ffc107;
+  --formal-border: #7fc7d9;
+  --unknown-border: #808080;
+
+  /* text color badge */
+
+  --isActive-text: #476829;
+  --unActive-text: #ff7b7b;
+  --waiting-text: #ffc107;
+  --formal-text: #0b60b0;
+  --unknown-text: #808080;
 }
 
 * {
@@ -629,21 +652,27 @@ body {
   max-width: fit-content;
 }
 .badge-stillWork {
-  background: #e7f6da;
-  color: #476829;
-  border: 1px solid #9dad8e;
+  background: var(--isActive-bg);
+  color: var(--isActive-text);
+  border: 1px solid var(--isActive-border);
 }
 
 .badge-leave {
-  background: #ffebeb;
-  color: #ff7b7b;
-  border: 1px solid #ff6f80;
+  background: var(--unActive-bg);
+  color: var(--unActive-text);
+  border: 1px solid var(--unActive-text);
 }
 
 .badge-unknown {
-  background: #f5f5f5;
-  color: #808080;
-  border: 1px solid #808080;
+  background: var(--unknown-bg);
+  color: var(--unknown-text);
+  border: 1px solid var(--unknown-border);
+}
+
+.badge-formal {
+  background: var(--formal-bg);
+  color: var(--formal-text);
+  border: 1px solid var(--formal-border);
 }
 
 .badge-middle {
@@ -1890,6 +1919,9 @@ thead th:last-child {
   .modal-fullscreen-sm-down .modal-footer {
     border-radius: 0;
   }
+  .item-flex {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -2374,6 +2406,12 @@ thead th:last-child {
   width: 100%;
 }
 
+.filter-container:hover {
+  
+  border: 1px solid var(--rose-btm);
+  cursor: pointer;
+}
+
 /* สำหรับหน้าการขอ OT */
 
 .totalOTBanner {
@@ -2424,7 +2462,8 @@ thead th:last-child {
   color: var(--logout-bg);
 }
 .OT-card-container,
-.holiday-card-container {
+.holiday-card-container,
+.announment-card-container {
   border: 1px solid var(--border);
   padding: 9px;
   border-radius: 10px;
@@ -2542,8 +2581,8 @@ ul.pagination a.page-link:hover {
   text-align: center;
 }
 
-.report--banner{
-  border:none;
+.report--banner {
+  border: none;
   background: linear-gradient(90deg, var(--nav-start), var(--nav-end));
   display: flex;
   justify-content: space-between;
@@ -2552,4 +2591,71 @@ ul.pagination a.page-link:hover {
   margin-bottom: 20px;
 }
 
-/* my-4 bg-danger p-4  rounded-3 d-flex justify-content-between gap-4 border-start-4 */
+.item-flex {
+  display: flex;
+  gap: 10px;
+}
+
+.announcement-box {
+  background-color: white;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 6px;
+}
+.file-upload-area {
+  border: 2px dashed var(--sidebar-muted);
+  border-radius: 16px;
+  padding: 35px 30px;
+  text-align: center;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.file-upload-area::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.05) 0%,
+    rgba(255, 142, 83, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.file-upload-area:hover {
+  border-color: var(--pink-active);
+  transition: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 207, 107, 0.12);
+}
+.file-upload-area:hover::before {
+  opacity: 1;
+}
+
+.uploadIcon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--coral-top) 0%, var(--pink-active) 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.25),
+    0 4px 12px rgba(255, 107, 107, 0.15);
+}
+
+.upload-text{
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.file-input{
+  display: none;
+}

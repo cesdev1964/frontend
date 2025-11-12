@@ -35,12 +35,12 @@ import Holiday from "./pages/reports/Holiday";
 import SpecialDailyWagereport from "./pages/reports/SpecialDailyWagereport";
 import SpecialDailyWageReportPDF from "./pages/reports/SpecialDailyWageReportPDF";
 import SessionExpiryModal from "./components/modal/SessionExpiryModal";
+import Announcement from "./pages/Announcement";
+import AnnouncementSetting from "./pages/setting/Announmencement";
+import AnnounmencementForm from "./pages/setting/AnnounmencementForm";
 
 export default function RouterPage() {
-   const token = localStorage.getItem("access_token");
-    // if (!token) {
-    //   return <SessionExpiryModal/>
-    // }
+  const token = localStorage.getItem("access_token");
 
   const routes = useRoutes([
     {
@@ -48,8 +48,7 @@ export default function RouterPage() {
       element: (
         <RequireAuth>
           <CheckChangePassword>
-            {token?<MainLayout /> : <SessionExpiryModal/>}
-             {/* <MainLayout /> */}
+            {token ? <MainLayout /> : <SessionExpiryModal />}
           </CheckChangePassword>
         </RequireAuth>
       ),
@@ -69,15 +68,15 @@ export default function RouterPage() {
           path: "working/OTRequest",
           element: <OTRequest title="บันทึกโอที" />,
         },
-         {
+        {
           path: "working/OTApproval",
           element: <OTApproval title="อนุมัติโอที" />,
         },
         {
           path: "forchChangePassword",
-          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" isForce = {true}/>, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน
+          element: <ChangePassword title="เปลี่ยนรหัสผ่าน" isForce={true} />, //ลงทะเบียนครั้งแรกให้ไปที่หน้า เปลี่ยนรหัสผ่าน
         },
-         {
+        {
           path: "changePassword",
           element: <ChangePassword title="เปลี่ยนรหัสผ่าน" />, //ใช้เมื่อ user อยากเปลี่ยนรหัสผ่าน
         },
@@ -151,18 +150,37 @@ export default function RouterPage() {
           path: "settings/flow",
           element: <Flows title="จัดการข้อมูลสายอนุมัติ" />,
         },
+        {
+          path: "settings/announcement",
+          element: <AnnouncementSetting title="จัดการข้อมูลข่าวสาร" />,
+        },
+        {
+          path: "settings/announcement/form",
+          element: <AnnounmencementForm title="เพิ่มข้อมูลข่าวสาร" isEdit={false}/>,
+        },
+        {
+          path: "settings/announcement/form/:publicAnnouncementId",
+          element: <AnnounmencementForm title="แก้ไขข้อมูลข่าวสาร" isEdit={true}/>,
+        },
         // report
         {
           path: "reports/specialdailywagereport",
-          element: <SpecialDailyWagereport title="รายงานสรุปค่าแรงรายวันพิเศษ" />,
+          element: (
+            <SpecialDailyWagereport title="รายงานสรุปค่าแรงรายวันพิเศษ" />
+          ),
         },
         {
           path: "reports/specialdailywagereport/downloadPDF",
-          element: <SpecialDailyWageReportPDF/>,
+          element: <SpecialDailyWageReportPDF />,
         },
-         {
+        {
           path: "reports/holiday",
           element: <Holiday title="รายงานวันหยุดประจำปี" />,
+        },
+        {
+          path: "announcement/:publicAnnouncementId",
+          // path: "announcement",
+          element: <Announcement title="ข้อมูลข่าวสาร" />,
         },
 
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },

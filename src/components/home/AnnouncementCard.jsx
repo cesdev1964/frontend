@@ -1,19 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { mockNews } from "../../MockData";
-import SearchBox from "../SearchBox";
+import { useAnnounments } from "../../hooks/announcementsStore";
+import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
+import { useNavigate } from "react-router-dom";
 
 export default function AnnouncementCard() {
   const [newsdata, setNewData] = useState([]);
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [search, setSearch] = useState("");
+  const { getAnnounmentData, announmentData } = useAnnounments();
+  const navigate = useNavigate();
+
+  const fetchDataTable = useCallback(async () => {
+    try {
+      await getAnnounmentData();
+    } catch (error) {
+      return;
+    }
+  }, [getAnnounmentData]);
+
   useEffect(() => {
-    setNewData(mockNews);
-  }, [newsdata]);
+    fetchDataTable();
+  }, [fetchDataTable]);
+
+  useEffect(() => {
+    if (!announmentData) return;
+    setNewData(announmentData);
+  }, [announmentData]);
 
   const filterItemFromSearch = newsdata.filter((item) => {
     if (
-      item.header.toLocaleLowerCase().includes(search) ||
-      item.content.toLocaleLowerCase().includes(search)
+      item.title.toLocaleLowerCase().includes(search) ||
+      item.content.toLocaleLowerCase().includes(search) ||
+      item.status.toLocaleLowerCase().includes(search) ||
+      item.summary.toLocaleLowerCase().includes(search)
     ) {
       return item;
     }
@@ -38,7 +58,7 @@ export default function AnnouncementCard() {
             for="accordion-trigger-1"
           >
             <i class="fa-solid fa-newspaper me-2 mb-1"></i>
-            <strong>ข่าวประกาศ</strong>
+            <strong>ข้อมูลข่าวสาร</strong>
           </label>
           <section class="accordion-animation-wrapper">
             <div class="accordion-animation">
@@ -46,11 +66,10 @@ export default function AnnouncementCard() {
                 <div class="accordion-content">
                   <div className="search-box">
                     <div className="searchBar me-3">
-                      {/* <i className="bi bi-search text-muted searchIcon"></i> */}
                       <input
                         type="text"
                         autoComplete="current-password"
-                        placeholder="ค้นหาข่าวประกาศ"
+                        placeholder="ค้นหาข้อมูลข่าวสาร"
                         className={`searchInput form-control`}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -71,23 +90,29 @@ export default function AnnouncementCard() {
                       <>
                         {filterItemFromSearch.map((item, index) => (
                           <div
-                            className="w-100 card p-3 border-start-4 rounded-3 mb-3"
-                            style={{ borderLeft: "5px solid #ff7a88" }}
+                            className="w-100 card p-3 border-start-4 rounded-3 mb-3 otReqCard"
                             key={index}
+                            onClick={() =>
+                              navigate(
+                                `/announcement/${item.publicAnnouncementId}`
+                              )
+                            }
                           >
-                            <h5>{item.header}</h5>
-                            <p
-                              style={{
-                                lineHeight: "0.6rem",
-                                fontSize: "0.8rem",
-                              }}
-                              className="text-secondary"
-                            >
-                              <i class="fa-regular fa-calendar-days me-2"></i>
-                              {item.postDate} ({item.postTime})
+                            <div className="d-flex align-items-center justify-content-between">
+                              <h5>{item.title}</h5>
+                              <span className="badge  text-dark p-2 px-2 fs-6">
+                                <i class="bi bi-paperclip me-2"></i>{item.attachmentCount}
+                              </span>
+                            </div>
+                            <p className="OT-description-label mt-3">
+                              {" "}
+                              วันที่ลงข่าวสาร :{" "}
+                              <span className="OT-description-value">
+                                {shortDateFormate(item.publishedAt)}
+                              </span>
                             </p>
                             <p style={{ fontSize: "0.9rem" }} className="ps-3">
-                              {item.content}
+                              {item.summary}
                             </p>
                           </div>
                         ))}

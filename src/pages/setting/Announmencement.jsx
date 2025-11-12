@@ -5,45 +5,65 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
-import { Link } from "react-router-dom";
-import { useContrator } from "../../hooks/contratorStore";
-import DataTableComponent from "../../components/DatatableComponent";
-import { isActiveBadge } from "../../util/isActiveBadge";
-import handleDelete from "../../util/handleDelete";
+import { Link,NavLink,useNavigate } from "react-router-dom";
 import MainButton from "../../components/MainButton";
-
+import { useDeduction } from "../../hooks/deductionTypeStore";
+import DataTableComponent from "../../components/DatatableComponent";
+import { handleCancel } from "../../util/handleCloseModal";
+import { useAnnounments } from "../../hooks/announcementsStore";
+import { shortDateFormate } from "../../util/inputFormat";
+import { isAnnouncementStatusBadge } from "../../util/isActiveBadge";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
-  { index: 1, colName: "ชื่อผู้รับเหมา" },
-  { index: 2, colName: "เปิดใช้งาน" },
-  { index: 3, colName: "การจัดการ" },
+  { index: 1, colName: "หัวข้อข่าว" },
+  { index: 2, colName: "สถานะข่าว" },
+  { index: 3, colName: "วันที่ลงข่าว" },
+  { index: 4, colName: "จำนวนไฟล์แนป" },
+  { index: 5, colName: "การจัดการ" },
 ];
 
-export default function Contrators({ title }) {
+export default function AnnouncementSetting({ title }) {
   useTitle(title);
-
-  
   const tableRef = useRef();
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลผู้รับเหมา");
-  const [editmode, setEditMode] = useState(false);
+  const [addBtnName, setAddBtnName] = useState(title);
   const [getId, setGetId] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const {
+    getAnnountmentById,
+    announmentById,
+    getAnnounmentData,
+    announmentData,
+    announmentIsLoading,
+  } = useAnnounments();
+  const {
+    deductionData,
+    deductionIsLoading,
+    deductionById,
+    getDeductionData,
+    getDeductionById,
+    createDeduction,
+    updateDeduction,
+  } = useDeduction();
+
+  const fetchDataTable = useCallback(async () => {
+    try {
+      await getAnnounmentData();
+    } catch (error) {
+      return;
+    }
+  }, [getAnnounmentData]);
+
+  useEffect(() => {
+    fetchDataTable();
+  }, [fetchDataTable]);
+
   const [input, setInput] = useState({
-    contractorname: "",
+    deductiontypename: "",
     isactive: false,
   });
-  const {
-    contratorData,
-    contratorIsLoading,
-    contratorById,
-    getContratorData,
-    getContratorById,
-    createContrator,
-    deleteContrator,
-    updateContrator,
-  } = useContrator();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -60,27 +80,14 @@ export default function Contrators({ title }) {
     }));
   };
 
-  const fetchDataTable = useCallback(async () => {
-    try {
-      await getContratorData();
-    } catch (error) {
-      // alert("โหลด API ไม่สำเร็จ", error);
-      return;
-    }
-  }, [getContratorData]);
-
   useEffect(() => {
-    fetchDataTable();
-  }, [fetchDataTable]);
-
-  useEffect(() => {
-    if (contratorById) {
+    if (deductionById) {
       setInput({
-        contractorname: contratorById.contractorName ?? "",
-        isactive: contratorById.isActive ?? false,
+        deductiontypename: deductionById.deductionTypeName,
+        isactive: deductionById.isActive,
       });
     }
-  }, [contratorById]);
+  }, [deductionById]);
 
   useEffect(() => {
     if (Object.keys(error).length === 0 && isSubmit) {
@@ -90,9 +97,11 @@ export default function Contrators({ title }) {
 
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
-    { width: "230px", targets: 1 },
-    { width: "100px", targets: 2 },
-    { width: "100px", targets: 3, className: "text-center" },
+    { width: "200px", targets: 1 },
+    { width: "70px", targets: 2, className: "text-center" },
+    { width: "70px", targets: 3, className: "text-center" },
+    { width: "50px", targets: 4 },
+    { width: "100px", targets: 5, className: "text-center" },
   ];
 
   const columns = [
@@ -103,15 +112,34 @@ export default function Contrators({ title }) {
       },
     },
     {
-      title: "ชื่อผู้รับเหมา",
-      data: "contractorName",
+      title: "หัวข้อข่าว",
+      data: "title",
       orderable: true,
     },
     {
-      title: "เปิดใช้งาน",
-      data: "isActive",
+      title: "สถานะข่าว",
+      data: "status",
+      orderable: true,
       render: function (data, type, row) {
-        return isActiveBadge(row.isActive);
+        return isAnnouncementStatusBadge(row.status);
+      },
+    },
+    {
+      title: "วันที่ลงข่าว",
+      data: "publishedAt",
+      orderable: true,
+      render: function (data, type, row) {
+        return shortDateFormate(row.publishedAt);
+      },
+    },
+    {
+      title: "จำนวนไฟล์แนป",
+      data: "attachmentCount",
+      orderable: true,
+       render: function (data, type, row) {
+        return `<span class="badge text-dark p-2 px-2 fs-6">
+                      <i class="bi bi-paperclip me-1"></i>${row.attachmentCount}
+                </span>`;
       },
     },
     {
@@ -119,32 +147,45 @@ export default function Contrators({ title }) {
       title: "การจัดการ",
       render: function (data, type, row) {
         return `      
-         <div className="d-flex align-items-center justify-content-center">
-            <div class="dropdown d-lg-none">
-              <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                 <i class="bi bi-three-dots-vertical"></i>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <div className="d-flex align-items-center justify-content-center">
+             <div class="dropdown d-lg-none">
+               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots-vertical"></i>
+               </button>
+               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark" data-action="edit" data-id="${row.contractorId}">
-                  <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
-                </a>
-              </li>
-             </ul>
-          </div>
-          
-          <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-            <a
-              data-id="${row.contractorId}"
-              data-action="edit"
-              class="btn btn-warning me-2"
-              title="แก้ไข"
+                 <a class="dropdown-item text-dark" data-action="preview" data-id="${row.publicAnnouncementId}">
+                   <i class="bi bi-eye me-2"></i> ดูตัวอย่างหน้าข่าวสาร
+                 </a>
+               </li>
+                 <li>
+                 <a class="dropdown-item text-dark" data-action="edit" data-id="${row.publicAnnouncementId}">
+                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+                 </a>
+               </li>
+              </ul>
+           </div>
+           
+           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+          <button
+              class="btn btn-info me-2 btn-edit"
+              title="ดูตัวอย่างหน้าข่าวสาร"
+              data-id="${row.publicAnnouncementId}"
+              data-action="preview"
             >
-              <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล 
-            </a>
-          </div>
-        </div>
-       `;
+              <i class="bi bi-eye"></i>
+            </button>
+            <button
+              class="btn btn-warning"
+              title="แก้ไข"
+              data-id="${row.publicAnnouncementId}"
+              data-action="edit"
+            >
+              <i class="bi bi-pen-fill"></i>
+            </button>
+           </div>
+         </div>
+        `;
       },
     },
   ];
@@ -161,41 +202,37 @@ export default function Contrators({ title }) {
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      handleEdit(id, "notModal");
-    } else if (action === "delete") {
-      handleDelete(
-        contratorIsLoading,
-        () => deleteContrator(id),
-        () => getContratorData()
-      );
+      handleEdit(id, "deductionModal");
     }
   };
 
-  const handleEdit = async (id, modalId) => {
+  const handleEdit = async (Id, modalId) => {
     ClearInput();
-    await getContratorById(id);
-    setGetId(id);
-    setEditMode(true);
+    await getDeductionById(Id);
+    setGetId(Id);
 
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
+      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
+      setEditMode(true);
     }
   };
 
   const validateForm = () => {
     let errors = {};
-    if (!input.contractorname) {
-      errors.contractorname = "กรุณากรอกชื่อผู้รับเหมา";
+    if (!input.deductiontypename) {
+      errors.deductiontypename = "กรุณากรอกชื่อประเภทการหักเงิน";
     }
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
+
     const reqData = {
-      contractorName: input.contractorname,
+      deductionTypeName: input.deductiontypename,
       isActive: input.isactive,
     };
     const errorList = validateForm(input) || [];
@@ -220,23 +257,24 @@ export default function Contrators({ title }) {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
-            const { contratorErrorMessage, success } = editmode
-              ? await updateContrator(reqData, getId)
-              : await createContrator(reqData);
+            const { success, deductionErrorMessage } = editMode
+              ? await updateDeduction(reqData, getId)
+              : await createDeduction(reqData);
             if (success) {
               swalWithBootstrapButtons.fire({
                 title: "บึนทึกรายการสำเร็จ!",
                 icon: "success",
               });
-              const currentModal = document.getElementById("notModal");
+
+              const currentModal = document.getElementById(modalId);
               const modalInstance = bootstrap.Modal.getInstance(currentModal);
               modalInstance.hide();
+              await getDeductionData();
               ClearInput();
-              await getContratorData();
             } else {
               Swal.fire({
                 title: "บันทึกข้อมูลไม่สำเร็จ",
-                text: contratorErrorMessage,
+                text: deductionErrorMessage,
                 icon: "error",
               });
             }
@@ -252,12 +290,12 @@ export default function Contrators({ title }) {
   };
 
   const finishSubmit = () => {
-    // console.log("submit data", input);
+    console.log("submit data", input);
   };
 
   const ClearInput = () => {
     setInput({
-      contractorname: "",
+      deductiontypename: "",
       isactive: false,
     });
     setError({});
@@ -279,25 +317,28 @@ export default function Contrators({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <MainButton
-          btnName={addBtnName}
-          icon="bi bi-plus-circle"
-          onClick={() => handleOpenModal("notModal")}
-        />
+
+        <NavLink
+          to="/settings/announcement/form"
+          style={{ textDecoration: "none" }}
+        >
+          <MainButton btnName={title} icon={"bi bi-plus-circle"} />
+        </NavLink>
+
         <DataTableComponent
           column={columns}
-          data={contratorData}
+          data={announmentData}
           onAction={handleAction}
           tableHead={tableHead}
           tableRef={tableRef}
           columnDefs={columnDefs}
-          isLoading={contratorIsLoading}
+          isLoading={announmentIsLoading}
         />
 
         {/* modal */}
         <div
           className="modal fade"
-          id="notModal"
+          id="deductionModal"
           tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -315,7 +356,7 @@ export default function Contrators({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={() => handleCancel("notModal")}
+                  onClick={() => handleCancel("deductionModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -334,32 +375,31 @@ export default function Contrators({ title }) {
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
-                            <label className="form-label">
-                              ชื่อผู้รับเหมา
+                            <label htmlFor="StartDate" className="form-label">
+                              ชื่อประเภทการหักเงิน
                               <span style={{ color: "red" }}>*</span>
                             </label>
                             <input
-                              name="contractorname"
+                              name="deductiontypename"
                               type="text"
                               className={`form-control ${
-                                error.contractorname
+                                error.deductiontypename
                                   ? "border border-danger"
                                   : ""
                               }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อผู้รับเหมา"
-                              value={input.contractorname ?? ""}
+                              placeholder="กรอกชื่อประเภทการหักเงิน"
+                              value={input.deductiontypename}
                               onChange={handleChangeInput}
                             />
-                            {error.contractorname ? (
+                            {error.deductiontypename ? (
                               <p className="text-danger">
-                                {error.contractorname}
+                                {error.deductiontypename}
                               </p>
                             ) : null}
                           </div>
                           <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div className="form-check form-switch form-switch-md ms-3">
+                            <div class="form-check form-switch form-switch-md ms-3">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
@@ -378,9 +418,8 @@ export default function Contrators({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={() => handleCancel("notModal")}
-                isLoading={contratorIsLoading}
+                handleSubmit={(e) => handleSubmit(e, "deductionModal")}
+                handleCancel={() => handleCancel("deductionModal")}
               />
             </div>
           </div>

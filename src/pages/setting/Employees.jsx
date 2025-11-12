@@ -62,9 +62,6 @@ const Employees = ({ title }) => {
     employeeData,
     getEmployeeData,
     employeeIsLoading,
-    createEmployee,
-    updateEmployee,
-    employeeErrorMessage,
   } = useEmployee();
   const [isFlow, setIsFlow] = useState(false);
 

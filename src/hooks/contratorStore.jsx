@@ -14,7 +14,6 @@ export const useContrator = create((set) => ({
     set({ contratorIsLoading: true, contratorErrorMessage: null });
     try {
       const response = await api.get(url);
-      // console.log("role data", response.data.data);
       set({
         contratorData: response.data.data ?? [],
         contratorIsLoading: false,
