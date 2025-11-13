@@ -38,6 +38,7 @@ import SessionExpiryModal from "./components/modal/SessionExpiryModal";
 import Announcement from "./pages/Announcement";
 import AnnouncementSetting from "./pages/setting/Announmencement";
 import AnnounmencementForm from "./pages/setting/AnnounmencementForm";
+import OTRequestByHR from "./pages/OT/OTRequestByHR";
 
 export default function RouterPage() {
   const token = localStorage.getItem("access_token");
@@ -67,6 +68,10 @@ export default function RouterPage() {
         {
           path: "working/OTRequest",
           element: <OTRequest title="บันทึกโอที" />,
+        },
+        {
+          path: "working/OTRequestByHR",
+          element: <OTRequestByHR title="บันทึกโอทีตกค้าง" />,
         },
         {
           path: "working/OTApproval",
@@ -156,11 +161,19 @@ export default function RouterPage() {
         },
         {
           path: "settings/announcement/form",
-          element: <AnnounmencementForm title="เพิ่มข้อมูลข่าวสาร" isEdit={false}/>,
+          element: (
+            <AnnounmencementForm title="เพิ่มข้อมูลข่าวสาร" isEdit={false} />
+          ),
+        },
+        {
+          path: "settings/announcement/preview/:publicAnnouncementId",
+          element: <Announcement title="ข้อมูลข่าวสาร" isPreview={true} />,
         },
         {
           path: "settings/announcement/form/:publicAnnouncementId",
-          element: <AnnounmencementForm title="แก้ไขข้อมูลข่าวสาร" isEdit={true}/>,
+          element: (
+            <AnnounmencementForm title="แก้ไขข้อมูลข่าวสาร" isEdit={true} />
+          ),
         },
         // report
         {
@@ -180,7 +193,7 @@ export default function RouterPage() {
         {
           path: "announcement/:publicAnnouncementId",
           // path: "announcement",
-          element: <Announcement title="ข้อมูลข่าวสาร" />,
+          element: <Announcement title="ข้อมูลข่าวสาร" isPreview={false} />,
         },
 
         { path: "test", element: <TestComponent title="หน้าสำหรับทดสอบ" /> },

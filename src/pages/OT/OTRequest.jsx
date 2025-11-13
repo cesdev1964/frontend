@@ -9,16 +9,16 @@ import { handleCancel } from "../../util/handleCloseModal";
 import { useEmployee } from "../../hooks/employeeStore";
 import { useOTrequest } from "../../hooks/otRequestStore";
 import CreateOTmodal from "../../components/modal/OT/createOTmodal";
-import Pagination from "../../components/Pagination";
 import handleDelete from "../../util/handleDelete";
 import Filter from "../../components/Filter";
 import InputTextField from "../../components/inputTextField";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+import OTrequestList from "../../components/OT/OTrequestList";
 
 export default function OTRequest({ title }) {
   const token = localStorage.getItem("access_token");
   if (!token) {
-    return <SessionExpiryModal/>
+    return <SessionExpiryModal />;
   }
 
   useTitle(title);
@@ -43,10 +43,8 @@ export default function OTRequest({ title }) {
     reason: "",
   });
   const { employeeById, getEmployeeById } = useEmployee();
-  const [currentPage, setCurrentPage] = useState(1);
   const {
     createOTrequest,
-    getOTrequestData,
     otIsLoading,
     getOTrequestByEmployeeID,
     deleteOTrequest,
@@ -84,21 +82,6 @@ export default function OTRequest({ title }) {
     }
   }, [error, isSubmit]);
 
-  //เกี่ยวกับ pagination
-  let NUM_OF_RECORDS = otData.length;
-  let LIMIT = 5;
-
-  const onPageChanged = useCallback(
-    (event, page) => {
-      event.preventDefault();
-      setCurrentPage(page);
-    },
-    [setCurrentPage]
-  );
-  const currentData = otData.slice(
-    (currentPage - 1) * LIMIT,
-    (currentPage - 1) * LIMIT + LIMIT
-  );
 
   const handleChangeAccordian = () => {
     setOnClickAccordian((prev) => !prev);
@@ -313,7 +296,7 @@ export default function OTRequest({ title }) {
           </div>
         </div>
         <div className="flex-grow-1 d-flex align-items-start justify-content-center">
-          <div className="accordion">
+          {/* <div className="accordion">
             <div className="accordion-item">
               <input
                 id="accordion-trigger-1"
@@ -353,7 +336,6 @@ export default function OTRequest({ title }) {
                           </div>
                         ) : (
                           <>
-                            {/* เอาสัก 6 รายการต่อหน้า */}
                             {currentData.map((item) => {
                               return (
                                 <div>
@@ -380,15 +362,13 @@ export default function OTRequest({ title }) {
                 </div>
               </section>
             </div>
-          </div>
-        </div>
-        <div className="pagination-wrapper">
-          <Pagination
-            totalRecords={NUM_OF_RECORDS}
-            pageLimit={LIMIT}
-            pageNeighbours={2}
-            onPageChanged={onPageChanged}
-            currentPage={currentPage}
+          </div> */}
+          <OTrequestList
+            deleteOTrequest={deleteOTrequest}
+            fetchData={fetchData}
+            otData={otData}
+            otIsLoading={otIsLoading}
+            header="ประวัติการขอโอที"
           />
         </div>
       </div>

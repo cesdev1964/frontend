@@ -108,11 +108,11 @@ export default function DeductionList({
             {listItem.length > 0 &&
               listItem.map((item, index) => (
                 <div
-                  className="filter-container"
+                  className="filter-container "
                   key={item.stepNumber}
-                  style={{ width: "400px" }}
+                  style={{ maxWidth: "400px" }}
                 >
-                  <div className="d-flex align-items-top justify-content-end mb-2">
+                  <div className="itemList-diaplay">
                     <a
                       style={{ cursor: "pointer", marginTop: 0 }}
                       onClick={() => handleDeleteItem(item.stepNumber)}
@@ -126,7 +126,7 @@ export default function DeductionList({
                     </a>
                   </div>
                   <div className="row">
-                    <div className="col-7">
+                    <div className="col-0 mb-2">
                       <label className="form-label">
                         ประเภทการหักเงิน
                         <span style={{ color: "red" }}>*</span>
@@ -159,7 +159,7 @@ export default function DeductionList({
                         onClick={() => handleDeleteItem(item.stepNumber)}
                       ></a>
                     </div>
-                    <div className="col-5">
+                    <div className="col-0">
                       <label className="form-label">
                         จำนวนเงิน
                         <span style={{ color: "red" }}>*</span>

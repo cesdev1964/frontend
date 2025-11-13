@@ -7,21 +7,21 @@ import { shortDateFormate } from "../util/inputFormat";
 import LoadingSpin from "../components/loadingSpin";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-export default function Announcement({ title }) {
+export default function Announcement({ title, isPreview = false }) {
   useTitle(title);
   const [isLoading, setIsLoading] = useState(false);
   const { publicAnnouncementId } = useParams();
-  const { getAnnountmentById, announmentById } = useAnnounments();
+  const { getAnnouncementsById, announmentById } = useAnnounments();
   const fetchDataTable = useCallback(async () => {
     setIsLoading(true);
     try {
-      await getAnnountmentById(publicAnnouncementId);
+      await getAnnouncementsById(publicAnnouncementId);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       return;
     }
-  }, [getAnnountmentById]);
+  }, [getAnnouncementsById]);
 
   useEffect(() => {
     fetchDataTable();
@@ -30,11 +30,17 @@ export default function Announcement({ title }) {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">
-              <i class="bi bi-house-door-fill"></i>
-            </Link>
-          </li>
+          {isPreview ? (
+            <li className="breadcrumb-item">
+              <Link to="/settings/announcement">การจัดการข่าวสาร</Link>
+            </li>
+          ) : (
+            <li className="breadcrumb-item">
+              <Link to="/">
+                <i class="bi bi-house-door-fill"></i>
+              </Link>
+            </li>
+          )}
           <li className="breadcrumb-item active" aria-current="page">
             {title}
           </li>
@@ -60,7 +66,7 @@ export default function Announcement({ title }) {
             </div>
             <div className="announcement-box border-bottom  border-danger border-4 mb-3">
               {announmentById.content ? (
-                <p>{announmentById.content}</p>
+                <p style={{textIndent:"1.5em"}}>{announmentById.content}</p>
               ) : (
                 <div className="d-flex flex-column align-items-center justify-content-center p-4">
                   <i
@@ -68,21 +74,6 @@ export default function Announcement({ title }) {
                     style={{ fontSize: "60px" }}
                   ></i>
                   <h5 className="text-danger">ไม่พบเนื้อหาข่าวสาร</h5>
-                  <p>
-                    ในรอบไม่กี่สัปดาห์ที่ผ่านมา
-                    นอกจากเรื่องราวของเหล่านักสู้ลูกหนังตัวน้อยๆ จากทีม
-                    ‘หมอนทองวิทยา’
-                    ที่ปลุกความฝันและเปลวไฟในหัวใจของใครมากมายแล้ว
-                    อีกหนึ่งเกมกีฬาที่ได้รับการจับตามองอย่างมากอย่างน่าอัศจรรย์คือการแข่งขันเบสบอล
-                    เวิลด์ ซีรีส์ รายการที่มีศักดิ์และสิทธิ์เท่ากับตำแหน่ง
-                    ‘แชมป์โลก’ ของเบสบอล ส่วนหนึ่งเป็นเพราะการแข่งขันระหว่าง
-                    บลูเจย์ส์ กับแอลเอ ดอดเจอร์ส เป็นไปอย่างดุเดือด
-                    พลิกผันไปมาจนถึงเกมสุดท้าย
-                    อีกส่วนหนึ่งปฏิเสธไม่ได้ว่าคนจำนวนไม่น้อยอยากจับตาดู โชเฮ
-                    โอตานิ นักกีฬาระดับซูเปอร์สตาร์ผู้เป็น ‘ดาวฤกษ์’
-                    ของวงการกีฬาในระดับโลก
-                    ที่ตอนนี้กลายเป็นแรงบันดาลใจของใครต่อใครอีกมากมายที่อยากต่อ
-                  </p>
                 </div>
               )}
             </div>

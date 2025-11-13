@@ -10,7 +10,7 @@ export default function HolidayCard() {
 
       <div className="d-flex flex-column gap-2 w-100">
         <h5 className="mt-2 text-primary">วันหยุดขึ้นปีใหม่</h5>
-        <div className="d-flex justify-content-end">
+        {/* <div className="d-flex justify-content-end">
           <span class="badge-style badge-stillWork">
             <i
               class="bi bi-circle-fill me-2 "
@@ -18,7 +18,7 @@ export default function HolidayCard() {
             ></i>
             หยุดทั้งวัน
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

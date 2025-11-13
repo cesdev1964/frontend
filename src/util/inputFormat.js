@@ -57,7 +57,7 @@ export function IDcardFormat(thaiIDNumber) {
   } else if (!cleaned) return "";
   else return "";
 }
-
+//ddd,ddd.dd
 export function decimalFormat(stringNumber) {
   let num = Number(stringNumber);
   let decimalFormatter = new Intl.NumberFormat("en-US", {
@@ -67,6 +67,7 @@ export function decimalFormat(stringNumber) {
   return decimalFormatter.format(num);
 }
 
+//dd-mm-yyyy
 export function shortDateFormate(inputdate) {
   if (!inputdate) return;
   const date = new Date(inputdate);
@@ -74,16 +75,32 @@ export function shortDateFormate(inputdate) {
   const formateWithDateHtphens = formateDate.replace(/\//g, "-");
   return formateWithDateHtphens;
 }
+//dd-mm-yyyy / hh:mm
+export const getDateAndTime = (datetime) => {
+  const [date, timeFull] = new Date(datetime).toISOString().split("T");
+  const dateTime = new Date(datetime);
+  const hr = dateTime.getHours().toString().padStart(2, "0");
+  const min = dateTime.getMinutes().toString().padStart(2, "0");
 
- export const getDateAndTime = (datetime) => {
-    const [date, timeFull] = new Date(datetime).toISOString().split("T");
-    const dateTime = new Date(datetime)
-    const hr = dateTime.getHours().toString().padStart(2,"0");
-    const min = dateTime.getMinutes().toString().padStart(2,"0");
-    
-    if (date) {
-      const [year, month, day] = date.split("-");
-      const dateFormat = `${day}-${month}-${year}`;
-      return `${dateFormat} / ${hr}:${min} น.`;
-    }
-  };
+  if (date) {
+    const [year, month, day] = date.split("-");
+    const dateFormat = `${day}-${month}-${year}`;
+    return `${dateFormat} / ${hr}:${min} น.`;
+  }
+};
+
+//get date from datetime => yyyy-mm-dd
+export const getDateOnly = (datetime) => {
+  const date = new Date(datetime);
+  const getYear = date.getFullYear();
+  const getMonth = String(date.getMonth() + 1).padStart(2, "0");
+  const getDay = String(date.getDate()).padStart(2, "0");
+  return `${getYear}-${getMonth}-${getDay}`;
+};
+
+export const convertStringDateToDatetime = (dateString) => {
+  const dateObject = new Date(dateString);
+
+  const isoFormat = dateObject.toISOString();
+  return isoFormat
+};

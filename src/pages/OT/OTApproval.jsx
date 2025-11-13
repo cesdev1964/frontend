@@ -203,7 +203,7 @@ export default function OTApproval({ title }) {
                                     className="bi bi-file-earmark mb-2 text-danger"
                                     style={{ fontSize: "60px" }}
                                   ></i>
-                                  <h4 className="text-danger">
+                                  <h4 className="text-danger text-center">
                                     ไม่พบรายการโอทีที่ต้องดำเนินการอนุมัติ
                                   </h4>
                                 </div>

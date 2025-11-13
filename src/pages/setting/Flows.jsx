@@ -524,10 +524,10 @@ export default function Flows({ title }) {
                               </span>
                             </a>
                           </div>
-                          <div className="row">
-                            <div className="col-5">
+                          <div className="row g-3">
+                            <div className="col-0">
                               <select
-                                style={{ width: "150px" }}
+                                // style={{ width: "150px" }}
                                 name="stepName"
                                 id="stepName"
                                 className={`form-control ${
@@ -560,7 +560,7 @@ export default function Flows({ title }) {
                                 </p>
                               ) : null}
                             </div>
-                            <div className="col-7">
+                            <div className="col-0">
                               <SearchDropdown
                                 data={userDropdown}
                                 handleSelectChange={(selected) =>

@@ -32,28 +32,28 @@ export function OTapproveStatusBadge({ status }) {
       return (
         <span className="badge-style">
           <i class="bi bi-hourglass-split me-2 text-warning"></i>{" "}
-          <strong className="text-primary">รออนุมัติ</strong>
+          <strong className="text-primary" style={{fontSize:"14px"}}>รออนุมัติ</strong>
         </span>
       );
     case OTApproveEnum.APPROVE:
       return (
         <span className="badge-style">
           <i class="bi bi-patch-check-fill me-2 text-success"></i>{" "}
-          <strong className="text-primary">อนุมัติแล้ว</strong>
+          <strong className="text-primary" style={{fontSize:"14px"}}>อนุมัติแล้ว</strong>
         </span>
       );
     case OTApproveEnum.REJECT:
       return (
         <span className="badge-style">
           <i class="bi bi-x-circle-fill me-2 text-danger"></i>{" "}
-          <strong className="text-primary">ไม่อนุมัติ</strong>
+          <strong className="text-primary" style={{fontSize:"14px"}}>ไม่อนุมัติ</strong>
         </span>
       );
     default:
       return (
         <span className="badge-style">
           <i class="bi bi-x-circle-fill me-2 text-secondary"></i>{" "}
-          <strong className="text-primary">ไม่ระบุ</strong>
+          <strong className="text-primary" style={{fontSize:"14px"}}>ไม่ระบุ</strong>
         </span>
       );
   }

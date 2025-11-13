@@ -286,9 +286,6 @@ export default function CreateOTmodal({
                 cols="30"
                 value={input.reason}
                 onChange={handleChangeInput}
-                // className={`form-control ${
-                //   error.employeeCode ? "border border-danger" : ""
-                // }`}
                 className="form-control mb-5"
                 id="reason"
               ></textarea>

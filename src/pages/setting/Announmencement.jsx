@@ -32,21 +32,19 @@ export default function AnnouncementSetting({ title }) {
   const [getId, setGetId] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const {
-    getAnnountmentById,
-    announmentById,
     getAnnounmentData,
     announmentData,
     announmentIsLoading,
   } = useAnnounments();
   const {
-    deductionData,
-    deductionIsLoading,
     deductionById,
     getDeductionData,
     getDeductionById,
     createDeduction,
     updateDeduction,
   } = useDeduction();
+ 
+  const navigate = useNavigate(); 
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -190,23 +188,18 @@ export default function AnnouncementSetting({ title }) {
     },
   ];
 
-  const handleOpenModal = (modalId) => {
-    setEditMode(false);
-    ClearInput();
-    const currentModal = document.getElementById(modalId);
-    if (currentModal) {
-      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modal.show();
-    }
-  };
+  
 
   const handleAction = (action, id) => {
     if (action === "edit") {
-      handleEdit(id, "deductionModal");
+       navigate(`/settings/announcement/form/${id}`);
+    }
+    if (action === "preview") {
+      navigate(`/settings/announcement/preview/${id}`);
     }
   };
 
-  const handleEdit = async (Id, modalId) => {
+  const handleEdit = async (Id) => {
     ClearInput();
     await getDeductionById(Id);
     setGetId(Id);
@@ -335,95 +328,7 @@ export default function AnnouncementSetting({ title }) {
           isLoading={announmentIsLoading}
         />
 
-        {/* modal */}
-        <div
-          className="modal fade"
-          id="deductionModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
-                </h1>
-
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => handleCancel("deductionModal")}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label htmlFor="StartDate" className="form-label">
-                              ชื่อประเภทการหักเงิน
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="deductiontypename"
-                              type="text"
-                              className={`form-control ${
-                                error.deductiontypename
-                                  ? "border border-danger"
-                                  : ""
-                              }`}
-                              placeholder="กรอกชื่อประเภทการหักเงิน"
-                              value={input.deductiontypename}
-                              onChange={handleChangeInput}
-                            />
-                            {error.deductiontypename ? (
-                              <p className="text-danger">
-                                {error.deductiontypename}
-                              </p>
-                            ) : null}
-                          </div>
-                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isactive"
-                                value={input.isactive}
-                                onChange={handleChangeCheckbox}
-                                checked={input.isactive === true}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <SubmitOrCancelButton
-                handleSubmit={(e) => handleSubmit(e, "deductionModal")}
-                handleCancel={() => handleCancel("deductionModal")}
-              />
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
   );

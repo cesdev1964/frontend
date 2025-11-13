@@ -104,6 +104,19 @@ function AppSidebar({ isOpen, toggleSidebar }) {
                   </NavLink>
                 </li>
               )}
+               {rolePermissionRequire.includes("SUPER") && (
+                <li>
+                  <NavLink
+                    to="/working/OTRequestByHR"
+                    className="nav-link dropdown-link"
+                  >
+                    <span className="icon">
+                    <i className="bi bi-calendar-plus-fill"></i>
+                    </span>
+                    บันทึกโอทีตกค้าง
+                  </NavLink>
+                </li>
+              )}
               {rolePermissionRequire.includes("SUPER") && (
                 <>
                   <li>

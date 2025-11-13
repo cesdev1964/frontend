@@ -34,7 +34,7 @@ import {
   validateFormInput,
 } from "../../util/employeeFormValidate";
 import LoadingSpin from "../../components/loadingSpin";
-import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+
 
 var photoName = "";
 var photoPath = "";
@@ -190,7 +190,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     }
   }, [employeeById, isEdit, employeeIsLoading]);
 
-  // console.log("edit data :",employeeById);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -301,7 +300,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("input data", input);
+    // console.log("input data", input);
 
     const formData = new FormData();
     formData.append("employeeCode", input.employeeCode);
@@ -348,8 +347,8 @@ export default function EmployeeForm({ title, isEdit = false }) {
     const errorTotal = { ...errorForm, ...errorDeduction };
     setError(errorTotal);
 
-    console.log("input data", [...formData]);
-    console.log("error from errorform", errorForm);
+    // console.log("input data", [...formData]);
+    // console.log("error from errorform", errorForm);
 
     if (Object.keys(errorTotal).length === 0) {
       const swalWithBootstrapButtons = Swal.mixin({
@@ -487,7 +486,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                           <select
                             name="titleId"
                             id="titleId"
-                            className={`form-control ${
+                            className={`form-select ${
                               error.titleId ? "border border-danger" : ""
                             }`}
                             onChange={handleChangeInput}
@@ -888,7 +887,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                           <select
                             name="statusId"
                             id="statusId"
-                            className={`form-control ${
+                            className={`form-select ${
                               error.statusId ? "border border-danger" : ""
                             }`}
                             onChange={handleChangeInput}

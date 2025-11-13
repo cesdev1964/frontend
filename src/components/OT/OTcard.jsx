@@ -3,8 +3,6 @@ import { OTApproveEnum } from "../../enum/otApproveEnum.js";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat.js";
 
 export default function OTcard({ otData, handleDelete }) {
-
-
   return (
     <div>
       <div className="OT-card-container">
@@ -12,7 +10,7 @@ export default function OTcard({ otData, handleDelete }) {
           <div className="d-flex align-items-center gap-1">
             <OTapproveStatusBadge status={otData.status} />
             <i class="bi bi-dot"></i>
-            <h5 className="">{otData.otType}</h5>
+            <p style={{fontSize:"18px"}}>{otData.otType}</p>
           </div>
 
           {otData.status != OTApproveEnum.APPROVE && (
@@ -31,11 +29,15 @@ export default function OTcard({ otData, handleDelete }) {
           <div className="col-md-12 col-lg-6 mb-4">
             <p className="OT-description-label">
               วันที่เริ่มขอโอที :{" "}
-              <span className="OT-description-value">{shortDateFormate(otData.startDate)}</span>
+              <span className="OT-description-value">
+                {shortDateFormate(otData.startDate)}
+              </span>
             </p>
             <p className="OT-description-label">
               วันที่สิ้นสุดโอที :{" "}
-              <span className="OT-description-value">{shortDateFormate(otData.endDate)}</span>
+              <span className="OT-description-value">
+                {shortDateFormate(otData.endDate)}
+              </span>
             </p>
             <p className="OT-description-label">
               ระยะเวลา :{" "}
@@ -67,6 +69,10 @@ export default function OTcard({ otData, handleDelete }) {
                 }}
               >
                 {otData.reason ?? "-"}
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repudiandae ad pariatur magni tempore molestias adipisci
+                corrupti deserunt illum est, ducimus animi cum maxime dolores
+                similique culpa facere, ut quibusdam autem.
               </span>
             </p>
           </div>
@@ -74,7 +80,7 @@ export default function OTcard({ otData, handleDelete }) {
         <div className="border-top border-danger my-3"></div>
         <div className="OT-footer mb-1">
           <p className="OT-description-label" id="menter">
-            วัน และ เวลาที่ดำเนินการขอ :{" "}
+            ดำเนินการขอเมื่อ :{" "}
             <span className="OT-description-value">
               {getDateAndTime(otData?.requestedAt)}
             </span>

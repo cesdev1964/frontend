@@ -5,32 +5,32 @@ const url = "/api/announcements";
 export const useAnnounments = create((set) => ({
   announmentData: [],
   announmentIsLoading: false,
-  annoumentErrorMessage: null,
+  announcementErrorMessage: null,
   success: false,
   announmentById: {},
 
   // สำหรับหน้า HOME
-    getAnnounmentData: async () => {
-      set({ announmentIsLoading: true, annoumentErrorMessage: null });
-      try {
-        const response = await api.get(url);
-        set({
-          announmentData: response.data.data ?? [],
-          announmentIsLoading: false,
-        });
-        return { success: response.data.success };
-      } catch (errorMessage) {
-        set({
-          annoumentErrorMessage: errorMessage.message,
-          announmentIsLoading: false,
-        });
-        return { success: response.data.success };
-      }
-    },
+  getAnnounmentData: async () => {
+    set({ announmentIsLoading: true, announcementErrorMessage: null });
+    try {
+      const response = await api.get(url);
+      set({
+        announmentData: response.data.data ?? [],
+        announmentIsLoading: false,
+      });
+      return { success: response.data.success };
+    } catch (errorMessage) {
+      set({
+        announcementErrorMessage: errorMessage.message,
+        announmentIsLoading: false,
+      });
+      return { success: response.data.success };
+    }
+  },
 
   //   เมื่อ field ไหนที่ไม่ว่าง ให้ทำการ add field ต่อกัน สลับได้
   // getAnnounmentDataSearch: async (status, search, onlyActive) => {
-  //   set({ announmentIsLoading: true, annoumentErrorMessage: null });
+  //   set({ announmentIsLoading: true, announcementErrorMessage: null });
   //   try {
   //     const response = [];
   //     if (!(status && search && onlyActive)) {
@@ -70,15 +70,15 @@ export const useAnnounments = create((set) => ({
   //     return { success: response.data.success };
   //   } catch (errorMessage) {
   //     set({
-  //       annoumentErrorMessage: errorMessage.message,
+  //       announcementErrorMessage: errorMessage.message,
   //       announmentIsLoading: false,
   //     });
   //     return { success: response.data.success };
   //   }
   // },
 
-  getAnnountmentById: async (id) => {
-    set({ announmentIsLoading: true, annoumentErrorMessage: null });
+  getAnnouncementsById: async (id) => {
+    set({ announmentIsLoading: true, announcementErrorMessage: null });
     try {
       const response = await api.get(`${url}/${id}`);
       set({
@@ -91,17 +91,17 @@ export const useAnnounments = create((set) => ({
       };
     } catch (errorMessage) {
       set({
-        annoumentErrorMessage: errorMessage.response?.data?.message,
+        announcementErrorMessage: errorMessage.response?.data?.message,
         announmentIsLoading: false,
       });
       return {
         announmentIsLoading: false,
-        annoumentErrorMessage: errorMessage.response?.data?.message,
+        announcementErrorMessage: errorMessage.response?.data?.message,
       };
     }
   },
-  createAnnounment: async (requestData) => {
-    set({ announmentIsLoading: true, annoumentErrorMessage: null });
+  createAnnouncement: async (requestData) => {
+    set({ announmentIsLoading: true, announcementErrorMessage: null });
     try {
       const response = await api.post(url, requestData);
       return {
@@ -110,33 +110,37 @@ export const useAnnounments = create((set) => ({
       };
     } catch (error) {
       set({
-        annoumentErrorMessage: error?.response?.data?.message || error.message,
+        announcementErrorMessage:
+          error?.response?.data?.message || error.message,
         announmentIsLoading: false,
         success: false,
       });
       return {
-        annoumentErrorMessage: error?.response?.data?.message || error.message,
+        announcementErrorMessage:
+          error?.response?.data?.message || error.message,
         announmentIsLoading: false,
         success: false,
       };
     }
   },
-  updateAnnoument: async (requestData, id) => {
-    set({ announmentIsLoading: true, annoumentErrorMessage: null });
+  updateAnnouncement: async (requestData, id) => {
+    set({ announmentIsLoading: true, announcementErrorMessage: null });
     try {
-      await api.put(`${url}/${id}`, requestData);
+      await api.put(`${url}/${id}`,requestData);
       return {
         announmentIsLoading: false,
         success: true,
       };
     } catch (error) {
       set({
-        annoumentErrorMessage: error?.response?.data?.message || error.message,
+        announcementErrorMessage:
+          error?.response?.data?.message || error.message,
         announmentIsLoading: false,
         success: false,
       });
       return {
-        annoumentErrorMessage: error?.response?.data?.message || error.message,
+        announcementErrorMessage:
+          error?.response?.data?.message || error.message,
         announmentIsLoading: false,
         success: false,
       };

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import ImageComponent from "./Image";
 import Swal from "sweetalert2";
 
-export default function UploadFile() {
-  const [selectedFile, setSelectedFile] = useState([]);
+export default function UploadFile({selectedFile,setSelectedFile}) {
+  // const [selectedFile, setSelectedFile] = useState([]);
   //   const [files, setFiles] = useState([]);
 
   const getfileSize = (bytes, decimals = 2) => {
@@ -20,34 +20,35 @@ export default function UploadFile() {
   };
 
   const inputChangeFile = (e) => {
+    // debugger;
     let fileImage = [];
-    for (let i = 1; i < e.target.value; i++) {
-      fileImage.push(e.target.files[i]);
-      let readerFile = new FileReader();
-      let file = e.target.files[i];
-      readerFile.onloadend = () => {
-        setSelectedFile((prev) => {
-          return [
-            ...prev,
-            {
-              attachmentId: i,
-              fileName: file.name,
-              filePath: "",
-              filesize: getfileSize(file.size),
-              fileimage: reader.result,
-            },
-          ];
-        });
+    const files = Array.from(e.target.files);
+
+    files.forEach((file, index) => {
+      fileImage.push(file);
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setSelectedFile((prev) => [
+          ...prev,
+          {
+            attachmentId: prev.length + index + 1, // ✅ รันต่อจากของเดิม
+            fileName: file.name,
+            filePath: URL.createObjectURL(file),
+            filesize: getfileSize(file.size),
+            fileimage: reader.result,
+            attachments : file
+          },
+        ]);
       };
-      if (file) {
-        readerFile.readAsDataURL(file);
-      }
-    }
-    console.log("add file", selectedFile);
+
+      reader.readAsDataURL(file);
+    });
+    console.log("fileData",selectedFile)
   };
 
   const removeFile = (fileID) => {
-    console.log("fileID to remove", fileID);
+    // console.log("fileID to remove", fileID);
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success custom-width-btn-alert",
@@ -81,7 +82,7 @@ export default function UploadFile() {
 
   return (
     <div>
-      <div className="file-upload-area">
+      <div className="file-upload-area" title="แนบไฟล์ที่นี้">
         <div className="uploadIcon">
           <i className="bi bi-file-earmark-arrow-up-fill fs-1 text-white"></i>
         </div>
@@ -91,81 +92,43 @@ export default function UploadFile() {
           id="fileInput"
           className="file-input"
           multiple
-          onChange={inputChangeFile}
+          onChange={(e) => inputChangeFile(e)}
+          accept=".pdf"
         ></input>
         {/* พื้นที่สำหรับวางไฟล์ */}
       </div>
-      <div className="file-list mt-4">
+     
+      <div className="file-list mt-4 p-1" style={{maxHeight:"300px",overflowY:"auto"}}>
         {selectedFile.length > 0 &&
           selectedFile.map((item) => (
-            <div className="filter-container pe-4">
+            <div className="filter-container pe-4" key={item.attachmentId}>
               <div className="d-flex gap-3 align-items-center  justify-content-between">
                 <div className="d-flex gap-3 align-items-center">
                   {item.fileName.match(/.(jpg|jpeg|png|gif|svg)$/i) ? (
                     <ImageComponent
-                      imageSRC={fileimage}
-                      height="140px"
-                      width="140px"
+                      imageSRC={item.fileimage}
+                      height="60px"
+                      width="60px"
                       borderRadius="10px"
                       alt="news-file"
                       objectfit="cover"
                     />
+                  ) : item.fileName.match(/.(pdf)$/i) ? (
+                    <i className="bi bi-file-earmark-pdf fs-1"></i>
                   ) : (
-                    <i class="bi bi-file-earmark-pdf fs-1"></i>
+                    <i className="bi bi-file-earmark fs-1"></i>
                   )}
-                  <div>
-                    <div>ชื่อไฟล์</div>
-                    <div className="muted">ขนาดไฟล์</div>
+                  <div className="text-wrap">
+                    <div style={{fontSize:"0.9rem"}}>{item.fileName}</div>
+                    {/* <div className="muted" style={{fontSize:"0.8rem"}}>ขนาดไฟล์ : {item.filesize}</div> */}
                   </div>
                 </div>
                 <a title="ลบไฟล์" onClick={() => removeFile(item.attachmentId)}>
-                  <i class="bi bi-x-circle-fill text-danger"></i>
+                  <i className="bi bi-x-circle-fill text-danger"></i>
                 </a>
               </div>
             </div>
           ))}
-        <div className="filter-container pe-4">
-          <div className="d-flex gap-3 align-items-center  justify-content-between">
-            <div className="d-flex gap-3 align-items-center">
-              <i class="bi bi-file-earmark-pdf fs-1"></i>
-              <div>
-                <div style={{ fontSize: "0.9rem" }}>DownloadPDFButton.jsx</div>
-                <div className="muted">ขนาดไฟล์</div>
-              </div>
-            </div>
-            <a title="ลบไฟล์">
-              <i class="bi bi-x-circle-fill text-danger"></i>
-            </a>
-          </div>
-        </div>
-        <div className="filter-container pe-4">
-          <div className="d-flex gap-3 align-items-center  justify-content-between">
-            <div className="d-flex gap-3 align-items-center">
-              <i class="bi bi-file-earmark-pdf fs-1"></i>
-              <div>
-                <div style={{ fontSize: "0.9rem" }}>DownloadPDFButton.jsx</div>
-                <div className="muted">ขนาดไฟล์</div>
-              </div>
-            </div>
-            <a title="ลบไฟล์" onClick={() => removeFile(1)}>
-              <i class="bi bi-x-circle-fill text-danger"></i>
-            </a>
-          </div>
-        </div>
-        <div className="filter-container pe-4">
-          <div className="d-flex gap-3 align-items-center  justify-content-between">
-            <div className="d-flex gap-3 align-items-center">
-              <i class="bi bi-file-earmark-pdf fs-1"></i>
-              <div>
-                <div style={{ fontSize: "0.9rem" }}>bootstrap-icons.svg</div>
-                <div className="muted">ขนาดไฟล์</div>
-              </div>
-            </div>
-            <a title="ลบไฟล์">
-              <i class="bi bi-x-circle-fill text-danger"></i>
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );
