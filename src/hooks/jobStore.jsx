@@ -39,7 +39,7 @@ export const useJob = create((set) => ({
           label: item.jobNo,
         }));
       set({
-        jobDropdown: option,
+        jobDropdown: option.sort((a,b)=>a.label - b.label),
         jobIsLoading: false,
       });
       return { success: response.data.success };

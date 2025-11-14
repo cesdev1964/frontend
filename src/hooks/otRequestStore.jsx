@@ -29,10 +29,11 @@ export const useOTrequest = create((set) => ({
   },
 
   getOTrequestByEmployeeID: async (empid) => {
+    // console.log(empid);
     set({ otIsLoading: true, otErrorMessage: null });
     try {
       const response = await api.get(`${url}?publicEmployeeId=${empid}`);
-        // console.log("emp data", response.data.data);
+        // console.log("emp data", `${url}?publicEmployeeId=${empid}`);
       set({
         otById: response.data.data ?? [],
         otIsLoading: false,

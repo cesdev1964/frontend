@@ -79,7 +79,6 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
           </li>
           <li className="dropdown-container">
             <button
-              // to="/working"
               onClick={() => setIsWorkOpen((prev) => !prev)}
               className={`${({ isActive }) =>
                 isActive ? "active" : ""} dropdown-btn`}
@@ -106,7 +105,7 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
                   </NavLink>
                 </li>
               )}
-               {rolePermissionRequire.includes("SUPER") && (
+               {rolePermissionRequire.includes("HR") && (
                 <li>
                   <NavLink
                     to="/working/OTRequestByHR"
@@ -115,7 +114,7 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
                     <span className="icon">
                     <i className="bi bi-calendar-plus-fill"></i>
                     </span>
-                    บันทึกโอทีตกค้าง
+                    บันทึกโอทีย้อนหลัง
                   </NavLink>
                 </li>
               )}
@@ -138,7 +137,6 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
           </li>
           <li className="dropdown-container">
             <button
-              // to="/working"
               onClick={() => setIsReportOpen((prev) => !prev)}
               className={`${({ isActive }) =>
                 isActive ? "active" : ""} dropdown-btn`}
@@ -152,8 +150,7 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
               </span>
             </button>
             <ul className={`submenu ${isReportOpen ? "show" : ""}`}>
-              <li>
-                {/* แสดงเป็นรายชื่อให้เลือกดูได้ */}
+              {/* <li>
                 <NavLink to="#" className="nav-link dropdown-link">
                   <span className="icon">
                     <i className="bi bi-folder-fill"></i>
@@ -168,7 +165,7 @@ function AppSidebar({ isOpen, toggleSidebar ,asideRef}) {
                   </span>{" "}
                   รายงานหลังประมวลผล
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink to="/reports/specialdailywagereport" className="nav-link dropdown-link">
                   <span className="icon">

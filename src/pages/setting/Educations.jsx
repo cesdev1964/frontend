@@ -32,7 +32,6 @@ export default function Educations({ title }) {
   const {
     educationData,
     educationIsLoading,
-    educationErrorMessage,
     educationById,
     getEducationData,
     getEducationById,

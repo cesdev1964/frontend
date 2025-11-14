@@ -274,17 +274,7 @@ export default function Levels({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        {/* <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("levelModal")}
-          >
-            <span>
-              <i class="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a> */}
+        
 
         <MainButton
           btnName={addBtnName}

@@ -15,6 +15,7 @@ export default function CreateOTmodal({
   error,
   displayTime,
   setDisplayTime,
+  isHRrole = false
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
@@ -22,7 +23,10 @@ export default function CreateOTmodal({
   //date
   const today = new Date();
   const tomorrow = new Date();
+  const lastDate = new Date(); //ย้อนหลังมากว่าเมื่อวาน
+
   tomorrow.setDate(today.getDate() + 1);
+  lastDate.setDate(today.getDate().la);
 
   const dataOnly = (date) => {
     return date.toISOString().split("T")[0];
@@ -135,8 +139,8 @@ export default function CreateOTmodal({
                   className={`form-control ${
                     error.startDate ? "border border-danger" : ""
                   }`}
-                  min={dataOnly(today)}
-                  max={dataOnly(tomorrow)}
+                  min={!isHRrole?dataOnly(today):""}
+                  max={dataOnly(today)}
                   name="startDate"
                   placeholder="ลงวันที่เริ่ม"
                   value={input.startDate}
@@ -156,8 +160,8 @@ export default function CreateOTmodal({
                   className={`form-control ${
                     error.endDate ? "border border-danger" : ""
                   }`}
-                  min={dataOnly(today)}
-                  max={dataOnly(tomorrow)}
+                  min={!isHRrole?dataOnly(today):""}
+                  max={!isHRrole? dataOnly(tomorrow):""}
                   name="endDate"
                   placeholder="ลงวันที่สิ้นสุด"
                   value={input.endDate}

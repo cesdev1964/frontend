@@ -71,7 +71,7 @@ export default function RouterPage() {
         },
         {
           path: "working/OTRequestByHR",
-          element: <OTRequestByHR title="บันทึกโอทีตกค้าง" />,
+          element: <OTRequestByHR title="บันทึกโอทีย้อนหลัง" />,
         },
         {
           path: "working/OTApproval",

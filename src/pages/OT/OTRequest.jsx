@@ -57,7 +57,6 @@ export default function OTRequest({ title }) {
 
   // การ fetch data
   const fetchData = useCallback(async () => {
-    // console.log("authdata", authdata);
     try {
       if (authdata.publicEmployeeId) {
         const { otById } = await getOTrequestByEmployeeID(
@@ -66,9 +65,6 @@ export default function OTRequest({ title }) {
         setOtData(otById);
       }
     } catch (error) {
-      // <SessionExpiryModal/>
-      // return;
-      // alert("โหลด API ไม่สำเร็จ", error);
     }
   }, [authdata.publicEmployeeId]);
 
@@ -255,7 +251,7 @@ export default function OTRequest({ title }) {
   };
 
   const finishSubmit = () => {
-    console.log("submit data", input);
+    // console.log("submit data", input);
   };
 
   return (
@@ -387,6 +383,7 @@ export default function OTRequest({ title }) {
         IsLoading={otIsLoading}
         displayTime={displayTime}
         setDisplayTime={setDisplayTime}
+        isHRrole={false}
       />
     </div>
   );

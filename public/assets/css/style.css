@@ -2300,7 +2300,7 @@ thead th:last-child {
 }
 
 .accordion {
-  min-width: 320px;
+  min-width: 130px;
   width: 100%;
   margin: 0 auto;
   background: white;
