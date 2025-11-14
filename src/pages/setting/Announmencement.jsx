@@ -94,11 +94,11 @@ export default function AnnouncementSetting({ title }) {
   }, [error, isSubmit]);
 
   const columnDefs = [
-    { width: "70px", targets: 0, className: "text-center" },
+    { width: "70px", targets: 0, className: "text-center mobile-hide-column" },
     { width: "200px", targets: 1 },
     { width: "70px", targets: 2, className: "text-center" },
     { width: "70px", targets: 3, className: "text-center" },
-    { width: "50px", targets: 4 },
+    { width: "50px", targets: 4 , className: "mobile-hide-column" },
     { width: "100px", targets: 5, className: "text-center" },
   ];
 

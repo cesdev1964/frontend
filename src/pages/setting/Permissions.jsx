@@ -34,7 +34,6 @@ export default function Permissions({ title }) {
     updatePermission,
     permissionData,
     permissionLoading,
-    permissionError,
     permissionDataById,
   } = usePermission();
 
@@ -169,6 +168,15 @@ export default function Permissions({ title }) {
        `;
       },
     },
+  ];
+
+  
+  const columnDefs = [
+    { maxWidth: "70px", targets: 0, className: "text-center mobile-hide-column" },
+    { maxWidth: "70px", targets: 1 },
+    { maxWidth: "200px", targets: 2, className: "mobile-hide-column" },
+    { maxWidth: "100px", targets: 3 },
+    { maxWidth: "120px", targets: 4, className: "text-center" },
   ];
 
   const handleOpenModal = (modalId) => {
@@ -326,6 +334,7 @@ export default function Permissions({ title }) {
           onAction={handleAction}
           tableHead={tableHead}
           tableRef={tableRef}
+          columnDefs={columnDefs}
         />
 
         {/* modal */}

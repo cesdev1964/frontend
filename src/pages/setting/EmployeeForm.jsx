@@ -35,7 +35,6 @@ import {
 } from "../../util/employeeFormValidate";
 import LoadingSpin from "../../components/loadingSpin";
 
-
 var photoName = "";
 var photoPath = "";
 
@@ -121,7 +120,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     } catch (error) {
       // alert("โหลด API ไม่สำเร็จ", error);
       setIsLoading(false);
-
     }
   }, [
     getEducationDropdown,
@@ -189,7 +187,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
       return;
     }
   }, [employeeById, isEdit, employeeIsLoading]);
-
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -294,8 +291,6 @@ export default function EmployeeForm({ title, isEdit = false }) {
     const newValue = value.replace(/[^a-zA-Z0-9]/g, "");
     return newValue;
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -428,12 +423,14 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       objectfit="cover"
                       border="2px solid rgba(90, 45, 45, 0.15)"
                     />
+
                     <button
                       className="btn btn-primary btn-sm my-4"
                       onClick={() => inputImageRef.current.click()}
                     >
                       อัปโหลดรูปภาพ
                     </button>
+
                     <input
                       style={{ display: "none" }}
                       type="file"

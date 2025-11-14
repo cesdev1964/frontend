@@ -7,10 +7,7 @@ import { usePosition } from "../../hooks/positionStore";
 import { useEmployee } from "../../hooks/employeeStore";
 import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
 import MainButton from "../../components/MainButton";
-import Swal from "sweetalert2";
-import { HttpStatusCode } from "axios";
-import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
-const token = localStorage.getItem("access_token");
+
 
 const EmployeesTest = ({ title }) => {
   useTitle(title);
@@ -40,7 +37,7 @@ const EmployeesTest = ({ title }) => {
   const { positionDropdown, getPositionDropdown } = usePosition();
   const location = useLocation();
   const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
-  const [isFlow, setIsFlow] = useState(false);
+
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -162,6 +159,16 @@ const EmployeesTest = ({ title }) => {
     },
   ];
 
+  const columnDefs = [
+    { maxWidth: "70px", targets: 0, className: "text-center mobile-hide-column" },
+    { maxWidth: "70px", targets: 1  ,className : "mobile-hide-column fs-6"},
+    { maxWidth: "200px", targets: 2 , className: "text-center"},
+    { maxWidth: "100px", targets: 3 },
+    { maxWidth: "120px", targets: 4, className: "text-center mobile-hide-column" },
+    { maxWidth: "120px", targets: 5, className: "text-center" },
+    { maxWidth: "120px", targets: 6, className: "text-center" },
+  ];
+
   return (
     <div>
       {/* Breadcrumb */}
@@ -193,6 +200,7 @@ const EmployeesTest = ({ title }) => {
           tableHead={tableHead}
           tableRef={tableRef}
           isLoading={employeeIsLoading}
+          columnDefs={columnDefs}
         />
       </div>
     </div>

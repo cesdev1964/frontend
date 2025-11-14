@@ -126,7 +126,6 @@ function AppNavbar({ toggleSidebar }) {
                         fontSize="13px"
                       />
                     )}
-                    {/* <img src={avatarUrl} alt="avatar" /> */}
                     <div className="muted">
                       คุณ{" "}
                       {authdata
@@ -138,7 +137,7 @@ function AppNavbar({ toggleSidebar }) {
               </a>
 
               <div
-                className="dropdown-menu dropdown-menu-end"
+                className="dropdown-menu dropdown-menu-start "
                 aria-labelledby="dropdownUser"
               >
                 {loading ? (

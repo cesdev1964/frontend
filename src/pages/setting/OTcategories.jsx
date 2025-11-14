@@ -95,7 +95,7 @@ export default function OTCategories({ title }) {
 
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
-    { width: "70px", targets: 1, className: "text-center" },
+    { width: "70px", targets: 1, className: "text-center mobile-hide-column" },
     { width: "200px", targets: 2 },
     { width: "100px", targets: 3, className: "text-center" },
     { width: "100px", targets: 4, className: "text-center" },

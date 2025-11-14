@@ -33,9 +33,10 @@ export default function SpecialDailyWagereport({ title }) {
             </span>{" "}
             อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)
           </h5>
+          
           <DownloadPDFButton />
         </div>
-        <div className="table-responsive report-daily-wage">
+        {/* <div className="table-responsive report-daily-wage">
           <table className="table table-bordered  w-100 detail-table ">
             <thead>
               <tr className="text-white">
@@ -156,7 +157,7 @@ export default function SpecialDailyWagereport({ title }) {
               </tr>
             </tfoot>
           </table>
-        </div>
+        </div> */}
       </div>
     </div>
   );

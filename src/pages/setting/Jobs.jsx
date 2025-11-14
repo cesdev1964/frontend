@@ -14,6 +14,7 @@ import handleDelete from "../../util/handleDelete";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import { handleCancel } from "../../util/handleCloseModal";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -95,7 +96,7 @@ export default function Jobs({ title }) {
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
     { width: "100px", targets: 1, className: "text-center" },
-    { width: "230px", targets: 2 },
+    { width: "230px", targets: 2, className: "mobile-hide-column" },
     { width: "100px", targets: 3, className: "text-center" },
     { width: "100px", targets: 4, className: "text-center" },
   ];
@@ -220,7 +221,7 @@ export default function Jobs({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e,modalId) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
 
     const reqData = {
@@ -233,8 +234,6 @@ export default function Jobs({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-
-
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",
@@ -270,7 +269,7 @@ export default function Jobs({ title }) {
             } else {
               Swal.fire({
                 title: "บันทึกข้อมูลไม่สำเร็จ",
-                text:jobErrorMessage,
+                text: jobErrorMessage,
                 icon: "error",
               });
             }
@@ -315,18 +314,8 @@ export default function Jobs({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("jobModal")}
-          >
-            <span>
-              <i className="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+       
+        <MainButton btnName={title} icon={"bi bi-plus-circle"} onClick={() => handleOpenModal("jobModal")}/>
 
         <DataTableComponent
           column={columns}
@@ -482,7 +471,7 @@ export default function Jobs({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={(e)=>handleSubmit(e,"jobModal")}
+                handleSubmit={(e) => handleSubmit(e, "jobModal")}
                 handleCancel={() => handleCancel("jobModal")}
                 isLoading={jobIsLoading}
               />

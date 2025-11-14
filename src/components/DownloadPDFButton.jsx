@@ -10,9 +10,9 @@ export default function DownloadPDFButton() {
     navigate("/reports/specialdailywagereport/downloadPDF")
  }
   return ( 
-    <div>
+    <div >
       <button
-        className="btn btn-primary"
+        className="btn btn-primary downloadBtn"
         title="export PDF"
         onClick={handleOpenPreview}
       >

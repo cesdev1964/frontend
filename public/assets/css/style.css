@@ -1922,6 +1922,24 @@ thead th:last-child {
   .item-flex {
     flex-direction: column;
   }
+
+  .report--banner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .action-button {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-hide-column{
+    display: none;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -2133,8 +2151,8 @@ thead th:last-child {
     flex-direction: column;
   }
 
-  .itemList-diaplay{
-     display: flex;
+  .itemList-diaplay {
+    display: flex;
     flex-direction: column;
   }
 
@@ -2416,7 +2434,6 @@ thead th:last-child {
 }
 
 .filter-container:hover {
-  
   border: 1px solid var(--rose-btm);
   cursor: pointer;
 }
@@ -2650,7 +2667,11 @@ ul.pagination a.page-link:hover {
   width: 72px;
   height: 72px;
   margin: 0 auto 20px;
-  background: linear-gradient(135deg, var(--coral-top) 0%, var(--pink-active) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--coral-top) 0%,
+    var(--pink-active) 100%
+  );
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -2660,13 +2681,13 @@ ul.pagination a.page-link:hover {
     0 4px 12px rgba(255, 107, 107, 0.15);
 }
 
-.upload-text{
+.upload-text {
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
-.file-input{
+.file-input {
   /* display: none; */
   position: absolute;
   top: 0;
@@ -2678,14 +2699,14 @@ ul.pagination a.page-link:hover {
   z-index: 2;
 }
 
-.itemList-diaplay{
+.itemList-diaplay {
   /* d-flex align-items-top justify-content-end mb-2 */
   display: flex;
   align-items: start;
   justify-content: end;
 }
 
-.profile-section{
+.profile-section {
   /* d-flex gap-4 align-items-center */
   display: flex;
   flex-direction: column;
@@ -2694,4 +2715,12 @@ ul.pagination a.page-link:hover {
   gap: 15px;
   margin-left: 40%;
   width: 100%;
+}
+
+/* ปรับความกว้างของตารางไม่ให้ล้น */
+.table-responsive table{
+  table-layout: auto;
+  width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
 }

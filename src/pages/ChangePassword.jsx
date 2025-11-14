@@ -273,7 +273,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                     <p className="text-danger">{error.confirmPassword}</p>
                   ) : null}
                 </div>
-                <div className="d-flex flex-row mt-3 justify-content-end">
+                <div className="d-flex flex-row mt-3 justify-content-end ">
                   <button
                     className="btn btn-outline-primary bg-white me-3"
                     onClick={ClearInput}
@@ -282,7 +282,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                   </button>
 
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary "
                     type="submit"
                     onClick={handleSubmit}
                   >

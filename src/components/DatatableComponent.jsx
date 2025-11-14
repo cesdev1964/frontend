@@ -16,7 +16,7 @@ export default function DataTableComponent({
   useEffect(() => {
     if (data) {
       GetDataTable();
-      console.log("data to datatable", data);
+      // console.log("data to datatable", data);
     }
   }, [data]);
 
@@ -65,44 +65,36 @@ export default function DataTableComponent({
       const table = $(tableRef.current).DataTable();
       table.clear().rows.add(data).draw();
     }
-
-    // return () => {
-    //   table.destroy(true);
-    // };
   };
 
   return (
     <>
       <div className="mt-4 position-relative">
-        {/* {isLoading && (
-          <div className="position-absolute top-50 start-50 translate-middle">
-            <LoadingSpin />
-          </div>
-        )} */}
-
-        <table
-          ref={tableRef}
-          className="table table-striped"
-          style={{ width: "100%" }}
-        >
-          <thead>
-            <tr>
-              {tableHead.map((row) => (
-                <th
-                  key={row.index}
-                  style={{
-                    background: "#ffe8da",
-                    fontWeight: "600",
-                    padding: "12px 8px",
-                  }}
-                  className="text-center"
-                >
-                  {row.colName}
-                </th>
-              ))}
-            </tr>
-          </thead>
-        </table>
+        <div className="table-responsive">
+          <table
+            ref={tableRef}
+            className="table table-striped"
+            style={{ width: "100%" }}
+          >
+            <thead>
+              <tr>
+                {tableHead.map((row) => (
+                  <th
+                    key={row.index}
+                    style={{
+                      background: "#ffe8da",
+                      fontWeight: "600",
+                      padding: "10px 12px",
+                    }}
+                    className="text-center"
+                  >
+                    {row.colName}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          </table>
+        </div>
       </div>
     </>
   );

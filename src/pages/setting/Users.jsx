@@ -12,6 +12,7 @@ import DataTableComponent from "../../components/DatatableComponent";
 import LoadingSpin from "../../components/loadingSpin";
 import handleDelete from "../../util/handleDelete";
 import { handleCancel } from "../../util/handleCloseModal";
+import MainButton from "../../components/MainButton";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -95,7 +96,7 @@ export default function Users({ title }) {
       await getUserData();
       await getTitleNameData();
     } catch (error) {
-        return;
+      return;
     }
   }, [getRoleData, getUserData, getTitleNameData]);
 
@@ -119,11 +120,11 @@ export default function Users({ title }) {
   }, [userById]);
 
   const columnDefs = [
-    { width: "70px", targets: 0, className: "text-center" },
-    { width: "70px", targets: 1 },
-    { width: "200px", targets: 2 },
-    { width: "100px", targets: 3 },
-    { width: "120px", targets: 4, className: "text-center" },
+    { maxWidth: "70px", targets: 0, className: "text-center" },
+    { maxWidth: "70px", targets: 1 },
+    { maxWidth: "200px", targets: 2, className: "mobile-hide-column" },
+    { maxWidth: "100px", targets: 3 },
+    { maxWidth: "120px", targets: 4, className: "text-center" },
   ];
 
   const columns = [
@@ -459,19 +460,12 @@ export default function Users({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <button
-            type="button"
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("addModal")}
-          >
-            <span>
-              <i className="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </button>
-        </div>
+        <MainButton
+          btnName={title}
+          icon={"bi bi-plus-circle"}
+          onClick={() => handleOpenModal("addModal")}
+        />
+
         {/* ตารางข้อมูล */}
         <DataTableComponent
           column={columns}

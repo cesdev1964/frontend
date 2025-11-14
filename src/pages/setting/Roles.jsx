@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
 import { Link } from "react-router-dom";
 import { handleCancel } from "../../util/handleCloseModal";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { colName: "ลำดับ" },
@@ -176,7 +177,7 @@ export default function Roles({ title }) {
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
     { width: "100px", targets: 1 },
-    { width: "150px", targets: 2 },
+    { width: "150px", targets: 2 ,className: "fs-6" },
     { width: "90px", targets: 3 },
   ];
 
@@ -353,7 +354,7 @@ export default function Roles({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
+        {/* <div className="add-btn">
           <a
             className="power py-2"
             style={{ maxWidth: "200px" }}
@@ -364,7 +365,12 @@ export default function Roles({ title }) {
             </span>{" "}
             <span className="label">{addBtnName}</span>
           </a>
-        </div>
+        </div> */}
+        <MainButton
+                  btnName={addBtnName}
+                  icon={"bi bi-plus-circle"}
+                  onClick={handleOpenModal}
+                />
         {/* table */}
 
         <DataTableComponent
