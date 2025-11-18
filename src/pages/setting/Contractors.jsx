@@ -11,7 +11,7 @@ import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import handleDelete from "../../util/handleDelete";
 import MainButton from "../../components/MainButton";
-
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -23,7 +23,6 @@ export const tableHead = [
 export default function Contrators({ title }) {
   useTitle(title);
 
-  
   const tableRef = useRef();
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
@@ -295,7 +294,72 @@ export default function Contrators({ title }) {
         />
 
         {/* modal */}
-        <div
+
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="notModal"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div className="col-lg-3 "></div>
+            <div
+              className="col-lg-9 "
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <form>
+                <div>
+                  <div className="row form-spacing g-3">
+                    <div className="col-md-12">
+                      <label className="form-label">
+                        ชื่อผู้รับเหมา
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="contractorname"
+                        type="text"
+                        className={`form-control ${
+                          error.contractorname ? "border border-danger" : ""
+                        }`}
+                        id="educationname"
+                        placeholder="กรอกชื่อผู้รับเหมา"
+                        value={input.contractorname ?? ""}
+                        onChange={handleChangeInput}
+                      />
+                      {error.contractorname ? (
+                        <p className="text-danger">{error.contractorname}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div className="form-check form-switch form-switch-md ms-3">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={handleSubmit}
+            handleCancel={() => handleCancel("notModal")}
+            isLoading={contratorIsLoading}
+          />
+        </ModalComponent>
+
+        {/* <div
           className="modal fade"
           id="notModal"
           tabIndex="-1"
@@ -330,7 +394,6 @@ export default function Contrators({ title }) {
                     }}
                   >
                     <form>
-                      {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
@@ -384,7 +447,7 @@ export default function Contrators({ title }) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

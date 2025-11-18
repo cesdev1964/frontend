@@ -243,11 +243,11 @@ export default function OTRequestByHR({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="row">
-          <div className="col-lg-4 col-md-12">
+          <div className="col-lg-3 col-md-12">
             <div className="mb-3">
-              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+            <h5>หน่วยงาน <br/><span>(เลือกพนักงานที่นี้)</span></h5>
+              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
                 <div className="p-2">
-                  <h5>หน่วยงาน (เลือกพนักงานที่นี้)</h5>
                   {jobDropdown.length > 0 && (
                     <div>
                       {jobDropdown.map((item) => (
@@ -263,7 +263,7 @@ export default function OTRequestByHR({ title }) {
               </div>
             </div>
           </div>
-          <div className="col-lg-8 col-md-12">
+          <div className="col-lg-9 col-md-12">
             <div className="announcement-box border-bottom  mb-3">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <h5>ขอโอทีย้อนหลัง</h5>

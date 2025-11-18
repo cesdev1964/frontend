@@ -29,7 +29,7 @@ export default function OTApproval({ title }) {
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { getOTApprovalPending, otApproveData } = useOTApprove();
+  const { getOTApprovalPending,otApproveData,getOTApprovalPendingByFilter} = useOTApprove();
   // การ fetch data
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -104,8 +104,8 @@ export default function OTApproval({ title }) {
               className={`form-control`}
               name="startDate"
               placeholder="ลงวันที่สิ้นสุด"
-              // value={input.startDate}
-              // onChange={handleChangeInput}
+              value={input.startDate}
+              onChange={handleChangeInput}
               defaultValue={Date.now()}
               onKeyDown={(e) => e.preventDefault()}
             />
@@ -121,8 +121,8 @@ export default function OTApproval({ title }) {
               className={`form-control`}
               name="startDate"
               placeholder="ลงวันที่สิ้นสุด"
-              // value={input.startDate}
-              // onChange={handleChangeInput}
+              value={input.startDate}
+              onChange={handleChangeInput}
               defaultValue={Date.now()}
               onKeyDown={(e) => e.preventDefault()}
             />
@@ -145,8 +145,8 @@ export default function OTApproval({ title }) {
                 className={"form-control"}
                 id="educationname"
                 placeholder="ค้นหารายการอนุมัติ"
-                // value={input.levelname}
-                // onChange={handleChangeInput}
+                value={input.levelname}
+                onChange={handleChangeInput}
               />
             </div>
           </div>

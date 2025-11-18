@@ -10,6 +10,7 @@ import { useLevel } from "../../hooks/levelStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import handleDelete from "../../util/handleDelete";
 import MainButton from "../../components/MainButton";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -53,7 +54,7 @@ export default function Levels({ title }) {
     try {
       await getLevelData();
     } catch (error) {
-     return;
+      return;
     }
   }, [getLevelData]);
 
@@ -180,7 +181,7 @@ export default function Levels({ title }) {
     let errors = {};
     if (!input.levelname) {
       errors.levelname = "กรุณากรอกระดับในองค์กร";
-    }else if(!editmode){
+    } else if (!editmode) {
       if (input.levelname <= 0) {
         errors.levelname = "กรุณากรอกระดับให้มากกว่า 0";
       }
@@ -196,7 +197,6 @@ export default function Levels({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {
-      
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",
@@ -274,7 +274,6 @@ export default function Levels({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        
 
         <MainButton
           btnName={addBtnName}
@@ -294,77 +293,56 @@ export default function Levels({ title }) {
         />
 
         {/* modal */}
-        <div
-          className="modal fade"
-          id="levelModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
+       
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="levelModal"
+          title={title}
         >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
-                </h1>
-
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div className="employee-content p-4">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      width: "250px",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <label class="form-label">
-                          ระดับในองค์กร
-                          <span style={{ color: "red" }}>*</span>
-                        </label>
-                        <div className="input-group">
-                          {!editmode && (
-                            <span className="input-group-text">PC -</span>
-                          )}
-                          <input
-                            name="levelname"
-                            type={editmode ? "text" : "number"}
-                            className={`form-control ${
-                              error.levelname ? "border border-danger" : ""
-                            }`}
-                            id="educationname"
-                            placeholder="กรอกระดับ"
-                            value={input.levelname}
-                            onChange={handleChangeInput}
-                          />
-                        </div>
-                        {error.levelname ? (
-                          <p className="text-danger">{error.levelname}</p>
-                        ) : null}
-                      </div>
-                    </form>
+          <div className="employee-content p-4">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "250px",
+              }}
+            >
+              <form>
+                <div>
+                  <label class="form-label">
+                    ระดับในองค์กร
+                    <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <div className="input-group">
+                    {!editmode && (
+                      <span className="input-group-text">PC -</span>
+                    )}
+                    <input
+                      name="levelname"
+                      type={editmode ? "text" : "number"}
+                      className={`form-control ${
+                        error.levelname ? "border border-danger" : ""
+                      }`}
+                      id="educationname"
+                      placeholder="กรอกระดับ"
+                      value={input.levelname}
+                      onChange={handleChangeInput}
+                    />
                   </div>
+                  {error.levelname ? (
+                    <p className="text-danger">{error.levelname}</p>
+                  ) : null}
                 </div>
-              </div>
-              <SubmitOrCancelButton
-                handleSubmit={(e) => handleSubmit(e, "levelModal")}
-                handleCancel={ClearInput}
-                isLoading={levelIsLoading}
-              />
+              </form>
             </div>
           </div>
-        </div>
+          <SubmitOrCancelButton
+            handleSubmit={(e) => handleSubmit(e, "levelModal")}
+            handleCancel={ClearInput}
+            isLoading={levelIsLoading}
+          />
+        </ModalComponent>
       </div>
     </div>
   );

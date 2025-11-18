@@ -11,6 +11,7 @@ import DataTableComponent from "../../components/DatatableComponent";
 import { Link } from "react-router-dom";
 import { handleCancel } from "../../util/handleCloseModal";
 import MainButton from "../../components/MainButton";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const tableHead = [
   { colName: "ลำดับ" },
@@ -61,7 +62,7 @@ export default function Roles({ title }) {
     try {
       await getRoleData();
     } catch (error) {
-     return;
+      return;
     }
   }, [getRoleData]);
 
@@ -177,7 +178,7 @@ export default function Roles({ title }) {
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
     { width: "100px", targets: 1 },
-    { width: "150px", targets: 2 ,className: "fs-6" },
+    { width: "150px", targets: 2, className: "fs-6" },
     { width: "90px", targets: 3 },
   ];
 
@@ -199,7 +200,7 @@ export default function Roles({ title }) {
     return errors;
   };
 
-  const handleSubmit = async (e,modalId) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
     const reqData = {
       roleName: input.roleName,
@@ -210,7 +211,6 @@ export default function Roles({ title }) {
     setError(errorList);
     //api post
     if (Object.keys(errorList).length === 0) {
-
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",
@@ -354,23 +354,11 @@ export default function Roles({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        {/* <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={handleOpenModal}
-          >
-            <span>
-              <i className="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div> */}
         <MainButton
-                  btnName={addBtnName}
-                  icon={"bi bi-plus-circle"}
-                  onClick={handleOpenModal}
-                />
+          btnName={addBtnName}
+          icon={"bi bi-plus-circle"}
+          onClick={handleOpenModal}
+        />
         {/* table */}
 
         <DataTableComponent
@@ -383,7 +371,72 @@ export default function Roles({ title }) {
         />
 
         {/* modal */}
-        <div
+
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="notModal"
+          modalSize="modal-md"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <form>
+                <div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      ชื่อบทบาท
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <input
+                      name="roleName"
+                      type="text"
+                      className={`form-control ${
+                        error.roleName ? "border border-danger" : ""
+                      }`}
+                      placeholder="กรอกชื่อบทบาท"
+                      value={input.roleName}
+                      onChange={handleChangeInput}
+                    />
+                    {error.roleName ? (
+                      <p className="text-danger">{error.roleName}</p>
+                    ) : null}
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      คำอธิบายบทบาท
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <textarea
+                      className="form-control"
+                      name="description"
+                      placeholder="กรอกคำอธิบาย"
+                      rows="3"
+                      cols="40"
+                      maxlength="100"
+                      style={{ resize: "none", overflow: "hidden" }}
+                      value={input.description}
+                      onChange={handleChangeInput}
+                    ></textarea>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={(e) => handleSubmit(e, "notModal")}
+            handleCancel={() => handleCancel("notModal")}
+            isLoading={isLoading}
+          />
+          {isLoading && <span className="loader"></span>}
+        </ModalComponent>
+        {/* <div
           className="modal fade"
           id="notModal"
           tabIndex="-1"
@@ -403,7 +456,7 @@ export default function Roles({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={() => handleCancel("notModal")}
+                  // onClick={() => handleCancel("notModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -417,7 +470,6 @@ export default function Roles({ title }) {
                     }}
                   >
                     <form>
-                      {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="mb-3">
                           <label className="form-label">
@@ -461,14 +513,14 @@ export default function Roles({ title }) {
                 </div>
               </div>
               <SubmitOrCancelButton
-                handleSubmit={(e)=>handleSubmit(e,"notModal")}
-                handleCancel={()=>handleCancel("notModal")}
+                handleSubmit={(e) => handleSubmit(e, "notModal")}
+                handleCancel={() => handleCancel("notModal")}
                 isLoading={isLoading}
               />
               {isLoading && <span className="loader"></span>}
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

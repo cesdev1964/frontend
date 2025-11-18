@@ -16,7 +16,11 @@ export const tableHead = [
   { index: 2, colName: "ตำแหน่ง" },
   { index: 3, colName: "การจัดการ" },
 ];
-
+export const mockeTitletableData = [
+  { TitleId: 1, TitleNameTH: "นาย", TitleNameEng: "MR." },
+  { TitleId: 2, TitleNameTH: "นาง", TitleNameEng: "MRS." },
+  { TitleId: 3, TitleNameTH: "นางสาว", TitleNameEng: "MS" },
+];
 export default function Positions({ title }) {
   useTitle(title);
   const tableRef = useRef();

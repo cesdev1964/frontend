@@ -13,6 +13,7 @@ import LoadingSpin from "../../components/loadingSpin";
 import handleDelete from "../../util/handleDelete";
 import { handleCancel } from "../../util/handleCloseModal";
 import MainButton from "../../components/MainButton";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -477,8 +478,11 @@ export default function Users({ title }) {
           onAction={handleAction}
         />
 
+
         {/* modal */}
         {editMode && userIsLoading && <LoadingSpin />}
+
+      
         <div
           className="modal fade"
           id="addModal"
@@ -488,7 +492,7 @@ export default function Users({ title }) {
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
+              <div className="modal-header bg-danger text-danger border-3 border-bottom border-danger">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
                   {title}
@@ -618,7 +622,7 @@ export default function Users({ title }) {
                         display: editMode ? "none" : "block",
                       }}
                     >
-                      <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
+                      <div className="d-flex flex-column align-items-start border border-1 border-danger rounded-3 p-3 mb-2 gap-1">
                         <label className="form-label">
                           รหัสผ่าน
                           <span style={{ color: "red" }}>*</span>

@@ -11,6 +11,7 @@ import { useDeduction } from "../../hooks/deductionTypeStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
 import { handleCancel } from "../../util/handleCloseModal";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -289,7 +290,72 @@ export default function DeductionTypes({ title }) {
           isLoading={deductionIsLoading}
         />
         {/* modal */}
-        <div
+
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="deductionModal"
+          modalSize="modal-md"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div className="col-lg-3 "></div>
+            <div
+              className="col-lg-9 "
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <form>
+                <div>
+                  <div className="row form-spacing g-3">
+                    <div className="col-md-12">
+                      <label htmlFor="StartDate" className="form-label">
+                        ชื่อประเภทการหักเงิน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="deductiontypename"
+                        type="text"
+                        className={`form-control ${
+                          error.deductiontypename ? "border border-danger" : ""
+                        }`}
+                        placeholder="กรอกชื่อประเภทการหักเงิน"
+                        value={input.deductiontypename}
+                        onChange={handleChangeInput}
+                      />
+                      {error.deductiontypename ? (
+                        <p className="text-danger">{error.deductiontypename}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div class="form-check form-switch form-switch-md ms-3">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        <SubmitOrCancelButton
+          handleSubmit={(e) => handleSubmit(e, "deductionModal")}
+          handleCancel={() => handleCancel("deductionModal")}
+        />
+        </ModalComponent>
+
+
+        {/* <div
           className="modal fade"
           id="deductionModal"
           tabIndex="-1"
@@ -309,7 +375,6 @@ export default function DeductionTypes({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={() => handleCancel("deductionModal")}
                 ></button>
               </div>
               <div className="modal-body">
@@ -324,7 +389,6 @@ export default function DeductionTypes({ title }) {
                     }}
                   >
                     <form>
-                      {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
@@ -376,7 +440,7 @@ export default function DeductionTypes({ title }) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -39,9 +39,7 @@ export default function CopperImage({
       //   console.log(blob);
       document.getElementById("outsideButton")?.focus();
       setTimeout(() => {
-        // const currentModal = document.getElementById(madalName);
-        // const modal = bootstrap.Modal.getInstance(currentModal);
-        // modal.hide();
+       
         handleClose();
       }, 50);
     }
@@ -49,49 +47,7 @@ export default function CopperImage({
 
   return (
     <>
-      {/* <div
-        class="modal fade modal-nested shadow-lg"
-        id={madalName}
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content bg-white">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">
-                อัปโหลดภาพประจำตัว
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="d-flex flex-column align-items-center justify-content-center p-3 mb-3">
-              <div style={{ height: "250px", width: "250px" }}>
-                <img
-                  className="mb-4"
-                  src={src ? src : profileImg}
-                  alt="profileImg"
-                  height="100%"
-                  width="100%"
-                  style={{
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                  ref={cropRef}
-                />
-              </div>
-            </div>
-            <SubmitOrCancelButton
-              handleCancel={handleClose}
-              handleSubmit={handleSave}
-            />
-          </div>
-        </div>
-      </div> */}
+      
 
       <Modal
         show={show}
@@ -101,7 +57,7 @@ export default function CopperImage({
         backdrop="static"
         
       >
-        <Modal.Header closeButton className="bg-white">
+        <Modal.Header closeButton className="bg-danger text-danger border-3 border-bottom border-danger">
           <Modal.Title>
             <h1 className="modal-title fs-5" id="exampleModalLabel">
               อัปโหลดภาพประจำตัว

@@ -1,13 +1,42 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
 import { Link } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
 import DownloadPDFButton from "../../components/DownloadPDFButton";
 import SpecialDailyWageReportPDF from "./SpecialDailyWageReportPDF";
-import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+import Filter from "../../components/Filter";
+import InputTextField from "../../components/inputTextField";
+import { SearchDropdown } from "../../components/searchDropdown";
+import { useJob } from "../../hooks/jobStore";
 
 export default function SpecialDailyWagereport({ title }) {
+  const { jobDropdown, getJobDropdownAll } = useJob();
+  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState({
+    jobFilter: 0,
+  });
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await getJobDropdownAll();
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  }, [getJobDropdownAll]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  //   ใช้สำหรับ filter
+  const handleSelectChange = (name, selected) => {
+    setInput((prevData) => ({
+      ...prevData,
+      [name]: selected ? selected.value : null,
+    }));
+  };
 
   return (
     <div>
@@ -23,6 +52,20 @@ export default function SpecialDailyWagereport({ title }) {
       </nav>
       <HeaderPage pageName={title} />
       <div className="container p-2">
+        <Filter>
+          <div className="d-flex flex-column align-items-start">
+            <SearchDropdown
+              data={jobDropdown}
+              handleSelectChange={(selected) =>
+                handleSelectChange("jobFilter", selected)
+              }
+              placeholder="เลือกหน่วยงาน"
+              value={
+                jobDropdown.find((i) => i.value === input.jobFilter) || null
+              }
+            />
+          </div>
+        </Filter>
         <div
           className="report--banner"
           style={{ borderLeft: "6px solid #ff7a88" }}
@@ -33,10 +76,10 @@ export default function SpecialDailyWagereport({ title }) {
             </span>{" "}
             อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)
           </h5>
-          
+
           <DownloadPDFButton />
         </div>
-        {/* <div className="table-responsive report-daily-wage">
+        <div className="table-responsive report-daily-wage">
           <table className="table table-bordered  w-100 detail-table ">
             <thead>
               <tr className="text-white">
@@ -157,7 +200,7 @@ export default function SpecialDailyWagereport({ title }) {
               </tr>
             </tfoot>
           </table>
-        </div> */}
+        </div>
       </div>
     </div>
   );

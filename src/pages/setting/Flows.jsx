@@ -13,6 +13,7 @@ import { useUser } from "../../hooks/userStore";
 import { SearchDropdown } from "../../components/searchDropdown";
 import MainButton from "../../components/MainButton";
 import { handleCancel } from "../../util/handleCloseModal";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const stepList = [
   { value: "หัวหน้าคนที่ 1" },
@@ -409,34 +410,11 @@ export default function Flows({ title }) {
         />
 
         {/* modal */}
-        <div
-          className="modal fade"
-          id="flowModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-index fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
-                </h1>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => handleCancel("flowModal")}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="employee-content p-2">
+
+        <ModalComponent icon="bi bi-plus-circle" modalId="flowModal"  title={title} >
+          <div className="employee-content p-2">
                   <form className="w-100">
-                    {/* ข้อมูลทั่วไป */}
+              
                     <div>
                       <label class="form-label">
                         ชื่อสายอนุมัติ
@@ -474,8 +452,7 @@ export default function Flows({ title }) {
                       <i className="bi bi-diagram-2-fill"></i>{" "}
                       <strong>สายอนุมัติ</strong>
                     </p>
-                    {/* ไม่มีข้อมูล */}
-                    {/* มีข้อมูล */}
+     
                   </form>
                   {!isOpenNewApproveStep ? (
                     <div className="d-flex flex-column align-items-center justify-content-center mb-4">
@@ -527,7 +504,210 @@ export default function Flows({ title }) {
                           <div className="row g-3">
                             <div className="col-0">
                               <select
-                                // style={{ width: "150px" }}
+                                name="stepName"
+                                id="stepName"
+                                className={`form-control ${
+                                  error[`stepName_${index}`]
+                                    ? "border-danger"
+                                    : ""
+                                }`}
+                                onChange={(e) =>
+                                  handleChangeEaseItem(
+                                    index,
+                                    "stepName",
+                                    e.target.value
+                                  )
+                                }
+                                value={item.stepName}
+                              >
+                                <option value={""}>เลือกลำดับ</option>
+                                {stepList.map((item, index) => (
+                                  <option value={item.value} key={index}>
+                                    {item.value}
+                                  </option>
+                                ))}
+                              </select>
+                              {error[`stepName_${index}`] ? (
+                                <p
+                                  className="text-danger"
+                                  style={{ fontSize: "0.8rem" }}
+                                >
+                                  {error[`stepName_${index}`]}
+                                </p>
+                              ) : null}
+                            </div>
+                            <div className="col-0">
+                              <SearchDropdown
+                                data={userDropdown}
+                                handleSelectChange={(selected) =>
+                                  handleChangeSelectEaseItem(
+                                    index,
+                                    "userId",
+                                    selected
+                                  )
+                                }
+                                placeholder="เลือกผู้อนุมัติ"
+                                value={userDropdown.find(
+                                  (i) => i.value === item.userId
+                                )}
+                                className={`${
+                                  error[`userId_${index}`]
+                                    ? "border border-danger rounded-2"
+                                    : ""
+                                }`}
+                              />
+                              {error[`userId_${index}`] ? (
+                                <p
+                                  className="text-danger"
+                                  style={{ fontSize: "0.8rem" }}
+                                >
+                                  {error[`userId_${index}`]}
+                                </p>
+                              ) : null}
+                              <a
+                                style={{ cursor: "pointer" }}
+                                onClick={() =>
+                                  handleDeleteApproveStep(item.stepId)
+                                }
+                              ></a>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={(e) => handleAddApproveStep(e)}
+                        disabled={listItem.length === 5}
+                      >
+                        <i className="bi bi-plus-circle fs-4"></i>
+                        เพิ่มสายอนุมัติเพิ่มเติม
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <SubmitOrCancelButton
+                handleSubmit={(e) => handleSubmit(e, "flowModal")}
+                handleCancel={() => handleCancel("flowModal")}
+                isLoading={flowIsLoading}
+              />
+        </ModalComponent>
+
+        
+        {/* <div
+          className="modal fade"
+          id="flowModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-primary d-flex flex-column">
+              <div className="modal-header">
+                <h1 className="modal-index fs-5" id="exampleModalLabel">
+                  <i className="bi bi-plus-circle fs-4 me-2"></i>
+                  {title}
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="employee-content p-2">
+                  <form className="w-100">
+              
+                    <div>
+                      <label class="form-label">
+                        ชื่อสายอนุมัติ
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="flowName"
+                        type="text"
+                        className={`form-control ${
+                          error.flowName ? "border border-danger" : ""
+                        }`}
+                        placeholder="กรอกชื่อสายอนุมัติ"
+                        value={input.flowName}
+                        onChange={handleChangeInput}
+                      />
+                      {error.flowName ? (
+                        <p className="text-danger">{error.flowName}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-end align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div class="form-check form-switch form-switch-md ms-3">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
+                      </div>
+                    </div>
+                    <p className="ms-2">
+                      <i className="bi bi-diagram-2-fill"></i>{" "}
+                      <strong>สายอนุมัติ</strong>
+                    </p>
+     
+                  </form>
+                  {!isOpenNewApproveStep ? (
+                    <div className="d-flex flex-column align-items-center justify-content-center mb-4">
+                      <i
+                        className="bi bi-diagram-2-fill text-danger"
+                        style={{ fontSize: "60px" }}
+                      ></i>
+                      <h5 className="text-danger">ไม่พบการเพิ่มสายอนุมัติ</h5>
+
+                      <button
+                        className="btn btn-primary mt-2"
+                        onClick={handleOpenApproveStepSection}
+                      >
+                        <i className="bi bi-plus-circle fs-4"></i>
+                        {addBtnName}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="d-flex flex-column align-items-center justify-content-center mb-4 w-100">
+                      <div className="d-flex justify-content-end w-100">
+                        <button
+                          className="btn btn-outline-primary mb-2"
+                          onClick={(e)=>handleAllItem(e)}
+                        >
+                          ลบทั้งหมด
+                        </button>
+                      </div>
+                      {listItem.map((item, index) => (
+                        <div className="filter-container" key={index}>
+                          <div className="d-flex align-items-top justify-content-between">
+                            <p style={{ fontSize: "0.9rem" }}>
+                              ลำดับ {item.stepNumber}
+                            </p>
+                            <a
+                              style={{ cursor: "pointer", marginTop: 0 }}
+                              onClick={() =>
+                                handleDeleteApproveStep(item.stepNumber)
+                              }
+                            >
+                              <span className="icon-action">
+                                <i
+                                  className="bi bi-trash-fill text-center"
+                                  title="ลบ"
+                                ></i>
+                              </span>
+                            </a>
+                          </div>
+                          <div className="row g-3">
+                            <div className="col-0">
+                              <select
                                 name="stepName"
                                 id="stepName"
                                 className={`form-control ${
@@ -617,7 +797,7 @@ export default function Flows({ title }) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import api from "../api/axios";
-const url = "/api/approvals"
+const url = "/api/approvals";
 
 export const useOTApprove = create((set) => ({
   otApproveData: [],
@@ -8,7 +8,7 @@ export const useOTApprove = create((set) => ({
   otApproveErrorMessage: null,
   success: false,
   otApproveById: [],
-  afterOtArrovedData : {},
+  afterOtArrovedData: {},
   getOTApprovalPending: async () => {
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
@@ -27,18 +27,21 @@ export const useOTApprove = create((set) => ({
       return { success: response.data.success };
     }
   },
-
-  getOTApprovalPendingByFilter: async (argument,value) => {
+  
+  //สำหรับ filter
+  getOTApprovalPendingByFilter: async (value) => {
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
-      const response = await api.get(`${url}/pending?${argument}=${value}`);
-        // console.log("emp data", response.data.data);
+      const response = await api.get(
+        `${url}/pending?startDate=${value.startDate}&endDate=${value.endDate}&search=${value.search}&jobId=${value.jobId}`
+      );
+      // console.log("emp data", response.data.data);
       set({
-        otApproveById: response.data.data ?? [],
+        otApproveData: response.data.data ?? [],
         otApproveIsLoading: false,
       });
       return {
-        otApproveById: response.data.data ?? [],
+        otApproveData: response.data.data ?? [],
         otApproveIsLoading: false,
       };
     } catch (errorMessage) {
@@ -52,11 +55,12 @@ export const useOTApprove = create((set) => ({
       };
     }
   },
+  
   approveOT: async (reqData) => {
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
-      const response = await api.post(`${url}/approve`,reqData);
-       set({
+      const response = await api.post(`${url}/approve`, reqData);
+      set({
         afterOtArrovedData: response.data.data ?? {},
         otApproveIsLoading: false,
       });
@@ -83,7 +87,7 @@ export const useOTApprove = create((set) => ({
     // console.log("id ", id);
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
-      const response = await api.post(`${url}/reject`,reqData);
+      const response = await api.post(`${url}/reject`, reqData);
       set({
         afterOtArrovedData: response.data.data ?? {},
         otApproveIsLoading: false,
@@ -106,5 +110,5 @@ export const useOTApprove = create((set) => ({
         success: false,
       };
     }
-  }
+  },
 }));

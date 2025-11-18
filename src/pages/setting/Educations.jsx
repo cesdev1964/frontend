@@ -10,6 +10,8 @@ import { useEducation } from "../../hooks/educationStore";
 import DataTableComponent from "../../components/DatatableComponent";
 import handleDelete from "../../util/handleDelete";
 import handleSubmitAlertModal from "../../util/handleSubmitAlertModal";
+import ModalComponent from "../../components/modal/ModalComponent";
+import { handleCancel } from "../../util/handleCloseModal";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -44,7 +46,7 @@ export default function Educations({ title }) {
     try {
       await getEducationData();
     } catch (error) {
-     return;
+      return;
     }
   }, [getEducationData]);
 
@@ -160,6 +162,7 @@ export default function Educations({ title }) {
   };
 
   const handleOpenModal = (modalId) => {
+    ClearInput();
     setEditMode(false);
     const currentModal = document.getElementById(modalId);
     if (currentModal) {
@@ -204,7 +207,6 @@ export default function Educations({ title }) {
     setError(errorList);
     // console.log("error list", error);
     if (Object.keys(errorList).length === 0) {
-
       const handleSentAPI = async () => {
         const { educationErrorMessage, success } = editMode
           ? await updateEducation(reqData, getId)
@@ -212,7 +214,7 @@ export default function Educations({ title }) {
         return { success: success, errorMassage: educationErrorMessage };
       };
 
-     handleSubmitAlertModal({
+      handleSubmitAlertModal({
         ClearInput,
         handleFetchData: getEducationData,
         handleSentAPI,
@@ -271,7 +273,55 @@ export default function Educations({ title }) {
         />
 
         {/* modal */}
-        <div
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="educationmodal"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div className="col-lg-3 "></div>
+            <div
+              className="col-lg-9 "
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <form>
+                <div>
+                  <div className="row form-spacing g-3">
+                    <div className="col-md-12">
+                      <label class="form-label">
+                        ระดับการศึกษา
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="educationname"
+                        type="text"
+                        className={`form-control ${
+                          error.titleNameTH ? "border border-danger" : ""
+                        }`}
+                        id="educationname"
+                        placeholder="กรอกระดับการศึกษา"
+                        value={input.educationname}
+                        onChange={handleChangeInput}
+                      />
+                      {error.educationname ? (
+                        <p className="text-danger">{error.educationname}</p>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={handleSubmit}
+            handleCancel={()=>handleCancel("educationmodal")}
+          />
+        </ModalComponent>
+        {/* <div
           className="modal fade"
           id="educationmodal"
           tabIndex="-1"
@@ -291,7 +341,6 @@ export default function Educations({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={ClearInput}
                 ></button>
               </div>
               <div className="modal-body">
@@ -306,7 +355,6 @@ export default function Educations({ title }) {
                     }}
                   >
                     <form>
-                      {/* ข้อมูลทั่วไป */}
                       <div>
                         <div className="row form-spacing g-3">
                           <div className="col-md-12">
@@ -343,7 +391,7 @@ export default function Educations({ title }) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

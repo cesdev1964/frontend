@@ -16,6 +16,7 @@ import MainButton from "../../components/MainButton";
 import { handleCancel } from "../../util/handleCloseModal";
 import InputTextField from "../../components/inputTextField";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -300,8 +301,61 @@ export default function OTCategories({ title }) {
           isLoading={otTypeIsLoading}
         />
 
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="OTModal"
+          title={title}
+        >
+          <div className="p-4">
+            <form>
+              <div className="row">
+                <div className="col-12 mb-3">
+                  <InputTextField
+                    onChange={handleChangeInput}
+                    isRequire={false}
+                    label="โค้ดโอที"
+                    name="OTtypecode"
+                    placeholder="กรอกโค้ดโอที"
+                    value={input.OTtypecode}
+                  />
+                </div>
+                <div className="col-12">
+                  <InputTextField
+                    onChange={handleChangeInput}
+                    isRequire={true}
+                    label="ชื่อโอที"
+                    name="OTtypename"
+                    placeholder="กรอกชื่อโอที"
+                    value={input.OTtypename}
+                    error={error.OTtypename}
+                  />
+                </div>
+
+                <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                  <label className="mb-2">เปิดใช้งาน</label>
+                  <div className="form-check form-switch form-switch-md ms-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="isActive-toggle"
+                      name="isActive"
+                      value={input.isActive}
+                      onChange={(e) => handleChangeCheckbox(e)}
+                      checked={input.isActive === true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={(e) => handleSubmit(e, "OTModal")}
+            handleCancel={() => handleCancel("OTModal")}
+          />
+        </ModalComponent>
+        
         {/* modal */}
-        <div
+        {/* <div
           className="modal fade"
           id="OTModal"
           tabIndex="-1"
@@ -328,8 +382,6 @@ export default function OTCategories({ title }) {
                 <div className="p-4">
                   <form>
                     <div className="row">
-                      {/* ข้อมูลทั่วไป */}
-
                       <div className="col-12 mb-3">
                         <InputTextField
                           onChange={handleChangeInput}
@@ -376,7 +428,7 @@ export default function OTCategories({ title }) {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

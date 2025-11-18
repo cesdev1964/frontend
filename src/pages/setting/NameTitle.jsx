@@ -184,6 +184,7 @@ export default function NameTitle({ title }) {
   };
 
   const handleOpenModal = () => {
+    ClearInput();
     setEditMode(false);
     const currentModal = document.getElementById("notModal");
     if (currentModal) {
