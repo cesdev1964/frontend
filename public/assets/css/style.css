@@ -877,7 +877,7 @@ thead th:last-child {
 
 .profile-card {
   padding: 10px;
-  width: 290px;
+  width: 280px;
 }
 
 .profile-content,
@@ -1151,6 +1151,12 @@ thead th:last-child {
   --sh: var(--dark-sh);
   --ring: var(--dark-ring);
   justify-content: center;
+}
+
+.btn-transparent{
+   border: none;
+   background: none;
+   /* opacity: 0.5; */
 }
 
 /* ===== Outline variants ===== */
@@ -1940,6 +1946,10 @@ thead th:last-child {
   .mobile-hide-column{
     display: none;
   }
+
+  .topbar .spacer {
+  flex: 0.75;
+}
 }
 
 @media (max-width: 767.98px) {
@@ -2110,6 +2120,9 @@ thead th:last-child {
   /* .action-button{
     width: 100%;
   } */
+   .topbar .spacer {
+  flex: 0.80;
+}
 }
 
 @media (max-width: 991px) {
@@ -2159,6 +2172,10 @@ thead th:last-child {
   /* .profile-section{
     margin-left: 30%;
   } */
+
+  .userName-nav{
+   visibility: hidden;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 992px) {
@@ -2167,6 +2184,12 @@ thead th:last-child {
     align-items: center;
     justify-content: center;
   }
+}
+
+@media (max-width:1410px){
+  .topbar .spacer {
+  flex: 1;
+}
 }
 
 /* form select */
@@ -2724,3 +2747,21 @@ ul.pagination a.page-link:hover {
   word-wrap: break-word;
   white-space: normal;
 }
+
+/* dropdown navbar accountData*/
+.dropdown_account{
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown_account_content{
+  display: none;
+  position: absolute;
+  background-color: white;
+}
+
+.dropdown_account .dropdown_account_content{
+  display: block;
+}
+
+/* btn btn-outline-primary btn-lg dropdown-toggle px-5 dropdown-nav-btn */

@@ -3,7 +3,6 @@ import EmployeeCard from "../components/home/EmployeeCard";
 import AnnouncementCard from "../components/home/AnnouncementCard";
 import OTRequestPendingCard from "../components/home/OTRequestPendingCard";
 import { useAuth } from "../auth/AuthContext";
-import SessionExpiryModal from "../components/modal/SessionExpiryModal";
 
 export default function Home({ title }) {
   const { authdata } = useAuth();

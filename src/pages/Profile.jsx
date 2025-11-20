@@ -222,19 +222,10 @@ export default function Profile({ title }) {
                               </h6>
                             </div>
                           </div>
-                         
-                            {empData?.employee?.status != undefined ? (
-                              <IsEmployeeStatusBadgeReact
-                                status={empData?.employee?.status}
-                              />
-                            ) : (
-                              <>
-                                <span className="badge-style badge-unknown">
-                                  กำลังโหลด ...
-                                </span>
-                              </>
-                            )}
-                         
+
+                          <IsEmployeeStatusBadgeReact
+                            status={empData?.employee?.status}
+                          />
                         </div>
                         <div className="border-top border-danger my-3"></div>
 
@@ -383,7 +374,8 @@ export default function Profile({ title }) {
                           <p className="mt-2 text-center fw-bold">
                             รายการการหักเงิน
                           </p>
-                          <div className="d-flex justify-content-center px-5 py-3">
+                          {/* ถ้าเป็นหน้าจอขนาดเล็ก ให้เป็นปุ่มกดเปิด modal */}
+                          <div className="d-flex justify-content-center px-2 py-3">
                             <table className="table table-bordered">
                               <thead>
                                 <tr className="text-white">
@@ -392,7 +384,7 @@ export default function Profile({ title }) {
                                       background: "#ff7a88",
                                       fontWeight: "600",
                                       padding: "12px 8px",
-                                      width: "200px",
+                                      width: "60%",
                                     }}
                                     className="text-center"
                                   >
@@ -403,7 +395,7 @@ export default function Profile({ title }) {
                                       background: "#ff7a88",
                                       fontWeight: "600",
                                       padding: "12px 8px",
-                                      width: "200px",
+                                      width: "40%",
                                     }}
                                     className="text-center"
                                   >
@@ -420,7 +412,7 @@ export default function Profile({ title }) {
                                           className="bg-white"
                                           key={item.deductionId}
                                         >
-                                          <td>
+                                          <td style={{ fontSize: "0.9rem" }}>
                                             {deductionData.find(
                                               (i) =>
                                                 i.deductionTypeId ===
@@ -428,7 +420,10 @@ export default function Profile({ title }) {
                                             )?.deductionTypeName ??
                                               "ไม่พบข้อมูล"}
                                           </td>
-                                          <td className="text-end">
+                                          <td
+                                            className="text-end"
+                                            style={{ fontSize: "0.9rem" }}
+                                          >
                                             {decimalFormat(item.amount)}
                                           </td>
                                         </tr>
@@ -439,8 +434,13 @@ export default function Profile({ title }) {
                                   <></>
                                 )}
                                 <tr className="bg-white border-top-3 fw-bold">
-                                  <td>รวมทั้งหมด</td>
-                                  <td className="text-end">
+                                  <td style={{ fontSize: "0.9rem" }}>
+                                    รวมทั้งหมด
+                                  </td>
+                                  <td
+                                    className="text-end"
+                                    style={{ fontSize: "0.9rem" }}
+                                  >
                                     {decimalFormat(
                                       empData?.deductions?.reduce(
                                         (total, row) =>

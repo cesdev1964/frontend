@@ -97,10 +97,10 @@ function AppNavbar({ toggleSidebar }) {
           </div>
 
           <div className="spacer"></div>
-          <div className="user-mini">
+          <div className="user-mini ">
             <div className="dropdown">
               <a
-                className="btn btn-outline-primary btn-lg dropdown-toggle"
+                className="btn btn-transparent  btn-lg dropdown-toggle px-5"
                 href="#"
                 role="button"
                 id="dropdownUser"
@@ -126,6 +126,7 @@ function AppNavbar({ toggleSidebar }) {
                         fontSize="13px"
                       />
                     )}
+
                     <div className="muted">
                       คุณ{" "}
                       {authdata
@@ -137,7 +138,7 @@ function AppNavbar({ toggleSidebar }) {
               </a>
 
               <div
-                className="dropdown-menu dropdown-menu-start "
+                className="dropdown-menu dropdown-menu-start"
                 aria-labelledby="dropdownUser"
               >
                 {loading ? (
@@ -159,12 +160,12 @@ function AppNavbar({ toggleSidebar }) {
                                 alignItems: "center",
                               }}
                             >
-                              <div className="fs-5">
+                              <p>
                                 คุณ{" "}
                                 {authdata
                                   ? authdata.firstname + " " + authdata.lastname
                                   : "N/A"}
-                              </div>
+                              </p>
                             </div>
                             <div
                               style={{
@@ -181,7 +182,6 @@ function AppNavbar({ toggleSidebar }) {
                                 )}
                               </p>
                               <p className="position-content fs-6">
-                                {/* {empData.employee.positionId} */}
                                 {positionData.find(
                                   (item) =>
                                     item.positionId ===

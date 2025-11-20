@@ -96,29 +96,7 @@ export const usePosition = create((set) => ({
       };
     }
   },
-  deletePosition: async (id) => {
-    console.log("id ", id);
-    set({ positionIsLoading: true, positionErrorMessage: null });
-    try {
-      const response = await api.delete(`/api/positions/${id}`);
-      return {
-        positionIsLoading: false,
-        positionErrorMessage: response.data.message ?? "",
-        success: true,
-      };
-    } catch (error) {
-      set({
-        positionErrorMessage: error?.response?.data?.message || error.message,
-        positionIsLoading: false,
-        success: false,
-      });
-      return {
-        positionErrorMessage: error?.response?.data?.message || error.message,
-        positionIsLoading: false,
-        success: false,
-      };
-    }
-  },
+  
   updatePosition: async (requestData, id) => {
     set({ positionIsLoading: true, positionErrorMessage: null });
     try {

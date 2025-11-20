@@ -9,6 +9,7 @@ export const useRolePermission = create((set) => ({
   success: false,
   rolePermissionMessage: "",
   rolePermissiondataById: [],
+  
   getRolePermission: async () => {
     set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
     try {
@@ -50,29 +51,6 @@ export const useRolePermission = create((set) => ({
       };
     }
   },
-  // createRolePermission: async (requestData) => {
-  //   set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });
-  //   try {
-  //     const response = await api.post("/api/roles", requestData);
-  //     //   console.log("res data from register ",response.data.user)
-  //     return {
-  //       rolePermissiondata: response.data.data ?? {},
-  //       rolePermissionisLoading: false,
-  //       rolePermissionMessage: response.data.message ?? "",
-  //       success: true,
-  //     };
-  //   } catch (error) {
-  //     set({
-  //       rolePermissionerrorMessage: error.message,
-  //       rolePermissionisLoading: false,
-  //     });
-  //     return {
-  //       success: false,
-  //       rolePermissionerrorMessage:
-  //         error?.response?.data?.message || error.message,
-  //     };
-  //   }
-  // },
 
   updateRolePermission: async (requestData, roleId) => {
     set({ rolePermissionisLoading: true, rolePermissionerrorMessage: null });

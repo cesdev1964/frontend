@@ -34,13 +34,13 @@ export default function CreateOTmodal({
 
   const fetchDataTable = useCallback(async () => {
     try {
-      //   await getJobDropdown();
       await getOtTypeDropdown();
     } catch (error) {
-      // alert("โหลด API ไม่สำเร็จ", error);
       return;
     }
   }, [getOtTypeDropdown]);
+
+
 
   useEffect(() => {
     fetchDataTable();
@@ -160,8 +160,10 @@ export default function CreateOTmodal({
                   className={`form-control ${
                     error.endDate ? "border border-danger" : ""
                   }`}
-                  min={!isHRrole?dataOnly(today):""}
-                  max={!isHRrole? dataOnly(tomorrow):""}
+                  // min={!isHRrole?dataOnly(today):""}
+                  // max={!isHRrole? dataOnly(tomorrow):(input.startDate)}
+                  min={input.startDate}
+                  max={input.startDate}
                   name="endDate"
                   placeholder="ลงวันที่สิ้นสุด"
                   value={input.endDate}

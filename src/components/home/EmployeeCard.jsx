@@ -19,7 +19,7 @@ export default function EmployeeCard() {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const { getTitleDropdown, titleDropdown } = useTitltName();
   const { positionData, getPositionData } = usePosition();
-  const { jobDropdown, getJobDropdown } = useJob();
+  const { jobDropdown, getJobDropdown ,jobData, getJobData} = useJob();
   const { employeeTypeData, getEmployeeType } = useEmployeeType();
 
   const [empData, setEmpData] = useState({});
@@ -33,6 +33,7 @@ export default function EmployeeCard() {
             await getEmployeeType();
             await getJobDropdown();
             await getPositionData();
+            await getJobData();
           }
         } catch (error) {
           window.location.reload();
@@ -151,34 +152,7 @@ export default function EmployeeCard() {
                                   คุณ {empData?.firstname ?? "ไม่ระบุ"}{" "}
                                   {empData?.lastname ?? "ไม่ระบุ"}
                                 </h6>
-                                <div className="row g-4 p-2 ">
-                                  <div className="col-6  col-custom">
-                                    <DetailItem
-                                      icon="fa-solid fa-user-tie"
-                                      title="ตำแหน่ง"
-                                      value={
-                                        positionData.find(
-                                          (item) =>
-                                            item.positionId ===
-                                            Number(
-                                              empData?.employee?.positionId
-                                            )
-                                        )?.positionName ?? "ไม่พบข้อมูล"
-                                        // empData?.employee?.positionId
-                                      }
-                                    />
-                                  </div>
-                                  <div className="col-6  col-custom">
-                                    <DetailItem
-                                      icon="fa-solid fa-users"
-                                      title="หน่วยงาน"
-                                      value={getName(
-                                        empData?.jobId,
-                                        PropNameEnum.JobName
-                                      )}
-                                    />
-                                  </div>
-                                </div>
+                                
                               </div>
                             </div>
                             <div className="badge-style badge-stillWork">

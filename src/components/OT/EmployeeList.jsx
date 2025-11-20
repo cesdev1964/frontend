@@ -2,12 +2,13 @@ import { React, useState, useCallback, useEffect } from "react";
 import { useEmployee } from "../../hooks/employeeStore";
 import LoadingSpin from "../loadingSpin";
 
-export default function EmployeeList({ jobData, setEmployeeId }) {
+export default function EmployeeList({ jobData, setEmployeeId ,switchSelectEmp,setSwitchSelectEmp}) {
   const { getEmployeeData, employeeData } = useEmployee();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEmployeeID, setSelectedEmployeeID] = useState(null);
   const [selectedJobID, setSelectedJobID] = useState({});
   const [onClickAccordian, setOnClickAccordian] = useState(false);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -31,18 +32,25 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
     setOnClickAccordian((prev) => !prev);
   };
 
-  const handleSelectEmployee = (employee, jobData) => {
-
-    if (employee) {
-
+  //กดคลิกเป็น toggle
+  const handleSelectEmployee = (employee) => {
+  //  เป็นการ switch state โดยการแทนทีค่าด้วยเงื่อนทีี่มีค่าในตัวแปรก่อน และค่อยนำออก ถ้าไม่มีก็นำค่าเข้าตัวแปร สลับกันไป
+    const isSelect = selectedEmployeeID === employee.publicEmployeeId;
+     
+    if (isSelect) {
+      setSelectedEmployeeID(null);
+      setEmployeeId({
+        employeeId: "",
+        employeeName: "",
+        jobId: "",
+      });
+    } else {
       setSelectedEmployeeID(employee.publicEmployeeId);
       setEmployeeId({
         employeeId: employee.publicEmployeeId,
         employeeName: `คุณ ${employee.firstname} ${employee.lastname}`,
-        jobId : employee.jobId
+        jobId: employee.jobId,
       });
-    } else {
-      setSelectedEmployeeID(null);
     }
   };
 
@@ -75,10 +83,10 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
                           <li>
                             <a
                               onClick={() =>
-                                handleSelectEmployee(employee, jobData)
+                                handleSelectEmployee(employee)
                               }
                               className={`${
-                                   selectedEmployeeID === employee.publicEmployeeId
+                                selectedEmployeeID === employee.publicEmployeeId
                                   ? "active"
                                   : ""
                               }`}

@@ -69,8 +69,8 @@ const Settings = ({ title }) => {
       path: "/settings/jobcategory",
       icon: "bi bi-journal-bookmark-fill",
       color: cardColor[5],
-      title: "หมวดงาน",
-      subtitle: "จัดการข้อมูลหมวดงาน",
+      title: "ประเภทงาน",
+      subtitle: "จัดการข้อมูลประเภทงาน",
     },
     {
       page: "6",
@@ -159,6 +159,14 @@ const Settings = ({ title }) => {
       color: cardColor[5],
       title: "สายอนุมัติ",
       subtitle: "จัดการข้อมูลสายอนุมัติ",
+    },
+     {
+      page: "6",
+      path: "/settings/userjobs",
+      icon: "fa-solid fa-people-roof",
+      color: cardColor[5],
+      title: "หน่วยงานที่ดูแล",
+      subtitle: "จัดการข้อมูลหน่วยงานที่ดูแล",
     },
   ];
 

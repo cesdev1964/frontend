@@ -12,6 +12,7 @@ import handleDelete from "../../util/handleDelete";
 import handleSubmitAlertModal from "../../util/handleSubmitAlertModal";
 import ModalComponent from "../../components/modal/ModalComponent";
 import { handleCancel } from "../../util/handleCloseModal";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -250,18 +251,8 @@ export default function Educations({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            onClick={() => handleOpenModal("educationmodal")}
-          >
-            <span>
-              <i class="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+       
+        <MainButton btnName={addBtnName} icon="bi bi-plus-circle" onClick={() => handleOpenModal("educationmodal")}/>
         {/* table */}
         <DataTableComponent
           column={columnsData}

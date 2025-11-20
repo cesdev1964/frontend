@@ -4,9 +4,9 @@
 export function maskIDCard(value) {
   return value
     .replace(/\D/g, "")
-    .replace(/^(\d{1})(\d)/, "$1-$2")
-    .replace(/^(\d{1}-\d{4})(\d)/, "$1-$2")
-    .replace(/^(\d{1}-\d{4}-\d{5})(\d{2})(\d)?/, "$1-$2-$3");
+    .replace(/(\d{1})(\d)/, "$1-$2")
+    .replace(/(\d{1}-\d{4})(\d)/, "$1-$2")
+    .replace(/(\d{1}-\d{4}-\d{5})(\d{2})(\d)/, "$1-$2-$3");
 }
 
 //000-000-0000

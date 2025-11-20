@@ -13,7 +13,6 @@ export const useUser = create((set) => ({
     set({ userIsLoading: true, userError: null });
     try {
       const response = await api.get("/api/users");
-      //   console.log("user data", response.data.data);
       set({
         userdata: response.data.data ?? {},
         userIsLoading: false,
