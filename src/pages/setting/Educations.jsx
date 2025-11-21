@@ -206,7 +206,7 @@ export default function Educations({ title }) {
     };
     const errorList = validateForm(input) || [];
     setError(errorList);
-    // console.log("error list", error);
+
     if (Object.keys(errorList).length === 0) {
       const handleSentAPI = async () => {
         const { educationErrorMessage, success } = editMode
@@ -225,7 +225,6 @@ export default function Educations({ title }) {
   };
 
   const finishSubmit = () => {
-    // console.log("submit data", input);
   };
 
   const ClearInput = () => {

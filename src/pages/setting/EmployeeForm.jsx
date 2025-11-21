@@ -411,8 +411,8 @@ export default function EmployeeForm({ title, isEdit = false }) {
         {!isLoading ? (
           <>
             <div className="employee-content p-4">
-              <div className="row g-5">
-                <div className="col-lg-3 mt-5">
+              <div className="row">
+                <div className="col-lg-2 mt-1 announcement-box pt-4">
                   <div className="employee-image-section">
                     <ImageComponent
                       imageSRC={preview || avatarUrl}
@@ -425,9 +425,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
                     />
 
                     <button
-                      className="btn btn-primary btn-sm my-4"
+                      className="btn btn-primary btn-md my-4"
                       onClick={() => inputImageRef.current.click()}
-                    >
+                    ><i className="bi bi-image me-1"></i>
                       อัปโหลดรูปภาพ
                     </button>
 
@@ -441,15 +441,15 @@ export default function EmployeeForm({ title, isEdit = false }) {
                   </div>
                 </div>
                 <div
-                  className="my-3 col-lg-9 "
+                  className="my-3 col-lg-9 announcement-box border"
                   style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    
                   }}
                 >
-                  <form>
-                    {/* ข้อมูลทั่วไป */}
+                  <form >
                     <div className="my-4">
                       <h5 className="group-label"># ข้อมูลทั่วไป</h5>
                       <div className="border-top border-danger my-3"></div>

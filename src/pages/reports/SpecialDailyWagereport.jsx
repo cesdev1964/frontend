@@ -51,6 +51,7 @@ export default function SpecialDailyWagereport({ title }) {
         </ol>
       </nav>
       <HeaderPage pageName={title} />
+
       <div className="container p-2">
         <Filter>
           <div className="d-flex flex-column align-items-start">
@@ -66,6 +67,7 @@ export default function SpecialDailyWagereport({ title }) {
             />
           </div>
         </Filter>
+
         <div
           className="report--banner"
           style={{ borderLeft: "6px solid #ff7a88" }}
@@ -79,42 +81,59 @@ export default function SpecialDailyWagereport({ title }) {
 
           <DownloadPDFButton />
         </div>
+      </div>
+
+      <center>
         <div className="table-responsive report-daily-wage">
-          <table className="table table-bordered  w-100 detail-table ">
+          <table className="table table-bordered  w-100 detail-table">
             <thead>
               <tr className="text-white">
-                <th>No.</th>
-                <th style={{ minWidth: "180px" }}>ชื่อ</th>
-                <th style={{ minWidth: "100px" }}>ตำแหน่ง</th>
-                <th style={{ minWidth: "100px" }}>รวม (ชม.)</th>
-                <th style={{ minWidth: "100px" }}>อัตราค่าจ้าง</th>
-                <th style={{ minWidth: "100px" }}>ค่าจ้าง (บาท)</th>
-                <th style={{ minWidth: "100px" }}>ประกันสังคม 5%</th>
-                <th style={{ minWidth: "100px" }}>ค่าจ้าง (บาท)</th>
+                <th rowSpan={2}>No.</th>
+                <th style={{ minWidth: "180px" }} rowSpan={2}>
+                  ชื่อ
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ตำแหน่ง
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  เวลาทำงาน
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ค่าใช้จ่าย
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  รวม (ชม.)
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  อัตราค่าจ้าง
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ค่าจ้าง (บาท)
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ประกันสังคม 5%
+                </th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ค่าจ้าง (บาท)
+                </th>
                 <th style={{ minWidth: "100px" }} colSpan={3}>
                   ค่าดำเนินการ
                 </th>
-                <th style={{ minWidth: "100px" }}>ค่าสุทธิ (บาท)</th>
+                <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  ค่าสุทธิ (บาท)
+                </th>
               </tr>
               <tr className="text-white  ">
-                <th></th>
-                <th style={{ minWidth: "180px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
-                <th style={{ minWidth: "100px" }}></th>
                 <th>ประกันสังคม 10%</th>
                 <th>กองทุนทดแทน 0.5%</th>
                 <th>ดำเนินการ 12%</th>
-                <th style={{ minWidth: "100px" }}></th>
               </tr>
             </thead>
             <tbody>
               <tr className="text-dark  bg-danger">
                 <td>1</td>
                 <td>นาง xxxx xxxx</td>
+
                 <td>แม่บ้าน</td>
                 <td></td>
                 <td></td>
@@ -125,8 +144,12 @@ export default function SpecialDailyWagereport({ title }) {
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
               </tr>
               <tr className="text-dark bg-white ">
+                <td></td>
+                <td></td>
                 <td></td>
                 <td>วันทำงาน (วัน)</td>
                 <td></td>
@@ -142,7 +165,9 @@ export default function SpecialDailyWagereport({ title }) {
               </tr>
               <tr className="text-dark bg-white ">
                 <td></td>
-                <td>วันทำงาน (วัน)</td>
+                <td></td>
+                <td></td>
+                <td>ล่วงเวลา - วันทำงาน (วัน)</td>
                 <td></td>
                 <td>10.00</td>
                 <td>372.00</td>
@@ -153,17 +178,33 @@ export default function SpecialDailyWagereport({ title }) {
                 <td>18.60</td>
                 <td>446.40</td>
                 <td className="fw-bold">4,371.00</td>
+              </tr>
+              <tr className="text-dark bg-white ">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>ค่าเช่าห้อง</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <th colSpan="5" className="text-center bg-white">
+                <th colSpan="9" className="text-center bg-white">
                   จำนวนเงินรวม
                 </th>
                 <th colSpan="1" className="text-center bg-white fw-bold">
                   3,720.00
                 </th>
-                <th colSpan="5" className="text-center bg-white"></th>
+                <th colSpan="3" className="text-center bg-white"></th>
                 <th
                   colSpan="1"
                   className="text-center bg-white fw-bold text-decoration-underline"
@@ -172,7 +213,7 @@ export default function SpecialDailyWagereport({ title }) {
                 </th>
               </tr>
               <tr>
-                <th colSpan="11" className="text-end bg-white">
+                <th colSpan="13" className="text-end bg-white">
                   ค่าแรง
                 </th>
                 <th colSpan="1" className="text-center bg-white fw-bold">
@@ -180,7 +221,7 @@ export default function SpecialDailyWagereport({ title }) {
                 </th>
               </tr>
               <tr>
-                <th colSpan="11" className="text-end bg-white">
+                <th colSpan="13" className="text-end bg-white">
                   โอที
                 </th>
                 <th colSpan="1" className="text-center bg-white fw-bold ">
@@ -188,7 +229,7 @@ export default function SpecialDailyWagereport({ title }) {
                 </th>
               </tr>
               <tr className="text-danger">
-                <th colSpan="11" className="bg-white text-end ">
+                <th colSpan="13" className="bg-white text-end ">
                   รวมเป็นเงินทั้งสิ้น
                 </th>
                 <th
@@ -201,7 +242,7 @@ export default function SpecialDailyWagereport({ title }) {
             </tfoot>
           </table>
         </div>
-      </div>
+      </center>
     </div>
   );
 }

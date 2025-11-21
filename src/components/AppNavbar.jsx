@@ -97,6 +97,9 @@ function AppNavbar({ toggleSidebar }) {
           </div>
 
           <div className="spacer"></div>
+          <a>
+            
+          </a>
           <div className="user-mini ">
             <div className="dropdown">
               <a

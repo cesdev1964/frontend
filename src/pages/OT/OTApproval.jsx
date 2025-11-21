@@ -8,52 +8,88 @@ import OTApproveCard from "../../components/OT/OTApprovalCard";
 import { useJob } from "../../hooks/jobStore";
 import { useOTApprove } from "../../hooks/otApproveStore";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+import { getDateOnly } from "../../util/inputFormat";
+import { useSearchParams } from "react-router-dom";
 
 export default function OTApproval({ title }) {
+  const [searchParams] = useSearchParams();
   const token = localStorage.getItem("access_token");
   if (!token) {
     return <SessionExpiryModal />;
   }
   useTitle(title);
-  const [otData, setOtData] = useState([]);
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const currentDate = new Date().toISOString().split("T")[0];
   const [isLoading, setIsLoading] = useState(false);
+  const [filterData, setFilterData] = useState([]);
+
+  const inputFilterFromURL = {
+    urlStartDate : searchParams.get("startDate") || currentDate,
+    urlendDate : searchParams.get("endDate") || currentDate,
+  }
 
   const [input, setInput] = useState({
-    startDate: currentDate,
-    endDate: currentDate,
-    jobId: null,
+    startDate: inputFilterFromURL.urlStartDate,
+    endDate: inputFilterFromURL.urlendDate,
+    jobId: "",
     search: "",
   });
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { getOTApprovalPending,otApproveData,getOTApprovalPendingByFilter} = useOTApprove();
+  const { getOTApprovalPending, otApproveData, getOTApprovalPendingByFilter } =
+    useOTApprove();
   // การ fetch data
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      await getOTApprovalPending();
-      await getJobDropdownAll();
-      setIsLoading(false);
-    } catch (error) {
-      // alert("โหลด API ไม่สำเร็จ", error);
-      setIsLoading(false);
-    }
-  }, [getOTApprovalPending, getJobDropdownAll]);
+  const fetchData = useCallback(
+    async (input) => {
+      setIsLoading(true);
+      try {
+        await getOTApprovalPending();
+        await getJobDropdownAll();
+        await getOTApprovalPendingByFilter(
+          new URLSearchParams({
+            startDate: getDateOnly(input.startDate),
+            endDate: getDateOnly(input.endDate),
+            search: input.search,
+            jobId: input.jobId,
+          })
+        ); //ทำการ filter ตรงนี้
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getOTApprovalPending, getJobDropdownAll, getOTApprovalPendingByFilter]
+  );
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchData(input);
+  }, [input]);
 
   useEffect(() => {
+
     if (!otApproveData) return;
-    setOtData(otApproveData);
-  }, [otApproveData]);
+
+    searchData();
+  }, [otApproveData, input.search]);
+
+  const searchData = () => {
+    const result = otApproveData.filter((item) => {
+      const searchLower = input.search.toLowerCase();
+      return (
+        (item.employeeCode ?? "").toLowerCase().includes(searchLower) ||
+        (item.fullName ?? "").toLowerCase().includes(searchLower)
+      );
+    });
+
+    setFilterData(result);
+  };
 
   //เกี่ยวกับ pagination
-  let NUM_OF_RECORDS = otData.length;
+  let NUM_OF_RECORDS = filterData.length;
   let LIMIT = 5;
 
   const onPageChanged = useCallback(
@@ -63,7 +99,7 @@ export default function OTApproval({ title }) {
     },
     [setCurrentPage]
   );
-  const currentData = otData.slice(
+  const currentData = filterData.slice(
     (currentPage - 1) * LIMIT,
     (currentPage - 1) * LIMIT + LIMIT
   );
@@ -76,7 +112,7 @@ export default function OTApproval({ title }) {
   const handleSelectChange = (name, selected) => {
     setInput((prevData) => ({
       ...prevData,
-      [name]: selected ? selected.value : null,
+      [name]: selected ? selected.value : "",
     }));
   };
 
@@ -119,9 +155,9 @@ export default function OTApproval({ title }) {
               type="date"
               id="startDate"
               className={`form-control`}
-              name="startDate"
+              name="endDate"
               placeholder="ลงวันที่สิ้นสุด"
-              value={input.startDate}
+              value={input.endDate}
               onChange={handleChangeInput}
               defaultValue={Date.now()}
               onKeyDown={(e) => e.preventDefault()}
@@ -140,12 +176,11 @@ export default function OTApproval({ title }) {
                 </span>
               </label>
               <input
-                name="levelname"
+                name="search"
                 type="text"
                 className={"form-control"}
-                id="educationname"
                 placeholder="ค้นหารายการอนุมัติ"
-                value={input.levelname}
+                value={input.search}
                 onChange={handleChangeInput}
               />
             </div>
@@ -158,10 +193,7 @@ export default function OTApproval({ title }) {
                 handleSelectChange("jobId", selected)
               }
               placeholder="เลือกหน่วยงาน"
-              value={jobDropdown.find((i) => i.value === input.jobId) || null}
-              //   className={`${
-              //     error.jobId ? "border border-danger rounded-2" : ""
-              //   }`}
+              value={jobDropdown.find((i) => i.value === input.jobId) || ""}
             />
           </div>
         </Filter>
@@ -197,7 +229,7 @@ export default function OTApproval({ title }) {
                             ></div>
                           ) : (
                             <>
-                              {otData.length === 0 ? (
+                              {filterData.length === 0 ? (
                                 <div className="w-100 d-flex flex-column align-items-center justify-content-center p-3">
                                   <i
                                     className="bi bi-file-earmark mb-2 text-danger"

@@ -16,9 +16,7 @@ import { OTApproveEnum } from "../enum/otApproveEnum";
 export default function IsEmployeeStatusBadge({ status }) {
   console.log("value in badge", status);
   const isNumber = parseInt(status);
-  if(isNumber === NaN || isNumber === undefined){
-    return <span className="badge-style badge-unknown">กำลังโหลด</span>;
-  }
+ 
   switch (isNumber) {
     case 0:
       return <span className="badge-style badge-leave">ลาออก</span> ;

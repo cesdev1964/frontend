@@ -23,6 +23,7 @@ export default function OTRequestByHR({ title }) {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
+ 
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
@@ -57,6 +58,7 @@ export default function OTRequestByHR({ title }) {
 
   useEffect(() => {
     fetchData();
+   
   }, [fetchData]);
 
   useEffect(() => {

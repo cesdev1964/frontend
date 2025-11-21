@@ -64,9 +64,9 @@ export default function Announcement({ title, isPreview = false }) {
               </p>
               <h5 className="text-secondary">{announmentById.summary ?? ""}</h5>
             </div>
-            <div className="announcement-box border-bottom  border-danger border-4 mb-3">
+            <div className="announcement-box border-bottom  border-danger border-4 mb-3 px-5 py-4">
               {announmentById.content ? (
-                <p style={{textIndent:"1.5em"}}>{announmentById.content}</p>
+                <p style={{textIndent:"1.5em",lineHeight:2}}>{announmentById.content}</p>
               ) : (
                 <div className="d-flex flex-column align-items-center justify-content-center p-4">
                   <i

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useOTApprove } from "../../hooks/otApproveStore";
-import { shortDateFormate } from "../../util/inputFormat";
+import { getDateOnly, shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";
 
 export default function OTRequestPendingCard() {
@@ -82,7 +82,14 @@ export default function OTRequestPendingCard() {
                             return (
                               <div
                                 className="card otReqCard"
-                                onClick={() => navigate("/working/OTApproval")}
+                                onClick={() =>
+                                  navigate({
+                                    pathname: `/working/OTApproval`,
+                                    search: `?startDate=${getDateOnly(
+                                      item.date
+                                    )}&endDate=${getDateOnly(item.date)}`,
+                                  })
+                                }
                               >
                                 <div className="d-flex align-items-center justify-content-between">
                                   <div>

@@ -3,16 +3,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTitle } from "../../../hooks/useTitle";
 import Swal from "sweetalert2";
 import HeaderPage from "../../../components/HeaderPage";
-import { Link } from "react-router-dom";
-import DataTableComponent from "../../../components/DatatableComponent";
 import { useRolePermission } from "../../../hooks/rolePermissionStore";
 import { useParams } from "react-router-dom";
-import { SubmitOrCancelButton } from "../../../components/SubmitOrCancelBtnForModal";
 import { usePermission } from "../../../hooks/permissionStore";
 import LoadingSpin from "../../../components/loadingSpin";
 import SearchBox from "../../../components/SearchBox";
 import {useRole} from "../../../hooks/roleStore";
-import SessionExpiryModal from "../../../components/modal/SessionExpiryModal";
 
 export const tableHead = [{ colName: "รหัสสิทธิ์เข้าใช้งาน" }];
 export default function RolePermission({ title }) {
@@ -23,9 +19,6 @@ export default function RolePermission({ title }) {
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
   useTitle(title);
-
-
-  
   const {
     rolePermissionisLoading,
     rolePermissiondataById,
@@ -46,7 +39,6 @@ export default function RolePermission({ title }) {
       await getPermission();
       await getRoleByIdData(roleid);
     } catch (error) {
-      // alert("ดึงข้อมูลไม่สำเร็จ :", error.message);
       return;
     }
   }, [getRolePermissionByRoleId, getRolePermission,getRoleByIdData]);
@@ -172,7 +164,7 @@ export default function RolePermission({ title }) {
       <HeaderPage pageName={`รายการสิทธ์การใช้งาน -  ${dataById.roleName ?? "..."}`} />
 
       <div className="container">
-        <div className="row g-3">
+        <div className="row g-3 announcement-box mt-3">
           <div className="col-lg-6 col-sm-12">
             <div className="mt-4">
               <SearchBox

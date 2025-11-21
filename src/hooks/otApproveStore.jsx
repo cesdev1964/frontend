@@ -13,7 +13,6 @@ export const useOTApprove = create((set) => ({
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
       const response = await api.get(`${url}/pending`);
-      // console.log(" data", response.data.data);
       set({
         otApproveData: response.data.data ?? [],
         otApproveIsLoading: false,
@@ -27,15 +26,16 @@ export const useOTApprove = create((set) => ({
       return { success: response.data.success };
     }
   },
-  
+
   //สำหรับ filter
   getOTApprovalPendingByFilter: async (value) => {
+  
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
       const response = await api.get(
-        `${url}/pending?startDate=${value.startDate}&endDate=${value.endDate}&search=${value.search}&jobId=${value.jobId}`
+        `${url}/pending?${value.toString()}`
       );
-      // console.log("emp data", response.data.data);
+
       set({
         otApproveData: response.data.data ?? [],
         otApproveIsLoading: false,
@@ -55,7 +55,7 @@ export const useOTApprove = create((set) => ({
       };
     }
   },
-  
+
   approveOT: async (reqData) => {
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
@@ -84,7 +84,7 @@ export const useOTApprove = create((set) => ({
     }
   },
   rejectOT: async (reqData) => {
-    // console.log("id ", id);
+
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
       const response = await api.post(`${url}/reject`, reqData);

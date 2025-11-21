@@ -26,7 +26,6 @@ import RolePermission from "./pages/setting/role/RolePermission";
 import Flows from "./pages/setting/Flows";
 import Profile from "./pages/Profile";
 import EmployeeForm from "./pages/setting/EmployeeForm";
-import EmployeesTest from "./pages/setting/EmployeeTest";
 import CheckChangePassword from "./auth/CheckChangePassword";
 import OTRequest from "./pages/OT/OTRequest";
 import OTApproval from "./pages/OT/OTApproval";
@@ -39,6 +38,9 @@ import Announcement from "./pages/Announcement";
 import AnnouncementSetting from "./pages/setting/Announmencement";
 import AnnounmencementForm from "./pages/setting/AnnounmencementForm";
 import OTRequestByHR from "./pages/OT/OTRequestByHR";
+import UserJobs from "./pages/setting/UserJobs";
+import Employees from "./pages/setting/Employees";
+import UserJobsTest from "./pages/setting/UserJobTest";
 
 export default function RouterPage() {
   const token = localStorage.getItem("access_token");
@@ -88,7 +90,7 @@ export default function RouterPage() {
         { path: "settings", element: <Settings title="ตั้งค่า" /> },
         {
           path: "settings/employees",
-          element: <EmployeesTest title="จัดการข้อมูลพนักงาน" />,
+          element: <Employees title="จัดการข้อมูลพนักงาน" />,
         },
         {
           path: "settings/employees/form",
@@ -128,7 +130,7 @@ export default function RouterPage() {
         },
         {
           path: "settings/jobcategory",
-          element: <JobCategories title="จัดการข้อมูลหมวดงาน" />,
+          element: <JobCategories title="จัดการข้อมูลประเภทงาน" />,
         },
         {
           path: "settings/OTcategory",
@@ -174,6 +176,10 @@ export default function RouterPage() {
           element: (
             <AnnounmencementForm title="แก้ไขข้อมูลข่าวสาร" isEdit={true} />
           ),
+        },
+         {
+          path: "settings/userjobs",
+          element: <UserJobs title="จัดการข้อมูลหน่วยงานที่ดูแล" />,
         },
         // report
         {
