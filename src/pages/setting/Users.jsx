@@ -1,8 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import "../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-bs5";
-import $ from "jquery";
 import HeaderPage from "../../components/HeaderPage";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
@@ -10,6 +7,13 @@ import { useRole } from "../../hooks/roleStore";
 import { useUser } from "../../hooks/userStore";
 import { useTitltName } from "../../hooks/titleNameStore";
 import { isActiveBadge } from "../../util/isActiveBadge";
+import { Link } from "react-router-dom";
+import DataTableComponent from "../../components/DatatableComponent";
+import LoadingSpin from "../../components/loadingSpin";
+import handleDelete from "../../util/handleDelete";
+import { handleCancel } from "../../util/handleCloseModal";
+import MainButton from "../../components/MainButton";
+import ModalComponent from "../../components/modal/ModalComponent";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -35,11 +39,11 @@ export default function Users({ title }) {
     userError,
     getUserData,
     register,
-    success,
     deleteUser,
     getUserByIdData,
     userById,
     updateUser,
+    resetPassword,
   } = useUser();
   const [input, setInput] = useState({
     titleId: 0,
@@ -87,33 +91,24 @@ export default function Users({ title }) {
     setEditMode(false);
   };
 
-  useEffect(() => {
-    const fetchDataTable = async () => {
-      try {
-        await getRoleData();
-        await getUserData();
-        await getTitleNameData();
-      } catch (error) {
-        alert("โหลด API ไม่สำเร็จ", error);
-      }
-    };
-    fetchDataTable();
-  }, [getRoleData, getUserData]);
-
-  //เมื่อค่าเปลี่ยน
-  useEffect(() => {
-    if (data || userdata || titleData) {
-      // console.log("data", data);
-      // console.log("user data", userdata);
-      GetDataTable();
+  const fetchDataTable = useCallback(async () => {
+    try {
+      await getRoleData();
+      await getUserData();
+      await getTitleNameData();
+    } catch (error) {
+      return;
     }
-  }, [data, input.roles, userdata, titleData]);
+  }, [getRoleData, getUserData, getTitleNameData]);
+
+  useEffect(() => {
+    fetchDataTable();
+  }, [fetchDataTable]);
 
   //ใส่ใน input ของ edit mode
   useEffect(() => {
     if (userById) {
-      setInput((prevData) => ({
-        ...prevData,
+      setInput({
         username: userById.username ?? "",
         employeeId: userById.employeeId ?? 0,
         titleId: userById.titleId ?? 0,
@@ -121,73 +116,51 @@ export default function Users({ title }) {
         lastname: userById.lastname ?? "",
         isactive: userById.isActive ?? false,
         roles: userById?.roles?.map((item) => item.roleId) ?? [],
-      }));
+      });
     }
   }, [userById]);
 
-  const GetDataTable = () => {
-    $(tableRef.current).DataTable({
-      data: userdata,
-      destroy: true,
-      responsive: true,
-      paging: true,
-      searching: true,
-      autoWidth: true,
-      language: {
-        decimal: "",
-        emptyTable: "ไม่มีข้อมูลในตาราง",
-        info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
-        infoEmpty: "แสดง 0 ถึง 0 จาก 0 รายการ",
-        infoFiltered: "(กรองจาก _MAX_ รายการทั้งหมด)",
-        infoPostFix: "",
-        thousands: ",",
-        lengthMenu: "แสดง _MENU_ รายการ",
-        loadingRecords: "กำลังโหลด...",
-        processing: "กำลังประมวลผล...",
-        search: "ค้นหา:",
-        zeroRecords: "ไม่พบข้อมูลที่ตรงกัน",
-      },
-      columnDefs: [
-        { width: "70px", targets: 0 },
-        { width: "70px", targets: 1 },
-        { width: "200px", targets: 2 },
-        { width: "100px", targets: 3 },
-        { width: "120px", targets: 4 },
-      ],
-      columns: [
-        {
-          data: null,
-          render: function (data, type, row, meta) {
-            return meta.row + 1;
-          },
-        },
-        {
-          title: "ชื่อผู้ใช้",
-          data: "username",
-          orderable: true,
-        },
+  const columnDefs = [
+    { maxWidth: "70px", targets: 0, className: "text-center" },
+    { maxWidth: "70px", targets: 1 },
+    { maxWidth: "200px", targets: 2, className: "mobile-hide-column" },
+    { maxWidth: "100px", targets: 3 },
+    { maxWidth: "120px", targets: 4, className: "text-center" },
+  ];
 
-        {
-          title: "ชื่อ-นามสกุล",
-          data: null,
-          orderable: true,
-          render: function (data, type, row) {
-            return `<p>${row.firstname} ${row.lastname}</p>`;
-          },
-        },
-        {
-          title: "เปิดใช้งาน",
-          data: "isActive",
-          orderable: true,
-          render: function (data, type, row) {
-            return isActiveBadge(row.isActive);
-          },
-        },
-        {
-          data: null,
-          title: "การจัดการ",
-          render: function (data, type, row) {
-            return `      
+  const columns = [
+    {
+      data: null,
+      render: function (data, type, row, meta) {
+        return meta.row + 1;
+      },
+    },
+    {
+      title: "ชื่อผู้ใช้",
+      data: "username",
+      orderable: true,
+    },
+
+    {
+      title: "ชื่อ-นามสกุล",
+      data: null,
+      orderable: true,
+      render: function (data, type, row) {
+        return `<p>${row.firstname} ${row.lastname}</p>`;
+      },
+    },
+    {
+      title: "เปิดใช้งาน",
+      data: "isActive",
+      render: function (data, type, row) {
+        return isActiveBadge(row.isActive);
+      },
+    },
+    {
+      data: null,
+      title: "การจัดการ",
+      render: function (data, type, row) {
+        return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -195,12 +168,20 @@ export default function Users({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark btn-edit " data-user-id="${row.userId}">
+                <a class="dropdown-item text-dark btn-edit " data-id="${row.userId}" data-action="edit">
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
+               <li>
+                <a class="dropdown-item text-dark btn-permission" 
+                   data-id="${row.userId}"
+                   data-action="reset"
+                   >
+                  <i class="bi bi-person-fill-lock me-2"></i>reset password
+                </a>
+              </li>
               <li>
-                <a class="dropdown-item text-dark btn-delete" data-user-id="${row.userId}">
+                <a class="dropdown-item text-dark btn-delete" data--id="${row.userId}" data-action="delete">
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -209,45 +190,62 @@ export default function Users({ title }) {
           
           <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
             <a
-              data-user-id="${row.userId}"
+              data-id="${row.userId}"
               class="btn btn-warning me-2 btn-edit"
               title="แก้ไข"
-              
+              data-action="edit"
             >
               <i class="bi bi-pen-fill"></i>
             </a>
             <a
+              class="btn btn-info me-2 btn-permission"
+              title="reset password"
+              data-id="${row.userId}"
+               data-action="reset"
+            >
+              <i class="bi bi-person-fill-lock"></i>
+            </a>
+            <a
               
-              data-user-id="${row.userId}"
+              data-id="${row.userId}"
               class="btn btn-danger btn-delete"
               title="ลบ"
+              data-action="delete"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
           </div>
         </div>
        `;
-          },
-        },
-      ],
-      dom:
-        window.innerWidth <= 570
-          ? '<"top"lf>rt<"bottom"ip><"clear">'
-          : '<"top"lf>rt<"bottom"ip><"clear">',
-    });
+      },
+    },
+  ];
+
+  const handleOpenModal = (modalId) => {
+    setEditMode(false);
+    handleClear();
+    const currentModal = document.getElementById(modalId);
+    if (currentModal) {
+      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
+      modal.show();
+    }
   };
 
-  //เข้าถึง function delete
-  $(tableRef.current).on("click", ".btn-delete", function () {
-    const id = $(this).data("userId");
-    console.log("id in click delete func", id);
-    handleDelete(id);
-  });
-
-  $(tableRef.current).on("click", ".btn-edit", function () {
-    const id = $(this).data("userId");
-    handleEdit(id);
-  });
+  const handleAction = async (action, id) => {
+    if (action === "edit") {
+      handleEdit(id, "addModal");
+    } else if (action === "delete") {
+      handleDelete(
+        userIsLoading,
+        () => deleteUser(id),
+        () => getUserData()
+      );
+    } else if (action === "reset") {
+      const { userById } = await getUserByIdData(id);
+      // console.log("userData",userById);
+      handleResetPassword(id, userById.username);
+    }
+  };
 
   const validateForm = () => {
     let errors = {};
@@ -260,8 +258,8 @@ export default function Users({ title }) {
       if (!input.password) {
         errors.password = "กรุณากรอกรหัสผ่าน";
       } else {
-        if (input.password.length < 8) {
-          errors.password = "กรุณากรอกรหัสผ่าน 8 ตัวอักษรขึ้นไป";
+        if (input.password.length < 4) {
+          errors.password = "กรุณากรอกรหัสผ่าน 4 ตัวอักษรขึ้นไป";
         }
       }
     }
@@ -312,7 +310,7 @@ export default function Users({ title }) {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modalId) => {
     e.preventDefault();
 
     const reqAddData = {
@@ -337,41 +335,64 @@ export default function Users({ title }) {
 
     const errorList = validateForm(input);
     setError(errorList);
-    console.log("add new data", reqAddData);
+    // console.log("add new data", reqAddData);
     if (Object.keys(errorList).length === 0) {
-      // console.log("input data to update",reqUpdateData)
-      const response = editMode
-        ? await updateUser(reqUpdateData, editUserId)
-        : await register(reqAddData);
-      if (response.success) {
-        setIsSubmit(true);
-        Swal.fire({
-          title: "บันทึกข้อมูลสำเร็จ",
-          icon: "success",
-          draggable: true,
-          buttonsStyling: "w-100",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { userError, success } = editMode
+              ? await updateUser(reqUpdateData, editUserId)
+              : await register(reqAddData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
+              });
+
+              const currentModal = document.getElementById(modalId);
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+              handleClear();
+              await getUserData();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: userError,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
         });
-        //   ปิด modal เมื่อบันทึกข้อมูลสำเร็จ
-        const currentModal = document.getElementById("addModal");
-        const modalInstance = bootstrap.Modal.getInstance(currentModal);
-        modalInstance.hide();
-        handleClear();
-        //โหลดตารางใหม่
-        await getUserData();
-      } else {
-        Swal.fire({
-          title: "บันทึกข้อมูลไม่สำเร็จ",
-          icon: "error",
-        });
-      }
     }
   };
 
-  const handleEdit = async (userId) => {
+  const handleEdit = async (userId, modalId) => {
+    handleClear();
     await getUserByIdData(userId); //ผูก api เรียกใช้ข้อมูล
     setEditUserId(userId);
 
-    const currentModal = document.getElementById("addModal");
+    const currentModal = document.getElementById(modalId);
     if (currentModal) {
       //เป็นการสร้างใหม่ ก่อนการเรียกใช้
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
@@ -380,7 +401,9 @@ export default function Users({ title }) {
     }
   };
 
-  const handleDelete = (userId) => {
+  const handleResetPassword = async (userId, userName) => {
+    setEditMode(false);
+
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success custom-width-btn-alert",
@@ -390,47 +413,45 @@ export default function Users({ title }) {
     });
     swalWithBootstrapButtons
       .fire({
-        title: "คุณต้องการลบรายการใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        title: "คุณต้องการ reset password ใช่หรือไม่",
+        text: "คุณแน่ใจแล้วใช่ไหม",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "ใช่ ลบได้เลย",
-        cancelButtonText: "ยกเลิกการลบ",
+        confirmButtonText: "ใช่",
+        cancelButtonText: "ยกเลิก",
         reverseButtons: true,
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await deleteUser(userId);
+          const response = await resetPassword(userId);
           if (response.success) {
             swalWithBootstrapButtons.fire({
-              title: "ลบรายการสำเร็จ!",
-              text: "คุณทำการลบรายการเรียบร้อยแล้ว",
+              title: "reset password สำเร็จ!",
+              text: `คุณทำการ reset password ของคุณ ${
+                userName ?? "ไม่พบชื่อผู้ใช้"
+              } รายการเรียบร้อยแล้ว`,
               icon: "success",
             });
             await getUserData();
           } else {
             Swal.fire({
-              title: "เกิดข้อผิดผลาดในการลบรายการ กรุณาลองใหม่อีกครั้ง",
+              title: `เกิดข้อผิดผลาดในการ reset password ของคุณ ${
+                userName ?? "ไม่พบชื่อผู้ใช้"
+              } กรุณาลองใหม่อีกครั้ง`,
               icon: "error",
             });
           }
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire({
-            title: "ยกเลิก",
-            text: "คุณทำการยกเลิกลบรายการเรียบร้อยแล้ว",
-            icon: "error",
-          });
         }
       });
   };
 
   return (
-    <div className="container py-4 min-vh-90 d-flex flex-column">
+    <div>
       {/* Breadcrumb */}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="/settings">ตั้งค่า</a>
+            <Link to="/settings">ตั้งค่า</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -440,57 +461,38 @@ export default function Users({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <button
-            type="button"
-            className="power py-2"
-            style={{ maxWidth: "200px" }}
-            data-bs-toggle="modal"
-            data-bs-target="#addModal"
-          >
-            <span>
-              <i className="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </button>
-        </div>
+        <MainButton
+          btnName={title}
+          icon={"bi bi-plus-circle"}
+          onClick={() => handleOpenModal("addModal")}
+        />
+
         {/* ตารางข้อมูล */}
-        <div className="mt-4">
-          <table
-            ref={tableRef}
-            className="table table-striped"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                {tableHead.map((row) => (
-                  <th
-                    key={row.index}
-                    style={{
-                      background: "#ffe8da",
-                      fontWeight: "600",
-                      padding: "12px 8px",
-                    }}
-                  >
-                    {row.colName}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
+        <DataTableComponent
+          column={columns}
+          data={userdata}
+          tableHead={tableHead}
+          tableRef={tableRef}
+          columnDefs={columnDefs}
+          isLoading={userIsLoading}
+          onAction={handleAction}
+        />
+
 
         {/* modal */}
+        {editMode && userIsLoading && <LoadingSpin />}
+
+      
         <div
           className="modal fade"
           id="addModal"
-          tabindex="-1"
+          tabIndex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
+              <div className="modal-header bg-danger text-danger border-3 border-bottom border-danger">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
                   <i className="bi bi-plus-circle fs-4 me-2"></i>
                   {title}
@@ -501,10 +503,10 @@ export default function Users({ title }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={handleClear}
+                  onClick={() => handleCancel("addModal")}
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <div className="p-4">
                   <div className="row form-spacing g-3">
                     <div
@@ -533,7 +535,7 @@ export default function Users({ title }) {
 
                       <div className="mt-3">
                         <div className="mb-2">
-                          <label class="form-label">
+                          <label className="form-label">
                             คำนำหน้า
                             <span style={{ color: "red" }}>*</span>
                           </label>
@@ -548,8 +550,6 @@ export default function Users({ title }) {
                             dis
                           >
                             <option value={0}>เลือกคำนำหน้า</option>
-                            {/* <option value={1}>นาย</option>
-                            <option value={2}>นางสาว</option> */}
                             {titleData.map((item) => (
                               <option value={item.titleId} key={item.titleId}>
                                 {item.titleNameTH}
@@ -581,7 +581,7 @@ export default function Users({ title }) {
                           ) : null}
                         </div>
                         <div className="mb-2">
-                          <label class="form-label">
+                          <label className="form-label">
                             นามสกุล
                             <span style={{ color: "red" }}>*</span>
                           </label>
@@ -599,11 +599,11 @@ export default function Users({ title }) {
                           {error.lastname ? (
                             <p className="text-danger">{error.lastname}</p>
                           ) : null}
-                          <div class=" d-flex justify-content-end align-items-center w-100 mt-2">
+                          <div className=" d-flex justify-content-end align-items-center w-100 mt-2">
                             <label className="mb-2">เปิดใช้งาน</label>
-                            <div class="form-check form-switch form-switch-md ms-3">
+                            <div className="form-check form-switch form-switch-md ms-3">
                               <input
-                                class="form-check-input"
+                                className="form-check-input"
                                 type="checkbox"
                                 id="isActive-toggle"
                                 name="isactive"
@@ -622,8 +622,8 @@ export default function Users({ title }) {
                         display: editMode ? "none" : "block",
                       }}
                     >
-                      <div className="d-flex flex-column align-items-start border border-1 border-secondary rounded-3 p-3 mb-2 gap-1">
-                        <label for="StartDate" class="form-label">
+                      <div className="d-flex flex-column align-items-start border border-1 border-danger rounded-3 p-3 mb-2 gap-1">
+                        <label className="form-label">
                           รหัสผ่าน
                           <span style={{ color: "red" }}>*</span>
                         </label>
@@ -634,7 +634,7 @@ export default function Users({ title }) {
                             }`}
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            value={input.password}
+                            value={input.password ?? ""}
                             onChange={handleChangeInput}
                           />
 
@@ -656,11 +656,11 @@ export default function Users({ title }) {
                         {error.password ? (
                           <p className="text-danger">{error.password}</p>
                         ) : null}
-                        <div class=" d-flex justify-content-between align-items-center w-100 mt-2">
+                        <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                           <label className="mb-2">บังคับเปลี่ยนรหัส</label>
-                          <div class="form-check form-switch form-switch-md ms-3">
+                          <div className="form-check form-switch form-switch-md ms-3">
                             <input
-                              class="form-check-input"
+                              className="form-check-input"
                               type="checkbox"
                               id="isActive-toggle"
                               name="mustchangepassword"
@@ -697,10 +697,11 @@ export default function Users({ title }) {
                       }}
                     >
                       <div className="d-flex my-3 gap-2  flex-wrap">
-                        {input.roles?.map((item) => (
+                        {input.roles?.map((item, index) => (
                           <div
                             className="border border-danger p-1 pe-0 rounded-3 bg-light ps-2"
                             style={{ fontSize: "0.9rem" }}
+                            key={index}
                           >
                             {getRoleName(item)}
                             <button
@@ -721,8 +722,8 @@ export default function Users({ title }) {
               </div>
 
               <SubmitOrCancelButton
-                handleCancel={handleClear}
-                handleSubmit={handleSubmit}
+                handleCancel={() => handleCancel("addModal")}
+                handleSubmit={(e) => handleSubmit(e, "addModal")}
                 isLoading={userIsLoading}
               />
             </div>

@@ -13,7 +13,7 @@ export const useRole = create((set) => ({
       const response = await api.get("/api/roles");
       // console.log("role data", response.data.data);
       set({
-        data: response.data.data ?? {},
+        data: response.data.data ?? [],
         isLoading: false,
       });
     } catch (errorMessage) {
@@ -24,7 +24,7 @@ export const useRole = create((set) => ({
     set({ isLoading: true, errorMessage: null });
     try {
       const response = await api.get(`/api/roles/${roleId}`);
-      console.log("role data", response.data.data);
+      // console.log("role data", response.data.data);
       set({
         dataById: response.data.data ?? {},
         isLoading: false,
