@@ -69,7 +69,7 @@ export default function DataTableComponent({
 
   return (
     <>
-      <div className="mt-4 position-relative">
+      <div className="mt-4 position-relative announcement-box pt-5">
         <div className="table-responsive">
           <table
             ref={tableRef}

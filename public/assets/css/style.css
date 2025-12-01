@@ -393,6 +393,7 @@ body {
   align-items: center;
   flex-grow: 1;
 }
+
 .cards {
   display: grid;
   grid-template-columns: 1fr 380px;

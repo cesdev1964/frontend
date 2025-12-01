@@ -49,8 +49,9 @@ export default function Announcement({ title, isPreview = false }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {!isLoading ? (
-          <div dis>
-            <div className="announcement-box border-bottom  border-danger border-4 mb-3">
+          <div className="announcement-box p-4">
+
+            <div className="border-bottom  border-danger border-4 my-3">
               <h3>{announmentById.title ?? "ไม่พบหัวข้อข่าว"}</h3>
 
               <p className="OT-description-label mt-3 mb-4">
@@ -64,7 +65,7 @@ export default function Announcement({ title, isPreview = false }) {
               </p>
               <h5 className="text-secondary">{announmentById.summary ?? ""}</h5>
             </div>
-            <div className="announcement-box border-bottom  border-danger border-4 mb-3 px-5 py-4">
+            <div className="border-bottom  border-danger border-4 mb-3 px-5 py-5">
               {announmentById.content ? (
                 <p style={{textIndent:"1.5em",lineHeight:2}}>{announmentById.content}</p>
               ) : (
@@ -77,30 +78,30 @@ export default function Announcement({ title, isPreview = false }) {
                 </div>
               )}
             </div>
+            {announmentById.attachments != undefined && (
+              <div>
+                <p className="fw-bold">ไฟล์แนป</p>
+                <div className="item-flex flex-wrap">
+                  {announmentById.attachments.map((item) => (
+                    <a
+                      className="btn-outline-primary rounded-3 p-1 text-center"
+                      title="ดาวน์โหลดไฟล์แนป"
+                      key={item.attachmentId}
+                      href={`${baseURL}${item.filePath}`}
+                      download
+                      target="_blank"
+                      style={{ textDecoration: "none", cursor: "pointer" }}
+                    >
+                      <i className="bi bi-file-earmark-arrow-down me-1"></i>
+                      {item.fileName}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <LoadingSpin />
-        )}
-        {announmentById.attachments != undefined && (
-          <div className="announcement-box border-bottom  border-danger border-4">
-            <p className="fw-bold">ไฟล์แนป</p>
-            <div className="item-flex flex-wrap">
-              {announmentById.attachments.map((item) => (
-                <a
-                  className="btn-outline-primary rounded-3 p-1 text-center"
-                  title="ดาวน์โหลดไฟล์แนป"
-                  key={item.attachmentId}
-                  href={`${baseURL}${item.filePath}`}
-                  download
-                  target="_blank"
-                  style={{ textDecoration: "none", cursor: "pointer" }}
-                >
-                  <i className="bi bi-file-earmark-arrow-down me-1"></i>
-                  {item.fileName}
-                </a>
-              ))}
-            </div>
-          </div>
         )}
       </div>
     </div>

@@ -184,6 +184,13 @@ const Settings = ({ title }) => {
     }
   });
 
+  // background-color: white;
+  // padding: 20px;
+  // padding-top: 15px;
+  // width: 100%;
+  // box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  // border-radius: 6px;
+
   return (
     <div>
       <HeaderPage pageName={title} />
@@ -192,14 +199,14 @@ const Settings = ({ title }) => {
         search={search}
         placeholder="ค้นหาเมนูตั้งค่า"
       />
-      <div className="content-box mt-4">
-        <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+      <div className="content-box mt-4 ">
+        <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 announcement-box">
           {filterItemSetting.length > 0 ? (
             <>
               {filterItemSetting.map((item, index) => {
                 return (
                   <div
-                    className="col "
+                    className="col"
                     style={{ cursor: "pointer" }}
                     key={index}
                     onClick={() => handleChagePage(item.path)}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback ,useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import OTcard from "./OTcard";
 import handleDelete from "../../util/handleDelete";
 import Pagination from "../Pagination";
@@ -34,12 +34,12 @@ export default function OTrequestList({
   );
 
   useEffect(() => {
-  if (NUM_OF_RECORDS >= LIMIT) {
-    setShowPaginate(true);
-  } else {
-   setShowPaginate(false);
-  }
-}, [NUM_OF_RECORDS, LIMIT]);
+    if (NUM_OF_RECORDS >= LIMIT) {
+      setShowPaginate(true);
+    } else {
+      setShowPaginate(false);
+    }
+  }, [NUM_OF_RECORDS, LIMIT]);
 
   return (
     <>
@@ -80,11 +80,12 @@ export default function OTrequestList({
                               className="bi bi-file-earmark mb-2 text-danger"
                               style={{ fontSize: "60px" }}
                             ></i>
-                            <h4 className="text-danger text-center">ไม่พบการขอโอที</h4>
+                            <h4 className="text-danger text-center">
+                              ไม่พบการขอโอที
+                            </h4>
                           </div>
                         ) : (
                           <>
-                            {/* เอาสัก 6 รายการต่อหน้า */}
                             {currentData.map((item) => {
                               return (
                                 <div>
@@ -112,7 +113,6 @@ export default function OTrequestList({
             </div>
           </section>
         </div>
-        {/* มีข้อมูลตามจำนวน limit แต่ paginate ไม่ปรากฏ */}
         {paginate && (
           <div className="pagination-wrapper">
             <Pagination
@@ -125,6 +125,7 @@ export default function OTrequestList({
           </div>
         )}
       </div>
+       
     </>
   );
 }

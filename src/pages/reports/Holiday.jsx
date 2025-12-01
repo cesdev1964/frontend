@@ -28,7 +28,7 @@ export default function Weekend({ title }) {
       <div className="container holiday-box">
         {!isLoading ? (
           <>
-            <div className="accordion">
+            {/* <div className="accordion">
               <div className="accordion-item">
                 <input
                   id="accordion-trigger-1"
@@ -68,6 +68,21 @@ export default function Weekend({ title }) {
                   </div>
                 </section>
               </div>
+            </div> */}
+            <div className="announcement-box">
+              <HolidayYearSlider
+                            yearDisplay={yearDisplay}
+                            handleNextYear={() => navigateYear(+1)}
+                            handlePrevYear={() => navigateYear(-1)}
+                          />
+                          <div className="w-100 bg-danger p-1 border-n rounded-3"></div>
+                          <HolidayCard />
+                          <HolidayCard />
+                          <HolidayCard />
+                          <HolidayCard />
+                          <HolidayCard />
+                          <HolidayCard />
+                          <HolidayCard />
             </div>
           </>
         ) : (
