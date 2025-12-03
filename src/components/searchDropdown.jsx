@@ -10,7 +10,7 @@ export const SearchDropdown = ({
   style
 }) => {
   return (
-    <div style={{zIndex:999}}>
+    <div>
       <Select
         options={data}
         value={value}

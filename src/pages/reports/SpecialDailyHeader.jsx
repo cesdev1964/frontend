@@ -40,7 +40,7 @@ export default function SpecialDailyHeader({ tableHeadData, subHeader }) {
     <>
       {/* header */}
       <View style={styles.tableRowHeader}>
-        {/* <View style={[styles.tableCol, styles.colSpan2]}>
+        <View style={[styles.tableCol, styles.colSpan2]}>
           <Text style={styles.tableCell}>Description</Text>
         </View>
         <View style={[styles.tableCol]}>
@@ -51,7 +51,7 @@ export default function SpecialDailyHeader({ tableHeadData, subHeader }) {
         </View>
         <View style={[styles.tableCol]}>
           <Text style={styles.tableCell}>Amount</Text>
-        </View> */}
+        </View>
         
       </View>
       {/* subheader */}

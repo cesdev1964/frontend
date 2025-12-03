@@ -222,6 +222,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                     </select>
                   </div>
                 </div>
+                <hr className="text-danger" />
                 <label className="form-label">หัวเรื่องข่าว</label>
                 <textarea
                   style={{ resize: "none" }}
@@ -252,6 +253,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
               </div>
               <div className="announcement-box border-bottom  mb-3">
                 <h4>แนบไฟล์</h4>
+                <hr className="text-danger" />
                 <UploadFile
                   selectedFile={selectedFile}
                   setSelectedFile={setSelectedFile}
@@ -261,6 +263,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
             <div className="col-lg-7 col-md-12">
               <div className="announcement-box border-bottom  mb-3">
                 <h4>เนื้อหาข่าว</h4>
+                <hr className="text-danger" />
                 <textarea
                   name="content"
                   type="text"

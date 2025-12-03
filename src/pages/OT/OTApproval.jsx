@@ -24,9 +24,9 @@ export default function OTApproval({ title }) {
   const [filterData, setFilterData] = useState([]);
 
   const inputFilterFromURL = {
-    urlStartDate : searchParams.get("startDate") || currentDate,
-    urlendDate : searchParams.get("endDate") || currentDate,
-  }
+    urlStartDate: searchParams.get("startDate") || currentDate,
+    urlendDate: searchParams.get("endDate") || currentDate,
+  };
 
   const [input, setInput] = useState({
     startDate: inputFilterFromURL.urlStartDate,
@@ -70,7 +70,6 @@ export default function OTApproval({ title }) {
   }, [input]);
 
   useEffect(() => {
-
     if (!otApproveData) return;
 
     searchData();
@@ -198,8 +197,8 @@ export default function OTApproval({ title }) {
           </div>
         </Filter>
 
-        <div className="flex-grow-1 d-flex align-items-start justify-content-center">
-          <div className="accordion">
+        <div className="flex-grow-1 d-flex align-items-start justify-content-center mt-3">
+          {/* <div className="accordion">
             <div className="accordion-item">
               <input
                 id="accordion-trigger-1"
@@ -241,7 +240,6 @@ export default function OTApproval({ title }) {
                                 </div>
                               ) : (
                                 <>
-                                  {/* เอาสัก 6 รายการต่อหน้า */}
                                   {currentData.map((item) => {
                                     return (
                                       <div className="w-100">
@@ -265,6 +263,54 @@ export default function OTApproval({ title }) {
                   </div>
                 </div>
               </section>
+            </div>
+          </div> */}
+
+          <div className="announcement-box border border-primary">
+            <div className="text-danger">
+              <h5>
+                <i class="bi bi-filter me-2"></i><strong>{title}</strong>
+              </h5>
+            </div>
+            <hr className="text-danger" />
+            <div className="ot-container">
+              <div className="d-flex flex-column align-items-center justify-content-center p-1">
+                {isLoading ? (
+                  <div
+                    className="spinner-border text-danger"
+                    role="status"
+                    style={{ width: "3rem", height: "3rem" }}
+                  ></div>
+                ) : (
+                  <>
+                    {filterData.length === 0 ? (
+                      <div className="w-100 d-flex flex-column align-items-center justify-content-center p-3">
+                        <i
+                          className="bi bi-file-earmark mb-2 text-danger"
+                          style={{ fontSize: "60px" }}
+                        ></i>
+                        <h4 className="text-danger text-center">
+                          ไม่พบรายการโอทีที่ต้องดำเนินการอนุมัติ
+                        </h4>
+                      </div>
+                    ) : (
+                      <>
+                        {currentData.map((item) => {
+                          return (
+                            <div className="w-100">
+                              <OTApproveCard
+                                data={item}
+                                key={item.otRequestId}
+                                fetchData={() => getOTApprovalPending()}
+                              />
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

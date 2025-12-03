@@ -2600,11 +2600,19 @@ ul.pagination a.page-link:hover {
   border-radius: 6px;
   padding: 15px;
   width: 100%;
+  border-top: 2.5px solid #ff7a88;
 }
 
 .otReqCard:hover {
   border-left: 5px solid #ff7a88;
   cursor: pointer;
+}
+
+.count-badge{
+  background-color: #ff7a88;
+  color:#fff;
+  padding: 5px 8px;
+  border-radius: 5px;
 }
 
 .action-button {
@@ -2629,6 +2637,15 @@ ul.pagination a.page-link:hover {
   padding: 12px 8px;
   font-weight: 800;
   text-align: center;
+}
+
+.detail-table tbody td,.detail-table thead th{
+   font-size: 12px;
+}
+
+.report-table-summary{
+  text-align: center;
+  font-size: 0.8rem;
 }
 
 .report--banner {

@@ -61,7 +61,7 @@ export default function SpecialDailyWageReportPDF() {
           <Text style={styles.title}>แผ่นที่ : 1/1</Text>
         </View>
         {/* table */}
-          <SpecialDailyTable data ={invoiceData}/>
+        <SpecialDailyTable data ={invoiceData}/>
         <View style={{ display: "flex", justifyContent: "flex-start",flexDirection:"row" }}>
           <View style={{marginRight:"20%",paddingLeft:"10px"}}>
             <Text style={styles.document}>ผู้จัดทำ..................</Text>

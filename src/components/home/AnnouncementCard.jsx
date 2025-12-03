@@ -90,7 +90,7 @@ export default function AnnouncementCard() {
                       <>
                         {filterItemFromSearch.map((item, index) => (
                           <div
-                            className="w-100 card p-3 border-start-4 rounded-3 mb-3 otReqCard"
+                            className="w-100 p-3 rounded-3 mb-3 otReqCard shadow-sm"
                             key={index}
                             onClick={() =>
                               navigate(
@@ -101,9 +101,11 @@ export default function AnnouncementCard() {
                             <div className="d-flex align-items-center justify-content-between">
                               <h5>{item.title}</h5>
                               <span className="badge  text-dark p-2 px-2 fs-6">
-                                <i class="bi bi-paperclip me-2"></i>{item.attachmentCount}
+                                <i class="bi bi-paperclip me-2"></i>
+                                {item.attachmentCount}
                               </span>
                             </div>
+                          
                             <p className="OT-description-label mt-3">
                               {" "}
                               วันที่ลงข่าวสาร :{" "}
@@ -111,7 +113,10 @@ export default function AnnouncementCard() {
                                 {shortDateFormate(item.publishedAt)}
                               </span>
                             </p>
-                            <p style={{ fontSize: "0.9rem" }} className="ps-3">
+                            <p
+                              style={{ fontSize: "0.9rem" }}
+                              className="ps-3 text-primary"
+                            >
                               {item.summary}
                             </p>
                           </div>

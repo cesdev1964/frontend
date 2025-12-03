@@ -13,6 +13,7 @@ import { useJob } from "../../hooks/jobStore";
 export default function SpecialDailyWagereport({ title }) {
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [isLoading, setIsLoading] = useState(false);
+  const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [input, setInput] = useState({
     jobFilter: 0,
   });
@@ -30,6 +31,9 @@ export default function SpecialDailyWagereport({ title }) {
     fetchData();
   }, [fetchData]);
 
+  const handleChangeCheckbox = () => {
+    setOnClickAccordian((prev) => !prev);
+  };
   //   ใช้สำหรับ filter
   const handleSelectChange = (name, selected) => {
     setInput((prevData) => ({
@@ -67,7 +71,9 @@ export default function SpecialDailyWagereport({ title }) {
             />
           </div>
         </Filter>
+      
       </div>
+
       <div className="container p-4 announcement-box">
         <div
           className="report--banner"
@@ -101,7 +107,7 @@ export default function SpecialDailyWagereport({ title }) {
                   <th style={{ minWidth: "100px" }} rowSpan={2}>
                     ค่าใช้จ่าย
                   </th>
-                  <th style={{ minWidth: "100px" }} rowSpan={2}>
+                  <th style={{ minWidth: "80px" }} rowSpan={2}>
                     รวม (ชม.)
                   </th>
                   <th style={{ minWidth: "100px" }} rowSpan={2}>
@@ -196,10 +202,10 @@ export default function SpecialDailyWagereport({ title }) {
                   <td>-</td>
                 </tr>
                 <tr className="border-4 border-bottom border-top">
-                  <th colSpan="9" className="text-center bg-white ">
+                  <th colSpan="9" className="text-center bg-white" style={{fontSize:"0.8rem"}}>
                     จำนวนเงินรวม
                   </th>
-                  <th colSpan="1" className="text-center bg-white fw-bold">
+                  <th colSpan="1" className="text-center bg-white fw-bold" style={{fontSize:"0.8rem"}}>
                     3,720.00
                   </th>
 
@@ -208,6 +214,7 @@ export default function SpecialDailyWagereport({ title }) {
                   <th
                     colSpan="1"
                     className="text-center bg-white fw-bold text-decoration-underline"
+                    style={{fontSize:"0.8rem"}}
                   >
                     4,371.00
                   </th>
@@ -278,10 +285,10 @@ export default function SpecialDailyWagereport({ title }) {
                   <td></td>
                 </tr>
                 <tr className="border-4 border-bottom border-top">
-                  <th colSpan="9" className="text-center bg-white ">
+                  <th colSpan="9" className="text-center bg-white " style={{fontSize:"0.8rem"}}>
                     จำนวนเงินรวม
                   </th>
-                  <th colSpan="1" className="text-center bg-white fw-bold">
+                  <th colSpan="1" className="text-center bg-white fw-bold" style={{fontSize:"0.8rem"}}>
                     3,720.00
                   </th>
 
@@ -290,6 +297,7 @@ export default function SpecialDailyWagereport({ title }) {
                   <th
                     colSpan="1"
                     className="text-center bg-white fw-bold text-decoration-underline"
+                    style={{fontSize:"0.8rem"}}
                   >
                     4,371.00
                   </th>
@@ -297,23 +305,23 @@ export default function SpecialDailyWagereport({ title }) {
               </tbody>
               <tfoot>
                 <tr>
-                  <th colSpan="13" className="text-end bg-white">
+                  <th colSpan="13" className="text-end bg-white" style={{fontSize:"0.8rem"}}>
                     ค่าแรง
                   </th>
-                  <th colSpan="1" className="text-center bg-white fw-bold">
+                  <th colSpan="1" className="text-center bg-white fw-bold" style={{fontSize:"0.8rem"}}>
                     3,720.00
                   </th>
                 </tr>
                 <tr>
-                  <th colSpan="13" className="text-end bg-white">
+                  <th colSpan="13" className="text-end bg-white" style={{fontSize:"0.8rem"}}>
                     โอที
                   </th>
-                  <th colSpan="1" className="text-center bg-white fw-bold ">
+                  <th colSpan="1" className="text-center bg-white fw-bold " style={{fontSize:"0.8rem"}}>
                     3,720.00
                   </th>
                 </tr>
-                <tr className="text-danger">
-                  <th colSpan="13" className="bg-white text-end ">
+                <tr className="text-danger" >
+                  <th colSpan="13" className="bg-white text-end " >
                     รวมเป็นเงินทั้งสิ้น
                   </th>
                   <th

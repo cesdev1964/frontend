@@ -81,7 +81,7 @@ export default function OTRequestPendingCard() {
                           {otCountByDate.map((item) => {
                             return (
                               <div
-                                className="card otReqCard"
+                                className="otReqCard shadow-sm "
                                 onClick={() =>
                                   navigate({
                                     pathname: `/working/OTApproval`,
@@ -101,13 +101,13 @@ export default function OTRequestPendingCard() {
                                         lineHeight: "0.8rem",
                                         fontSize: "0.9rem",
                                       }}
-                                      className="text-secondary mt-2"
+                                      className="text-primary mt-2"
                                     >
                                       <i class="fa-regular fa-calendar-days me-2"></i>
                                       {shortDateFormate(item.date)}
                                     </p>
                                   </div>
-                                  <span className="badge border border-danger bg-danger text-dark p-2 px-2 fs-6">
+                                  <span className="count-badge">
                                     {item.count}
                                   </span>
                                 </div>
