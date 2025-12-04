@@ -9,6 +9,7 @@ import OTrequestList from "../../components/OT/OTrequestList";
 import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import { handleCancel } from "../../util/handleCloseModal";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 export default function OTRequestByHR({ title }) {
   const currentDate = new Date().toISOString().split("T")[0];
   useTitle(title);
@@ -242,6 +243,16 @@ export default function OTRequestByHR({ title }) {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="row">

@@ -232,7 +232,7 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               </li>
             </>
           )}
-          <li>
+          {/* <li>
             <NavLink
               to="/test"
               className={({ isActive }) => (isActive ? "active" : "")}
@@ -242,7 +242,7 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               </span>
               <span className="label">สำหรับทดสอบ</span>
             </NavLink>
-          </li>
+          </li> */}
         </ul>
 
         <div className="sidebar-footer">

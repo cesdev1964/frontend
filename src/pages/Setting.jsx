@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HeaderPage from "../components/HeaderPage";
 import { useTitle } from "../hooks/useTitle";
 import { useState } from "react";
@@ -193,6 +193,16 @@ const Settings = ({ title }) => {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <SearchBox
         onChange={(e) => setSearch(e.target.value)}

@@ -47,7 +47,7 @@ export default function SpecialDailyWagereport({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">ตารางหน่วยงาน</Link>
+            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}

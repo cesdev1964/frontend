@@ -9,7 +9,7 @@ import { useJob } from "../../hooks/jobStore";
 import { useOTApprove } from "../../hooks/otApproveStore";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 import { getDateOnly } from "../../util/inputFormat";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export default function OTApproval({ title }) {
   const [searchParams] = useSearchParams();
@@ -125,6 +125,16 @@ export default function OTApproval({ title }) {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container">
         <Filter>

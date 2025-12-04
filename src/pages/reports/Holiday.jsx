@@ -5,6 +5,7 @@ import LoadingSpin from "../../components/loadingSpin";
 import HolidayCard from "../../components/horiday/HolidayCard";
 import HolidayYearSlider from "../../components/horiday/HolidayYearSlider";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
+import { Link } from "react-router-dom";
 
 
 export default function Weekend({ title }) {
@@ -24,51 +25,20 @@ export default function Weekend({ title }) {
   };
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container holiday-box">
         {!isLoading ? (
           <>
-            {/* <div className="accordion">
-              <div className="accordion-item">
-                <input
-                  id="accordion-trigger-1"
-                  className="accordion-trigger-input"
-                  type="checkbox"
-                  checked={onClickAccordian === true}
-                  onChange={handleToggleAccordian}
-                ></input>
-                <label
-                  className="accordion-trigger accordion-label"
-                  htmlFor="accordion-trigger-1"
-                >
-                  <i className="bi bi-calendar-week-fill me-2 mb-1"></i>
-                  <strong>{title}</strong>
-                </label>
-                <section className="accordion-animation-wrapper">
-                  <div className="accordion-animation">
-                    <div className="accordion-transform-wrapper">
-                      <div className="accordion-content position-relative">
-                        <div>
-                          <HolidayYearSlider
-                            yearDisplay={yearDisplay}
-                            handleNextYear={() => navigateYear(+1)}
-                            handlePrevYear={() => navigateYear(-1)}
-                          />
-                          <div className="w-100 bg-danger p-1 border-n rounded-3"></div>
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div> */}
             <div className="announcement-box">
               <HolidayYearSlider
                             yearDisplay={yearDisplay}
