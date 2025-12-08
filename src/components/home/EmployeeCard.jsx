@@ -112,8 +112,8 @@ export default function EmployeeCard() {
             onChange={handleChangeCheckbox}
           ></input>
           <label
-            class="accordion-trigger accordion-label"
-            for="accordion-trigger-2"
+            className="accordion-trigger accordion-label"
+            htmlFor="accordion-trigger-2"
           >
             <strong>บริษัท ซีอีเอส จำกัด</strong>
           </label>

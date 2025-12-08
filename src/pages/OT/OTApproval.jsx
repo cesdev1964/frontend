@@ -36,6 +36,7 @@ export default function OTApproval({ title }) {
   });
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [currentPage, setCurrentPage] = useState(1);
+  
 
   const { getOTApprovalPending, otApproveData, getOTApprovalPendingByFilter } =
     useOTApprove();
@@ -79,8 +80,8 @@ export default function OTApproval({ title }) {
     const result = otApproveData.filter((item) => {
       const searchLower = input.search.toLowerCase();
       return (
-        (item.employeeCode ?? "").toLowerCase().includes(searchLower) ||
-        (item.fullName ?? "").toLowerCase().includes(searchLower)
+        (item.employee.employeeCode).toLowerCase().includes(searchLower) ||
+        (item.employee.fullName).toLowerCase().includes(searchLower)
       );
     });
 
@@ -128,7 +129,7 @@ export default function OTApproval({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+            <Link to="/">  <i className="bi bi-house-door-fill"></i></Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -208,78 +209,10 @@ export default function OTApproval({ title }) {
         </Filter>
 
         <div className="flex-grow-1 d-flex align-items-start justify-content-center mt-3">
-          {/* <div className="accordion">
-            <div className="accordion-item">
-              <input
-                id="accordion-trigger-1"
-                className="accordion-trigger-input"
-                type="checkbox"
-                checked={onClickAccordian === true}
-                onChange={handleChangeAccordian}
-              ></input>
-              <label
-                className="accordion-trigger accordion-label"
-                htmlFor="accordion-trigger-1"
-              >
-                <i className="bi bi-check2-circle me-2 mb-1"></i>
-                <strong>{title}</strong>
-              </label>
-              <section className="accordion-animation-wrapper">
-                <div className="accordion-animation">
-                  <div className="accordion-transform-wrapper">
-                    <div className="accordion-content">
-                      <div className="ot-container">
-                        <div className="d-flex flex-column align-items-center justify-content-center p-1">
-                          {isLoading ? (
-                            <div
-                              className="spinner-border text-danger"
-                              role="status"
-                              style={{ width: "3rem", height: "3rem" }}
-                            ></div>
-                          ) : (
-                            <>
-                              {filterData.length === 0 ? (
-                                <div className="w-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                  <i
-                                    className="bi bi-file-earmark mb-2 text-danger"
-                                    style={{ fontSize: "60px" }}
-                                  ></i>
-                                  <h4 className="text-danger text-center">
-                                    ไม่พบรายการโอทีที่ต้องดำเนินการอนุมัติ
-                                  </h4>
-                                </div>
-                              ) : (
-                                <>
-                                  {currentData.map((item) => {
-                                    return (
-                                      <div className="w-100">
-                                        <OTApproveCard
-                                          data={item}
-                                          key={item.otRequestId}
-                                          fetchData={() =>
-                                            getOTApprovalPending()
-                                          }
-                                        />
-                                      </div>
-                                    );
-                                  })}
-                                </>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div> */}
-
           <div className="announcement-box border border-primary">
             <div className="text-danger">
               <h5>
-                <i class="bi bi-filter me-2"></i><strong>{title}</strong>
+                <i className="bi bi-filter me-2"></i><strong>{title}</strong>
               </h5>
             </div>
             <hr className="text-danger" />

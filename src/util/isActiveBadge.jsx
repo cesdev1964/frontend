@@ -1,18 +1,5 @@
 import { OTApproveEnum } from "../enum/otApproveEnum";
 
-// export default function IsActiveBadgeReact({ status }) {
-//   switch (status) {
-//     case false:
-//       return <span className="badge-style badge-leave">InActive</span>;
-
-//     case true:
-//       return <span className="badge-style badge-stillWork">Active</span>;
-
-//     default:
-//       return <span className="badge-style badge-unknown">ไม่ระบุ</span>;
-//   }
-// }
-
 export default function IsEmployeeStatusBadge({ status }) {
   console.log("value in badge", status);
   const isNumber = parseInt(status);

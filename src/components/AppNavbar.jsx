@@ -184,7 +184,7 @@ function AppNavbar({ toggleSidebar }) {
                                   empData?.employee?.telephoneNo
                                 )}
                               </p>
-                              <p className="position-content fs-6">
+                              <p className="position-content fs-6 border p-3 rounded-3">
                                 {positionData.find(
                                   (item) =>
                                     item.positionId ===

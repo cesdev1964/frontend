@@ -184,13 +184,6 @@ const Settings = ({ title }) => {
     }
   });
 
-  // background-color: white;
-  // padding: 20px;
-  // padding-top: 15px;
-  // width: 100%;
-  // box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  // border-radius: 6px;
-
   return (
     <div>
       <nav aria-label="breadcrumb">
