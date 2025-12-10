@@ -37,7 +37,7 @@ export default function Announcement({ title, isPreview = false }) {
           ) : (
             <li className="breadcrumb-item">
               <Link to="/">
-                <i class="bi bi-house-door-fill"></i>
+                <i className="bi bi-house-door-fill"></i>
               </Link>
             </li>
           )}
@@ -56,7 +56,7 @@ export default function Announcement({ title, isPreview = false }) {
 
               <p className="OT-description-label mt-3 mb-4">
                 {" "}
-                <i class="bi bi-calendar-week me-2 text-danger"></i>
+                <i className="bi bi-calendar-week me-2 text-danger"></i>
                 วันที่ลงข่าวสาร :{" "}
                 <span className="OT-description-value">
                   {shortDateFormate(announmentById.publishedAt) ??
@@ -71,7 +71,7 @@ export default function Announcement({ title, isPreview = false }) {
               ) : (
                 <div className="d-flex flex-column align-items-center justify-content-center p-4">
                   <i
-                    class="fa-solid fa-newspaper mb-4 text-danger"
+                    className="fa-solid fa-newspaper mb-4 text-danger"
                     style={{ fontSize: "60px" }}
                   ></i>
                   <h5 className="text-danger">ไม่พบเนื้อหาข่าวสาร</h5>

@@ -56,11 +56,10 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
           <div>
             <div style={{ fontWeight: 600 }}>ยินดีต้อนรับสู่ CES</div>
             <div className="muted">
-              คุณ{" "}
               {loading
                 ? "..."
                 : authdata
-                ? authdata.firstname + " " + authdata.lastname
+                ? authdata.titleName +" "+authdata.firstname+ " " + authdata.lastname
                 : "N/A"}
             </div>
           </div>

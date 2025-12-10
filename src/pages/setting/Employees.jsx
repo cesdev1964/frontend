@@ -7,7 +7,8 @@ import { usePosition } from "../../hooks/positionStore";
 import { useEmployee } from "../../hooks/employeeStore";
 import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
 import MainButton from "../../components/MainButton";
-
+import { useLevel } from "../../hooks/levelStore";
+import LoadingSpin from "../../components/loadingSpin";
 
 const Employees = ({ title }) => {
   useTitle(title);
@@ -37,22 +38,24 @@ const Employees = ({ title }) => {
   const { positionDropdown, getPositionDropdown } = usePosition();
   const location = useLocation();
   const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
-
+  const { levelDropdown, getLevelDropdown } = useLevel();
+  const [isLoading, setLoading] = useState(false);
 
   const fetchDataTable = useCallback(async () => {
+    setLoading(true);
     try {
       await getEmployeeData();
+      await getLevelDropdown();
+      await getPositionDropdown();
+      setLoading(false);
     } catch (error) {
-      // alert("โหลด API ไม่สำเร็จ", error);
+      setLoading(false);
       return;
-    
     }
   }, [getEmployeeData, location.state]);
-  
+
   useEffect(() => {
     fetchDataTable();
-
-    
   }, [fetchDataTable]);
 
   const tableHead = [
@@ -64,11 +67,6 @@ const Employees = ({ title }) => {
     { index: 5, colName: "สถานะ" },
     { index: 6, colName: "การจัดการ" },
   ];
-
-  const getPositionName = (Id) => {
-    const position = positionDropdown.find((item) => item.value === Id);
-    return position ? position.label : "";
-  };
 
   const tableRef = useRef();
 
@@ -100,21 +98,22 @@ const Employees = ({ title }) => {
         return `<p>${row.firstname} ${row.lastname}</p>`;
       },
     },
-
     {
       title: "ระดับ",
-      data: null,
+      data: "levelId",
       orderable: true,
-      render: function (data, type, row) {
-        return `<span class="badge-style badge-unknown">PC - ${row.levelId}</span>`;
+      render: function (levelId) {
+        return `<span class="badge-style badge-unknown">${getLevelName(
+          levelId
+        )}</span>`;
       },
       className: "text-center",
     },
     {
       title: "ตำแหน่ง",
-      data: null,
-      render: function (data, type, row) {
-        return getPositionName(row.positionId);
+      data: "positionId",
+      render: function (positionId) {
+        return getPositionName(positionId);
       },
     },
     {
@@ -160,14 +159,31 @@ const Employees = ({ title }) => {
   ];
 
   const columnDefs = [
-    { maxWidth: "70px", targets: 0, className: "text-center mobile-hide-column" },
-    { maxWidth: "70px", targets: 1  ,className : "mobile-hide-column fs-6"},
-    { maxWidth: "200px", targets: 2 , className: "text-center"},
+    {
+      maxWidth: "70px",
+      targets: 0,
+      className: "text-center mobile-hide-column",
+    },
+    { maxWidth: "70px", targets: 1, className: "mobile-hide-column fs-6" },
+    { maxWidth: "200px", targets: 2 },
     { maxWidth: "100px", targets: 3 },
-    { maxWidth: "120px", targets: 4, className: "text-center mobile-hide-column" },
+    {
+      maxWidth: "120px",
+      targets: 4,
+      className: "text-center mobile-hide-column",
+    },
     { maxWidth: "120px", targets: 5, className: "text-center" },
     { maxWidth: "120px", targets: 6, className: "text-center" },
   ];
+
+  const getLevelName = (levelId) => {
+    if (!levelDropdown) return "";
+    return levelDropdown.find((item) => item.value === levelId)?.label;
+  };
+  const getPositionName = (Id) => {
+    if (!positionDropdown) return "";
+    return positionDropdown.find((item) => item.value === Id)?.label;
+  };
 
   return (
     <div>
@@ -192,16 +208,19 @@ const Employees = ({ title }) => {
           <MainButton btnName={title} icon={"bi bi-plus-circle"} />
         </NavLink>
         {/* ตารางข้อมูล */}
-        {/* โหลดข้อมูลในตารางเรียบร้อยตารางจะปรากฏ */}
-        <DataTableComponent
-          column={columnData}
-          data={employeeData}
-          onAction={handleAction}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          isLoading={employeeIsLoading}
-          columnDefs={columnDefs}
-        />
+        {isLoading === true ? (
+          <LoadingSpin />
+        ) : (
+          <DataTableComponent
+            column={columnData}
+            data={employeeData}
+            onAction={handleAction}
+            tableHead={tableHead}
+            tableRef={tableRef}
+            isLoading={employeeIsLoading}
+            columnDefs={columnDefs}
+          />
+        )}
       </div>
     </div>
   );

@@ -189,7 +189,7 @@ const Settings = ({ title }) => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+            <Link to="/">  <i className="bi bi-house-door-fill"></i></Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -237,7 +237,7 @@ const Settings = ({ title }) => {
               <div className="container">
                 <div className="d-flex flex-column align-items-center justify-content-center  w-100 p-3 mt-4">
                   <i
-                    class="bi bi-gear text-danger"
+                    className="bi bi-gear text-danger"
                     style={{ fontSize: "60px" }}
                   ></i>
                   <h5 className="text-danger">ไม่พบรายการตั้งค่า</h5>

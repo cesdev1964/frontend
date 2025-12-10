@@ -19,7 +19,7 @@ export default function EmployeeCard() {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const { getTitleDropdown, titleDropdown } = useTitltName();
   const { positionData, getPositionData } = usePosition();
-  const { jobDropdown, getJobDropdown ,jobData, getJobData} = useJob();
+  const { jobDropdown, getJobDropdown, jobData, getJobData } = useJob();
   const { employeeTypeData, getEmployeeType } = useEmployeeType();
 
   const [empData, setEmpData] = useState({});
@@ -149,10 +149,12 @@ export default function EmployeeCard() {
                                   className="my-2 text-center"
                                   style={{ fontSize: "1.3rem" }}
                                 >
-                                  คุณ {empData?.firstname ?? "ไม่ระบุ"}{" "}
+                                  {titleDropdown.find(
+                                    (item) => item.value === empData?.titleId
+                                  )?.label ?? "คุณ"}{" "}
+                                  {empData?.firstname ?? "ไม่ระบุ"}{" "}
                                   {empData?.lastname ?? "ไม่ระบุ"}
                                 </h6>
-                                
                               </div>
                             </div>
                             <div className="badge-style badge-stillWork">
@@ -182,7 +184,6 @@ export default function EmployeeCard() {
                                     คุณ
                                     {authdata.firstname} {authdata.lastname}
                                   </h5>
-                                 
                                 </div>
                               </div>
                               <div className="badge-style badge-stillWork">

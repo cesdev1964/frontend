@@ -1,7 +1,7 @@
 import { OTApproveEnum } from "../enum/otApproveEnum";
 
 export default function IsEmployeeStatusBadge({ status }) {
-  console.log("value in badge", status);
+  // console.log("value in badge", status);
   const isNumber = parseInt(status);
  
   switch (isNumber) {

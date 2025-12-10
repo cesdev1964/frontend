@@ -33,7 +33,6 @@ export default function DeductionList({
     swalWithBootstrapButtons
       .fire({
         title: "คุณต้องการลบรายการทั้งหมดใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: `ใช่ ลบได้เลย"`,
@@ -49,7 +48,27 @@ export default function DeductionList({
   };
 
   const handleDeleteItem = (index) => {
-    setListItem(listItem.filter((select) => select.stepNumber !== index));
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการใช่หรือไม่",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `ใช่ ลบได้เลย"`,
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          setListItem(listItem.filter((select) => select.stepNumber !== index));
+        }
+      });
   };
 
   const handleChangeSelectEaseItem = (index, field, selected) => {

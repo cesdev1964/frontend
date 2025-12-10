@@ -145,7 +145,7 @@ export default function CreateOTmodal({
                   placeholder="ลงวันที่เริ่ม"
                   value={input.startDate}
                   onChange={handleChangeInput}
-                  defaultValue={Date.now()}
+                  // defaultValue={Date.now()}
                   onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
@@ -168,7 +168,7 @@ export default function CreateOTmodal({
                   placeholder="ลงวันที่สิ้นสุด"
                   value={input.endDate}
                   onChange={handleChangeInput}
-                  defaultValue={Date.now()}
+                  // defaultValue={Date.now()}
                   onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
@@ -295,10 +295,6 @@ export default function CreateOTmodal({
                 className="form-control mb-5"
                 id="reason"
               ></textarea>
-              {/* {error.employeeCode ? (
-                              <p className="text-danger">{error.employeeCode}</p>
-                            ) : null} */}
-
               <SubmitOrCancelButton
                 handleCancel={handleCancel}
                 handleSubmit={handleSubmit}

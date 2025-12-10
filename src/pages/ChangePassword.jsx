@@ -144,7 +144,7 @@ const ChangePassword = ({ title, isForce = false }) => {
         >
           <div className="card-body d-flex flex-column justify-content-center p-4">
             <div className="d-flex  mx-auto w-100 card-title">
-              <i class="bi bi-shield-lock me-2"></i>
+              <i className="bi bi-shield-lock me-2"></i>
               <h5>เปลี่ยนรหัสผ่าน</h5>
             </div>
             <div className="border-top border-danger"></div>

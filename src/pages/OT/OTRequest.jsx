@@ -260,7 +260,7 @@ export default function OTRequest({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+            <Link to="/">  <i className="bi bi-house-door-fill"></i></Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -296,7 +296,7 @@ export default function OTRequest({ title }) {
               onClick={() => handleOpenModal("addOTModal")}
             >
               <span>
-                <i class={`bi bi-plus fs-4`}></i>
+                <i className={`bi bi-plus fs-4`}></i>
               </span>{" "}
               <span className="label">ทำการขอโอที</span>
             </a>

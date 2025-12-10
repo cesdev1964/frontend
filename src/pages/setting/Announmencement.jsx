@@ -5,7 +5,7 @@ import HeaderPage from "../../components/HeaderPage";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
-import { Link,NavLink,useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import MainButton from "../../components/MainButton";
 import { useDeduction } from "../../hooks/deductionTypeStore";
 import DataTableComponent from "../../components/DatatableComponent";
@@ -31,11 +31,8 @@ export default function AnnouncementSetting({ title }) {
   const [addBtnName, setAddBtnName] = useState(title);
   const [getId, setGetId] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const {
-    getAnnounmentData,
-    announmentData,
-    announmentIsLoading,
-  } = useAnnounments();
+  const { getAnnounmentData, announmentData, announmentIsLoading } =
+    useAnnounments();
   const {
     deductionById,
     getDeductionData,
@@ -43,8 +40,8 @@ export default function AnnouncementSetting({ title }) {
     createDeduction,
     updateDeduction,
   } = useDeduction();
- 
-  const navigate = useNavigate(); 
+
+  const navigate = useNavigate();
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -98,7 +95,7 @@ export default function AnnouncementSetting({ title }) {
     { width: "200px", targets: 1 },
     { width: "70px", targets: 2, className: "text-center" },
     { width: "70px", targets: 3, className: "text-center" },
-    { width: "50px", targets: 4 , className: "mobile-hide-column" },
+    { width: "50px", targets: 4, className: "mobile-hide-column" },
     { width: "100px", targets: 5, className: "text-center" },
   ];
 
@@ -113,6 +110,10 @@ export default function AnnouncementSetting({ title }) {
       title: "หัวข้อข่าว",
       data: "title",
       orderable: true,
+      render: function (title) {
+        return `<span class="d-inline-block text-truncate" style="max-width: 200px;">
+       ${title}</span>`;
+      },
     },
     {
       title: "สถานะข่าว",
@@ -134,7 +135,7 @@ export default function AnnouncementSetting({ title }) {
       title: "จำนวนไฟล์แนป",
       data: "attachmentCount",
       orderable: true,
-       render: function (data, type, row) {
+      render: function (data, type, row) {
         return `<span class="badge text-dark p-2 px-2 fs-6">
                       <i class="bi bi-paperclip me-1"></i>${row.attachmentCount}
                 </span>`;
@@ -188,11 +189,9 @@ export default function AnnouncementSetting({ title }) {
     },
   ];
 
-  
-
   const handleAction = (action, id) => {
     if (action === "edit") {
-       navigate(`/settings/announcement/form/${id}`);
+      navigate(`/settings/announcement/form/${id}`);
     }
     if (action === "preview") {
       navigate(`/settings/announcement/preview/${id}`);
@@ -210,75 +209,6 @@ export default function AnnouncementSetting({ title }) {
       const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
       modal.show();
       setEditMode(true);
-    }
-  };
-
-  const validateForm = () => {
-    let errors = {};
-    if (!input.deductiontypename) {
-      errors.deductiontypename = "กรุณากรอกชื่อประเภทการหักเงิน";
-    }
-    return errors;
-  };
-
-  const handleSubmit = async (e, modalId) => {
-    e.preventDefault();
-
-    const reqData = {
-      deductionTypeName: input.deductiontypename,
-      isActive: input.isactive,
-    };
-    const errorList = validateForm(input) || [];
-    setError(errorList);
-
-    if (Object.keys(errorList).length === 0) {
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success custom-width-btn-alert",
-          cancelButton: "btn btn-danger custom-width-btn-alert",
-        },
-        buttonsStyling: "w-100",
-      });
-      swalWithBootstrapButtons
-        .fire({
-          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "ยื่นยันการบันทึกรายการ",
-          cancelButtonText: "ยกเลิกการบันทึกรายการ",
-          reverseButtons: true,
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            const { success, deductionErrorMessage } = editMode
-              ? await updateDeduction(reqData, getId)
-              : await createDeduction(reqData);
-            if (success) {
-              swalWithBootstrapButtons.fire({
-                title: "บึนทึกรายการสำเร็จ!",
-                icon: "success",
-              });
-
-              const currentModal = document.getElementById(modalId);
-              const modalInstance = bootstrap.Modal.getInstance(currentModal);
-              modalInstance.hide();
-              await getDeductionData();
-              ClearInput();
-            } else {
-              Swal.fire({
-                title: "บันทึกข้อมูลไม่สำเร็จ",
-                text: deductionErrorMessage,
-                icon: "error",
-              });
-            }
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire({
-              title: "ยกเลิก",
-              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
-              icon: "error",
-            });
-          }
-        });
     }
   };
 
@@ -327,8 +257,6 @@ export default function AnnouncementSetting({ title }) {
           columnDefs={columnDefs}
           isLoading={announmentIsLoading}
         />
-
-        
       </div>
     </div>
   );

@@ -24,11 +24,11 @@ export default function OTRequestByHR({ title }) {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
- 
+
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
-    jobId : ""
+    jobId: "",
   });
 
   const [input, setInput] = useState({
@@ -59,7 +59,6 @@ export default function OTRequestByHR({ title }) {
 
   useEffect(() => {
     fetchData();
-   
   }, [fetchData]);
 
   useEffect(() => {
@@ -150,8 +149,7 @@ export default function OTRequestByHR({ title }) {
       breakOverrideMinutes: 0,
       totalMinutes: input.totalMinutes,
       otTypeId: input.otTypeId,
-      jobId: employee.jobId, 
-      // ไปดึงมาจาก employee.jobNo
+      jobId: employee.jobId,
       reason: input.reason,
     };
 
@@ -246,7 +244,10 @@ export default function OTRequestByHR({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">  <i class="bi bi-house-door-fill"></i></Link>
+            <Link to="/">
+              {" "}
+              <i className="bi bi-house-door-fill"></i>
+            </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -258,26 +259,31 @@ export default function OTRequestByHR({ title }) {
         <div className="row">
           <div className="col-lg-3 col-md-12">
             <div className="mb-3">
-            <h5>หน่วยงาน <br/><span>(เลือกพนักงานที่นี้)</span></h5>
-              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+              <h5>
+                หน่วยงาน <br />
+                <span className="text-secondary">(เลือกพนักงานที่นี้)</span>
+              </h5>
+              <div style={{ maxHeight: "750px", overflowY: "auto" }}>
                 <div className="p-2">
-                  {jobDropdown.length > 0 && (
-                    <div>
-                      {jobDropdown.map((item) => (
-                        <EmployeeList
-                          jobData={item}
-                          key={item.value}
-                          setEmployeeId={setEmployee}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="accordion w-100" id="accordionJobList">
+                    {jobDropdown.length > 0 && (
+                      <div>
+                        {jobDropdown.map((item) => (
+                          <EmployeeList
+                            jobData={item}
+                            key={item.value}
+                            setEmployeeId={setEmployee}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-lg-9 col-md-12">
-            <div className="announcement-box border-bottom  mb-3">
+            <div className="announcement-box border-bottom  my-5">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <h5>ขอโอทีย้อนหลัง</h5>
                 <MainButton

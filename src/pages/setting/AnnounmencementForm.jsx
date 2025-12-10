@@ -244,7 +244,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
 
                 <label className="form-label">คำโปรยข่าว</label>
                 <textarea
-                  // style={{ resize: "none" }}
                   maxLength="200"
                   name="summary"
                   type="text"

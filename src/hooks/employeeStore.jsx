@@ -14,7 +14,7 @@ export const useEmployee = create((set) => ({
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
       const response = await api.get(url);
-      // console.log("role data", response.data.data);
+      // console.log("employee data", response.data.data);
       set({
         employeeData: response.data.data ?? [],
         employeeIsLoading: false,

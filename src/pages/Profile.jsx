@@ -6,13 +6,14 @@ import DetailItem from "../components/home/detailItem.jsx";
 import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
 import { useParams } from "react-router-dom";
+import { useTitltName } from "../hooks/titleNameStore";
 import {
   decimalFormat,
   IDcardFormat,
   shortDateFormate,
   telephoneFormat,
 } from "../util/inputFormat";
-import IsEmployeeStatusBadgeReact from "../util/isActiveBadge.jsx";
+
 import LoadingSpin from "../components/loadingSpin.jsx";
 import { useEducation } from "../hooks/educationStore.jsx";
 import { usePosition } from "../hooks/positionStore.jsx";
@@ -42,6 +43,7 @@ export default function Profile({ title }) {
   const { getEducationDropdown, educationDropdown } = useEducation();
   const { getFlowById, flowById, flowIsLoading } = useFlow();
   const { getDeductionData, deductionData } = useDeduction();
+  const { getTitleDropdown, titleDropdown } = useTitltName();
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [empData, setEmpData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +62,7 @@ export default function Profile({ title }) {
       await getJobDropdown();
       await getEmployeeTypeDropdown();
       await getDeductionData();
+      await getTitleDropdown();
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -132,7 +135,7 @@ export default function Profile({ title }) {
                 </div>
               )}
 
-              <ProfileInformation empData={empData} avatarUrl={avatarUrl} />
+              <ProfileInformation empData={empData} avatarUrl={avatarUrl} titleDropdow={titleDropdown}/>
               <div className="border-top border-danger my-3"></div>
 
               <PersonalInformation
