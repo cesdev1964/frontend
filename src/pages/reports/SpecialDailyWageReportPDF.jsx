@@ -1,26 +1,26 @@
 import React from "react";
 import { Document, Page, StyleSheet, View, Text } from "@react-pdf/renderer";
 import SpecialDailyTable from "./SpecialDailyTable";
-import { invoiceData, ReportTableMockData } from "../../Data";
-import '../../util/fontRegister';
+import { ReportTableMockData } from "../../Data";
+import "../../util/fontRegister";
 
 // ข้อมูลภายใน pdf ทำการจัดเรียนตรงนี้
-export default function SpecialDailyWageReportPDF() {
+export default function SpecialDailyWageReportPDF({ jobName = "ไม่ระบุ" }) {
   const styles = StyleSheet.create({
     page: {
       backgroundColor: "#fff",
       padding: 10,
-      fontFamily:"NotoSansThaiRegular"
+      fontFamily: "NotoSansThaiRegular",
     },
     section: {
       marginBottom: 10,
       display: "flex",
       flexDirection: "row",
-      justifyContent:"flex-end"
+      justifyContent: "flex-end",
     },
     header: {
-      fontSize: 30,
-      fontWeight: "bold"
+      fontSize: 25,
+      fontWeight: "bold",
     },
     title: {
       fontSize: 15,
@@ -28,7 +28,7 @@ export default function SpecialDailyWageReportPDF() {
       marginBottom: 10,
     },
     document: {
-      fontSize: 12,
+      fontSize: 10,
       marginBottom: 10,
       display: "flex",
       flexDirection: "column",
@@ -49,30 +49,36 @@ export default function SpecialDailyWageReportPDF() {
         <View
           style={{
             display: "flex",
-            flexDirection:"row",
+            flexDirection: "row",
             justifyContent: "space-between",
             marginTop: "25px",
             paddingLeft: 20,
           }}
         >
-          <Text style={styles.title}>
-            ชื่อโครงการ: อาคารโรงงาน 5 บริษัท ไอ.พี.วัน จำกัด (IPONE66)
-          </Text>
+          <Text style={styles.title}>ชื่อโครงการ : {jobName}</Text>
           <Text style={styles.title}>แผ่นที่ : 1/1</Text>
         </View>
         {/* table */}
-        <SpecialDailyTable data ={invoiceData}/>
-        <View style={{ display: "flex", justifyContent: "flex-start",flexDirection:"row" }}>
-          <View style={{marginRight:"20%",paddingLeft:"10px"}}>
+        <SpecialDailyTable data={ReportTableMockData} />
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ marginRight: "20%", paddingLeft: "10px" }}>
             <Text style={styles.document}>ผู้จัดทำ..................</Text>
             <Text style={styles.document}>วันที่..../..../....</Text>
           </View>
-          <View style={{marginRight:"20%"}}>
+          <View style={{ marginRight: "20%" }}>
             <Text style={styles.document}>ผู้ตรวจสอบ..................</Text>
             <Text style={styles.document}>วันที่..../..../....</Text>
           </View>
           <View>
-            <Text style={styles.document}>ผู้อำนวยการฝ่าย..................</Text>
+            <Text style={styles.document}>
+              ผู้อำนวยการฝ่าย..................
+            </Text>
             <Text style={styles.document}>วันที่..../..../....</Text>
           </View>
         </View>

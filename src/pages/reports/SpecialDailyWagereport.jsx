@@ -17,6 +17,8 @@ export default function SpecialDailyWagereport({ title }) {
   const [input, setInput] = useState({
     jobFilter: 0,
   });
+  const jobNameMock = "FAIRMON ปรับปรุง โรงแรม WINSOR (เก่า) 30 ชั้น ใต้ดิน 3 ชั้น (FAIRMON)"
+
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -83,10 +85,10 @@ export default function SpecialDailyWagereport({ title }) {
             <span className="fw-bold text-primary">
               <h4>โครงการ/หน่วยงาน :</h4>
             </span>{" "}
-            อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)
+            {jobNameMock}
           </p>
 
-          <DownloadPDFButton />
+          <DownloadPDFButton jobName={jobNameMock}/>
         </div>
         {/* ตารางที่ใช้ */}
         <center>

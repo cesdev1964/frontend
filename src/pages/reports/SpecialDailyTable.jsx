@@ -3,6 +3,8 @@ import { Document, Page, StyleSheet, View, Text } from "@react-pdf/renderer";
 import SpecialDailyHeader from "./SpecialDailyHeader";
 import SpecialDailyRow from "./SpecialDailyRow";
 import "../../util/fontRegister";
+import SpecialDailyFooter from "./SpecialDailyFooter";
+import SpecialDailyTotalRow from "./SpecialDailyTotalRow";
 
 export default function SpecialDailyTable({ data }) {
   const items = [
@@ -34,7 +36,7 @@ export default function SpecialDailyTable({ data }) {
   if (!data || !data.items) {
   }
 
-  // console.log("data to render in pdf :", data);
+  console.log("data to render in pdf :", data);
   const tableHeadData = data.headers;
   const subHeader = data.subHeaders;
   return (
@@ -42,7 +44,9 @@ export default function SpecialDailyTable({ data }) {
       {/* Header ตาราง */}
       <View style={styles.table}>
         <SpecialDailyHeader tableHeadData={tableHeadData} subHeader={subHeader}/>
-        {/* <SpecialDailyRow items={items} /> */}
+        <SpecialDailyRow items={items} />
+        <SpecialDailyTotalRow/>
+        <SpecialDailyFooter/>
       </View>
     </View>
   );

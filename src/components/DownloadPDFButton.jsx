@@ -4,7 +4,7 @@ import SpecialDailyWageReportPDF from "../pages/reports/SpecialDailyWageReportPD
 import { invoiceData, ReportTableMockData } from "../Data";
 import { useState } from "react";
 
-export default function DownloadPDFButton() {
+export default function DownloadPDFButton({ jobName = "ไม่ระบุ" }) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   //  const downloadPDF = async () => {...};
@@ -14,18 +14,20 @@ export default function DownloadPDFButton() {
 
   const handleOpenPDFPreview = async () => {
     setIsLoading(true);
-    if(!invoiceData){
+    if (!ReportTableMockData) {
       setIsLoading(false);
       console.log("Open pdf preview fail , data not found");
-      return ;
+      return;
     }
     try {
-      const blob = await pdf(<SpecialDailyWageReportPDF />).toBlob();
+      const blob = await pdf(
+        <SpecialDailyWageReportPDF jobName={jobName} />
+      ).toBlob();
       const url = URL.createObjectURL(blob);
-      setIsLoading(false)
+      setIsLoading(false);
       window.open(url, "specialdailywagereport_ipone66.pdf");
     } catch (error) {
-      setIsLoading(false)
+      setIsLoading(false);
       console.log("Open pdf preview fail , please try again", error);
     }
   };
