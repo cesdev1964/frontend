@@ -125,11 +125,6 @@ export default function OTApproveCard({ data, fetchData }) {
           </span>
         </p>
 
-        {/* {screenWidth <= 768?( 
-          <OTApprovelDataInMobile/>
-        ):(
-          <OTApproveDataInPC/>
-        )} */}
         <OTApprovelDataInMobile data={data}/>
 
         <div className="border-top border-danger my-3"></div>
@@ -142,9 +137,10 @@ export default function OTApproveCard({ data, fetchData }) {
           >
             {isOpenApproveArea ? "ปิด" : "ส่วนของผู้อนุมัติ"}
           </button>
+          
           <div
             className={`collapse ${isOpenApproveArea ? "show" : ""} w-100`}
-            id="approvalDetail"
+            id="approvalDetail" 
           >
             <div className="d-flex flex-column gap-3 mt-3">
               <p className="OT-description-label">

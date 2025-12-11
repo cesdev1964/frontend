@@ -41,6 +41,7 @@ export default function FlowInformation({ flowById }) {
                       {item.stepName}
                     </p>
                     <p
+                    className="border p-3 bg-white rounded-3"
                       style={{
                         fontSize: "0.9rem",
                         lineHeight: "0.1rem",

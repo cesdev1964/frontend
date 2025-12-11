@@ -4,7 +4,6 @@ import logo from "../assets/ces-icon.png";
 import { useEffect, useState, useRef } from "react";
 import { getDateOnly } from "../util/inputFormat";
 
-
 function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
   const { logout, authdata, loading } = useAuth();
   const [isWorkOpen, setIsWorkOpen] = useState(false);
@@ -59,7 +58,9 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               {loading
                 ? "..."
                 : authdata
-                ? authdata.titleName +" "+authdata.firstname+ " " + authdata.lastname
+                ? `${authdata.titleName ?? "คุณ"} ${
+                    authdata.firstname ?? "ไม่ระบุ"
+                  } ${authdata.lastname ?? "ไม่ระบุ"}`
                 : "N/A"}
             </div>
           </div>

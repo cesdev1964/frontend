@@ -464,6 +464,16 @@ body {
 /* header */
 .headerName {
   font-size: 30px;
+  font-weight: bold;
+  background: linear-gradient(
+    to right,
+    var(--unActive-border),
+    var(--waiting-bg)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .search-box {
@@ -2369,18 +2379,17 @@ thead th:last-child {
   cursor: pointer;
 }
 
-
 .accordion-label {
   color: var(--pink-active);
   cursor: pointer;
 }
-.accordion-header-label{
-   color: var(--pink-active);
-   cursor: pointer;
+.accordion-header-label {
+  color: var(--pink-active);
+  cursor: pointer;
 }
 
-.accordion-header-label:hover{
-   color: var(--coral-btm);
+.accordion-header-label:hover {
+  color: var(--coral-btm);
 }
 
 .accordion-trigger-input:focus-visible ~ .accordion-trigger {
@@ -2692,7 +2701,7 @@ ul.pagination a.page-link:hover {
   width: 100%;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   border-radius: 6px;
-  border:1px solid var(--pink)
+  border: 1px solid var(--pink);
 }
 .file-upload-area {
   border: 2px dashed var(--sidebar-muted);
@@ -2824,16 +2833,16 @@ ul.pagination a.page-link:hover {
 
 /* accordion - style*/
 
-.accordion-button{
-  border:none;
+.accordion-button {
+  border: none;
   background-color: transparent;
   width: 100%;
 }
-.accordion-body{
+.accordion-body {
   padding: 12px;
 }
 
-.accordion-header{
+.accordion-header {
   width: 100%;
   text-align: left;
   display: flex;
@@ -2842,4 +2851,3 @@ ul.pagination a.page-link:hover {
   cursor: pointer;
   transition: 300ms;
 }
-

@@ -669,7 +669,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       </div>
                     </div>
 
-                    <div>
+                    <div className="mt-4">
                       <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
                       <div className="border-top border-danger my-3"></div>
                       <div className="row form-spacing g-2">
@@ -782,7 +782,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
                         <div className="col-md-12 col-lg-4">
                           <label className="form-label">
-                            อัตราค่าจ้าง
+                            อัตราค่าจ้าง (บาท)
                             <span style={{ color: "red" }}>*</span>
                           </label>
                           <input
@@ -904,7 +904,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
                     {/* ค่อยทำ */}
 
-                    <div className="mt-3">
+                    <div className="mt-4">
                       <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
                       <div className="border-top border-danger my-3"></div>
                     </div>
@@ -953,7 +953,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                         {flowById.approvalSteps &&  (
                           <div
-                            className={`alert alert-info alert-dismissible fade ${
+                            className={`alert alert-danger alert-dismissible fade ${
                               isFlow ? "show" : ""
                             } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
                             role="alert"
@@ -964,7 +964,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                               </p>
                             ) : (
                               <>
-                                <p className="text-center">ลำดับสายอนุมัติ</p>
+                                <p className="text-center fw-bold">ลำดับสายอนุมัติ</p>
                                 <div className="d-flex flex-wrap justify-content-center gap-4 mt-3">
                                   {flowById.approvalSteps.map((item, index) => (
                                     <>
@@ -1000,6 +1000,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                                             fontSize: "0.9rem",
                                             lineHeight: "0.1rem",
                                           }}
+                                          className="border p-3 bg-white rounded-3"
                                         >
                                           {item.fullName}
                                         </p>

@@ -34,8 +34,6 @@ export default function EmployeeTypes({ title }) {
   const {
     employeeTypeData,
     employeeTypeIsLoading,
-    employeeTypeErrorMessage,
-    success,
     employeeTypeById,
     getEmployeeType,
     getEmployeeTypeById,

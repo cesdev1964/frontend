@@ -180,7 +180,7 @@ export default function DeductionList({
                     </div>
                     <div className="col-0">
                       <label className="form-label">
-                        จำนวนเงิน
+                        จำนวนเงิน (บาท)
                         <span style={{ color: "red" }}>*</span>
                       </label>
                       <input

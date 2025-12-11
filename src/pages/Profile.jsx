@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
 import { useParams } from "react-router-dom";
 import { useTitltName } from "../hooks/titleNameStore";
+
 import {
   decimalFormat,
   IDcardFormat,
@@ -29,9 +30,10 @@ import PersonalInformation from "../components/profile/PersonalInformation.jsx";
 import DeductionInformation from "../components/profile/DeductionInformation.jsx";
 import FlowInformation from "../components/profile/FlowInformation.jsx";
 import ProfileInformation from "../components/profile/ProfileInformation.jsx";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-export default function Profile({ title }) {
+export default function Profile({ title, isAdmin = false }) {
   useTitle(title);
   const { publicEmployeeId } = useParams();
   const { getEmployeeById, employeeById, employeeIsLoading } = useEmployee();
@@ -116,9 +118,22 @@ export default function Profile({ title }) {
     <div className="container-fluid py-4 min-vh-100 d-flex flex-column">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link to="/">หน้าหลัก</Link>
-          </li>
+          {isAdmin === true ? (
+            <>
+              <li className="breadcrumb-item">
+                <Link to="/settings">ตั้งค่า</Link>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+                <Link to="/settings/employees">จัดการข้อมูลพนักงาน</Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="breadcrumb-item">
+                <Link to="/">หน้าหลัก</Link>
+              </li>
+            </>
+          )}
           <li className="breadcrumb-item active" aria-current="page">
             {title}
           </li>
@@ -135,7 +150,11 @@ export default function Profile({ title }) {
                 </div>
               )}
 
-              <ProfileInformation empData={empData} avatarUrl={avatarUrl} titleDropdow={titleDropdown}/>
+              <ProfileInformation
+                empData={empData}
+                avatarUrl={avatarUrl}
+                titleDropdow={titleDropdown}
+              />
               <div className="border-top border-danger my-3"></div>
 
               <PersonalInformation

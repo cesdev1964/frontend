@@ -9,6 +9,7 @@ import { isEmployeeStatusBadge } from "../../util/isActiveBadge";
 import MainButton from "../../components/MainButton";
 import { useLevel } from "../../hooks/levelStore";
 import LoadingSpin from "../../components/loadingSpin";
+import { useAuth } from "../../auth/AuthContext";
 
 const Employees = ({ title }) => {
   useTitle(title);
@@ -40,6 +41,7 @@ const Employees = ({ title }) => {
   const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
   const { levelDropdown, getLevelDropdown } = useLevel();
   const [isLoading, setLoading] = useState(false);
+  const {authdata} = useAuth();
 
   const fetchDataTable = useCallback(async () => {
     setLoading(true);
@@ -128,32 +130,57 @@ const Employees = ({ title }) => {
       title: "การจัดการ",
       render: function (data, type, row) {
         return `
-      <div className="d-flex align-items-center justify-content-center">
-          <div class="dropdown d-lg-none">
-            <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-               <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-              <a class="dropdown-item text-dark"
-                href="/settings/employees/form/${row.publicEmployeeId}"
-              >
-                <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
-              </a>
-            </li>
-           </ul>
-        </div>
-        
-        <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-          <a
-              href="/settings/employees/form/${row.publicEmployeeId}"
-              class="btn btn-warning me-2"
-              title="แก้ไข"
-            >
-              <i class="bi bi-pen-fill"></i>
-            </a>
-        </div>
-      </div>`;
+          <div className="d-flex align-items-center justify-content-center">
+              <div class="dropdown d-lg-none">
+                <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+
+                  <a class="dropdown-item text-dark"  
+                     href="/profile/employeePreview/${row.publicEmployeeId}" 
+                     id="employeePreview"
+                     style="
+                            display: ${authdata.permissions?.includes("EMPLOYEE_VIEW")
+                              ? "block"
+                              : "none"}
+                          "
+                     >
+                      <i class="bi bi-eye me-2"></i> ดูข้อมูลพนักงาน
+                    </a>
+                  <a class="dropdown-item text-dark"
+                     href="/settings/employees/form/${row.publicEmployeeId}"
+                  >
+                    <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+            <a
+                  href="/profile/employeePreview/${row.publicEmployeeId}"
+                  class="btn btn-info me-2"
+                  title="ดูข้อมูลพนักงาน"
+                  id="employeePreview"
+                  style="
+                        display: ${authdata.permissions?.includes("EMPLOYEE_VIEW")
+                        ? "block"
+                        : "none"}
+                        "
+                >
+                  <i class="bi bi-eye"></i>
+                </a>
+              <a
+                  href="/settings/employees/form/${row.publicEmployeeId}"
+                  class="btn btn-warning me-2"
+                  title="แก้ไข"
+                >
+                  <i class="bi bi-pen-fill"></i>
+                </a>
+            </div>
+          </div>`;
       },
     },
   ];
@@ -184,6 +211,13 @@ const Employees = ({ title }) => {
     if (!positionDropdown) return "";
     return positionDropdown.find((item) => item.value === Id)?.label;
   };
+
+  // const checkRoleToDisplayEmployeeView = document.getElementById("employeePreview");
+  // if(authdata.permissions?.includes("EMPLOYEE_VIEW")){
+  //   checkRoleToDisplayEmployeeView.style.display = "block";
+  // }else{
+  //   checkRoleToDisplayEmployeeView.style.display = "none";
+  // }
 
   return (
     <div>
