@@ -14,6 +14,7 @@ export default function Home({ title }) {
   return (
     <div>
       <div className="flex-grow-1 d-flex align-items-start justify-content-center">
+       
         <div className="row w-100 gy-4 mt-2">
           <div className="col-md-12 col-lg-6">
             <EmployeeCard />
@@ -25,6 +26,7 @@ export default function Home({ title }) {
             <AnnouncementCard />
           </div>
         </div>
+        
       </div>
     </div>
   );

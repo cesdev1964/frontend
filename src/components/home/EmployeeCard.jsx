@@ -197,9 +197,7 @@ export default function EmployeeCard() {
                                   </h5>
                                 </div>
                               </div>
-                              <div className="badge-style badge-stillWork">
-                                ผู้ใช้งาน
-                              </div>
+                            
                             </div>
                           </>
                         )}
