@@ -212,12 +212,7 @@ const Employees = ({ title }) => {
     return positionDropdown.find((item) => item.value === Id)?.label;
   };
 
-  // const checkRoleToDisplayEmployeeView = document.getElementById("employeePreview");
-  // if(authdata.permissions?.includes("EMPLOYEE_VIEW")){
-  //   checkRoleToDisplayEmployeeView.style.display = "block";
-  // }else{
-  //   checkRoleToDisplayEmployeeView.style.display = "none";
-  // }
+ 
 
   return (
     <div>

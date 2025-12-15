@@ -1,16 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
-import SpecialDailyWageReportPDF from "../pages/reports/SpecialDailyWageReportPDF";
-import { invoiceData, ReportTableMockData } from "../Data";
+import SpecialDailyWageReportPDF from "../../pages/reports/SpecialDailyWageReportPDF";
+import { invoiceData, ReportTableMockData } from "../../Data";
 import { useState } from "react";
 
-export default function DownloadPDFButton({ jobName = "ไม่ระบุ" }) {
+export default function DownloadPDFButtonForSpecialDailryReport({ jobName = "ไม่ระบุ" }) {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  //  const downloadPDF = async () => {...};
-  const handleOpenPreview = () => {
-    navigate("/reports/specialdailywagereport/downloadPDF");
-  };
+
+
 
   const handleOpenPDFPreview = async () => {
     setIsLoading(true);
@@ -28,7 +25,7 @@ export default function DownloadPDFButton({ jobName = "ไม่ระบุ" })
       window.open(url, "specialdailywagereport_ipone66.pdf");
     } catch (error) {
       setIsLoading(false);
-      console.log("Open pdf preview fail , please try again", error);
+      console.error("Open pdf preview fail , please try again", error);
     }
   };
   return (

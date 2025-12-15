@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { mockNews } from "../../MockData";
 import { useAnnounments } from "../../hooks/announcementsStore";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";

@@ -9,6 +9,7 @@ import { usePosition } from "../../hooks/positionStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useJob } from "../../hooks/jobStore";
 import LoadingSpin from "../loadingSpin";
+import DefaultAvatarImage from "../defaultAvatarImage";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export default function EmployeeCard() {
@@ -167,15 +168,25 @@ export default function EmployeeCard() {
                             <div className="d-flex align-items-start justify-content-center">
                               <div className="d-flex ">
                                 <div className="d-flex flex-column align-items-center">
-                                  <ImageComponent
+                                  {/* <ImageComponent
                                     imageSRC={cesMascot}
                                     height="140px"
                                     width="140px"
                                     borderRadius="10px"
                                     alt="profile-avatar"
                                     objectfit="cover"
+                                  /> */}
+                                  <DefaultAvatarImage
+                                    username={
+                                      authdata.firstname +
+                                      " " +
+                                      authdata.lastname
+                                    }
+                                    height="120px"
+                                    width="120px"
+                                    fontSize="40px"
                                   />
-                                  <p className="mt-3 text-danger">
+                                  <p className="mt-4 text-danger">
                                     <strong>
                                       ยินดีต้อนรับสู่ เว็บไซต์ฝากเบิก
                                     </strong>

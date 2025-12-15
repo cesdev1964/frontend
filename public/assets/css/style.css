@@ -2557,7 +2557,6 @@ thead th:last-child {
 .filter-display {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .OT-footer {

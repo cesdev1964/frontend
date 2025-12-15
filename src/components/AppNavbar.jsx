@@ -155,15 +155,20 @@ function AppNavbar({ toggleSidebar }) {
                           <div className="profile-content">
                             <img src={avatarUrl} alt="profile-image" />
                             <div
-                              
                               style={{
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
                               }}
                             >
-                              <p className="text-center" style={{fontSize:"1.1rem"}}>
-                                <span className="muted">{authdata.titleName ?? "คุณ"}</span><br/>
+                              <p
+                                className="text-center"
+                                style={{ fontSize: "1.1rem" }}
+                              >
+                                <span className="muted">
+                                  {authdata.titleName ?? "คุณ"}
+                                </span>
+                                <br />
                                 {authdata
                                   ? authdata.firstname + " " + authdata.lastname
                                   : "N/A"}
@@ -217,7 +222,9 @@ function AppNavbar({ toggleSidebar }) {
                       )}
                     </div>
                     <div className="dropdown-divider"></div>
-                    {authdata.publicEmployeeId && authdata.permissions?.includes("EMPLOYEE_VIEW") && (
+
+                    {authdata.publicEmployeeId &&
+                      authdata.permissions?.includes("EMPLOYEE_VIEW") && (
                         <a
                           href={`/profile/${authdata.publicEmployeeId}`}
                           className="d-flex justify-content-between dropdown-item"

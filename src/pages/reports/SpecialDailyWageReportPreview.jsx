@@ -8,14 +8,8 @@ export default function SpecialDailyWageReportPreview() {
       showToolbar={true}
       width="100%"
       height="800px"
-        // style={{
-        //   height: "100%",
-        //   // aspectRatio: "1/1",
-        //   width: "100%",
-        // }}
       >
         <SpecialDailyWageReportPDF/> 
-        {/* แปลง โค้ด treact -> pdf form */}
       </PDFViewer>
     </>
   );

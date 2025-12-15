@@ -232,7 +232,7 @@ export const ReportTableMockData = {
 export const invoiceData = {
   id: "5df3180a09ea1",
   invoice_no: "873512-28",
-  fullname:"อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)",
+  fullname: "อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)",
   email: "ipone66@gmail.com",
   phone: "+91 777-9999",
   address: "lorem ipsum",
@@ -254,3 +254,114 @@ export const invoiceData = {
     },
   ],
 };
+
+export const mockHolidayData = [
+  {
+    year: 2568,
+    holidayList: [
+      {
+        holidayId: 1,
+        holidayName: "วันขึ้นปีใหม่",
+        holidayMonth: 1,
+        holidayDay: 1,
+      },
+      {
+        holidayId: 2,
+        holidayName: "วันมาฆบูชา",
+        holidayMonth: 2,
+        holidayDay: 12,
+      },
+      {
+        holidayId: 3,
+        holidayName: "วันหยุดชดเชยวันที่ระลึกมหาจักรีวงศ์",
+        holidayMonth: 4,
+        holidayDay: 7,
+      },
+      {
+        holidayId: 4,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 14,
+      },
+      {
+        holidayId: 5,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 15,
+      },
+      {
+        holidayId: 6,
+        holidayName: "วันสงกรานต์ชดเชย",
+        holidayMonth: 4,
+        holidayDay: 16,
+      },
+
+      {
+        holidayId: 7,
+        holidayName: "วันแรงงานแห่งชาติ",
+        holidayMonth: 5,
+        holidayDay: 1,
+      },
+       {
+        holidayId: 7,
+        holidayName: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง",
+        holidayMonth: 8,
+        holidayDay: 12,
+      },
+    ],
+  },
+  {
+    year: 2569,
+    holidayList: [
+      {
+        holidayId: 1,
+        holidayName: "วันขึ้นปีใหม่",
+        holidayMonth: 1,
+        holidayDay: 1,
+      },
+      {
+        holidayId: 2,
+        holidayName: "วันมาฆบูชา",
+        holidayMonth: 3,
+        holidayDay: 3,
+      },
+      {
+        holidayId: 3,
+        holidayName: "วันหยุดชดเชยวันที่ระลึกมหาจักรีวงศ์",
+        holidayMonth: 4,
+        holidayDay: 6,
+      },
+      {
+        holidayId: 4,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 13,
+      },
+      {
+        holidayId: 5,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 14,
+      },
+      {
+        holidayId: 6,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 15,
+      },
+
+      {
+        holidayId: 7,
+        holidayName: "วันแรงงานแห่งชาติ",
+        holidayMonth: 5,
+        holidayDay: 1,
+      },
+       {
+        holidayId: 7,
+        holidayName: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง",
+        holidayMonth: 8,
+        holidayDay: 12,
+      },
+    ],
+  },
+];

@@ -45,13 +45,6 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
         </div>
 
         <div className="profile">
-          {/* {loading ? (
-            <div className="spinner-grow loadingImage" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          ) : (
-            <img src={avatarUrl} alt="avatar" />
-          )} */}
           <div>
             <div style={{ fontWeight: 600 }}>ยินดีต้อนรับสู่ CES</div>
             <div className="muted">
