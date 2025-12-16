@@ -13,7 +13,7 @@ export default function SpecialDailyFooter() {
     },
      tableRowTotal: {
       flexDirection: "row",
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "#fff",
     },
     // Cell
     tableCol: {

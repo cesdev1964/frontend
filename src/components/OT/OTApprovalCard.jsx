@@ -128,8 +128,8 @@ export default function OTApproveCard({ data, fetchData }) {
         <OTApprovelDataInMobile data={data}/>
 
         <div className="border-top border-danger my-3"></div>
-        <div className="OT-footer mb-1">
-          <button
+        <div className="OT-footer">
+         <button
             className={`btn ${
               isOpenApproveArea ? " btn-primary" : " btn-info"
             }`}
@@ -137,15 +137,16 @@ export default function OTApproveCard({ data, fetchData }) {
           >
             {isOpenApproveArea ? "ปิด" : "ส่วนของผู้อนุมัติ"}
           </button>
-          
+        </div>
+        <div className="OT-footer mb-1">
           <div
-            className={`collapse ${isOpenApproveArea ? "show" : ""} w-100`}
+            className={`collapse ${isOpenApproveArea ? "show" : ""} w-100 p-2`}
             id="approvalDetail" 
           >
-            <div className="d-flex flex-column gap-3 mt-3">
+            <div className="d-flex flex-column gap-3 mt-3 p-2">
               <p className="OT-description-label">
                 ผู้ทำการอนุมัติ :{" "}
-                <span className="OT-description-value">
+                <span className="OT-approver lh-base lh-sm lh-lg">
                   {data?.currentStep.approverName ?? "-"}(
                   {data?.currentStep.stepName ?? "-"})
                 </span>
@@ -153,10 +154,10 @@ export default function OTApproveCard({ data, fetchData }) {
 
               <textarea
                 style={{ resize: "none" }}
-                maxLength="100"
+                maxLength="200"
                 name="comment"
                 type="text"
-                rows="4"
+                rows="3"
                 cols="30"
                 placeholder="ความคิดเห็นของผู้อนุมัติ"
                 value={input.comment}

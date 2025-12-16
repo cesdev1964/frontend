@@ -5,7 +5,7 @@ export default function OTApprovelDataInMobile({data}) {
   return (
     <div>
       <div className="row">
-        <div className="col-md-12 col-lg-6 mb-4">
+        <div className="col-md-12 col-lg-8 mb-4 mx-auto">
           <div className="d-flex justify-content-center px-2">
             <table className="table table-bordered">
               <thead>
@@ -76,9 +76,9 @@ export default function OTApprovelDataInMobile({data}) {
           </div>
         </div>
 
-        <div className="col-md-12 col-lg-6">
+        <div className="col-md-12 col-lg-12 ms-3">
           <p className="OT-description-label">
-            หน่วยงาน : <span className="OT-description-value">{data.job.jobNo ?? "-"}</span>
+            หน่วยงาน : <span className="OT-description-value ">{data.job.jobNo ?? "-"}</span>
           </p>
           <p
             className="OT-description-label"

@@ -18,13 +18,13 @@ export default function HolidayCard({ holidayData }) {
 
   return (
     <div className="d-flex align-items-start my-3 holiday-card-container gap-3">
-      <div className="d-flex flex-column bg-danger p-3 border-0 rounded-2 justify-content-center align-items-center">
-        <h4 className="mb-1">{holidayData.holidayDay}</h4>
+      <div className="d-flex flex-column bg-danger py-3 px-5 border-0 rounded-2 justify-content-center align-items-center">
+        <h4 className="my-2">{holidayData.holidayDay}</h4>
         <h5>{monthShortName[holidayData.holidayMonth-1]??"-"}</h5>
       </div>
 
       <div className="d-flex flex-column align-items-center">
-        <h5 className="mt-2 text-primary fs-4 text-start">{holidayData.holidayName ?? "-"}</h5>
+        <p className="mt-2 text-primary fs-5 text-start">{holidayData.holidayName ?? "-"}</p>
         {/* <div className="d-flex justify-content-end">
           <span class="badge-style badge-stillWork">
             <i

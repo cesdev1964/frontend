@@ -8,7 +8,7 @@ export default function SpecialDailyTotalRow() {
     // Row header
     tableRow: {
       flexDirection: "row",
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "#fff",
     },
     // Cell
     tableCol: {

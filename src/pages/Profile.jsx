@@ -124,13 +124,13 @@ export default function Profile({ title, isAdmin = false }) {
                 <Link to="/settings">ตั้งค่า</Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                <Link to="/settings/employees">จัดการข้อมูลพนักงาน</Link>
+                <a href="/settings/employees">จัดการข้อมูลพนักงาน</a>
               </li>
             </>
           ) : (
             <>
               <li className="breadcrumb-item">
-                <Link to="/">หน้าหลัก</Link>
+                <a href="/">หน้าหลัก</a>
               </li>
             </>
           )}

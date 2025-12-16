@@ -1818,6 +1818,7 @@ thead th:last-child {
     justify-content: start;
     align-items: center;
   }
+
 }
 
 @media (max-width: 600px) {
@@ -2537,10 +2538,17 @@ thead th:last-child {
   font-weight: 500;
 }
 
-.OT-description-value {
+.OT-description-value,.OT-approver {
   font-size: 0.9rem;
   line-height: 0.3;
   color: var(--logout-bg);
+  /* text-wrap: nowrap; */
+}
+.OT-approver {
+  font-size: 0.9rem;
+  line-height: 0.3;
+  color: var(--logout-bg);
+  text-wrap: nowrap;
 }
 .OT-card-container,
 .holiday-card-container,

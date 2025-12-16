@@ -102,6 +102,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
   const fetchDataTable = useCallback(async () => {
     try {
+ 
       setIsLoading(true);
       await getEducationDropdown();
       await getTitleNameData();
@@ -400,7 +401,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/settings/employees">การจัดการข้อมูลพนักงาน</Link>
+            <a href="/settings/employees">การจัดการข้อมูลพนักงาน</a>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -410,13 +411,13 @@ export default function EmployeeForm({ title, isEdit = false }) {
       <HeaderPage pageName={title} />
       <div>
         {!isLoading ? (
-          <>
-            <div className="employee-content p-4">
+          <div className="container">
+            <div className="employee-content">
               <div className="row">
-                <div className="col-lg-2 mt-1 announcement-box pt-4">
+                <div className=" mt-1 announcement-box pt-5">
                   <div className="employee-image-section">
                     <ImageComponent
-                      imageSRC={preview || avatarUrl}
+                      imageSRC={avatarUrl}
                       borderRadius="50%"
                       height="170px"
                       width="170px"
@@ -442,7 +443,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                     />
                   </div>
                 </div>
-                <div
+                {/* <div
                   className="my-3 col-lg-9 announcement-box"
                   style={{
                     display: "flex",
@@ -450,8 +451,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
                     alignItems: "center",
                   }}
                 >
+                </div> */}
                   <form>
-                    <div className="my-4">
+                    <div className="my-4 announcement-box p-4 col-lg-9 ">
                       <h5 className="group-label"># ข้อมูลทั่วไป</h5>
                       <div className="border-top border-danger my-3"></div>
                       <div className="row form-spacing g-2">
@@ -609,7 +611,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.educationId}</p>
                           ) : null}
                         </div>
-                        <div className="col-md-6 col-lg-6">
+                        <div className="col-md-6 col-lg-5">
                           <label className="form-label">
                             เบอร์โทรศัพท์
                             <span style={{ color: "red" }}>*</span>
@@ -636,7 +638,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                         </div>
                       </div>
                       <div className="row form-spacing g-2">
-                        <div className="col-lg-12">
+                        <div className="col-lg-6">
                           <label className="form-label">
                             เลขบัตรประชาชน
                             <span style={{ color: "red" }}>*</span>
@@ -669,7 +671,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       </div>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 announcement-box p-4 col-lg-9 ">
                       <h5 className="group-label"># ข้อมูลหน่วยงาน</h5>
                       <div className="border-top border-danger my-3"></div>
                       <div className="row form-spacing g-2">
@@ -904,22 +906,23 @@ export default function EmployeeForm({ title, isEdit = false }) {
 
                     {/* ค่อยทำ */}
 
-                    <div className="mt-4">
+                    <div className="mt-4 announcement-box p-4 col-lg-9 ">
                       <h5 className="group-label"># ข้อมูลการหักเงิน</h5>
                       <div className="border-top border-danger my-3"></div>
+                      <DeductionList
+                        deductionDropdown={deductionDropdown}
+                        listItem={listItem}
+                        setListItem={setListItem}
+                        propName="deductionTypeId"
+                        isOpenNewDeduction={isOpenNewDeduction}
+                        setIsOpenNewDeduction={setIsOpenNewDeduction}
+                        error={error}
+                      />
+                  
                     </div>
 
-                    <DeductionList
-                      deductionDropdown={deductionDropdown}
-                      listItem={listItem}
-                      setListItem={setListItem}
-                      propName="deductionTypeId"
-                      isOpenNewDeduction={isOpenNewDeduction}
-                      setIsOpenNewDeduction={setIsOpenNewDeduction}
-                      error={error}
-                    />
 
-                    <div>
+                    <div className="mt-4 announcement-box p-4 col-lg-9 " >
                       <h5 className="group-label"># สายอนุมัติ</h5>
                       <div className="border-top border-danger my-3"></div>
                       <div className="row form-spacing g-2">
@@ -951,10 +954,11 @@ export default function EmployeeForm({ title, isEdit = false }) {
                             <p className="text-danger">{error.flowId}</p>
                           ) : null}
                         </div>
+                        <div className="d-flex flex-column align-items-center justify-content-center">
                         {flowById.approvalSteps &&  (
                           <div
                             className={`alert alert-danger alert-dismissible fade ${
-                              isFlow ? "show" : ""
+                              (isFlow || isEdit === true) ? "show" : ""
                             } mt-3 d-inline-block d-flex flex-column align-items-center justify-content-center`}
                             role="alert"
                           >
@@ -963,7 +967,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                                 ...กำลังโหลดสายอนุมัติ
                               </p>
                             ) : (
-                              <>
+                              <div className="ms-4">
                                 <p className="text-center fw-bold">ลำดับสายอนุมัติ</p>
                                 <div className="d-flex flex-wrap justify-content-center gap-4 mt-3">
                                   {flowById.approvalSteps.map((item, index) => (
@@ -1008,10 +1012,11 @@ export default function EmployeeForm({ title, isEdit = false }) {
                                     </>
                                   ))}
                                 </div>
-                              </>
+                              </div>
                             )}
                           </div>
                         )}
+                        </div>
                       </div>
                     </div>
                     <center>
@@ -1023,10 +1028,9 @@ export default function EmployeeForm({ title, isEdit = false }) {
                       </div>
                     </center>
                   </form>
-                </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
           <>
             <LoadingSpin />

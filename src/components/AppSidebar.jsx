@@ -119,7 +119,10 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
                   </NavLink>
                 </li>
               )}
-              {roleRequire.some(role=>["SUPER","Admin","PM"].includes(role)) && (
+              {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
+                rolePermissionRequire.some((p) =>
+                  ["OT_PENDING"].includes(p)
+                )) && (
                 <>
                   <li>
                     <NavLink
@@ -211,7 +214,8 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               <span className="label">เปลี่ยนรหัสผ่าน</span>
             </NavLink>
           </li>
-          {(rolePermissionRequire.some(p=>["SETTING"].includes(p)) || roleRequire.some(r=>["SUPER"].includes(r))) && (
+          {(rolePermissionRequire.some((p) => ["SETTING"].includes(p)) ||
+            roleRequire.some((r) => ["SUPER"].includes(r))) && (
             <>
               <li>
                 <NavLink

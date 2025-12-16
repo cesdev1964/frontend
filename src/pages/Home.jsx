@@ -6,27 +6,26 @@ import { useAuth } from "../auth/AuthContext";
 
 export default function Home({ title }) {
   const { authdata } = useAuth();
-  const rolePermissionRequire = authdata?.roles ?? [];
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   useTitle(title);
-
 
   return (
     <div>
       <div className="flex-grow-1 d-flex align-items-start justify-content-center">
-       
         <div className="row w-100 gy-4 mt-2">
           <div className="col-md-12 col-lg-6">
             <EmployeeCard />
-            {rolePermissionRequire.includes("SUPER") && (
-              <OTRequestPendingCard />
-            )}
+            {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
+              rolePermissionRequire.some((p) =>
+                ["OT_PENDING"].includes(p)
+              )) && <OTRequestPendingCard />}
           </div>
           <div className="col-md-12 col-lg-6">
             <AnnouncementCard />
           </div>
         </div>
-        
       </div>
     </div>
   );

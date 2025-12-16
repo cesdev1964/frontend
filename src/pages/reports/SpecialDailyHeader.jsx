@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   // Row header
   tableRowHeader: {
     flexDirection: "row",
-    backgroundColor: "#DCDCDC",
+    backgroundColor: "#fff",
   },
   // Cell
   tableCol: {
