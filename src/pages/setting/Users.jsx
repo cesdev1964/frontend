@@ -13,7 +13,8 @@ import LoadingSpin from "../../components/loadingSpin";
 import handleDelete from "../../util/handleDelete";
 import { handleCancel } from "../../util/handleCloseModal";
 import MainButton from "../../components/MainButton";
-import ModalComponent from "../../components/modal/ModalComponent";
+import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole";
+import { useAuth } from "../../auth/AuthContext";
 
 const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -58,6 +59,10 @@ export default function Users({ title }) {
   });
   const [editMode, setEditMode] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
+  const { authdata } = useAuth();
+
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -160,6 +165,21 @@ export default function Users({ title }) {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
+        const canResetPassword =
+          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.USER_RESET_PASSWORD].includes(p)
+          );
+        const canDeleteUser =
+          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.USER_DELETE].includes(p)
+          );
+        const canUpdateUser =
+          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.USER_UPDATE].includes(p)
+          );
         return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
@@ -168,7 +188,12 @@ export default function Users({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark btn-edit " data-id="${row.userId}" data-action="edit">
+                <a class="dropdown-item text-dark btn-edit " data-id="${
+                  row.userId
+                }" data-action="edit"
+
+                
+                >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
@@ -176,12 +201,17 @@ export default function Users({ title }) {
                 <a class="dropdown-item text-dark btn-permission" 
                    data-id="${row.userId}"
                    data-action="reset"
+   
                    >
                   <i class="bi bi-person-fill-lock me-2"></i>reset password
                 </a>
               </li>
               <li>
-                <a class="dropdown-item text-dark btn-delete" data--id="${row.userId}" data-action="delete">
+                <a class="dropdown-item text-dark btn-delete" data--id="${
+                  row.userId
+                }" data-action="delete" 
+
+                >
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -194,6 +224,8 @@ export default function Users({ title }) {
               class="btn btn-warning me-2 btn-edit"
               title="แก้ไข"
               data-action="edit"
+
+
             >
               <i class="bi bi-pen-fill"></i>
             </a>
@@ -201,7 +233,9 @@ export default function Users({ title }) {
               class="btn btn-info me-2 btn-permission"
               title="reset password"
               data-id="${row.userId}"
-               data-action="reset"
+              data-action="reset"
+    
+
             >
               <i class="bi bi-person-fill-lock"></i>
             </a>
@@ -211,6 +245,8 @@ export default function Users({ title }) {
               class="btn btn-danger btn-delete"
               title="ลบ"
               data-action="delete"
+    
+
             >
               <i class="bi bi-trash-fill"></i>
             </a>
@@ -478,11 +514,9 @@ export default function Users({ title }) {
           onAction={handleAction}
         />
 
-
         {/* modal */}
         {editMode && userIsLoading && <LoadingSpin />}
 
-      
         <div
           className="modal fade"
           id="addModal"
@@ -547,7 +581,6 @@ export default function Users({ title }) {
                             }`}
                             onChange={handleChangeInput}
                             value={input.titleId}
-                            dis
                           >
                             <option value={0}>เลือกคำนำหน้า</option>
                             {titleData.map((item) => (
@@ -656,7 +689,7 @@ export default function Users({ title }) {
                         {error.password ? (
                           <p className="text-danger">{error.password}</p>
                         ) : null}
-                        <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                        {/* <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
                           <label className="mb-2">บังคับเปลี่ยนรหัส</label>
                           <div className="form-check form-switch form-switch-md ms-3">
                             <input
@@ -668,7 +701,7 @@ export default function Users({ title }) {
                               onChange={handleChangeCheckbox}
                             />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

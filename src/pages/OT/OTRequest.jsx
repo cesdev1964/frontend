@@ -270,7 +270,7 @@ export default function OTRequest({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         <Filter>
-          <div className="col-sm-12 col-md-6 col-lg-6">
+          {/* <div className="col-sm-12 col-md-6 col-lg-6">
             <div className="d-flex flex-column align-items-start ">
               <InputTextField
                 isRequire={false}
@@ -287,9 +287,11 @@ export default function OTRequest({ title }) {
                 placeholder="กรอง 1.2"
               />
             </div>
-          </div>
+          </div> */}
         </Filter>
         <div className="mb-3 p-3 border rounded-3 border-0 filter-display">
+
+
           <div className="d-flex justify-content-end  w-100">
             <a
               className="power py-2"
@@ -299,8 +301,10 @@ export default function OTRequest({ title }) {
                 <i className={`bi bi-plus fs-4`}></i>
               </span>{" "}
               <span className="label">ทำการขอโอที</span>
-            </a>
+            </a> 
           </div>
+
+
         </div>
         <div className="flex-grow-1 d-flex align-items-start justify-content-center">
           {/* <div className="accordion">

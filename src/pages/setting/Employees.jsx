@@ -10,6 +10,7 @@ import MainButton from "../../components/MainButton";
 import { useLevel } from "../../hooks/levelStore";
 import LoadingSpin from "../../components/loadingSpin";
 import { useAuth } from "../../auth/AuthContext";
+import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole";
 
 const Employees = ({ title }) => {
   useTitle(title);
@@ -42,6 +43,9 @@ const Employees = ({ title }) => {
   const { levelDropdown, getLevelDropdown } = useLevel();
   const [isLoading, setLoading] = useState(false);
   const {authdata} = useAuth();
+
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   const fetchDataTable = useCallback(async () => {
     setLoading(true);
@@ -129,6 +133,7 @@ const Employees = ({ title }) => {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
+        const canEditEmployee = (roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) || rolePermissionRequire.some((p) =>[PermissionEnum.EMPLOYEE_UPDATE].includes(p)))
         return `
           <div className="d-flex align-items-center justify-content-center">
               <div class="dropdown d-lg-none">
@@ -142,7 +147,7 @@ const Employees = ({ title }) => {
                      href="/profile/employeePreview/${row.publicEmployeeId}" 
                      id="employeePreview"
                      style="
-                            display: ${authdata.permissions?.includes("EMPLOYEE_VIEW")
+                            display: ${authdata.permissions?.includes(PermissionEnum.EMPLOYEE_VIEW)
                               ? "block"
                               : "none"}
                           "
@@ -151,6 +156,11 @@ const Employees = ({ title }) => {
                     </a>
                   <a class="dropdown-item text-dark"
                      href="/settings/employees/form/${row.publicEmployeeId}"
+                      style="
+                            display: ${canEditEmployee
+                              ? "block"
+                              : "none"}
+                          "
                   >
                     <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                   </a>
@@ -165,10 +175,11 @@ const Employees = ({ title }) => {
                   title="ดูข้อมูลพนักงาน"
                   id="employeePreview"
                   style="
-                        display: ${authdata.permissions?.includes("EMPLOYEE_VIEW")
+                        display: ${authdata.permissions?.includes(PermissionEnum.EMPLOYEE_VIEW)
                         ? "block"
                         : "none"}
                         "
+                        
                 >
                   <i class="bi bi-eye"></i>
                 </a>
@@ -176,7 +187,8 @@ const Employees = ({ title }) => {
                   href="/settings/employees/form/${row.publicEmployeeId}"
                   class="btn btn-warning me-2"
                   title="แก้ไข"
-                >
+                  style="display: ${canEditEmployee? "block": "none"}"
+                 >
                   <i class="bi bi-pen-fill"></i>
                 </a>
             </div>
@@ -234,7 +246,11 @@ const Employees = ({ title }) => {
           to="/settings/employees/form"
           style={{ textDecoration: "none" }}
         >
-          <MainButton btnName={title} icon={"bi bi-plus-circle"} />
+           {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
+              rolePermissionRequire.some((p) =>
+                ["EMPLOYEE_CREATE"].includes(p)
+              ))&&(<MainButton btnName={title} icon={"bi bi-plus-circle"} />)}
+          
         </NavLink>
         {/* ตารางข้อมูล */}
         {isLoading === true ? (

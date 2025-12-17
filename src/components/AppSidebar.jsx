@@ -3,6 +3,7 @@ import { useAuth } from "../auth/AuthContext";
 import logo from "../assets/ces-icon.png";
 import { useEffect, useState, useRef } from "react";
 import { getDateOnly } from "../util/inputFormat";
+import { PermissionEnum, RoleEnum } from "../enum/permissionAndRole";
 
 function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
   const { logout, authdata, loading } = useAuth();
@@ -93,7 +94,7 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-              {roleRequire.includes("Employee") && (
+              {rolePermissionRequire.includes(PermissionEnum.OT_CREATE) && (
                 <li>
                   <NavLink
                     to="/working/OTRequest"
@@ -106,7 +107,7 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
                   </NavLink>
                 </li>
               )}
-              {roleRequire.includes("HR") && (
+              {roleRequire.includes(RoleEnum.HR) && (
                 <li>
                   <NavLink
                     to="/working/OTRequestByHR"
@@ -119,9 +120,9 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
                   </NavLink>
                 </li>
               )}
-              {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
+              {(roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
                 rolePermissionRequire.some((p) =>
-                  ["OT_PENDING"].includes(p)
+                  [PermissionEnum.OT_PENDING].includes(p)
                 )) && (
                 <>
                   <li>
@@ -214,8 +215,8 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               <span className="label">เปลี่ยนรหัสผ่าน</span>
             </NavLink>
           </li>
-          {(rolePermissionRequire.some((p) => ["SETTING"].includes(p)) ||
-            roleRequire.some((r) => ["SUPER"].includes(r))) && (
+          {(rolePermissionRequire.some((p) => [PermissionEnum.SETTING].includes(p)) ||
+            roleRequire.some((r) => [RoleEnum.SUPER].includes(r))) && (
             <>
               <li>
                 <NavLink

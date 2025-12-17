@@ -146,6 +146,17 @@ function AppNavbar({ toggleSidebar }) {
                 {loading ? (
                   <>
                     <div className="profile-card">...กำลังโหลดข้อมูล</div>
+                    <div className="dropdown-divider"></div>
+                    <div>
+                      <a
+                        className="d-flex justify-content-between dropdown-item text-danger"
+                        style={{ textDecoration: "none", cursor: "pointer" }}
+                        onClick={logout}
+                      >
+                        <strong>ออกจากระบบ</strong>
+                        <i className="bi bi-box-arrow-right"></i>
+                      </a>
+                    </div>
                   </>
                 ) : (
                   <>

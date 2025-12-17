@@ -6,7 +6,8 @@ import { useOTApprove } from "../../hooks/otApproveStore.jsx";
 import Swal from "sweetalert2";
 import OTApprovelDataInMobile from "./OTApprovelDataInMobile.jsx";
 import useScreenSize from "../../hooks/screenSizeStore.jsx";
-import OTApproveDataInPC from "./OTApproveDataInPC.jsx";
+import { useAuth } from "../../auth/AuthContext";
+import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole.js";
 
 export default function OTApproveCard({ data, fetchData }) {
   const [isOpenApproveArea, setIsOpenApproveArea] = useState(false);
@@ -14,7 +15,9 @@ export default function OTApproveCard({ data, fetchData }) {
     comment: "",
   });
   const { approveOT, rejectOT } = useOTApprove();
-  const screenWidth = useScreenSize();
+  const { authdata } = useAuth();
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   const handleChangeApproveArea = () => {
     setIsOpenApproveArea((prev) => !prev);
@@ -83,7 +86,7 @@ export default function OTApproveCard({ data, fetchData }) {
             : await rejectOT(reqDataReject);
           if (success) {
             swalWithBootstrapButtons.fire({
-              title: `ดำเนินรายการของคุณ  ${data.employee.fullName} สำเร็จ!`,
+              title: `<p>ดำเนินรายการของคุณ  <span class='text-primary fs-4'>${data.employee.fullName}</span> สำเร็จ!</p>`,
               // text: ,
               icon: "success",
             });
@@ -125,11 +128,11 @@ export default function OTApproveCard({ data, fetchData }) {
           </span>
         </p>
 
-        <OTApprovelDataInMobile data={data}/>
+        <OTApprovelDataInMobile data={data} />
 
         <div className="border-top border-danger my-3"></div>
         <div className="OT-footer">
-         <button
+          <button
             className={`btn ${
               isOpenApproveArea ? " btn-primary" : " btn-info"
             }`}
@@ -141,7 +144,7 @@ export default function OTApproveCard({ data, fetchData }) {
         <div className="OT-footer mb-1">
           <div
             className={`collapse ${isOpenApproveArea ? "show" : ""} w-100 p-2`}
-            id="approvalDetail" 
+            id="approvalDetail"
           >
             <div className="d-flex flex-column gap-3 mt-3 p-2">
               <p className="OT-description-label">
@@ -166,22 +169,32 @@ export default function OTApproveCard({ data, fetchData }) {
               ></textarea>
             </div>
             <p className="approveOT-btn">
-              <button
-                className={`btn btn-outline-danger approval-btn text-danger`}
-                onClick={() => {
-                  hadleSubMitApproval(false);
-                }}
-              >
-                ไม่อนุมัติ
-              </button>
-              <button
-                className="btn  btn-success approval-btn"
-                onClick={() => {
-                  hadleSubMitApproval(true);
-                }}
-              >
-                อนุมัติ
-              </button>
+              {(rolePermissionRequire.some((p) =>
+                [PermissionEnum.OT_REJECT].includes(p)
+              ) ||
+                roleRequire.some((r) => [RoleEnum.SUPER].includes(r))) && (
+                <button
+                  className={`btn btn-outline-danger approval-btn text-danger`}
+                  onClick={() => {
+                    hadleSubMitApproval(false);
+                  }}
+                >
+                  ไม่อนุมัติ
+                </button>
+              )}
+              {(rolePermissionRequire.some((p) =>
+                [PermissionEnum.OT_APPROVAL].includes(p)
+              ) ||
+                roleRequire.some((r) => [RoleEnum.SUPER].includes(r))) && (
+                <button
+                  className="btn  btn-success approval-btn"
+                  onClick={() => {
+                    hadleSubMitApproval(true);
+                  }}
+                >
+                  อนุมัติ
+                </button>
+              )}
             </p>
           </div>
         </div>

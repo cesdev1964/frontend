@@ -1,8 +1,13 @@
 import { OTapproveStatusBadge } from "../../util/isActiveBadge.jsx";
 import { OTApproveEnum } from "../../enum/otApproveEnum.js";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat.js";
+import { useAuth } from "../../auth/AuthContext.jsx"
+import { PermissionEnum } from "../../enum/permissionAndRole.js";
 
 export default function OTcard({ otData, handleDelete }) {
+  const { authdata } = useAuth();
+  const rolePermissionRequire = authdata?.permissions ?? [];
+
   return (
     <div>
       <div className="OT-card-container">
@@ -10,36 +15,44 @@ export default function OTcard({ otData, handleDelete }) {
           <div className="d-flex align-items-center gap-1">
             <OTapproveStatusBadge status={otData.status} />
             <i class="bi bi-dot"></i>
-            <p style={{fontSize:"18px"}}>{otData.otType}</p>
+            <p style={{ fontSize: "18px", color: "#000" }} className="mt-2">
+              {otData.otType}
+            </p>
           </div>
 
-          {otData.status != OTApproveEnum.APPROVE && (
-            <a
-              style={{ cursor: "pointer", marginTop: 0 }}
-              onClick={handleDelete}
-            >
-              <span className="icon-action">
-                <i className="bi bi-trash-fill text-center fs-4" title="ลบ"></i>
-              </span>
-            </a>
-          )}
+          {otData.status != OTApproveEnum.APPROVE &&
+            rolePermissionRequire.some((p) =>
+              [PermissionEnum.OT_DELETE].includes(p)
+            ) && (
+              <a
+                style={{ cursor: "pointer", marginTop: 0 }}
+                onClick={handleDelete}
+              >
+                <span className="icon-action">
+                  <i
+                    className="bi bi-trash-fill text-center fs-4"
+                    title="ลบ"
+                  ></i>
+                </span>
+              </a>
+            )}
         </div>
         <div className="border-top border-danger mb-4"></div>
         <div className="row g-3">
           <div className="col-md-12 col-lg-6 mb-4">
-            <p className="OT-description-label">
+            <p className="OT-description-label mb-4">
               วันที่เริ่มขอโอที :{" "}
               <span className="OT-description-value">
                 {shortDateFormate(otData.startDate)}
               </span>
             </p>
-            <p className="OT-description-label">
+            <p className="OT-description-label mb-4">
               วันที่สิ้นสุดโอที :{" "}
               <span className="OT-description-value">
                 {shortDateFormate(otData.endDate)}
               </span>
             </p>
-            <p className="OT-description-label">
+            <p className="OT-description-label mb-4">
               ระยะเวลา :{" "}
               <span className="OT-description-value">
                 {otData.startTime} - {otData.endTime}
@@ -60,7 +73,7 @@ export default function OTcard({ otData, handleDelete }) {
               </span>
             </p>
             <p className="OT-description-label" style={{ textWrap: "balance" }}>
-              เหตุผล :{" "}
+              หมายเหตุ :{" "}
               <span
                 className="OT-description-value"
                 style={{
@@ -69,10 +82,6 @@ export default function OTcard({ otData, handleDelete }) {
                 }}
               >
                 {otData.reason ?? "-"}
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repudiandae ad pariatur magni tempore molestias adipisci
-                corrupti deserunt illum est, ducimus animi cum maxime dolores
-                similique culpa facere, ut quibusdam autem.
               </span>
             </p>
           </div>

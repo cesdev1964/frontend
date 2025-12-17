@@ -1,6 +1,6 @@
 import React from "react";
 import DetailItem from "../home/detailItem";
-import { shortDateFormate } from "../../util/inputFormat";
+import { ageGap, shortDateFormate } from "../../util/inputFormat";
 
 export default function WorkInformation({
   empData,
@@ -87,15 +87,13 @@ export default function WorkInformation({
               )}
             />
           </div>
-          {/* <div className="col-sm-6 col-md-4">
-                                    <DetailItem
-                                      icon="fa-regular fa-calendar-days"
-                                      title="วันที่ลาออก"
-                                      value={
-                                        empData?.employee?.endDate ?? "ไม่พบข้อมูล"
-                                      }
-                                    />
-                                  </div> */}
+          <div className="col-sm-6 col-md-4">
+            <DetailItem
+              icon="bi bi-briefcase-fill"
+              title="อายุงาน"
+              value={ageGap(empData?.employee?.startDate) ?? "ไม่ระบุ"}
+            />
+          </div>
         </div>
       </div>
     </div>

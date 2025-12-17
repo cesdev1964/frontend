@@ -2536,12 +2536,13 @@ thead th:last-child {
   font-size: 0.9rem;
   line-height: 0.3;
   font-weight: 500;
+  color: var(--logout-bg);
 }
 
-.OT-description-value,.OT-approver {
+.OT-description-value {
   font-size: 0.9rem;
   line-height: 0.3;
-  color: var(--logout-bg);
+  color:#000
   /* text-wrap: nowrap; */
 }
 .OT-approver {
@@ -2549,6 +2550,7 @@ thead th:last-child {
   line-height: 0.3;
   color: var(--logout-bg);
   text-wrap: nowrap;
+  color:#000
 }
 .OT-card-container,
 .holiday-card-container,

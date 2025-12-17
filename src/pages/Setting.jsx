@@ -5,10 +5,11 @@ import { useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import SearchBox from "../components/SearchBox";
 import { useAuth } from "../auth/AuthContext";
+import { PermissionEnum, RoleEnum } from "../enum/permissionAndRole";
 
 const Settings = ({ title }) => {
   useTitle(title);
-  const { logout, authdata, loading } = useAuth();
+  const {authdata} = useAuth();
   const rolePermissionRequire = authdata?.permissions ?? [];
   const roleRequire = authdata?.roles ?? [];
 
@@ -25,7 +26,7 @@ const Settings = ({ title }) => {
 
   const settingCard = [
     {
-      permission: "SETTING_EMPLOYEE",
+      permission: PermissionEnum.SETTING_EMPLOYEE,
       path: "/settings/employees",
       icon: "fa-solid fa-user-tie",
       color: cardColor[0],
@@ -33,7 +34,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลพนักงานในระบบ",
     },
     {
-      permission: "SETTING_USER",
+      permission: PermissionEnum.SETTING_USER,
       path: "/settings/users",
       icon: "fa-solid fa-users",
       color: cardColor[0],
@@ -41,7 +42,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลผู้ใช้งานในระบบ",
     },
     {
-      permission: "SETTING_NAME_TITLE",
+      permission: PermissionEnum.SETTING_NAME_TITLE,
       path: "/settings/nametitle",
       icon: "bi bi-file-earmark-person-fill",
       color: cardColor[1],
@@ -49,7 +50,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการคำนำหน้าชื่อ",
     },
     {
-      permission: "SETTING_EDUCATION",
+      permission: PermissionEnum.SETTING_EDUCATION,
       path: "/settings/education",
       icon: "bi bi-mortarboard-fill",
       color: cardColor[2],
@@ -57,7 +58,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลการศึกษา",
     },
     {
-      permission: "SETTING_JOB",
+      permission: PermissionEnum.SETTING_JOB,
       path: "/settings/job",
       icon: "bi bi-journal-bookmark-fill",
       color: cardColor[3],
@@ -65,7 +66,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลหน่วยงาน",
     },
     {
-      permission: "SETTING_JOB_CATEGORY",
+      permission: PermissionEnum.SETTING_JOB_CATEGORY,
       path: "/settings/jobcategory",
       icon: "bi bi-journal-bookmark-fill",
       color: cardColor[5],
@@ -73,7 +74,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลประเภทงาน",
     },
     {
-      permission: "SETTING_LEVEL",
+      permission: PermissionEnum.SETTING_LEVEL,
       path: "/settings/level",
       icon: "bi bi-clipboard-data-fill",
       color: cardColor[4],
@@ -81,7 +82,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลระดับในองค์กร",
     },
     {
-      permission: "SETTING_POSITION",
+      permission: PermissionEnum.SETTING_POSITION,
       path: "/settings/position",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
@@ -89,7 +90,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลตำแหน่ง",
     },
     {
-      permission: "SETTING_CONTRACTOR",
+      permission: PermissionEnum.SETTING_CONTRACTOR,
       path: "/settings/contractor",
       icon: "bi bi-people-fill",
       color: cardColor[5],
@@ -97,7 +98,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลผู้รับเหมา",
     },
     {
-      permission: "SETTING_EMPLOYEE_TYPE",
+      permission: PermissionEnum.SETTING_EMPLOYEE_TYPE,
       path: "/settings/employeetype",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
@@ -105,7 +106,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลประเภทพนักงาน",
     },
     {
-      permission: "SETTING_DEDUCTION_TYPE",
+      permission: PermissionEnum.SETTING_DEDUCTION_TYPE,
       path: "/settings/deductiontype",
       icon: "bi bi-clipboard-data-fill",
       color: cardColor[5],
@@ -113,7 +114,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลประเภทการหักเงิน",
     },
     {
-      permission: "SETTING_ROLE",
+      permission: PermissionEnum.SETTING_ROLE,
       path: "/settings/role",
       icon: "fa-solid fa-address-book",
       color: cardColor[5],
@@ -121,7 +122,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลบทบาทการเข้าใช้งาน",
     },
     {
-      permission: "SETTING_PERMISSION",
+      permission: PermissionEnum.SETTING_PERMISSION,
       path: "/settings/permission",
       icon: "bi bi-person-fill-lock",
       color: cardColor[5],
@@ -129,7 +130,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูล permission",
     },
     {
-      permission: "SETTING_HOLIDAY",
+      permission: PermissionEnum.SETTING_HOLIDAY,
       path: "#",
       icon: "fas fa-umbrella-beach",
       color: cardColor[5],
@@ -137,7 +138,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลวันหยุด",
     },
     {
-      permission: "SETTING_OT_CATEGORY",
+      permission: PermissionEnum.SETTING_OT_CATEGORY,
       path: "/settings/OTcategory",
       icon: "fa-solid fa-file-invoice",
       color: cardColor[5],
@@ -145,7 +146,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลประเภทโอที",
     },
     {
-      permission: "SETTING_ANNOUNCEMENT",
+      permission: PermissionEnum.SETTING_ANNOUNCEMENT,
       path: "/settings/announcement",
       icon: "fa-solid fa-newspaper",
       color: cardColor[5],
@@ -153,7 +154,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลข่าวสาร",
     },
     {
-      permission: "SETTING_FLOW",
+      permission: PermissionEnum.SETTING_FLOW,
       path: "/settings/flow",
       icon: "bi bi-diagram-2-fill",
       color: cardColor[5],
@@ -161,7 +162,7 @@ const Settings = ({ title }) => {
       subtitle: "จัดการข้อมูลสายอนุมัติ",
     },
     {
-      permission: "SETTING_USERJOB",
+      permission: PermissionEnum.SETTING_USERJOB,
       path: "/settings/userjobs",
       icon: "fa-solid fa-people-roof",
       color: cardColor[5],
@@ -180,7 +181,7 @@ const Settings = ({ title }) => {
 
   //search function
   const filterItemSetting = (
-    roleRequire.includes("SUPER") ? settingCard : displaySettingCard
+    roleRequire.includes(RoleEnum.SUPER) ? settingCard : displaySettingCard
   ).filter((item) => {
     if (
       item.title.toLocaleLowerCase().includes(search) ||
@@ -212,7 +213,7 @@ const Settings = ({ title }) => {
         placeholder="ค้นหาเมนูตั้งค่า"
       />
       <div className="content-box mt-4 ">
-        <div className="container text-center setting-container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 announcement-box">
+        <div className="container text-center row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 mt-3">
           {filterItemSetting.length > 0 ? (
             <>
               {filterItemSetting.map((item, index) => {

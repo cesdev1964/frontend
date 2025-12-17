@@ -417,7 +417,7 @@ export default function EmployeeForm({ title, isEdit = false }) {
                 <div className=" mt-1 announcement-box pt-5">
                   <div className="employee-image-section">
                     <ImageComponent
-                      imageSRC={avatarUrl}
+                      imageSRC={preview || avatarUrl}
                       borderRadius="50%"
                       height="170px"
                       width="170px"

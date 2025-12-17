@@ -1,6 +1,6 @@
 import React from "react";
 import DetailItem from "../home/detailItem";
-import { IDcardFormat, shortDateFormate } from "../../util/inputFormat";
+import { IDcardFormat, shortDateFormate, telephoneFormat } from "../../util/inputFormat";
 
 export default function PersonalInformation({empData,educationDropdown}) {
   return (
@@ -36,7 +36,15 @@ export default function PersonalInformation({empData,educationDropdown}) {
               }
             />
           </div>
+          <div className="col-sm-6 col-md-4 ">
+            <DetailItem
+              icon="bi bi-telephone-fill"
+              title="เบอร์โทรศัพท์"
+              value={telephoneFormat(empData?.employee?.telephoneNo)}
+            />
+          </div>
         </div>
+      
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import ImageComponent from "../Image";
-import { telephoneFormat } from "../../util/inputFormat";
+import { ageGap, telephoneFormat } from "../../util/inputFormat";
 import IsEmployeeStatusBadgeReact from "../../util/isActiveBadge.jsx";
 
 export default function ProfileInformation({ avatarUrl, empData, titleDropdow }) {
@@ -27,10 +27,6 @@ export default function ProfileInformation({ avatarUrl, empData, titleDropdow })
             {empData?.employee?.firstname ?? "ไม่ระบุ"}{" "}
             {empData?.employee?.lastname ?? "ไม่ระบุ"}
           </h6>
-          <p className="position-content text-secondary mt-2">
-            <i className="bi bi-telephone-fill me-2"></i>
-            {telephoneFormat(empData?.employee?.telephoneNo)}
-          </p>
         </div>
       </div>
 
