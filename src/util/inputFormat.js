@@ -72,7 +72,7 @@ export function shortDateFormate(inputdate) {
   if (!inputdate) return;
   const date = new Date(inputdate);
   const formateDate = date.toLocaleDateString("en-GB");
-  const formateWithDateHtphens = formateDate.replace(/\//g, "-");
+  const formateWithDateHtphens = formateDate.replace(/\//g, "/");
   return formateWithDateHtphens;
 }
 //dd-mm-yyyy / hh:mm
@@ -84,8 +84,8 @@ export const getDateAndTime = (datetime) => {
 
   if (date) {
     const [year, month, day] = date.split("-");
-    const dateFormat = `${day}-${month}-${year}`;
-    return `${dateFormat} / ${hr}:${min} น.`;
+    const dateFormat = `${day}/${month}/${year}`;
+    return `${dateFormat} - ${hr}:${min} น.`;
   }
 };
 

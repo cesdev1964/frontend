@@ -341,7 +341,31 @@ export default function Flows({ title }) {
 
   const handleDeleteApproveStep = (index) => {
     // console.log(index);
-    setListItem(listItem.filter((select) => select.stepNumber !== index));
+    // setListItem(listItem.filter((select) => select.stepNumber !== index));
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบรายการทั้งหมดใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `ใช่ ลบได้เลย"`,
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          setListItem(listItem.filter((select) => select.stepNumber !== index));
+        }
+      });
+
   };
 
   const handleOpenApproveStepSection = () => {
@@ -484,7 +508,7 @@ export default function Flows({ title }) {
                       {listItem.map((item, index) => (
                         <div className="filter-container" key={index}>
                           <div className="d-flex align-items-top justify-content-between">
-                            <p style={{ fontSize: "0.9rem" }}>
+                            <p style={{ fontSize: "0.9rem" ,fontWeight:"bold"}}>
                               ลำดับ {item.stepNumber}
                             </p>
                             <a

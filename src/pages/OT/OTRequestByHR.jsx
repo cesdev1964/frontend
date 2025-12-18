@@ -25,6 +25,8 @@ export default function OTRequestByHR({ title }) {
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
 
+  const [activeJobId,setActiveJobId] = useState(null);
+ // const [selectedEmployee,setSelectEmployee]
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
@@ -257,23 +259,29 @@ export default function OTRequestByHR({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-12">
+          <div className="col-lg-3 col-md-12 " >
             <div className="mb-3">
               <h5>
                 หน่วยงาน <br />
                 <span className="text-secondary">(เลือกพนักงานที่นี้)</span>
               </h5>
-              <div style={{ maxHeight: "750px", overflowY: "auto" }}>
+              <div className="jobSelectContainer">
                 <div className="p-2">
                   <div className="accordion w-100" id="accordionJobList">
                     {jobDropdown.length > 0 && (
                       <div>
                         {jobDropdown.map((item) => (
+                          //ก้อนย่อยๆ อิสระต่อกัน
+                          <>
                           <EmployeeList
                             jobData={item}
                             key={item.value}
-                            setEmployeeId={setEmployee}
+                            setEmployee={setEmployee} //พนักงานที่เลือก
+                            activeJobId={activeJobId}
+                            setActiveJobId={setActiveJobId}
                           />
+                         <hr className="text-primary" />
+                          </>
                         ))}
                       </div>
                     )}

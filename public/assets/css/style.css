@@ -2069,6 +2069,13 @@ thead th:last-child {
   }
 }
 
+@media (max-width: 988) {
+ .jobSelectContainer{
+  max-height: 500px;
+  overflow-y: auto;
+}
+}
+
 @media (max-width: 1199.98px) {
   .modal-fullscreen-xl-down {
     width: 100vw;
@@ -2859,4 +2866,8 @@ ul.pagination a.page-link:hover {
   align-items: center;
   cursor: pointer;
   transition: 300ms;
+}
+.jobSelectContainer{
+  max-height: 750px;
+  overflow-y: auto;
 }

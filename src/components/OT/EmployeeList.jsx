@@ -3,7 +3,12 @@ import { useEmployee } from "../../hooks/employeeStore";
 import LoadingSpin from "../loadingSpin";
 import { useTitltName } from "../../hooks/titleNameStore";
 
-export default function EmployeeList({ jobData, setEmployeeId }) {
+export default function EmployeeList({
+  jobData,
+  setEmployee,
+  activeJobId,
+  setActiveJobId,
+}) {
   const { getEmployeeData, employeeData } = useEmployee();
   const { getTitleDropdown, titleDropdown } = useTitltName();
   const [isLoading, setIsLoading] = useState(false);
@@ -28,28 +33,31 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
     fetchData();
   }, [fetchData]);
 
+  //ข้อมูลที่นำไป map 
+
   const employeeList = employeeData.filter(
-    (item) => item.jobId === jobData.value
+    (item) =>item.jobId === jobData.value
   );
 
   const handleChangeAccordian = () => {
     setOnClickAccordian((prev) => !prev);
   };
 
+  //ส่งข้อมูลออกไปนอกตัวลูก
   const handleSelectEmployee = (employee) => {
     //  เป็นการ switch state โดยการแทนทีค่าด้วยเงื่อนทีี่มีค่าในตัวแปรก่อน และค่อยนำออก ถ้าไม่มีก็นำค่าเข้าตัวแปร สลับกันไป
     const isSelect = selectedEmployeeID === employee.publicEmployeeId;
 
     if (isSelect) {
       setSelectedEmployeeID(null);
-      setEmployeeId({
+      setEmployee({
         employeeId: "",
         employeeName: "",
         jobId: "",
       });
     } else {
       setSelectedEmployeeID(employee.publicEmployeeId);
-      setEmployeeId({
+      setEmployee({
         employeeId: employee.publicEmployeeId,
         employeeName: `คุณ ${employee.firstname} ${employee.lastname}`,
         jobId: employee.jobId,
@@ -57,78 +65,34 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
     }
   };
 
+  const isOpen = activeJobId === jobData.value;
+
+  const handleToggle = () => {
+    if (!isOpen) {
+      setEmployee({
+        employeeId: "",
+        employeeName: "",
+        jobId: "",
+      });
+      setSelectedEmployeeID(null)
+      setActiveJobId(jobData.value);
+    } else {
+      setActiveJobId(null);
+    }
+  };
+
   return (
-    <>
-      {/* <div className="accordion w-100">
-      <div className="accordion-item mb-2">
-        <input
-          id={`job-${jobData.value}`}
-          className="accordion-trigger-input"
-          type="checkbox"
-          checked={onClickAccordian === true} 
-          onChange={handleChangeAccordian}
-
-        
-        ></input>
-        <label
-          className="accordion-trigger accordion-label"
-          htmlFor={`job-${jobData.value}`}
-        >
-          <strong>{jobData.label}</strong>
-        </label>
-        <section className="accordion-animation-wrapper">
-          <div className="accordion-animation">
-            <div className="accordion-transform-wrapper">
-              <div className="accordion-content otReq-container">
-                {!isLoading ? (
-                  <>
-                    {employeeList.map((employee, index) => (
-                      <>
-                        <ul className="nav w-100 text-center" key={index}>
-                          <li>
-                            <a
-                              onClick={() =>
-                                handleSelectEmployee(employee)
-                              }
-                              className={`${
-                                selectedEmployeeID === employee.publicEmployeeId
-                                  ? "active"
-                                  : ""
-                              }`}
-
-                           >
-                              {" "}
-                              <span
-                                className="label"
-                                style={{ fontSize: "0.8rem" }}
-                              >
-                                คุณ {employee.firstname} {employee.lastname}
-                              </span>
-                            </a>
-                          </li>
-                        </ul>
-                      </>
-                    ))}
-                  </>
-                ) : (
-                  <LoadingSpin />
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div> */}
-
+    <div >
       <div className="accordion-item mb-2" title="เปิดดูรายชื่อได้ที่นี้">
         <h2 className="accordion-header" id={headingId}>
           <button
-            className="accordion-button"
+            className={`accordion-button ${isOpen ? "" : "collapsed"}`}
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target={`#${collapseId}`}
-            aria-expanded="false"
-            aria-controls={collapseId}
+            onClick={handleToggle}
+            // data-bs-toggle="collapse"
+            // data-bs-target={`#${collapseId}`}
+            // aria-expanded="false"
+            // aria-controls={collapseId}
           >
             <label
               className="accordion-header-label"
@@ -140,7 +104,7 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
         </h2>
         <div
           id={collapseId}
-          className="accordion-collapse collapse"
+          className={`accordion-collapse collapse ${isOpen ? "show" : ""}`}
           aria-labelledby={headingId}
           data-bs-parent="#accordionJobList"
         >
@@ -148,6 +112,8 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
           <div className="accordion-body">
             {!isLoading ? (
               <>
+               {employeeList.length>0?(
+                <>
                 {employeeList.map((employee, index) => (
                   <>
                     <ul className="nav w-100 text-center" key={index}>
@@ -175,6 +141,12 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
                     </ul>
                   </>
                 ))}
+                </>
+               ):(
+                <>
+                 <p className="text-center">--ไม่พบรายชื่อ--</p>
+                </>
+               )}
               </>
             ) : (
               <LoadingSpin />
@@ -182,6 +154,6 @@ export default function EmployeeList({ jobData, setEmployeeId }) {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
