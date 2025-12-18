@@ -330,7 +330,9 @@ body {
 
 /* TOP BAR */
 .topbar {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   top: 0;
   z-index: 900;
   background: linear-gradient(90deg, var(--nav-start), var(--nav-end));

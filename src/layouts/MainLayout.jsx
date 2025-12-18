@@ -57,7 +57,7 @@ function MainLayout() {
                 <AppNavbar toggleSidebar={toggleSidebar} />
               
               <div className="content">
-                <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                <div className="container-fluid py-4 min-vh-90 d-flex flex-column mt-5">
                   <Outlet />
                 </div>
               </div>
