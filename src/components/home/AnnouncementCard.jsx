@@ -126,7 +126,7 @@ export default function AnnouncementCard() {
                               style={{ fontSize: "0.9rem" }}
                               className="ps-3 text-primary"
                             >
-                              <em>{item.summary}</em>
+                              <em>{item.summary ?? "-"}</em>
                             </p>
                           </div>
                         ))}

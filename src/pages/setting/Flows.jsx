@@ -14,6 +14,7 @@ import { SearchDropdown } from "../../components/searchDropdown";
 import MainButton from "../../components/MainButton";
 import { handleCancel } from "../../util/handleCloseModal";
 import ModalComponent from "../../components/modal/ModalComponent";
+import { useOTApprove } from "../../hooks/otApproveStore";
 
 export const stepList = [
   { value: "หัวหน้าคนที่ 1" },
@@ -55,6 +56,7 @@ export default function Flows({ title }) {
     updateFlow,
   } = useFlow();
   const { getUserDropdown, userDropdown } = useUser();
+  const {canApproveOT,otApproveData} = useOTApprove();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -88,10 +90,11 @@ export default function Flows({ title }) {
     try {
       await getFlowData();
       await getUserDropdown();
+      await canApproveOT();
     } catch (error) {
        return;
     }
-  }, [getFlowData, getUserDropdown]);
+  }, [getFlowData, getUserDropdown,canApproveOT]);
 
   useEffect(() => {
     fetchDataTable();
@@ -561,7 +564,7 @@ export default function Flows({ title }) {
                               ) : null}
                             </div>
                             <div className="col-0">
-                              <SearchDropdown
+                              {/* <SearchDropdown
                                 data={userDropdown}
                                 handleSelectChange={(selected) =>
                                   handleChangeSelectEaseItem(
@@ -572,6 +575,25 @@ export default function Flows({ title }) {
                                 }
                                 placeholder="เลือกผู้อนุมัติ"
                                 value={userDropdown.find(
+                                  (i) => i.value === item.userId
+                                )}
+                                className={`${
+                                  error[`userId_${index}`]
+                                    ? "border border-danger rounded-2"
+                                    : ""
+                                }`}
+                              /> */}
+                              <SearchDropdown
+                                data={otApproveData}
+                                handleSelectChange={(selected) =>
+                                  handleChangeSelectEaseItem(
+                                    index,
+                                    "userId",
+                                    selected
+                                  )
+                                }
+                                placeholder="เลือกผู้อนุมัติ"
+                                value={otApproveData.find(
                                   (i) => i.value === item.userId
                                 )}
                                 className={`${

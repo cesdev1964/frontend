@@ -111,7 +111,7 @@ export default function OTApproveCard({ data, fetchData }) {
   return (
     <div>
       <div className="OT-card-container">
-        <div className="d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center ">
           <div className="d-flex align-items-center gap-1">
             <OTapproveStatusBadge status={OTApproveEnum.PENDING} />
             <i class="bi bi-dot"></i>

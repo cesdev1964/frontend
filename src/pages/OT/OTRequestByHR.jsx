@@ -10,6 +10,7 @@ import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import { handleCancel } from "../../util/handleCloseModal";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import LoadingSpin from "../../components/loadingSpin";
 export default function OTRequestByHR({ title }) {
   const currentDate = new Date().toISOString().split("T")[0];
   useTitle(title);
@@ -24,9 +25,10 @@ export default function OTRequestByHR({ title }) {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [activeJobId,setActiveJobId] = useState(null);
- // const [selectedEmployee,setSelectEmployee]
+  const [activeJobId, setActiveJobId] = useState(null);
+  // const [selectedEmployee,setSelectEmployee]
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
@@ -49,12 +51,15 @@ export default function OTRequestByHR({ title }) {
   const [otReqData, setOTreqData] = useState([]);
 
   const fetchData = useCallback(async () => {
+    setIsLoading(true);
     try {
       await getJobDropdown();
       if (employee.employeeId) {
         await getOTrequestByEmployeeID(employee.employeeId);
       }
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       return;
     }
   }, [getJobDropdown, getOTrequestByEmployeeID, employee.employeeId]);
@@ -259,7 +264,7 @@ export default function OTRequestByHR({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-12 " >
+          <div className="col-lg-3 col-md-12 ">
             <div className="mb-3">
               <h5>
                 หน่วยงาน <br />
@@ -268,22 +273,30 @@ export default function OTRequestByHR({ title }) {
               <div className="jobSelectContainer">
                 <div className="p-2">
                   <div className="accordion w-100" id="accordionJobList">
-                    {jobDropdown.length > 0 && (
-                      <div>
-                        {jobDropdown.map((item) => (
-                          //ก้อนย่อยๆ อิสระต่อกัน
-                          <>
-                          <EmployeeList
-                            jobData={item}
-                            key={item.value}
-                            setEmployee={setEmployee} //พนักงานที่เลือก
-                            activeJobId={activeJobId}
-                            setActiveJobId={setActiveJobId}
-                          />
-                         <hr className="text-primary" />
-                          </>
-                        ))}
-                      </div>
+                    {isLoading ? (
+                      <>
+                        <LoadingSpin />
+                      </>
+                    ) : (
+                      <>
+                        {jobDropdown.length > 0 && (
+                          <div>
+                            {jobDropdown.map((item) => (
+                              //ก้อนย่อยๆ อิสระต่อกัน
+                              <>
+                                <EmployeeList
+                                  jobData={item}
+                                  key={item.value}
+                                  setEmployee={setEmployee} //พนักงานที่เลือก
+                                  activeJobId={activeJobId}
+                                  setActiveJobId={setActiveJobId}
+                                />
+                                <hr className="text-primary" />
+                              </>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
