@@ -44,8 +44,9 @@ export default function EmployeeList({
   };
 
   //ส่งข้อมูลออกไปนอกตัวลูก
-  const handleSelectEmployee = (employee) => {
+  const handleSelectEmployee = (employee,e) => {
     //  เป็นการ switch state โดยการแทนทีค่าด้วยเงื่อนทีี่มีค่าในตัวแปรก่อน และค่อยนำออก ถ้าไม่มีก็นำค่าเข้าตัวแปร สลับกันไป
+    e.stopPropagation();
     const isSelect = selectedEmployeeID === employee.publicEmployeeId;
 
     if (isSelect) {
@@ -76,8 +77,6 @@ export default function EmployeeList({
       });
       setSelectedEmployeeID(null)
       setActiveJobId(jobData.value);
-    } else {
-      setActiveJobId(null);
     }
   };
 
@@ -116,10 +115,10 @@ export default function EmployeeList({
                 <>
                 {employeeList.map((employee, index) => (
                   <>
-                    <ul className="nav w-100 text-center" key={index}>
-                      <li>
+                    <ul className="nav w-100 text-center">
+                      <li key={employee.publicEmployeeId}>
                         <a
-                          onClick={() => handleSelectEmployee(employee)}
+                          onClick={(e) => handleSelectEmployee(employee,e)}
                           className={`${
                             selectedEmployeeID === employee.publicEmployeeId
                               ? "active"

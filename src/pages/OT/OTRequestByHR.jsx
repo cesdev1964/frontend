@@ -51,15 +51,15 @@ export default function OTRequestByHR({ title }) {
   const [otReqData, setOTreqData] = useState([]);
 
   const fetchData = useCallback(async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       await getJobDropdown();
       if (employee.employeeId) {
         await getOTrequestByEmployeeID(employee.employeeId);
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
       return;
     }
   }, [getJobDropdown, getOTrequestByEmployeeID, employee.employeeId]);
@@ -273,11 +273,7 @@ export default function OTRequestByHR({ title }) {
               <div className="jobSelectContainer">
                 <div className="p-2">
                   <div className="accordion w-100" id="accordionJobList">
-                    {isLoading ? (
-                      <>
-                        <LoadingSpin />
-                      </>
-                    ) : (
+                    
                       <>
                         {jobDropdown.length > 0 && (
                           <div>
@@ -297,7 +293,7 @@ export default function OTRequestByHR({ title }) {
                           </div>
                         )}
                       </>
-                    )}
+                  
                   </div>
                 </div>
               </div>

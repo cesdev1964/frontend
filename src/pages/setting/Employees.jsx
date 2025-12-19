@@ -215,6 +215,13 @@ const Employees = ({ title }) => {
     { maxWidth: "120px", targets: 6, className: "text-center" },
   ];
 
+  const orders= [
+        // [0, 'asc'],
+        [3, 'desc'],
+
+      
+    ]
+
   const getLevelName = (levelId) => {
     if (!levelDropdown) return "";
     return levelDropdown.find((item) => item.value === levelId)?.label;
@@ -264,6 +271,7 @@ const Employees = ({ title }) => {
             tableRef={tableRef}
             isLoading={employeeIsLoading}
             columnDefs={columnDefs}
+            order={orders}
           />
         )}
       </div>

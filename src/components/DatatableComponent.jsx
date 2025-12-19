@@ -12,6 +12,7 @@ export default function DataTableComponent({
   tableHead,
   isLoading = false,
   columnDefs = [],
+  order =[]
 }) {
   useEffect(() => {
     if (data) {
@@ -29,6 +30,7 @@ export default function DataTableComponent({
         paging: true,
         searching: true,
         autoWidth: true,
+        order : order,
         language: {
           decimal: "",
           emptyTable: "ไม่มีข้อมูลในตาราง",
