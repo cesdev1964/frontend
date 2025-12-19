@@ -10,7 +10,6 @@ import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import { handleCancel } from "../../util/handleCloseModal";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import LoadingSpin from "../../components/loadingSpin";
 export default function OTRequestByHR({ title }) {
   const currentDate = new Date().toISOString().split("T")[0];
   useTitle(title);
@@ -22,13 +21,9 @@ export default function OTRequestByHR({ title }) {
     otById,
   } = useOTrequest();
   const { getJobDropdown, jobDropdown } = useJob();
-  const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-
   const [activeJobId, setActiveJobId] = useState(null);
-  // const [selectedEmployee,setSelectEmployee]
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",

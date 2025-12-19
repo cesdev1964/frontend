@@ -13,6 +13,7 @@ import { handleCancel } from "../../util/handleCloseModal";
 import { useAnnounments } from "../../hooks/announcementsStore";
 import { shortDateFormate } from "../../util/inputFormat";
 import { isAnnouncementStatusBadge } from "../../util/isActiveBadge";
+import LoadingSpin from "../../components/loadingSpin";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -31,6 +32,7 @@ export default function AnnouncementSetting({ title }) {
   const [addBtnName, setAddBtnName] = useState(title);
   const [getId, setGetId] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { getAnnounmentData, announmentData, announmentIsLoading } =
     useAnnounments();
   const {
@@ -44,9 +46,12 @@ export default function AnnouncementSetting({ title }) {
   const navigate = useNavigate();
 
   const fetchDataTable = useCallback(async () => {
+    setIsLoading(true);
     try {
+      setIsLoading(false);
       await getAnnounmentData();
     } catch (error) {
+      setIsLoading(false);
       return;
     }
   }, [getAnnounmentData]);
@@ -198,32 +203,10 @@ export default function AnnouncementSetting({ title }) {
     }
   };
 
-  const handleEdit = async (Id) => {
-    ClearInput();
-    await getDeductionById(Id);
-    setGetId(Id);
-
-    const currentModal = document.getElementById(modalId);
-    if (currentModal) {
-      //เป็นการสร้างใหม่ ก่อนการเรียกใช้
-      const modal = bootstrap.Modal.getOrCreateInstance(currentModal);
-      modal.show();
-      setEditMode(true);
-    }
-  };
-
   const finishSubmit = () => {
     console.log("submit data", input);
   };
 
-  const ClearInput = () => {
-    setInput({
-      deductiontypename: "",
-      isactive: false,
-    });
-    setError({});
-    setEditMode(false);
-  };
 
   return (
     <div>
@@ -248,15 +231,19 @@ export default function AnnouncementSetting({ title }) {
           <MainButton btnName={title} icon={"bi bi-plus-circle"} />
         </NavLink>
 
-        <DataTableComponent
-          column={columns}
-          data={announmentData}
-          onAction={handleAction}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          columnDefs={columnDefs}
-          isLoading={announmentIsLoading}
-        />
+        {isLoading ? (
+          <LoadingSpin />
+        ) : (
+          <DataTableComponent
+            column={columns}
+            data={announmentData}
+            onAction={handleAction}
+            tableHead={tableHead}
+            tableRef={tableRef}
+            columnDefs={columnDefs}
+            isLoading={announmentIsLoading}
+          />
+        )}
       </div>
     </div>
   );

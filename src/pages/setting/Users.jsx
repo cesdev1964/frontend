@@ -32,7 +32,7 @@ export default function Users({ title }) {
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มผู้ใช้งานใหม่");
-  const { data, errorMessage, getRoleData, isLoading } = useRole();
+  const { data, errorMessage, getRoleData } = useRole();
   const { titleData, titleIsLoading, getTitleNameData } = useTitltName();
   const {
     userdata,
@@ -59,6 +59,7 @@ export default function Users({ title }) {
   });
   const [editMode, setEditMode] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { authdata } = useAuth();
 
   const rolePermissionRequire = authdata?.permissions ?? [];
@@ -97,18 +98,21 @@ export default function Users({ title }) {
   };
 
   const fetchDataTable = useCallback(async () => {
+    setIsLoading(true);
     try {
       await getRoleData();
       await getUserData();
       await getTitleNameData();
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       return;
     }
   }, [getRoleData, getUserData, getTitleNameData]);
 
   useEffect(() => {
     fetchDataTable();
-  }, [fetchDataTable]);
+  }, [fetchDataTable, authdata]);
 
   //ใส่ใน input ของ edit mode
   useEffect(() => {
@@ -124,6 +128,42 @@ export default function Users({ title }) {
       });
     }
   }, [userById]);
+
+  const canResetPassword =
+    roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+    rolePermissionRequire.some((p) =>
+      [PermissionEnum.USER_RESET_PASSWORD].includes(p)
+    );
+  const canDeleteUser =
+    roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+    rolePermissionRequire.some((p) => [PermissionEnum.USER_DELETE].includes(p));
+  const canUpdateUser =
+    roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+    rolePermissionRequire.some((p) => [PermissionEnum.USER_UPDATE].includes(p));
+
+  const buttonActionList = [
+    {
+      btnColor: "btn-warning",
+      title: "แก้ไข",
+      dataAction: "edit",
+      perMissionToshow: `display:${canUpdateUser ? "block" : "none"}`,
+      icon: `<i class="bi bi-pen-fill"></i>`,
+    },
+    {
+      btnColor: "btn-info",
+      title: "reset password",
+      dataAction: "reset",
+      perMissionToshow: `display:${canResetPassword ? "block" : "none"}`,
+      icon: `<i class="bi bi-person-fill-lock"></i>`,
+    },
+    {
+      btnColor: "btn-danger",
+      title: "ลบ",
+      dataAction: "delete",
+      perMissionToshow: `display:${canDeleteUser ? "block" : "none"}`,
+      icon: `<i class="bi bi-trash-fill"></i>`,
+    },
+  ];
 
   const columnDefs = [
     { maxWidth: "70px", targets: 0, className: "text-center" },
@@ -165,94 +205,140 @@ export default function Users({ title }) {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
-        const canResetPassword =
-          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
-          rolePermissionRequire.some((p) =>
-            [PermissionEnum.USER_RESET_PASSWORD].includes(p)
-          );
-        const canDeleteUser =
-          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
-          rolePermissionRequire.some((p) =>
-            [PermissionEnum.USER_DELETE].includes(p)
-          );
-        const canUpdateUser =
-          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
-          rolePermissionRequire.some((p) =>
-            [PermissionEnum.USER_UPDATE].includes(p)
-          );
-        return `      
-         <div className="d-flex align-items-center justify-content-center">
+        // const canResetPassword =
+        //   roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+        //   rolePermissionRequire.some((p) =>
+        //     [PermissionEnum.USER_RESET_PASSWORD].includes(p)
+        //   );
+        // const canDeleteUser =
+        //   roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+        //   rolePermissionRequire.some((p) =>
+        //     [PermissionEnum.USER_DELETE].includes(p)
+        //   );
+        // const canUpdateUser =
+        //   roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+        //   rolePermissionRequire.some((p) =>
+        //     [PermissionEnum.USER_UPDATE].includes(p)
+        //   );
+      //   return `      
+      //    <div className="d-flex align-items-center justify-content-center">
+      //       <div class="dropdown d-lg-none">
+      //         <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      //            <i class="bi bi-three-dots-vertical"></i>
+      //         </button>
+      //         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      //           <li>
+      //           <a class="dropdown-item text-dark btn-edit " 
+      //              data-id="${row.userId}" 
+      //              data-action="edit"
+      //               style="
+      //                display: ${canUpdateUser ? "block" : "none"}
+      //                "
+                
+      //           >
+      //             <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+      //           </a>
+      //         </li>
+      //          <li>
+      //           <a class="dropdown-item text-dark btn-permission" 
+      //              data-id="${row.userId}"
+      //              data-action="reset"
+      //               style="
+      //                display: ${canResetPassword ? "block" : "none"}
+      //                "
+      //              >
+      //             <i class="bi bi-person-fill-lock me-2"></i>reset password
+      //           </a>
+      //         </li>
+      //         <li>
+      //           <a class="dropdown-item text-dark btn-delete" 
+      //               data--id="${row.userId}"
+      //               data-action="delete" 
+      //               style="
+      //                display: ${canDeleteUser ? "block" : "none"}
+      //                "
+      //           >
+      //             <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
+      //           </a>
+      //         </li>
+      //        </ul>
+      //     </div>
+          
+      //     <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+      //       <a
+      //         data-id="${row.userId}"
+      //         class="btn btn-warning me-2 btn-edit"
+      //         title="แก้ไข"
+      //         data-action="edit"
+      //         style="
+      //                display: ${canUpdateUser ? "block" : "none"}
+      //                "
+
+      //       >
+      //         <i class="bi bi-pen-fill"></i>
+      //       </a>
+      //       <a
+      //         class="btn btn-info me-2 btn-permission"
+      //         title="reset password"
+      //         data-id="${row.userId}"
+      //         data-action="reset"
+      //          style="
+      //                display: ${canResetPassword ? "block" : "none"}
+      //                "
+
+      //       >
+      //         <i class="bi bi-person-fill-lock"></i>
+      //       </a>
+      //       <a
+              
+      //         data-id="${row.userId}"
+      //         class="btn btn-danger btn-delete"
+      //         title="ลบ"
+      //         data-action="delete"
+      //         style="
+      //                display: ${canDeleteUser ? "block" : "none"}
+      //                "
+
+      //       >
+      //         <i class="bi bi-trash-fill"></i>
+      //       </a>
+      //     </div>
+      //   </div>
+      //  `;
+      var renderBtn = `<div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
               <button class="btn btn-outline-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                  <i class="bi bi-three-dots-vertical"></i>
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">`;
+
+      renderBtn += buttonActionList.map(button=>`
                 <li>
-                <a class="dropdown-item text-dark btn-edit " data-id="${
-                  row.userId
-                }" data-action="edit"
-
-                
+                <a class="dropdown-item text-dark btn-edit " 
+                   data-id="${row.userId}" 
+                   data-action=${button.dataAction}
+                   style= ${button.perMissionToshow}
                 >
-                  <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
+                  ${button.icon} ${button.title}
                 </a>
-              </li>
-               <li>
-                <a class="dropdown-item text-dark btn-permission" 
-                   data-id="${row.userId}"
-                   data-action="reset"
-   
-                   >
-                  <i class="bi bi-person-fill-lock me-2"></i>reset password
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item text-dark btn-delete" data--id="${
-                  row.userId
-                }" data-action="delete" 
+              </li>`).join("");
+      renderBtn += `</ul></div>`
 
-                >
-                  <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
-                </a>
-              </li>
-             </ul>
-          </div>
-          
-          <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
+      var btnList = buttonActionList.map(button=>`
             <a
               data-id="${row.userId}"
-              class="btn btn-warning me-2 btn-edit"
-              title="แก้ไข"
-              data-action="edit"
-
-
+              class="btn ${button.btnColor} me-2 btn-edit"
+              title=${button.title}
+              data-action=${button.dataAction}
+              style= ${button.perMissionToshow}
             >
-              <i class="bi bi-pen-fill"></i>
+              ${button.icon}
             </a>
-            <a
-              class="btn btn-info me-2 btn-permission"
-              title="reset password"
-              data-id="${row.userId}"
-              data-action="reset"
-    
+        `).join("");
 
-            >
-              <i class="bi bi-person-fill-lock"></i>
-            </a>
-            <a
-              
-              data-id="${row.userId}"
-              class="btn btn-danger btn-delete"
-              title="ลบ"
-              data-action="delete"
-    
-
-            >
-              <i class="bi bi-trash-fill"></i>
-            </a>
-          </div>
-        </div>
-       `;
+        renderBtn += `<div class="btn-group btn-group-sm d-none d-lg-flex" role="group">${btnList}</div></div>`
+      
+       return renderBtn;
       },
     },
   ];
@@ -504,16 +590,19 @@ export default function Users({ title }) {
         />
 
         {/* ตารางข้อมูล */}
-        <DataTableComponent
-          column={columns}
-          data={userdata}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          columnDefs={columnDefs}
-          isLoading={userIsLoading}
-          onAction={handleAction}
-        />
-
+        {isLoading ? (
+          <LoadingSpin />
+        ) : (
+          <DataTableComponent
+            column={columns}
+            data={userdata}
+            tableHead={tableHead}
+            tableRef={tableRef}
+            columnDefs={columnDefs}
+            isLoading={userIsLoading}
+            onAction={handleAction}
+          />
+        )}
         {/* modal */}
         {editMode && userIsLoading && <LoadingSpin />}
 

@@ -37,7 +37,11 @@ export const PermissionEnum = Object.freeze({
   USER_CREATE : "USER_CREATE",
   USER_DELETE : "USER_DELETE",
   USER_UPDATE : "USER_UPDATE",
-  
+
+  ROLE_PERM_VIEW :  "ROLE_PERM_VIEW",
+  ROLE_PERM_UPDATE :"ROLE_PERM_UPDATE",
+  ROLE_PERM_CREATE : "ROLE_PERM_CREATE"
+
 });
 
 export const RoleEnum = Object.freeze({
