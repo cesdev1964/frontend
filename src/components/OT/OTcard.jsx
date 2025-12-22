@@ -38,66 +38,7 @@ export default function OTcard({ otData, handleDelete }) {
             )}
         </div>
         <div className="border-top border-danger mb-4"></div>
-
-         <div className="row g-2 justify-content-center">
-                <div className="col-6 col-md-6 col-lg-3">
-                  <div className="item-card" style={{ backgroundColor: "#F6F8D5" }}>
-                    <p className="label">วันที่เริ่มทำโอที</p>
-                    <hr />
-                    <h5 className="value">
-                       {shortDateFormate(otData.startDate)}
-                    </h5>
-                  </div>
-                </div>
-                <div className="col-6 col-md-6 col-lg-3">
-                  <div className="item-card" style={{ backgroundColor: "#DCF2F1" }}>
-                    <p className="label">วันที่สิ้นสุดโอที</p>
-                    <hr />
-                    <h5 className="value">
-                   {shortDateFormate(otData.endDate)}
-                    </h5>
-                  </div>
-                </div>
-                <div className="col-6 col-md-6 col-lg-3">
-                  <div className="item-card" style={{ backgroundColor: "#FFEBEB" }}>
-                    <p className="label">ระยะเวลา</p>
-                    <hr />
-                    <h5 className="value">
-                       {otData.startTime ?? ""} - {otData.endTime ?? "" }
-                    </h5>
-                  </div>
-                </div>
-                <div className="col-6 col-md-6 col-lg-3">
-                  <div className="item-card" style={{ backgroundColor: "#E7F6DA" }}>
-                    <p className="label">รวม</p>
-                    <hr />
-                    <h5 className="value"> {otData.totalMinutes ?? "-"} นาที</h5>
-                  </div>
-                </div>
-              </div>
-               <div className="col-md-12 col-lg-12 ms-3 mt-4">
-                      <p className="OT-description-label">
-                        หน่วยงาน :{" "}
-                        <span className="OT-description-value ">{otData.jobNo ?? ""}</span>
-                      </p>
-                      <p
-                        className="OT-description-label"
-                        style={{ textWrap: "balance", lineHeight: "1.5" }}
-                      >
-                        หมายเหตุ :{" "}
-                        <span className="OT-description-value OT-approver lh-base lh-sm lh-lg" style={{textWrap:"wrap"}}>
-                         {otData.reason ?? "-"}
-                        </span>
-                      </p>
-                      <p className="OT-description-label" style={{ textWrap: "balance"}}>
-                        ดำเนินการขอเมื่อ :{" "}
-                        <span className="OT-description-value OT-approver lh-base lh-sm lh-lg">
-                          {getDateAndTime(otData?.requestedAt) ?? "ไม่มีการบันทึก"}
-                        </span>
-                      </p>
-                    </div>
-
-        {/* <div className="row g-3">
+        <div className="row g-3">
           <div className="col-md-12 col-lg-6 mb-4">
             <p className="OT-description-label mb-4">
               วันที่เริ่มขอโอที :{" "}
@@ -153,7 +94,7 @@ export default function OTcard({ otData, handleDelete }) {
               {getDateAndTime(otData?.requestedAt)}
             </span>
           </p>
-        </div> */}
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ export default function OTApprovelDataInMobile({ data }) {
   return (
     <div>
       <div className="row g-2 justify-content-center">
-        <div className="col-6 col-md-6 col-lg-3">
+        <div className="col-6 col-md-6 col-lg-3" >
           <div className="item-card" style={{ backgroundColor: "#F6F8D5" }}>
             <p className="label">วันที่เริ่มทำโอที</p>
             <hr />
@@ -14,7 +14,7 @@ export default function OTApprovelDataInMobile({ data }) {
             </h5>
           </div>
         </div>
-        <div className="col-6 col-md-6 col-lg-3">
+        <div className="col-6 col-md-6 col-lg-3" >
           <div className="item-card" style={{ backgroundColor: "#DCF2F1" }}>
             <p className="label">วันที่สิ้นสุดโอที</p>
             <hr />
@@ -51,13 +51,18 @@ export default function OTApprovelDataInMobile({ data }) {
           style={{ textWrap: "balance", lineHeight: "1.5" }}
         >
           หมายเหตุ :{" "}
-          <span className="OT-description-value OT-approver lh-base lh-sm lh-lg" style={{textWrap:"wrap"}}>
-            {data.reason ?? "-"} 
+          <span
+            className="OT-description-value"
+            style={{
+              wordBreak: "break-all",
+            }}
+          >
+            {data.reason ?? "-"}
           </span>
         </p>
-        <p className="OT-description-label" style={{ textWrap: "balance"}}>
+        <p className="OT-description-label">
           ดำเนินการขอเมื่อ :{" "}
-          <span className="OT-description-value OT-approver lh-base lh-sm lh-lg">
+          <span className="OT-description-value">
             {getDateAndTime(data?.requestedAt) ?? "xx-xx-xxxx / xx:xx"}
           </span>
         </p>
