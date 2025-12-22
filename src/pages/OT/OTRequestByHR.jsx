@@ -295,7 +295,7 @@ export default function OTRequestByHR({ title }) {
             </div>
           </div>
           <div className="col-lg-9 col-md-12">
-            <div className="announcement-box border-bottom  my-5">
+            <div className=" border-bottom  my-5">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <h5>ขอโอทีย้อนหลัง</h5>
                 <MainButton
