@@ -111,9 +111,11 @@ export default function CreateOTmodal({
     const result = otTimeNum.find((t) => t > startHM);
     const hr = Math.floor(result / 100);
     const min = result % 100;
+
+    //แปลงกลับเป็น เวลาแบบ string
     const selectEndTime = `${String(hr).padStart(2, "0")}:${String(
       min
-    ).padStart(2, "0")}`;
+    ).padStart(2, "0")}`; 
     return getOTendList(selectEndTime, otEndTimeList);
   };
 
@@ -121,16 +123,17 @@ export default function CreateOTmodal({
   const getOTendList = (selectedEndTime, otEndtimeList = []) => {
     if (!selectedEndTime || otEndtimeList.length === 0) return [];
 
-    //การดูว่าสมาชิกตัวใดเหมือนกับตัวที่เลือกมา ก็ตั้งให้เป็น index 1 
+    //การดูว่าสมาชิกตัวใดเหมือนกับตัวที่เลือกมา ก็ตั้งให้เป็น index 1
     const startIndex = otEndtimeList.findIndex(
       (i) => i.time === selectedEndTime
     );
 
     if (startIndex === -1) return [];
 
-    //ดูว่า ในตัวแรกสุด มี timeType เป็นอะไร ให้เก็บมา 
+    //ดูว่า ในตัวแรกสุด มี timeType เป็นอะไร ให้เก็บมา
     const startType = otEndtimeList[startIndex].timeType;
 
+    //ทำการ filter เพื่อคัดเอาเฉพาะสมาชิกที่นับจากตัวแรกเท่านั้น และสามารถขยายขอบเขตได้ถึงช่วงวันถัดไป
     return otEndtimeList.filter(
       (i, index) => index >= startIndex || i.timeType > startType
     );
@@ -277,7 +280,7 @@ export default function CreateOTmodal({
                   <option value="">เลือกเวลา</option>
                   {input.startDate === input.endDate ? (
                     <>
-                     {getOTEndtime(input.startTime, OTtimeOptions.otEnd)
+                      {getOTEndtime(input.startTime, OTtimeOptions.otEnd)
                         ?.filter((item) => item.timeType === 0)
                         .map((item, index) => (
                           <option value={item.time} key={index}>
@@ -294,11 +297,13 @@ export default function CreateOTmodal({
                     </>
                   ) : (
                     <>
-                      {getOTEndtime(input.startTime, OTtimeOptions.otEnd).map((item, index) => (
-                        <option value={item.time} key={index}>
-                          {item.time}
-                        </option>
-                      ))}
+                      {getOTEndtime(input.startTime, OTtimeOptions.otEnd).map(
+                        (item, index) => (
+                          <option value={item.time} key={index}>
+                            {item.time}
+                          </option>
+                        )
+                      )}
                       {/* {otTimeList.otEnd?.map((item, index) => (
                         <option value={item.time} key={index}>
                           {item.time}

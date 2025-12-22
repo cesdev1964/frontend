@@ -164,6 +164,8 @@ export default function OTRequest({ title }) {
       jobId: employeeById.employee.jobId,
       reason: input.reason,
     };
+    
+    console.log("data from req ot",reqData)
 
     if (compareDate(input.startDate, input.endDate)) {
       Swal.fire({
