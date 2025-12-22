@@ -60,7 +60,7 @@ export default function RouterPage() {
         { index: true, element: <Home title="หน้าหลัก" /> },
         {
           path: "profile/:publicEmployeeId",
-          element: <Profile title="ข้อมูลของคุณ" />,
+          element: <Profile title="ข้อมูลของคุณ" isAdmin={false}/>,
         },
         { path: "working", element: <Working title="ข้อมูลการทำงาน" /> },
         {
@@ -99,6 +99,10 @@ export default function RouterPage() {
         {
           path: "settings/employees/form/:publicEmployeeId",
           element: <EmployeeForm title="แก้ไขข้อมูลพนักงาน" isEdit={true} />,
+        },
+        {
+          path: "profile/employeePreview/:publicEmployeeId",
+          element: <Profile title="ข้อมูลพนักงาน" isAdmin={true}/>,
         },
         {
           path: "settings/users",

@@ -7,6 +7,7 @@ export const usePermission = create((set) => ({
   permissionLoading: false,
   permissionError: null,
   permissionDataById: {},
+  success: false,
 
   getPermission: async () => {
     set({ permissionLoading: true, permissionError: null });
@@ -19,6 +20,7 @@ export const usePermission = create((set) => ({
       return {
         permissionDataById: response.data.permissions ?? [],
         permissionLoading: false,
+        success: true
       };
     } catch (error) {
       set({ permissionError: error.response?.data?.message, permissionLoading: false });
@@ -36,12 +38,14 @@ export const usePermission = create((set) => ({
       return {
         permissionDataById: response.data.permission ?? {},
         permissionLoading: false,
+        success: true
       };
     } catch (errorMessage) {
       set({ permissionError: errorMessage.response?.data?.message, permissionLoading: false });
       return {
         permissionLoading: false,
         permissionError: errorMessage.response?.data?.message,
+        success: false
       };
     }
   },
@@ -56,14 +60,17 @@ export const usePermission = create((set) => ({
       return {
         permissionData: response.data.permissions ?? {},
         permissionLoading: false,
+        success: true
       };
     } catch (error) {
       set({
         permissionError: error?.response?.data?.message || error.message,
         permissionLoading: false,
+        success: false
       });
       return {
         permissionError: error?.response?.data?.message || error.message,
+        success: false
       };
     }
   },
@@ -75,15 +82,18 @@ export const usePermission = create((set) => ({
       return {
         permissionLoading: false,
         permissionError: response.data.message ?? "",
+        success: true
       };
     } catch (error) {
       set({
         permissionError: error?.response?.data?.message || error.message,
         permissionLoading: false,
+        success: false
       });
       return {
         permissionError: error?.response?.data?.message || error.message,
         permissionLoading: false,
+        success: false
       };
     }
   },
@@ -94,15 +104,18 @@ export const usePermission = create((set) => ({
       return {
         permissionData: response.data.permissions ?? {},
         permissionError: false,
+        success: true
       };
     } catch (error) {
       set({
         permissionError: error?.response?.data?.message || error.message,
         permissionLoading: false,
+        success: false
       });
       return {
         permissionError: error?.response?.data?.message || error.message,
         permissionLoading: false,
+        success: false
       };
     }
   },

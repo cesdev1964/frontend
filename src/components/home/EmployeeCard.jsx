@@ -9,6 +9,7 @@ import { usePosition } from "../../hooks/positionStore";
 import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import { useJob } from "../../hooks/jobStore";
 import LoadingSpin from "../loadingSpin";
+import DefaultAvatarImage from "../defaultAvatarImage";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export default function EmployeeCard() {
@@ -19,7 +20,7 @@ export default function EmployeeCard() {
   const [onClickAccordian, setOnClickAccordian] = useState(true);
   const { getTitleDropdown, titleDropdown } = useTitltName();
   const { positionData, getPositionData } = usePosition();
-  const { jobDropdown, getJobDropdown ,jobData, getJobData} = useJob();
+  const { jobDropdown, getJobDropdown, jobData, getJobData } = useJob();
   const { employeeTypeData, getEmployeeType } = useEmployeeType();
 
   const [empData, setEmpData] = useState({});
@@ -112,8 +113,8 @@ export default function EmployeeCard() {
             onChange={handleChangeCheckbox}
           ></input>
           <label
-            class="accordion-trigger accordion-label"
-            for="accordion-trigger-2"
+            className="accordion-trigger accordion-label"
+            htmlFor="accordion-trigger-2"
           >
             <strong>บริษัท ซีอีเอส จำกัด</strong>
           </label>
@@ -149,10 +150,12 @@ export default function EmployeeCard() {
                                   className="my-2 text-center"
                                   style={{ fontSize: "1.3rem" }}
                                 >
-                                  คุณ {empData?.firstname ?? "ไม่ระบุ"}{" "}
+                                  {titleDropdown.find(
+                                    (item) => item.value === empData?.titleId
+                                  )?.label ?? "คุณ"}{" "}
+                                  {empData?.firstname ?? "ไม่ระบุ"}{" "}
                                   {empData?.lastname ?? "ไม่ระบุ"}
                                 </h6>
-                                
                               </div>
                             </div>
                             <div className="badge-style badge-stillWork">
@@ -165,15 +168,25 @@ export default function EmployeeCard() {
                             <div className="d-flex align-items-start justify-content-center">
                               <div className="d-flex ">
                                 <div className="d-flex flex-column align-items-center">
-                                  <ImageComponent
+                                  {/* <ImageComponent
                                     imageSRC={cesMascot}
                                     height="140px"
                                     width="140px"
                                     borderRadius="10px"
                                     alt="profile-avatar"
                                     objectfit="cover"
+                                  /> */}
+                                  <DefaultAvatarImage
+                                    username={
+                                      authdata.firstname +
+                                      " " +
+                                      authdata.lastname
+                                    }
+                                    height="120px"
+                                    width="120px"
+                                    fontSize="40px"
                                   />
-                                  <p className="mt-3 text-danger">
+                                  <p className="mt-4 text-danger">
                                     <strong>
                                       ยินดีต้อนรับสู่ เว็บไซต์ฝากเบิก
                                     </strong>
@@ -182,12 +195,9 @@ export default function EmployeeCard() {
                                     คุณ
                                     {authdata.firstname} {authdata.lastname}
                                   </h5>
-                                 
                                 </div>
                               </div>
-                              <div className="badge-style badge-stillWork">
-                                ผู้ใช้งาน
-                              </div>
+                            
                             </div>
                           </>
                         )}

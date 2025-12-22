@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useAuth } from "../auth/AuthContext";
 import { useUser } from "../hooks/userStore";
-import { useNavigate } from "react-router-dom";
-import SessionExpiryModal from "../components/modal/SessionExpiryModal";
+
 
 const ChangePassword = ({ title, isForce = false }) => {
 
   useTitle(title);
-
+  const userData = localStorage.getItem("User");
   const [inputData, setInputData] = useState({
-    userName: "",
+    userName: userData.username,
     defaultPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -23,7 +22,7 @@ const ChangePassword = ({ title, isForce = false }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { authdata, logout } = useAuth();
   const { changePassword, userError, userIsLoading } = useUser();
-  const navigate = useNavigate();
+
 
   // console.log("userData", authdata);
 
@@ -125,7 +124,6 @@ const ChangePassword = ({ title, isForce = false }) => {
   };
 
   const finishSubmit = () => {
-    // console.log("submit data", inputData);
   };
 
   useEffect(() => {
@@ -144,12 +142,12 @@ const ChangePassword = ({ title, isForce = false }) => {
         >
           <div className="card-body d-flex flex-column justify-content-center p-4">
             <div className="d-flex  mx-auto w-100 card-title">
-              <i class="bi bi-shield-lock me-2"></i>
+              <i className="bi bi-shield-lock me-2"></i>
               <h5>เปลี่ยนรหัสผ่าน</h5>
             </div>
             <div className="border-top border-danger"></div>
             <div className="changePassword-content">
-              <form className="mx-auto w-100" style={{ maxWidth: 480 }}>
+              <form className="mx-auto w-100" style={{ maxWidth: 480 }} autoComplete="off" action="#">
                 <div className="mb-2">
                   <label
                     className="form-label"
@@ -162,7 +160,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                     name="userName"
                     value={inputData.userName ?? ""}
                     onChange={(e) => handleChangeInput(e)}
-                    autoFocus
+                    autoComplete="off"
                   />
                 </div>
                 <div className="mb-2">
@@ -181,6 +179,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                       type={showPassword ? "text" : "password"}
                       value={inputData.defaultPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
+                      autoComplete="off"
                     />
                     <button
                       type="button"
@@ -217,6 +216,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                       type={showPassword ? "text" : "password"}
                       value={inputData.newPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
+                      autoComplete="off"
                     />
                     <button
                       type="button"
@@ -253,6 +253,7 @@ const ChangePassword = ({ title, isForce = false }) => {
                       type={showPassword ? "text" : "password"}
                       value={inputData.confirmPassword ?? ""}
                       onChange={(e) => handleChangeInput(e)}
+                      autoComplete="off"
                     />
                     <button
                       type="button"

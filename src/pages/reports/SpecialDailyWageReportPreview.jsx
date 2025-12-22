@@ -3,17 +3,14 @@ import SpecialDailyWageReportPDF from "./SpecialDailyWageReportPDF";
 
 export default function SpecialDailyWageReportPreview() {
   return (
-    <div style={{ height: "100vh" }}>
+    <>
       <PDFViewer
-        style={{
-          height: "100%",
-          aspectRatio: "1/1",
-          width: "100%",
-        }}
+      showToolbar={true}
+      width="100%"
+      height="800px"
       >
         <SpecialDailyWageReportPDF/> 
-        {/* แปลง โค้ด treact -> pdf form */}
       </PDFViewer>
-    </div>
+    </>
   );
 }

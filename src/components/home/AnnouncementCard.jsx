@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { mockNews } from "../../MockData";
 import { useAnnounments } from "../../hooks/announcementsStore";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";
+import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
 
 export default function AnnouncementCard() {
   const [newsdata, setNewData] = useState([]);
@@ -25,15 +25,17 @@ export default function AnnouncementCard() {
 
   useEffect(() => {
     if (!announmentData) return;
-    setNewData(announmentData);
+    let displayOnlyPublic = announmentData.filter(
+      (item) => item.status === AnnounmentStatusEnum.PUBLISHED
+    );
+    setNewData(displayOnlyPublic);
   }, [announmentData]);
 
   const filterItemFromSearch = newsdata.filter((item) => {
     if (
       item.title.toLocaleLowerCase().includes(search) ||
       item.content.toLocaleLowerCase().includes(search) ||
-      item.status.toLocaleLowerCase().includes(search) ||
-      item.summary.toLocaleLowerCase().includes(search)
+      item.status.toLocaleLowerCase().includes(search)
     ) {
       return item;
     }
@@ -44,26 +46,26 @@ export default function AnnouncementCard() {
   };
   return (
     <>
-      <div class="accordion">
-        <div class="accordion-item">
+      <div className="accordion">
+        <div className="accordion-item">
           <input
             id="accordion-trigger-1"
-            class="accordion-trigger-input"
+            className="accordion-trigger-input"
             type="checkbox"
             checked={onClickAccordian === true}
             onChange={handleChangeCheckbox}
           ></input>
           <label
-            class="accordion-trigger accordion-label"
-            for="accordion-trigger-1"
+            className="accordion-trigger accordion-label"
+            htmlFor="accordion-trigger-1"
           >
-            <i class="fa-solid fa-newspaper me-2 mb-1"></i>
+            <i className="fa-solid fa-newspaper me-2 mb-1"></i>
             <strong>ข้อมูลข่าวสาร</strong>
           </label>
-          <section class="accordion-animation-wrapper">
-            <div class="accordion-animation">
-              <div class="accordion-transform-wrapper">
-                <div class="accordion-content">
+          <section className="accordion-animation-wrapper">
+            <div className="accordion-animation">
+              <div className="accordion-transform-wrapper">
+                <div className="accordion-content">
                   <div className="search-box">
                     <div className="searchBar me-3">
                       <input
@@ -81,7 +83,7 @@ export default function AnnouncementCard() {
                     newsdata.length === 0 ? (
                       <div className="d-flex flex-column align-items-center justify-content-center p-4">
                         <i
-                          class="fa-solid fa-newspaper mb-4 text-danger"
+                          className="fa-solid fa-newspaper mb-4 text-danger"
                           style={{ fontSize: "60px" }}
                         ></i>
                         <h5 className="text-danger">ไม่พบข่าวประกาศ</h5>
@@ -90,7 +92,7 @@ export default function AnnouncementCard() {
                       <>
                         {filterItemFromSearch.map((item, index) => (
                           <div
-                            className="w-100 card p-3 border-start-4 rounded-3 mb-3 otReqCard"
+                            className="w-100 p-3 rounded-3 mb-3 otReqCard shadow-sm"
                             key={index}
                             onClick={() =>
                               navigate(
@@ -99,11 +101,20 @@ export default function AnnouncementCard() {
                             }
                           >
                             <div className="d-flex align-items-center justify-content-between">
-                              <h5>{item.title}</h5>
+                              <p
+                                style={{
+                                  fontSize: "1.1rem",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {item.title}
+                              </p>
                               <span className="badge  text-dark p-2 px-2 fs-6">
-                                <i class="bi bi-paperclip me-2"></i>{item.attachmentCount}
+                                <i className="bi bi-paperclip me-2"></i>
+                                {item.attachmentCount}
                               </span>
                             </div>
+
                             <p className="OT-description-label mt-3">
                               {" "}
                               วันที่ลงข่าวสาร :{" "}
@@ -111,8 +122,11 @@ export default function AnnouncementCard() {
                                 {shortDateFormate(item.publishedAt)}
                               </span>
                             </p>
-                            <p style={{ fontSize: "0.9rem" }} className="ps-3">
-                              {item.summary}
+                            <p
+                              style={{ fontSize: "0.9rem" }}
+                              className="ps-3 text-primary"
+                            >
+                              <em>{item.summary ?? "-"}</em>
                             </p>
                           </div>
                         ))}

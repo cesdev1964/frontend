@@ -1,4 +1,4 @@
-import React, { useState, useCallback ,useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import OTcard from "./OTcard";
 import handleDelete from "../../util/handleDelete";
 import Pagination from "../Pagination";
@@ -34,86 +34,66 @@ export default function OTrequestList({
   );
 
   useEffect(() => {
-  if (NUM_OF_RECORDS >= LIMIT) {
-    setShowPaginate(true);
-  } else {
-   setShowPaginate(false);
-  }
-}, [NUM_OF_RECORDS, LIMIT]);
+    if (NUM_OF_RECORDS >= LIMIT) {
+      setShowPaginate(true);
+    } else {
+      setShowPaginate(false);
+    }
+  }, [NUM_OF_RECORDS, LIMIT]);
 
   return (
     <>
-      <div className="accordion">
-        <div className="accordion-item">
-          <input
-            id="accordion-trigger-1"
-            className="accordion-trigger-input"
-            type="checkbox"
-            checked={onClickAccordian === true}
-            onChange={handleChangeAccordian}
-          ></input>
-          <label
-            className="accordion-trigger accordion-label"
-            htmlFor="accordion-trigger-1"
-          >
+      <div className="announcement-box border border-primary">
+        <div className="text-danger">
+          <h5>
             <i className="bi bi-list-task me-2 mb-1"></i>
             <strong>{header}</strong>
-          </label>
-          <section className="accordion-animation-wrapper">
-            <div className="accordion-animation">
-              <div className="accordion-transform-wrapper">
-                <div className="accordion-content">
-                  <div className="ot-container">
-                    {otIsLoading ? (
-                      <div className="d-flex flex-column align-items-center justify-content-center p-1">
-                        <div
-                          className="spinner-border text-danger"
-                          role="status"
-                          style={{ width: "3rem", height: "3rem" }}
-                        ></div>
-                      </div>
-                    ) : (
-                      <>
-                        {otData.length === 0 ? (
-                          <div className="d-flex flex-column align-items-center justify-content-center p-4">
-                            <i
-                              className="bi bi-file-earmark mb-2 text-danger"
-                              style={{ fontSize: "60px" }}
-                            ></i>
-                            <h4 className="text-danger text-center">ไม่พบการขอโอที</h4>
-                          </div>
-                        ) : (
-                          <>
-                            {/* เอาสัก 6 รายการต่อหน้า */}
-                            {currentData.map((item) => {
-                              return (
-                                <div>
-                                  <OTcard
-                                    otData={item}
-                                    key={item.otRequestId}
-                                    handleDelete={() =>
-                                      handleDelete(
-                                        otIsLoading,
-                                        () => deleteOTrequest(item.otRequestId),
-                                        fetchData
-                                      )
-                                    }
-                                  />
-                                </div>
-                              );
-                            })}
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
+          </h5>
+          <hr className="text-danger" />
+          <div className="ot-container">
+            {otIsLoading ? (
+              <div className="d-flex flex-column align-items-center justify-content-center p-1">
+                <div
+                  className="spinner-border text-danger"
+                  role="status"
+                  style={{ width: "3rem", height: "3rem" }}
+                ></div>
               </div>
-            </div>
-          </section>
-        </div>
-        {/* มีข้อมูลตามจำนวน limit แต่ paginate ไม่ปรากฏ */}
-        {paginate && (
+            ) : (
+              <>
+                {otData.length === 0 ? (
+                  <div className="d-flex flex-column align-items-center justify-content-center p-4">
+                    <i
+                      className="bi bi-file-earmark mb-2 text-danger"
+                      style={{ fontSize: "60px" }}
+                    ></i>
+                    <h4 className="text-danger text-center">ไม่พบการขอโอที</h4>
+                  </div>
+                ) : (
+                  <>
+                    {currentData.map((item) => {
+                      return (
+                        <div>
+                          <OTcard
+                            otData={item}
+                            key={item.otRequestId}
+                            handleDelete={() =>
+                              handleDelete(
+                                otIsLoading,
+                                () => deleteOTrequest(item.otRequestId),
+                                fetchData
+                              )
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </>
+            )}
+          </div>
+           {paginate && (
           <div className="pagination-wrapper">
             <Pagination
               totalRecords={NUM_OF_RECORDS}
@@ -124,6 +104,7 @@ export default function OTrequestList({
             />
           </div>
         )}
+        </div>
       </div>
     </>
   );

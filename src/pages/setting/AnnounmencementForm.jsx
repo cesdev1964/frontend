@@ -5,12 +5,14 @@ import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal
 import UploadFile from "../../components/UploadFile";
 import { useAnnounments } from "../../hooks/announcementsStore";
 import Swal from "sweetalert2";
+
 import {
   convertStringDateToDatetime,
   getDateOnly,
 } from "../../util/inputFormat";
 import { useParams } from "react-router-dom";
 import LoadingSpin from "../../components/loadingSpin";
+import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
 export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const { publicAnnouncementId } = useParams();
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     title: "",
     summary: "",
     content: "",
-    status: "Draft",
+    status: AnnounmentStatusEnum.DRAFT,
     publichedAt: new Date(),
     files: [],
   });
@@ -64,30 +66,27 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
       const announmentList = announmentById.attachments || [];
       if (announmentList.length > 0) {
-
         const fileMetadataList = announmentList.map((item) => {
           const jsonString = JSON.stringify(item);
           const blobFile = new Blob([jsonString], { type: "application/json" });
-          return new File([blobFile],item.fileName,{ type: blobFile.type })
+          return new File([blobFile], item.fileName, { type: blobFile.type });
           // (file = new File([blobFile], { type: "application/json" }));
         });
-        console.log(fileMetadataList)
+        console.log(fileMetadataList);
 
         setSelectedFile((prev) => {
           const prevList = announmentList.map((item, index) => ({
             attachmentId: item.attachmentId,
             fileName: item.fileName,
             filePath: item.filePath,
-            attachments : fileMetadataList.find((f)=>f.name === item.fileName)
+            attachments: fileMetadataList.find((f) => f.name === item.fileName),
           }));
           return JSON.stringify(prev) === JSON.stringify(prevList)
-          ? prev
-          : prevList;
-
+            ? prev
+            : prevList;
         });
         //ต้องทำการ convert ข้อมูลฝห้อยู่ในรูป type file เพราะตอนนี้เป็น type obj ตอนนี้ข้อมูลที่ get มากับที่ส่งกับไป คนละข้อมูลกัน
-        console.log(selectedFile)
-
+        console.log(selectedFile);
       }
       setIsLoading(false);
     }
@@ -106,7 +105,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       title: "",
       summary: "",
       content: "",
-      status: "Draft",
+      status: AnnounmentStatusEnum.DRAFT,
       publichedAt: new Date(),
       files: [],
     });
@@ -216,12 +215,19 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                       value={input.status}
                       onChange={handleChangeInput}
                     >
-                      <option value={"Draft"}>แบบร่าง : Draft</option>
-                      <option value={"Published"}>เผยแพร่ : Published</option>
-                      <option value={"Archived"}>เก็บไว้ก่อน : Archived</option>
+                      <option value={AnnounmentStatusEnum.DRAFT}>
+                        แบบร่าง : {AnnounmentStatusEnum.DRAFT}
+                      </option>
+                      <option value={AnnounmentStatusEnum.PUBLISHED}>
+                        เผยแพร่ : {AnnounmentStatusEnum.PUBLISHED}
+                      </option>
+                      <option value={AnnounmentStatusEnum.ARCHIVED}>
+                        เก็บไว้ก่อน : {AnnounmentStatusEnum.ARCHIVED}
+                      </option>
                     </select>
                   </div>
                 </div>
+                <hr className="text-danger" />
                 <label className="form-label">หัวเรื่องข่าว</label>
                 <textarea
                   style={{ resize: "none" }}
@@ -238,7 +244,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
 
                 <label className="form-label">คำโปรยข่าว</label>
                 <textarea
-                  // style={{ resize: "none" }}
                   maxLength="200"
                   name="summary"
                   type="text"
@@ -252,6 +257,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
               </div>
               <div className="announcement-box border-bottom  mb-3">
                 <h4>แนบไฟล์</h4>
+                <hr className="text-danger" />
                 <UploadFile
                   selectedFile={selectedFile}
                   setSelectedFile={setSelectedFile}
@@ -261,6 +267,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
             <div className="col-lg-7 col-md-12">
               <div className="announcement-box border-bottom  mb-3">
                 <h4>เนื้อหาข่าว</h4>
+                <hr className="text-danger" />
                 <textarea
                   name="content"
                   type="text"

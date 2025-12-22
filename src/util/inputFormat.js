@@ -72,7 +72,7 @@ export function shortDateFormate(inputdate) {
   if (!inputdate) return;
   const date = new Date(inputdate);
   const formateDate = date.toLocaleDateString("en-GB");
-  const formateWithDateHtphens = formateDate.replace(/\//g, "-");
+  const formateWithDateHtphens = formateDate.replace(/\//g, "/");
   return formateWithDateHtphens;
 }
 //dd-mm-yyyy / hh:mm
@@ -84,8 +84,8 @@ export const getDateAndTime = (datetime) => {
 
   if (date) {
     const [year, month, day] = date.split("-");
-    const dateFormat = `${day}-${month}-${year}`;
-    return `${dateFormat} / ${hr}:${min} น.`;
+    const dateFormat = `${day}/${month}/${year}`;
+    return `${dateFormat} - ${hr}:${min} น.`;
   }
 };
 
@@ -104,3 +104,26 @@ export const convertStringDateToDatetime = (dateString) => {
   const isoFormat = dateObject.toISOString();
   return isoFormat
 };
+
+
+export const ageGap = (reqDatetime)=>{
+   const convertToDatetime = new Date(reqDatetime);
+   const now = new Date();
+
+   //diff day
+   const getCurrentDay = now.getDate();
+   const getReqDay = convertToDatetime.getDate();
+
+   const diffDay = Math.abs(getCurrentDay - getReqDay);
+
+   //diff month
+   const getCurrentMonth = now.getMonth()
+   const getReqMonth = convertToDatetime.getMonth()
+   const diffMonth = Math.abs(getCurrentMonth-getReqMonth);
+
+   const getCurrentYear = now.getFullYear();
+   const getReqYear = convertToDatetime.getFullYear(); 
+   const diffYear = Math.abs(getCurrentYear-getReqYear); 
+
+   return `${diffYear} ปี ${diffMonth} เดือน ${diffDay} วัน`;
+}

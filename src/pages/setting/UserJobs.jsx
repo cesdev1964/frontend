@@ -172,7 +172,7 @@ export default function UserJobs({ title }) {
         </ol>
       </nav>
       <HeaderPage pageName={title} />
-      <div className="container">
+      <div className="container announcement-box mt-3">
         <div className="row g-3">
           <div className="col-lg-6 col-sm-12">
             <div className="mt-4">

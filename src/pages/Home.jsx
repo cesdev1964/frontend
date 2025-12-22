@@ -3,13 +3,14 @@ import EmployeeCard from "../components/home/EmployeeCard";
 import AnnouncementCard from "../components/home/AnnouncementCard";
 import OTRequestPendingCard from "../components/home/OTRequestPendingCard";
 import { useAuth } from "../auth/AuthContext";
+import { PermissionEnum, RoleEnum } from "../enum/permissionAndRole";
 
 export default function Home({ title }) {
   const { authdata } = useAuth();
-  const rolePermissionRequire = authdata?.roles ?? [];
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   useTitle(title);
-
 
   return (
     <div>
@@ -17,9 +18,10 @@ export default function Home({ title }) {
         <div className="row w-100 gy-4 mt-2">
           <div className="col-md-12 col-lg-6">
             <EmployeeCard />
-            {rolePermissionRequire.includes("SUPER") && (
-              <OTRequestPendingCard />
-            )}
+            {(roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+              rolePermissionRequire.some((p) =>
+                [PermissionEnum.OT_PENDING].includes(p)
+              )) && <OTRequestPendingCard />}
           </div>
           <div className="col-md-12 col-lg-6">
             <AnnouncementCard />

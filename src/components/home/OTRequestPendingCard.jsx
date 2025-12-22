@@ -46,26 +46,26 @@ export default function OTRequestPendingCard() {
 
   return (
     <div className="mt-4">
-      <div class="accordion">
-        <div class="accordion-item">
+      <div className="accordion">
+        <div className="accordion-item">
           <input
             id="accordion-OTrequest"
-            class="accordion-trigger-input"
+            className="accordion-trigger-input"
             type="checkbox"
             checked={onClickAccordian === true}
             onChange={handleChangeCheckbox}
           ></input>
           <label
-            class="accordion-trigger accordion-label"
-            for="accordion-OTrequest"
+            className="accordion-trigger accordion-label"
+            htmlFor="accordion-OTrequest"
           >
             <i className="bi bi-list-task me-2 mb-1"></i>
             <strong>รายการขอโอที ที่ต้องอนุมัติ</strong>
           </label>
-          <section class="accordion-animation-wrapper">
-            <div class="accordion-animation">
-              <div class="accordion-transform-wrapper">
-                <div class="accordion-content otReq-container">
+          <section className="accordion-animation-wrapper">
+            <div className="accordion-animation">
+              <div className="accordion-transform-wrapper">
+                <div className="accordion-content otReq-container">
                   {isLoading ? (
                     <>
                       <div
@@ -81,7 +81,7 @@ export default function OTRequestPendingCard() {
                           {otCountByDate.map((item) => {
                             return (
                               <div
-                                className="card otReqCard"
+                                className="otReqCard shadow-sm "
                                 onClick={() =>
                                   navigate({
                                     pathname: `/working/OTApproval`,
@@ -101,13 +101,13 @@ export default function OTRequestPendingCard() {
                                         lineHeight: "0.8rem",
                                         fontSize: "0.9rem",
                                       }}
-                                      className="text-secondary mt-2"
+                                      className="text-primary mt-2"
                                     >
-                                      <i class="fa-regular fa-calendar-days me-2"></i>
+                                      <i className="fa-regular fa-calendar-days me-2"></i>
                                       {shortDateFormate(item.date)}
                                     </p>
                                   </div>
-                                  <span className="badge border border-danger bg-danger text-dark p-2 px-2 fs-6">
+                                  <span className="count-badge">
                                     {item.count}
                                   </span>
                                 </div>

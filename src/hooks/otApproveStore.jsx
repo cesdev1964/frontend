@@ -29,12 +29,9 @@ export const useOTApprove = create((set) => ({
 
   //สำหรับ filter
   getOTApprovalPendingByFilter: async (value) => {
-  
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
-      const response = await api.get(
-        `${url}/pending?${value.toString()}`
-      );
+      const response = await api.get(`${url}/pending?${value.toString()}`);
 
       set({
         otApproveData: response.data.data ?? [],
@@ -84,7 +81,6 @@ export const useOTApprove = create((set) => ({
     }
   },
   rejectOT: async (reqData) => {
-
     set({ otApproveIsLoading: true, otApproveErrorMessage: null });
     try {
       const response = await api.post(`${url}/reject`, reqData);
@@ -109,6 +105,30 @@ export const useOTApprove = create((set) => ({
         otApproveIsLoading: false,
         success: false,
       };
+    }
+  },
+
+  canApproveOT: async () => {
+    set({ otApproveIsLoading: true, otApproveErrorMessage: null });
+    try {
+      const response = await api.get(`${url}/only-approver`);
+      const data = response.data.data ?? [];
+      console.log("user only approve", data);
+      const option = data.map((item) => ({
+        value: item.publicUserId,
+        label: `${item.titleName} ${item.firstName} ${item.lastname}`,
+      }));
+      set({
+        otApproveData: option,
+        otApproveIsLoading: false,
+      });
+      return { success: response.data.success };
+    } catch (errorMessage) {
+      set({
+        otApproveErrorMessage: errorMessage.message,
+        otApproveIsLoading: false,
+      });
+      return { success: response.data.success };
     }
   },
 }));

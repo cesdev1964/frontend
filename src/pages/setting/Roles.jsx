@@ -12,6 +12,9 @@ import { Link } from "react-router-dom";
 import { handleCancel } from "../../util/handleCloseModal";
 import MainButton from "../../components/MainButton";
 import ModalComponent from "../../components/modal/ModalComponent";
+import { useAuth } from "../../auth/AuthContext";
+import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole";
+import LoadingSpin from "../../components/loadingSpin";
 
 export const tableHead = [
   { colName: "ลำดับ" },
@@ -34,7 +37,7 @@ export default function Roles({ title }) {
     data,
     errorMessage,
     getRoleData,
-    isLoading,
+    // isLoading,
     createRole,
     deleteRole,
     updateRole,
@@ -43,13 +46,17 @@ export default function Roles({ title }) {
   } = useRole();
   const [editMode, setEditMode] = useState(false);
   const [editRoleId, setEditRoleId] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+  const { authdata } = useAuth();
+  const rolePermissionRequire = authdata?.permissions ?? [];
+  const roleRequire = authdata?.roles ?? [];
 
   const navigate = useNavigate();
 
   const handleToPermissionPage = (roleId) => {
     navigate(`/settings/rolepermission/${roleId}`);
   };
-
+  // console.log("userData",authdata);
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setInput((prevData) => ({
@@ -59,17 +66,21 @@ export default function Roles({ title }) {
   };
 
   const fetchDataTable = useCallback(async () => {
+    setLoading(true);
     try {
       await getRoleData();
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       return;
     }
   }, [getRoleData]);
 
   useEffect(() => {
+    setLoading(true);
     fetchDataTable();
     setEditMode(false);
-  }, [fetchDataTable]);
+  }, [fetchDataTable, authdata]);
 
   useEffect(() => {
     if (dataById) {
@@ -109,6 +120,12 @@ export default function Roles({ title }) {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
+        const canViewRolePermission =
+          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.ROLE_PERM_VIEW].includes(p)
+          );
+
         return `      
          <div className="d-flex align-items-center justify-content-center">
             <div class="dropdown d-lg-none">
@@ -128,6 +145,9 @@ export default function Roles({ title }) {
                 <a class="dropdown-item text-dark btn-permission" 
                    data-id="${row.roleId}"
                    data-action="permission"
+                   style="
+                           display: ${canViewRolePermission ? "block" : "none"}
+                                             "
                    >
                   <i class="bi bi-person-fill-lock me-2"></i>สิทธิเข้าใช้งาน
                 </a>
@@ -157,6 +177,9 @@ export default function Roles({ title }) {
               title="สิทธิเข้าใช้งาน"
               data-id="${row.roleId}"
                data-action="permission"
+               style="
+                      display: ${canViewRolePermission ? "block" : "none"}
+                               "
             >
               <i class="bi bi-person-fill-lock"></i>
             </a>
@@ -354,21 +377,28 @@ export default function Roles({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <MainButton
-          btnName={addBtnName}
-          icon={"bi bi-plus-circle"}
-          onClick={handleOpenModal}
-        />
+        {(roleRequire.includes(RoleEnum.SUPER) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.ROLE_PERM_CREATE].includes(p))) && (
+              <MainButton
+                btnName={addBtnName}
+                icon={"bi bi-plus-circle"}
+                onClick={handleOpenModal}
+              />
+            )}
         {/* table */}
-
-        <DataTableComponent
-          column={columnData}
-          data={data}
-          onAction={handleAction}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          columnDefs={columnDefs}
-        />
+        {isLoading ? (
+          <LoadingSpin />
+        ) : (
+          <DataTableComponent
+            column={columnData}
+            data={data}
+            onAction={handleAction}
+            tableHead={tableHead}
+            tableRef={tableRef}
+            columnDefs={columnDefs}
+          />
+        )}
 
         {/* modal */}
 
@@ -419,7 +449,7 @@ export default function Roles({ title }) {
                       placeholder="กรอกคำอธิบาย"
                       rows="3"
                       cols="40"
-                      maxlength="100"
+                      maxLength="100"
                       style={{ resize: "none", overflow: "hidden" }}
                       value={input.description}
                       onChange={handleChangeInput}
@@ -436,91 +466,6 @@ export default function Roles({ title }) {
           />
           {isLoading && <span className="loader"></span>}
         </ModalComponent>
-        {/* <div
-          className="modal fade"
-          id="notModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered modal-md">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {title}
-                </h1>
-
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  // onClick={() => handleCancel("notModal")}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="employee-content p-4">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <form>
-                      <div>
-                        <div className="mb-3">
-                          <label className="form-label">
-                            ชื่อบทบาท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <input
-                            name="roleName"
-                            type="text"
-                            className={`form-control ${
-                              error.roleName ? "border border-danger" : ""
-                            }`}
-                            placeholder="กรอกชื่อบทบาท"
-                            value={input.roleName}
-                            onChange={handleChangeInput}
-                          />
-                          {error.roleName ? (
-                            <p className="text-danger">{error.roleName}</p>
-                          ) : null}
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">
-                            คำอธิบายบทบาท
-                            <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <textarea
-                            className="form-control"
-                            name="description"
-                            placeholder="กรอกคำอธิบาย"
-                            rows="3"
-                            cols="40"
-                            maxlength="100"
-                            style={{ resize: "none", overflow: "hidden" }}
-                            value={input.description}
-                            onChange={handleChangeInput}
-                          ></textarea>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <SubmitOrCancelButton
-                handleSubmit={(e) => handleSubmit(e, "notModal")}
-                handleCancel={() => handleCancel("notModal")}
-                isLoading={isLoading}
-              />
-              {isLoading && <span className="loader"></span>}
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

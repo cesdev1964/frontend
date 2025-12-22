@@ -334,129 +334,132 @@ export default function Jobs({ title }) {
 
         {/* modal */}
 
-        <ModalComponent icon="bi bi-plus-circle" modalId="jobModal" title={title}>
-            <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row">
-                          <div className="col-12 mb-3">
-                            <label className="form-label">
-                              รหัสหน่วยงาน
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="jobno"
-                              type="text"
-                              className={`form-control ${
-                                error.jobno ? "border border-danger" : ""
-                              }`}
-                              id="jobno"
-                              placeholder="กรอกรหัสหน่วยงาน"
-                              value={input.jobno}
-                              onChange={handleChangeInput}
-                              maxLength="10"
-                            />
-                            {error.jobno ? (
-                              <p className="text-danger">{error.jobno}</p>
-                            ) : null}
-                          </div>
-                          <div className="col-12">
-                            <label class="form-label">
-                              ชื่อหน่วยงาน
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="jobname"
-                              type="text"
-                              className={`form-control ${
-                                error.jobname ? "border border-danger" : ""
-                              }`}
-                              id="jobname"
-                              placeholder="กรอกชื่อหน่วยงาน"
-                              value={input.jobname}
-                              onChange={handleChangeInput}
-                              maxLength="100"
-                            />
-
-                            <p
-                              className={`text ${
-                                input.jobname.length >= 100
-                                  ? "text-danger"
-                                  : "muted"
-                              } text-end`}
-                              style={{ fontSize: "0.7rem" }}
-                            >
-                              [{input.jobname.length}/100]
-                            </p>
-                            {error.jobname ? (
-                              <p className="text-danger">{error.jobname}</p>
-                            ) : null}
-                          </div>
-                          <div className="col-12">
-                            <label className="form-label">
-                              ชื่อหน่วยงาน (เพิ่มเติม)
-                            </label>
-                            <input
-                              name="jobname2"
-                              type="text"
-                              className={`form-control ${
-                                error.jobname2 ? "border border-danger" : ""
-                              }`}
-                              id="jobname2"
-                              placeholder="กรอกชื่อหน่วยงาน"
-                              value={input.jobname2}
-                              onChange={handleChangeInput}
-                              maxLength="100"
-                            />
-
-                            <p
-                              className={`text ${
-                                input.jobname2.length >= 100
-                                  ? "text-danger"
-                                  : "muted"
-                              } text-end`}
-                              style={{ fontSize: "0.7rem" }}
-                            >
-                              [{input.jobname2.length}/100]
-                            </p>
-                            {error.jobname2 ? (
-                              <p className="text-danger">{error.jobname2}</p>
-                            ) : null}
-                          </div>
-                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div className="form-check form-switch form-switch-md ms-3">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isactive"
-                                value={input.isactive}
-                                onChange={handleChangeCheckbox}
-                                checked={input.isactive === true}
-                              />
-                            </div>
-                          </div>
-                        </div>
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="jobModal"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div className="col-lg-3 "></div>
+            <div
+              className="col-lg-9 w-100"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <form>
+                {/* ข้อมูลทั่วไป */}
+                <div>
+                    <div className="mb-3">
+                      <label className="form-label">
+                        รหัสหน่วยงาน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="jobno"
+                        type="text"
+                        className={`form-control ${
+                          error.jobno ? "border border-danger" : ""
+                        }`}
+                        id="jobno"
+                        placeholder="กรอกรหัสหน่วยงาน"
+                        value={input.jobno}
+                        onChange={handleChangeInput}
+                        maxLength="10"
+                      />
+                      {error.jobno ? (
+                        <p className="text-danger">{error.jobno}</p>
+                      ) : null}
+                    </div>
+                    <div>
+                      <label class="form-label">
+                        ชื่อหน่วยงาน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <textarea
+                        style={{ resize: "none" }}
+                        maxLength="100"
+                        type="text"
+                        rows="4"
+                        cols="30"
+                        name="jobname"
+                        className={`form-control ${
+                          error.jobname ? "border border-danger" : ""
+                        }`}
+                        id="jobname"
+                        placeholder="กรอกชื่อหน่วยงาน"
+                        value={input.jobname}
+                        onChange={handleChangeInput}
+                      ></textarea>
+                      <p
+                        className={`text ${
+                          input.jobname.length >= 100 ? "text-danger" : "muted"
+                        } text-end`}
+                        style={{ fontSize: "0.7rem" }}
+                      >
+                        [{input.jobname.length}/100]
+                      </p>
+                      {error.jobname ? (
+                        <p className="text-danger">{error.jobname}</p>
+                      ) : null}
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label">
+                        ชื่อหน่วยงาน (เพิ่มเติม)
+                      </label>
+                      <textarea
+                        style={{ resize: "none" }}
+                        maxLength="100"
+                        type="text"
+                        rows="4"
+                        cols="30"
+                        name="jobname2"
+                        className={`form-control ${
+                          error.jobname2 ? "border border-danger" : ""
+                        }`}
+                        id="jobname2"
+                        placeholder="กรอกชื่อหน่วยงาน"
+                        value={input.jobname2}
+                        onChange={handleChangeInput}
+                      ></textarea>
+                      <p
+                        className={`text ${
+                          input.jobname2.length >= 100 ? "text-danger" : "muted"
+                        } text-end`}
+                        style={{ fontSize: "0.7rem" }}
+                      >
+                        [{input.jobname2.length}/100]
+                      </p>
+                      {error.jobname2 ? (
+                        <p className="text-danger">{error.jobname2}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div className="form-check form-switch form-switch-md ms-3">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
                       </div>
-                    </form>
-                  </div>
+                    </div>
+                 
                 </div>
-                 <SubmitOrCancelButton
-                handleSubmit={(e) => handleSubmit(e, "jobModal")}
-                handleCancel={() => handleCancel("jobModal")}
-                isLoading={jobIsLoading}
-              />
+              </form>
+            </div>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={(e) => handleSubmit(e, "jobModal")}
+            handleCancel={() => handleCancel("jobModal")}
+            isLoading={jobIsLoading}
+          />
         </ModalComponent>
 
         {/* <div

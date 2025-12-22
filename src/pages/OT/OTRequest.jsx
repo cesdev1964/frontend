@@ -14,6 +14,7 @@ import Filter from "../../components/Filter";
 import InputTextField from "../../components/inputTextField";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 import OTrequestList from "../../components/OT/OTrequestList";
+import { Link } from "react-router-dom";
 
 export default function OTRequest({ title }) {
   const token = localStorage.getItem("access_token");
@@ -163,6 +164,8 @@ export default function OTRequest({ title }) {
       jobId: employeeById.employee.jobId,
       reason: input.reason,
     };
+    
+    console.log("data from req ot",reqData)
 
     if (compareDate(input.startDate, input.endDate)) {
       Swal.fire({
@@ -256,10 +259,20 @@ export default function OTRequest({ title }) {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">  <i className="bi bi-house-door-fill"></i></Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container">
         <Filter>
-          <div className="col-sm-12 col-md-6 col-lg-6">
+          {/* <div className="col-sm-12 col-md-6 col-lg-6">
             <div className="d-flex flex-column align-items-start ">
               <InputTextField
                 isRequire={false}
@@ -276,20 +289,24 @@ export default function OTRequest({ title }) {
                 placeholder="กรอง 1.2"
               />
             </div>
-          </div>
+          </div> */}
         </Filter>
         <div className="mb-3 p-3 border rounded-3 border-0 filter-display">
+
+
           <div className="d-flex justify-content-end  w-100">
             <a
               className="power py-2"
               onClick={() => handleOpenModal("addOTModal")}
             >
               <span>
-                <i class={`bi bi-plus fs-4`}></i>
+                <i className={`bi bi-plus fs-4`}></i>
               </span>{" "}
               <span className="label">ทำการขอโอที</span>
-            </a>
+            </a> 
           </div>
+
+
         </div>
         <div className="flex-grow-1 d-flex align-items-start justify-content-center">
           {/* <div className="accordion">

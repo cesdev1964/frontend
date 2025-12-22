@@ -9,6 +9,7 @@ import OTrequestList from "../../components/OT/OTrequestList";
 import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import { handleCancel } from "../../util/handleCloseModal";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 export default function OTRequestByHR({ title }) {
   const currentDate = new Date().toISOString().split("T")[0];
   useTitle(title);
@@ -20,14 +21,13 @@ export default function OTRequestByHR({ title }) {
     otById,
   } = useOTrequest();
   const { getJobDropdown, jobDropdown } = useJob();
-  const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
- 
+  const [activeJobId, setActiveJobId] = useState(null);
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
-    jobId : ""
+    jobId: "",
   });
 
   const [input, setInput] = useState({
@@ -46,19 +46,21 @@ export default function OTRequestByHR({ title }) {
   const [otReqData, setOTreqData] = useState([]);
 
   const fetchData = useCallback(async () => {
+    // setIsLoading(true);
     try {
       await getJobDropdown();
       if (employee.employeeId) {
         await getOTrequestByEmployeeID(employee.employeeId);
       }
+      // setIsLoading(false);
     } catch (error) {
+      // setIsLoading(false);
       return;
     }
   }, [getJobDropdown, getOTrequestByEmployeeID, employee.employeeId]);
 
   useEffect(() => {
     fetchData();
-   
   }, [fetchData]);
 
   useEffect(() => {
@@ -149,8 +151,7 @@ export default function OTRequestByHR({ title }) {
       breakOverrideMinutes: 0,
       totalMinutes: input.totalMinutes,
       otTypeId: input.otTypeId,
-      jobId: employee.jobId, 
-      // ไปดึงมาจาก employee.jobNo
+      jobId: employee.jobId,
       reason: input.reason,
     };
 
@@ -242,31 +243,59 @@ export default function OTRequestByHR({ title }) {
 
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">
+              {" "}
+              <i className="bi bi-house-door-fill"></i>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-12">
+          <div className="col-lg-3 col-md-12 ">
             <div className="mb-3">
-            <h5>หน่วยงาน <br/><span>(เลือกพนักงานที่นี้)</span></h5>
-              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+              <h5>
+                หน่วยงาน <br />
+                <span className="text-secondary">(เลือกพนักงานที่นี้)</span>
+              </h5>
+              <div className="jobSelectContainer">
                 <div className="p-2">
-                  {jobDropdown.length > 0 && (
-                    <div>
-                      {jobDropdown.map((item) => (
-                        <EmployeeList
-                          jobData={item}
-                          key={item.value}
-                          setEmployeeId={setEmployee}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="accordion w-100" id="accordionJobList">
+                    
+                      <>
+                        {jobDropdown.length > 0 && (
+                          <div>
+                            {jobDropdown.map((item) => (
+                              //ก้อนย่อยๆ อิสระต่อกัน
+                              <>
+                                <EmployeeList
+                                  jobData={item}
+                                  key={item.value}
+                                  setEmployee={setEmployee} //พนักงานที่เลือก
+                                  activeJobId={activeJobId}
+                                  setActiveJobId={setActiveJobId}
+                                />
+                                <hr className="text-primary" />
+                              </>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                  
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-lg-9 col-md-12">
-            <div className="announcement-box border-bottom  mb-3">
+            <div className="announcement-box border-bottom  my-5">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <h5>ขอโอทีย้อนหลัง</h5>
                 <MainButton

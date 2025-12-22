@@ -162,12 +162,12 @@ export default function TestComponent({ title }) {
               </ul>
             </div>
 
-            <div class="btn-group btn-group-sm d-none d-lg-flex" role="group">
-              <a href="#" class="btn btn-warning me-2" title="แก้ไข">
-                <i class="bi bi-pen-fill"></i>
+            <div className="btn-group btn-group-sm d-none d-lg-flex" role="group">
+              <a href="#" className="btn btn-warning me-2" title="แก้ไข">
+                <i className="bi bi-pen-fill"></i>
               </a>
-              <a href="#" class="btn btn-danger" title="ลบ">
-                <i class="bi bi-trash-fill"></i>
+              <a href="#" className="btn btn-danger" title="ลบ">
+                <i className="bi bi-trash-fill"></i>
               </a>
             </div>
           </div>
@@ -218,24 +218,24 @@ export default function TestComponent({ title }) {
 
         {/* error */}
         <div
-          class="modal fade"
+          className="modal fade"
           id="notModal"
           tabindex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-danger">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-danger">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel"></h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body d-flex flex-column align-items-center">
+              <div className="modal-body d-flex flex-column align-items-center">
                 <div
                   className="mb-4"
                   style={{
@@ -271,24 +271,24 @@ export default function TestComponent({ title }) {
         </div>
         {/* success */}
         <div
-          class="modal fade"
+          className="modal fade"
           id="successModal"
           tabindex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-success">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-success">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel"></h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body d-flex flex-column align-items-center">
+              <div className="modal-body d-flex flex-column align-items-center">
                 <div
                   className="mb-4"
                   style={{
@@ -324,24 +324,24 @@ export default function TestComponent({ title }) {
         </div>
         {/* warning */}
         <div
-          class="modal fade"
+          className="modal fade"
           id="warnModal"
           tabindex="-1"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-warning">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content bg-warning">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel"></h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body d-flex flex-column align-items-center">
+              <div className="modal-body d-flex flex-column align-items-center">
                 <div
                   className="mb-4"
                   style={{

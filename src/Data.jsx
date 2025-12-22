@@ -1,3 +1,8 @@
+export const SpanTypeEnum = Object.freeze({
+  ROW: "rowSpan",
+  COL: "colSpan",
+});
+
 export const OTtimeOptions = {
   otStart: [
     { time: "04:00", timeType: 0 },
@@ -55,3 +60,308 @@ export const OTtimeOptions = {
     { time: "04:30", timeType: 1 },
   ],
 };
+
+export const ReportTableMockData = {
+  headers: [
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [],
+      headerName: "no.",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "180px" }],
+      headerName: "ชื่อ",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ตำแหน่ง",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "เวลาทำงาน",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ค่าใช้จ่าย",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "รวม (ชม.)",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "อัตราค่าจ้าง",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ค่าจ้าง (บาท)",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ประกันสังคม 5%",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ค่าจ้าง (บาท)",
+    },
+    {
+      spanType: SpanTypeEnum.COL,
+      spanValue: 3,
+      style: [{ minWidth: "100px" }],
+      headerName: "ค่าดำเนินการ",
+    },
+    {
+      spanType: SpanTypeEnum.ROW,
+      spanValue: 2,
+      style: [{ minWidth: "100px" }],
+      headerName: "ค่าสุทธิ (บาท)",
+    },
+  ],
+  subHeaders: ["กองทุนทดแทน 0.5%", "กองทุนทดแทน 0.5%", "ดำเนินการ 12%"],
+  rows: [
+    {
+      row: 1,
+      col: [
+        "1",
+        "นาง xxxx xxxx",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+      ],
+      style: { bg: "bg-danger" },
+    },
+    {
+      row: 2,
+      col: [
+        "-",
+        "-",
+        "-",
+        "วันทำงาน (วัน)",
+        "-",
+        "10.00",
+        "372.00",
+        "3,720.00",
+        "(186.00)",
+        "3,534.00",
+        "372.00",
+        "18.60",
+        "446.40",
+        "4,371.00",
+      ],
+      style: { bg: "bg-white" },
+    },
+    {
+      row: 3,
+      col: [
+        "-",
+        "-",
+        "-",
+        "ล่วงเวลา - วันทำงาน (วัน)",
+        "-",
+        "10.00",
+        "372.00",
+        "3,720.00",
+        "(186.00)",
+        "3,534.00",
+        "372.00",
+        "18.60",
+        "446.40",
+        "4,371.00",
+      ],
+      style: { bg: "bg-white" },
+    },
+    {
+      row: 4,
+      col: [
+        "-",
+        "-",
+        "-",
+        "-",
+        "ค่าเช่าห้อง",
+        "10.00",
+        "372.00",
+        "3,720.00",
+        "(186.00)",
+        "3,534.00",
+        "372.00",
+        "18.60",
+        "446.40",
+        "4,371.00",
+      ],
+      style: { bg: "bg-white" },
+    },
+  ],
+  footers: [
+    { colSpan: 13, footerName: "ค่าแรง" },
+    { colSpan: 1, footerName: "3,720.00" },
+    { colSpan: 13, footerName: "โอที" },
+    { colSpan: 1, footerName: "3,720.00" },
+    { colSpan: 13, footerName: "รวมทั้งหมด" },
+    { colSpan: 1, footerName: "3,720.00" },
+  ],
+};
+
+export const invoiceData = {
+  id: "5df3180a09ea1",
+  invoice_no: "873512-28",
+  fullname: "อาคารโรงงาน 5 บริษัท ไอ.พี.วัน. จำกัด (IPONE66)",
+  email: "ipone66@gmail.com",
+  phone: "+91 777-9999",
+  address: "lorem ipsum",
+  trans_date: "17-08-2022",
+  companyID: "10001",
+  companyName: "abc company",
+  items: [
+    {
+      sno: 1,
+      desc: "FinePix Pro2 3D Camera",
+      qty: 2,
+      rate: 1600.0,
+    },
+    {
+      sno: 2,
+      desc: "Luxury Ultra thin Wrist Watch",
+      qty: 1,
+      rate: 300.99,
+    },
+  ],
+};
+
+export const mockHolidayData = [
+  {
+    year: 2568,
+    holidayList: [
+      {
+        holidayId: 1,
+        holidayName: "วันขึ้นปีใหม่",
+        holidayMonth: 1,
+        holidayDay: 1,
+      },
+      {
+        holidayId: 2,
+        holidayName: "วันมาฆบูชา",
+        holidayMonth: 2,
+        holidayDay: 12,
+      },
+      {
+        holidayId: 3,
+        holidayName: "วันหยุดชดเชยวันที่ระลึกมหาจักรีวงศ์",
+        holidayMonth: 4,
+        holidayDay: 7,
+      },
+      {
+        holidayId: 4,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 14,
+      },
+      {
+        holidayId: 5,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 15,
+      },
+      {
+        holidayId: 6,
+        holidayName: "วันสงกรานต์ชดเชย",
+        holidayMonth: 4,
+        holidayDay: 16,
+      },
+
+      {
+        holidayId: 7,
+        holidayName: "วันแรงงานแห่งชาติ",
+        holidayMonth: 5,
+        holidayDay: 1,
+      },
+       {
+        holidayId: 7,
+        holidayName: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง",
+        holidayMonth: 8,
+        holidayDay: 12,
+      },
+    ],
+  },
+  {
+    year: 2569,
+    holidayList: [
+      {
+        holidayId: 1,
+        holidayName: "วันขึ้นปีใหม่",
+        holidayMonth: 1,
+        holidayDay: 1,
+      },
+      {
+        holidayId: 2,
+        holidayName: "วันมาฆบูชา",
+        holidayMonth: 3,
+        holidayDay: 3,
+      },
+      {
+        holidayId: 3,
+        holidayName: "วันหยุดชดเชยวันที่ระลึกมหาจักรีวงศ์",
+        holidayMonth: 4,
+        holidayDay: 6,
+      },
+      {
+        holidayId: 4,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 13,
+      },
+      {
+        holidayId: 5,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 14,
+      },
+      {
+        holidayId: 6,
+        holidayName: "วันสงกรานต์",
+        holidayMonth: 4,
+        holidayDay: 15,
+      },
+
+      {
+        holidayId: 7,
+        holidayName: "วันแรงงานแห่งชาติ",
+        holidayMonth: 5,
+        holidayDay: 1,
+      },
+       {
+        holidayId: 7,
+        holidayName: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง",
+        holidayMonth: 8,
+        holidayDay: 12,
+      },
+    ],
+  },
+];

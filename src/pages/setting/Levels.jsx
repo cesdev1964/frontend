@@ -89,6 +89,7 @@ export default function Levels({ title }) {
         return meta.row + 1;
       },
     },
+    
     {
       title: "ระดับ",
       data: "levelName",
@@ -194,6 +195,8 @@ export default function Levels({ title }) {
     const reqData = {
       levelName: editmode ? input.levelname : `PC-${input.levelname}`,
     };
+    console.log("input level data",reqData );
+
     const errorList = validateForm(input) || [];
     setError(errorList);
     if (Object.keys(errorList).length === 0) {

@@ -201,6 +201,7 @@ export default function Contrators({ title }) {
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
+      
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success custom-width-btn-alert",

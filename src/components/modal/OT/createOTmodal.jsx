@@ -15,7 +15,7 @@ export default function CreateOTmodal({
   error,
   displayTime,
   setDisplayTime,
-  isHRrole = false
+  isHRrole = false,
 }) {
   const [otTimeList, setOtTimeList] = useState({ otStart: [], otEnd: [] });
   const { otTypeDropdown, getOtTypeDropdown } = useOTType();
@@ -39,8 +39,6 @@ export default function CreateOTmodal({
       return;
     }
   }, [getOtTypeDropdown]);
-
-
 
   useEffect(() => {
     fetchDataTable();
@@ -98,6 +96,49 @@ export default function CreateOTmodal({
     }
   };
 
+  //การดึงเวลาที่นับจากเวลาที่เริ่มทำโอที
+  const getOTEndtime = (startimeSting, otEndTimeList = []) => {
+    var [startHr, startMin] = startimeSting.split(":").map(Number);
+    const startHM = startHr * 100 + startMin;
+
+    const otTimeNum = otEndTimeList
+      .map((timeItem) => {
+        const [endHr, endMin] = timeItem.time.split(":").map(Number);
+        return endHr * 100 + endMin;
+      })
+      .sort((a, b) => a - b);
+
+    const result = otTimeNum.find((t) => t > startHM);
+    const hr = Math.floor(result / 100);
+    const min = result % 100;
+
+    //แปลงกลับเป็น เวลาแบบ string
+    const selectEndTime = `${String(hr).padStart(2, "0")}:${String(
+      min
+    ).padStart(2, "0")}`; 
+    return getOTendList(selectEndTime, otEndTimeList);
+  };
+
+  //การดึง otList โดยเริ่มนับจากตัวเวลาที่เราเลือกมา
+  const getOTendList = (selectedEndTime, otEndtimeList = []) => {
+    if (!selectedEndTime || otEndtimeList.length === 0) return [];
+
+    //การดูว่าสมาชิกตัวใดเหมือนกับตัวที่เลือกมา ก็ตั้งให้เป็น index 1
+    const startIndex = otEndtimeList.findIndex(
+      (i) => i.time === selectedEndTime
+    );
+
+    if (startIndex === -1) return [];
+
+    //ดูว่า ในตัวแรกสุด มี timeType เป็นอะไร ให้เก็บมา
+    const startType = otEndtimeList[startIndex].timeType;
+
+    //ทำการ filter เพื่อคัดเอาเฉพาะสมาชิกที่นับจากตัวแรกเท่านั้น และสามารถขยายขอบเขตได้ถึงช่วงวันถัดไป
+    return otEndtimeList.filter(
+      (i, index) => index >= startIndex || i.timeType > startType
+    );
+  };
+
   return (
     <div
       className="modal fade"
@@ -139,13 +180,13 @@ export default function CreateOTmodal({
                   className={`form-control ${
                     error.startDate ? "border border-danger" : ""
                   }`}
-                  min={!isHRrole?dataOnly(today):""}
+                  min={!isHRrole ? dataOnly(today) : ""}
                   max={dataOnly(today)}
                   name="startDate"
                   placeholder="ลงวันที่เริ่ม"
                   value={input.startDate}
                   onChange={handleChangeInput}
-                  defaultValue={Date.now()}
+                  // defaultValue={Date.now()}
                   onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
@@ -168,7 +209,7 @@ export default function CreateOTmodal({
                   placeholder="ลงวันที่สิ้นสุด"
                   value={input.endDate}
                   onChange={handleChangeInput}
-                  defaultValue={Date.now()}
+                  // defaultValue={Date.now()}
                   onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
@@ -239,21 +280,35 @@ export default function CreateOTmodal({
                   <option value="">เลือกเวลา</option>
                   {input.startDate === input.endDate ? (
                     <>
-                      {otTimeList.otEnd
+                      {getOTEndtime(input.startTime, OTtimeOptions.otEnd)
                         ?.filter((item) => item.timeType === 0)
                         .map((item, index) => (
                           <option value={item.time} key={index}>
                             {item.time}
                           </option>
                         ))}
+                      {/* {otTimeList.otEnd
+                        ?.filter((item) => item.timeType === 0)
+                        .map((item, index) => (
+                          <option value={item.time} key={index}>
+                            {item.time}
+                          </option>
+                        ))} */}
                     </>
                   ) : (
                     <>
-                      {otTimeList.otEnd?.map((item, index) => (
+                      {getOTEndtime(input.startTime, OTtimeOptions.otEnd).map(
+                        (item, index) => (
+                          <option value={item.time} key={index}>
+                            {item.time}
+                          </option>
+                        )
+                      )}
+                      {/* {otTimeList.otEnd?.map((item, index) => (
                         <option value={item.time} key={index}>
                           {item.time}
                         </option>
-                      ))}
+                      ))} */}
                     </>
                   )}
                 </select>
@@ -295,10 +350,6 @@ export default function CreateOTmodal({
                 className="form-control mb-5"
                 id="reason"
               ></textarea>
-              {/* {error.employeeCode ? (
-                              <p className="text-danger">{error.employeeCode}</p>
-                            ) : null} */}
-
               <SubmitOrCancelButton
                 handleCancel={handleCancel}
                 handleSubmit={handleSubmit}

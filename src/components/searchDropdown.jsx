@@ -9,8 +9,19 @@ export const SearchDropdown = ({
   customComponent = {},
   style
 }) => {
+
+  const styles={
+    valueContainer: base => ({
+    ...base,
+    "flex-wrap": "nowrap", 
+    "white-space": "nowrap",
+     overflow: "hidden",
+    'text-overflow': 'ellipsis'
+    
+  }),
+  }
   return (
-    <div style={{zIndex:999}}>
+    <div>
       <Select
         options={data}
         value={value}
@@ -20,7 +31,7 @@ export const SearchDropdown = ({
         placeholder={placeholder}
         className={className}
         components={customComponent}
-        // style={{zIndex:999}}
+        // styles={styles}
       />
     </div>
   );

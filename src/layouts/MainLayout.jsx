@@ -9,8 +9,7 @@ function MainLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
   const asideRef = useRef(null);
-
-  const { loading, authdata, loginData, loadUser } = useAuth();
+  const { authdata } = useAuth();
 
   const dateNow = Date.now();
   const expiryDate = localStorage.getItem("expires_in");
@@ -46,15 +45,19 @@ function MainLayout() {
       {(authdata && checkExpiry) || token ? (
         <>
           <div className="app">
-            <AppSidebar
-              isOpen={isOpen}
-              toggleSidebar={toggleSidebar}
-              asideRef={asideRef}
-            />
+            
+              <AppSidebar
+                isOpen={isOpen}
+                toggleSidebar={toggleSidebar}
+                asideRef={asideRef}
+              />
+            
             <div className="main">
-              <AppNavbar toggleSidebar={toggleSidebar} />
+              
+                <AppNavbar toggleSidebar={toggleSidebar} />
+              
               <div className="content">
-                <div className="container-fluid py-4 min-vh-90 d-flex flex-column">
+                <div className="container-fluid py-4 min-vh-90 d-flex flex-column mt-5">
                   <Outlet />
                 </div>
               </div>

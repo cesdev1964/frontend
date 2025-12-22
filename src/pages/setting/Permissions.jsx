@@ -222,58 +222,59 @@ export default function Permissions({ title }) {
       permissionName: input.permissionname,
       isActive: input.isactive,
     };
+
+    console.log("req permission data",reqData);
     const errorList = validateForm(input) || [];
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
 
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success custom-width-btn-alert",
-          cancelButton: "btn btn-danger custom-width-btn-alert",
-        },
-        buttonsStyling: "w-100",
-      });
-      swalWithBootstrapButtons
-        .fire({
-          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "ยื่นยันการบันทึกรายการ",
-          cancelButtonText: "ยกเลิกการบันทึกรายการ",
-          reverseButtons: true,
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            const { success, permissionError } = editMode
-              ? await updatePermission(reqData, editPermissionId)
-              : await createPermission(reqData);
-            if (success) {
-              swalWithBootstrapButtons.fire({
-                title: "บึนทึกรายการสำเร็จ!",
-                icon: "success",
+        const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: "btn btn-success custom-width-btn-alert",
+                  cancelButton: "btn btn-danger custom-width-btn-alert",
+                },
+                buttonsStyling: "w-100",
               });
-
-              const currentModal = document.getElementById(modalId);
-              const modalInstance = bootstrap.Modal.getInstance(currentModal);
-              modalInstance.hide();
-              await getPermission();
-              ClearInput();
-            } else {
-              Swal.fire({
-                title: "บันทึกข้อมูลไม่สำเร็จ",
-                text: permissionError,
-                icon: "error",
-              });
-            }
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire({
-              title: "ยกเลิก",
-              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
-              icon: "error",
-            });
-          }
-        });
+              swalWithBootstrapButtons
+                .fire({
+                  title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "ยื่นยันการบันทึกรายการ",
+                  cancelButtonText: "ยกเลิกการบันทึกรายการ",
+                  reverseButtons: true,
+                })
+                .then(async (result) => {
+                  if (result.isConfirmed) {
+                    const {permissionError , success } = editMode
+                     ? await updatePermission(reqData, editPermissionId)
+                     : await createPermission(reqData);
+                    if (success) {
+                      swalWithBootstrapButtons.fire({
+                        title: "บึนทึกรายการสำเร็จ!",
+                        icon: "success",
+                      });
+                      ClearInput();
+                      await getPermission();
+                      const currentModal = document.getElementById("permissionModal");
+                      const modalInstance = bootstrap.Modal.getInstance(currentModal);
+                      modalInstance.hide();
+                    } else {
+                      Swal.fire({
+                        title: "บันทึกข้อมูลไม่สำเร็จ",
+                        text: permissionError,
+                        icon: "error",
+                      });
+                    }
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                      title: "ยกเลิก",
+                      text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+                      icon: "error",
+                    });
+                  }
+                });
     }
   };
 

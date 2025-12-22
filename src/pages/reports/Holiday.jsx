@@ -4,74 +4,93 @@ import { useTitle } from "../../hooks/useTitle";
 import LoadingSpin from "../../components/loadingSpin";
 import HolidayCard from "../../components/horiday/HolidayCard";
 import HolidayYearSlider from "../../components/horiday/HolidayYearSlider";
-import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
-
+import { Link } from "react-router-dom";
+import { mockHolidayData } from "../../Data";
 
 export default function Weekend({ title }) {
   const year = new Date().getFullYear() + 543;
   useTitle(title);
 
-
   const [isLoading, setIsLoading] = useState(false);
-  const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [yearDisplay, setDisplayTime] = useState(year);
 
   const navigateYear = (direction) => {
     setDisplayTime(yearDisplay + direction);
   };
-  const handleToggleAccordian = () => {
-    setOnClickAccordian((prev) => !prev);
-  };
+
+  const selectYearForRenderHolidayData = mockHolidayData.find(
+    (item) => item.year === yearDisplay
+  );
+
   return (
     <div>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">
+              {" "}
+              <i class="bi bi-house-door-fill"></i>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
       <HeaderPage pageName={title} />
       <div className="container holiday-box">
-        {!isLoading ? (
+        {mockHolidayData.length > 0 ? (
           <>
-            <div className="accordion">
-              <div className="accordion-item">
-                <input
-                  id="accordion-trigger-1"
-                  className="accordion-trigger-input"
-                  type="checkbox"
-                  checked={onClickAccordian === true}
-                  onChange={handleToggleAccordian}
-                ></input>
-                <label
-                  className="accordion-trigger accordion-label"
-                  htmlFor="accordion-trigger-1"
-                >
-                  <i className="bi bi-calendar-week-fill me-2 mb-1"></i>
-                  <strong>{title}</strong>
-                </label>
-                <section className="accordion-animation-wrapper">
-                  <div className="accordion-animation">
-                    <div className="accordion-transform-wrapper">
-                      <div className="accordion-content position-relative">
-                        <div>
-                          <HolidayYearSlider
-                            yearDisplay={yearDisplay}
-                            handleNextYear={() => navigateYear(+1)}
-                            handlePrevYear={() => navigateYear(-1)}
+            {!isLoading ? (
+              <>
+                <div className="announcement-box">
+                  <HolidayYearSlider
+                    yearDisplay={yearDisplay}
+                    handleNextYear={() => navigateYear(+1)}
+                    handlePrevYear={() => navigateYear(-1)}
+                  />
+                  <div className="w-100 bg-danger p-1 border-n rounded-3"></div>
+                  {selectYearForRenderHolidayData &&
+                  selectYearForRenderHolidayData.holidayList.length > 0 ? (
+                    <>
+                      {selectYearForRenderHolidayData.holidayList.map(
+                        (item) => (
+                          <HolidayCard
+                            holidayData={item}
+                            key={item.holidayId}
                           />
-                          <div className="w-100 bg-danger p-1 border-n rounded-3"></div>
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                          <HolidayCard />
-                        </div>
+                        )
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="d-flex flex-column align-items-center justify-content-center p-4 mt-4">
+                        <i
+                          className="fas fa-umbrella-beach mb-4 text-danger"
+                          style={{ fontSize: "60px" }}
+                        ></i>
+                        <h5 className="text-danger">
+                          ไม่พบรายงานวันหยุดประจำปี
+                        </h5>
                       </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
+                    </>
+                  )}
+                </div>
+              </>
+            ) : (
+              <LoadingSpin />
+            )}
           </>
         ) : (
-          <LoadingSpin />
+          <div className="announcement-box">
+            <div className="d-flex flex-column align-items-center justify-content-center p-4 mt-4">
+              <i
+                className="fas fa-umbrella-beach mb-4 text-danger"
+                style={{ fontSize: "60px" }}
+              ></i>
+              <h5 className="text-danger">ไม่พบรายงานวันหยุดประจำปี</h5>
+            </div>
+          </div>
         )}
       </div>
     </div>

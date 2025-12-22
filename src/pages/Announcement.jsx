@@ -37,7 +37,7 @@ export default function Announcement({ title, isPreview = false }) {
           ) : (
             <li className="breadcrumb-item">
               <Link to="/">
-                <i class="bi bi-house-door-fill"></i>
+                <i className="bi bi-house-door-fill"></i>
               </Link>
             </li>
           )}
@@ -49,13 +49,14 @@ export default function Announcement({ title, isPreview = false }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {!isLoading ? (
-          <div dis>
-            <div className="announcement-box border-bottom  border-danger border-4 mb-3">
+          <div className="announcement-box p-4">
+
+            <div className="border-bottom  border-danger border-4 my-3">
               <h3>{announmentById.title ?? "ไม่พบหัวข้อข่าว"}</h3>
 
               <p className="OT-description-label mt-3 mb-4">
                 {" "}
-                <i class="bi bi-calendar-week me-2 text-danger"></i>
+                <i className="bi bi-calendar-week me-2 text-danger"></i>
                 วันที่ลงข่าวสาร :{" "}
                 <span className="OT-description-value">
                   {shortDateFormate(announmentById.publishedAt) ??
@@ -64,43 +65,43 @@ export default function Announcement({ title, isPreview = false }) {
               </p>
               <h5 className="text-secondary">{announmentById.summary ?? ""}</h5>
             </div>
-            <div className="announcement-box border-bottom  border-danger border-4 mb-3 px-5 py-4">
+            <div className="border-bottom  border-danger border-4 mb-3 px-5 py-5">
               {announmentById.content ? (
                 <p style={{textIndent:"1.5em",lineHeight:2}}>{announmentById.content}</p>
               ) : (
                 <div className="d-flex flex-column align-items-center justify-content-center p-4">
                   <i
-                    class="fa-solid fa-newspaper mb-4 text-danger"
+                    className="fa-solid fa-newspaper mb-4 text-danger"
                     style={{ fontSize: "60px" }}
                   ></i>
                   <h5 className="text-danger">ไม่พบเนื้อหาข่าวสาร</h5>
                 </div>
               )}
             </div>
+            {announmentById.attachments != undefined && (
+              <div>
+                <p className="fw-bold">ไฟล์แนป</p>
+                <div className="item-flex flex-wrap">
+                  {announmentById.attachments.map((item) => (
+                    <a
+                      className="btn-outline-primary rounded-3 p-1 text-center"
+                      title="ดาวน์โหลดไฟล์แนป"
+                      key={item.attachmentId}
+                      href={`${baseURL}${item.filePath}`}
+                      download
+                      target="_blank"
+                      style={{ textDecoration: "none", cursor: "pointer" }}
+                    >
+                      <i className="bi bi-file-earmark-arrow-down me-1"></i>
+                      {item.fileName}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <LoadingSpin />
-        )}
-        {announmentById.attachments != undefined && (
-          <div className="announcement-box border-bottom  border-danger border-4">
-            <p className="fw-bold">ไฟล์แนป</p>
-            <div className="item-flex flex-wrap">
-              {announmentById.attachments.map((item) => (
-                <a
-                  className="btn-outline-primary rounded-3 p-1 text-center"
-                  title="ดาวน์โหลดไฟล์แนป"
-                  key={item.attachmentId}
-                  href={`${baseURL}${item.filePath}`}
-                  download
-                  target="_blank"
-                  style={{ textDecoration: "none", cursor: "pointer" }}
-                >
-                  <i className="bi bi-file-earmark-arrow-down me-1"></i>
-                  {item.fileName}
-                </a>
-              ))}
-            </div>
-          </div>
         )}
       </div>
     </div>

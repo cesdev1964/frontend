@@ -330,7 +330,9 @@ body {
 
 /* TOP BAR */
 .topbar {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   top: 0;
   z-index: 900;
   background: linear-gradient(90deg, var(--nav-start), var(--nav-end));
@@ -393,6 +395,7 @@ body {
   align-items: center;
   flex-grow: 1;
 }
+
 .cards {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -463,6 +466,16 @@ body {
 /* header */
 .headerName {
   font-size: 30px;
+  font-weight: bold;
+  background: linear-gradient(
+    to right,
+    #EA4747,
+    #FF6F80
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .search-box {
@@ -1153,10 +1166,10 @@ thead th:last-child {
   justify-content: center;
 }
 
-.btn-transparent{
-   border: none;
-   background: none;
-   /* opacity: 0.5; */
+.btn-transparent {
+  border: none;
+  background: none;
+  /* opacity: 0.5; */
 }
 
 /* ===== Outline variants ===== */
@@ -1807,6 +1820,7 @@ thead th:last-child {
     justify-content: start;
     align-items: center;
   }
+
 }
 
 @media (max-width: 600px) {
@@ -1943,13 +1957,13 @@ thead th:last-child {
     flex-direction: column;
   }
 
-  .mobile-hide-column{
+  .mobile-hide-column {
     display: none;
   }
 
   .topbar .spacer {
-  flex: 0.75;
-}
+    flex: 0.75;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -2004,6 +2018,19 @@ thead th:last-child {
   .approval-btn {
     width: 100%;
   }
+
+  .approveOT-btn {
+    justify-content: center;
+    margin-left: 10px;
+  }
+
+  .mobile-screen-otApprove {
+    display: block;
+  }
+
+  .pc-screen-otApprove {
+    display: none;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -2042,6 +2069,13 @@ thead th:last-child {
     display: flex;
     flex-direction: column;
   }
+}
+
+@media (max-width: 988) {
+ .jobSelectContainer{
+  max-height: 500px;
+  overflow-y: auto;
+}
 }
 
 @media (max-width: 1199.98px) {
@@ -2120,9 +2154,9 @@ thead th:last-child {
   /* .action-button{
     width: 100%;
   } */
-   .topbar .spacer {
-  flex: 0.80;
-}
+  .topbar .spacer {
+    flex: 0.8;
+  }
 }
 
 @media (max-width: 991px) {
@@ -2173,8 +2207,8 @@ thead th:last-child {
     margin-left: 30%;
   } */
 
-  .userName-nav{
-   visibility: hidden;
+  .userName-nav {
+    visibility: hidden;
   }
 }
 
@@ -2186,10 +2220,10 @@ thead th:last-child {
   }
 }
 
-@media (max-width:1410px){
+@media (max-width: 1410px) {
   .topbar .spacer {
-  flex: 1;
-}
+    flex: 1;
+  }
 }
 
 /* form select */
@@ -2357,6 +2391,15 @@ thead th:last-child {
 
 .accordion-label {
   color: var(--pink-active);
+  cursor: pointer;
+}
+.accordion-header-label {
+  color: var(--pink-active);
+  cursor: pointer;
+}
+
+.accordion-header-label:hover {
+  color: var(--coral-btm);
 }
 
 .accordion-trigger-input:focus-visible ~ .accordion-trigger {
@@ -2495,7 +2538,6 @@ thead th:last-child {
 .ot-time-section {
   display: flex;
   align-items: start;
-  /* justify-content: center; */
   gap: 15px;
 }
 
@@ -2503,12 +2545,21 @@ thead th:last-child {
   font-size: 0.9rem;
   line-height: 0.3;
   font-weight: 500;
+  color: var(--logout-bg);
 }
 
 .OT-description-value {
   font-size: 0.9rem;
   line-height: 0.3;
+  color:#000
+  /* text-wrap: nowrap; */
+}
+.OT-approver {
+  font-size: 0.9rem;
+  line-height: 0.3;
   color: var(--logout-bg);
+  text-wrap: nowrap;
+  color:#000
 }
 .OT-card-container,
 .holiday-card-container,
@@ -2525,9 +2576,7 @@ thead th:last-child {
 .filter-display {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
-/* d-flex align-items-center justify-content-between */
 
 .OT-footer {
   display: flex;
@@ -2599,11 +2648,19 @@ ul.pagination a.page-link:hover {
   border-radius: 6px;
   padding: 15px;
   width: 100%;
+  border-top: 2.5px solid #ff7a88;
 }
 
 .otReqCard:hover {
   border-left: 5px solid #ff7a88;
   cursor: pointer;
+}
+
+.count-badge {
+  background-color: #ff7a88;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 5px;
 }
 
 .action-button {
@@ -2630,6 +2687,16 @@ ul.pagination a.page-link:hover {
   text-align: center;
 }
 
+.detail-table tbody td,
+.detail-table thead th {
+  font-size: 12px;
+}
+
+.report-table-summary {
+  text-align: center;
+  font-size: 0.8rem;
+}
+
 .report--banner {
   border: none;
   background: linear-gradient(90deg, var(--nav-start), var(--nav-end));
@@ -2652,6 +2719,7 @@ ul.pagination a.page-link:hover {
   width: 100%;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   border-radius: 6px;
+  border: 1px solid var(--pink);
 }
 .file-upload-area {
   border: 2px dashed var(--sidebar-muted);
@@ -2711,7 +2779,6 @@ ul.pagination a.page-link:hover {
 }
 
 .file-input {
-  /* display: none; */
   position: absolute;
   top: 0;
   left: 0;
@@ -2723,14 +2790,12 @@ ul.pagination a.page-link:hover {
 }
 
 .itemList-diaplay {
-  /* d-flex align-items-top justify-content-end mb-2 */
   display: flex;
   align-items: start;
   justify-content: end;
 }
 
 .profile-section {
-  /* d-flex gap-4 align-items-center */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2741,7 +2806,7 @@ ul.pagination a.page-link:hover {
 }
 
 /* ปรับความกว้างของตารางไม่ให้ล้น */
-.table-responsive table{
+.table-responsive table {
   table-layout: auto;
   width: 100%;
   word-wrap: break-word;
@@ -2749,19 +2814,85 @@ ul.pagination a.page-link:hover {
 }
 
 /* dropdown navbar accountData*/
-.dropdown_account{
+.dropdown_account {
   position: relative;
   display: inline-block;
 }
 
-.dropdown_account_content{
+.dropdown_account_content {
   display: none;
   position: absolute;
   background-color: white;
 }
 
-.dropdown_account .dropdown_account_content{
+.dropdown_account .dropdown_account_content {
   display: block;
 }
 
-/* btn btn-outline-primary btn-lg dropdown-toggle px-5 dropdown-nav-btn */
+/*approve OT*/
+
+.approveOT-btn {
+  display: inline-flex;
+  justify-content: end;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+  padding-right: 20px;
+}
+
+/* ขนาดหน้าจอปกติจะถูกซ่อน */
+.mobile-screen-otApprove {
+  display: none;
+}
+
+.pc-screen-otApprove {
+  display: block;
+}
+
+/* accordion - style*/
+
+.accordion-button {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+}
+.accordion-body {
+  padding: 12px;
+}
+
+.accordion-header {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 300ms;
+}
+.jobSelectContainer{
+  max-height: 750px;
+  overflow-y: auto;
+}
+
+/* ot approve card css */
+.items-flex{
+  display: flex;
+  gap: 10px;
+}
+.item-card{
+  width:100%;
+  height: 100%;
+  /* max-width:230px; */
+  min-height : 90px;
+  border:none;
+  border-radius: 10px;
+  padding:5px 10px;
+  color:#000;
+  box-sizing: border-box;
+}
+.label{
+  text-align: start;
+}
+.value{
+  text-align: end;
+}
