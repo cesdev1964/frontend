@@ -41,6 +41,7 @@ import OTRequestByHR from "./pages/OT/OTRequestByHR";
 import UserJobs from "./pages/setting/UserJobs";
 import Employees from "./pages/setting/Employees";
 import UserJobsTest from "./pages/setting/UserJobTest";
+import Holidays from "./pages/setting/Holidays";
 
 export default function RouterPage() {
   const token = localStorage.getItem("access_token");
@@ -184,6 +185,10 @@ export default function RouterPage() {
          {
           path: "settings/userjobs",
           element: <UserJobs title="จัดการข้อมูลหน่วยงานที่ดูแล" />,
+        },
+          {
+          path: "settings/holidays",
+          element: <Holidays title="จัดการข้อมูลวันหยุดประจำปี" />,
         },
         // report
         {

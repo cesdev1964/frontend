@@ -131,7 +131,7 @@ const Settings = ({ title }) => {
     },
     {
       permission: PermissionEnum.SETTING_HOLIDAY,
-      path: "#",
+      path: "/settings/holidays",
       icon: "fas fa-umbrella-beach",
       color: cardColor[5],
       title: "วันหยุดบริษัท",
