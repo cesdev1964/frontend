@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import ImageComponent from "./Image";
 import Swal from "sweetalert2";
 
-export default function UploadFile({selectedFile,setSelectedFile}) {
-  // const [selectedFile, setSelectedFile] = useState([]);
-  //   const [files, setFiles] = useState([]);
+export default function UploadFile({
+  selectedFile,
+  setSelectedFile,
+  onRemove,
+  transactionFile,
+  setTransectionFile,
+}) {
 
   const getfileSize = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 ไบต์";
@@ -29,56 +33,30 @@ export default function UploadFile({selectedFile,setSelectedFile}) {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        setSelectedFile((prev) => [
+        const newFileUpload = {
+          attachmentId: index + 1, // ✅ รันต่อจากของเดิม
+          fileName: file.name,
+          filePath: URL.createObjectURL(file),
+          filesize: getfileSize(file.size),
+          fileimage: reader.result,
+          attachments: file,
+        };
+        setSelectedFile((prev) => [...prev, newFileUpload]);
+        //เก็บไว้เฉพาะที่ส่งไปกลับเป็นไฟล์
+        setTransectionFile((prev) => [
           ...prev,
           {
-            attachmentId: prev.length + index + 1, // ✅ รันต่อจากของเดิม
-            fileName: file.name,
-            filePath: URL.createObjectURL(file),
-            filesize: getfileSize(file.size),
-            fileimage: reader.result,
-            attachments : file
+            attachmentId: newFileUpload.attachmentId,
+            attachments: newFileUpload.attachments,
           },
         ]);
       };
 
       reader.readAsDataURL(file);
     });
-    console.log("fileData",selectedFile)
+
   };
 
-  const removeFile = (fileID) => {
-    // console.log("fileID to remove", fileID);
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success custom-width-btn-alert",
-        cancelButton: "btn btn-danger custom-width-btn-alert",
-      },
-      buttonsStyling: "w-100",
-    });
-    swalWithBootstrapButtons
-      .fire({
-        title: "คุณต้องการลบไฟล์ใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: `ลบได้เลย`,
-        cancelButtonText: "ยกเลิกการลบ",
-        reverseButtons: true,
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          setSelectedFile(
-            selectedFile.filter((select) => select.attachmentId !== fileID)
-          );
-          swalWithBootstrapButtons.fire({
-            title: "ลบสำเร็จ!",
-            text: "คุณทำการลบไฟล์เรียบร้อยแล้ว",
-            icon: "success",
-          });
-        }
-      });
-  };
 
   return (
     <div>
@@ -93,12 +71,15 @@ export default function UploadFile({selectedFile,setSelectedFile}) {
           className="file-input"
           multiple
           onChange={(e) => inputChangeFile(e)}
-          accept=".pdf"
+          accept=".pdf,image/jpeg,image/png,.jpg,.jpeg,.png"
         ></input>
         {/* พื้นที่สำหรับวางไฟล์ */}
       </div>
-     
-      <div className="file-list mt-4 p-1" style={{maxHeight:"300px",overflowY:"auto"}}>
+
+      <div
+        className="file-list mt-4 p-1"
+        style={{ maxHeight: "300px", overflowY: "auto" }}
+      >
         {selectedFile.length > 0 &&
           selectedFile.map((item) => (
             <div className="filter-container pe-4" key={item.attachmentId}>
@@ -119,11 +100,12 @@ export default function UploadFile({selectedFile,setSelectedFile}) {
                     <i className="bi bi-file-earmark fs-1"></i>
                   )}
                   <div className="text-wrap">
-                    <div style={{fontSize:"0.9rem"}}>{item.fileName}</div>
+                    <div style={{ fontSize: "0.9rem" }}>{item.fileName}</div>
                     {/* <div className="muted" style={{fontSize:"0.8rem"}}>ขนาดไฟล์ : {item.filesize}</div> */}
                   </div>
                 </div>
-                <a title="ลบไฟล์" onClick={() => removeFile(item.attachmentId)}>
+                <a title="ลบไฟล์" onClick={() => onRemove(item.attachmentId)}>
+                  {/* แนปรหัสไฟล์แนปเพื่อทำการลบ */}
                   <i className="bi bi-x-circle-fill text-danger"></i>
                 </a>
               </div>
@@ -133,3 +115,4 @@ export default function UploadFile({selectedFile,setSelectedFile}) {
     </div>
   );
 }
+// onClick={() => onRemove(file.fileId)}

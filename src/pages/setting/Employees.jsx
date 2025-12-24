@@ -11,6 +11,7 @@ import { useLevel } from "../../hooks/levelStore";
 import LoadingSpin from "../../components/loadingSpin";
 import { useAuth } from "../../auth/AuthContext";
 import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole";
+import { CheckPermission } from "../../util/checkPermission";
 
 const Employees = ({ title }) => {
   useTitle(title);
@@ -42,7 +43,7 @@ const Employees = ({ title }) => {
   const { employeeData, getEmployeeData, employeeIsLoading } = useEmployee();
   const { levelDropdown, getLevelDropdown } = useLevel();
   const [isLoading, setLoading] = useState(false);
-  const {authdata} = useAuth();
+  const { authdata } = useAuth();
 
   const rolePermissionRequire = authdata?.permissions ?? [];
   const roleRequire = authdata?.roles ?? [];
@@ -133,7 +134,12 @@ const Employees = ({ title }) => {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
-        const canEditEmployee = (roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) || rolePermissionRequire.some((p) =>[PermissionEnum.EMPLOYEE_UPDATE].includes(p)))
+        const canEditEmployee =
+          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+          rolePermissionRequire.some((p) =>
+            [PermissionEnum.EMPLOYEE_UPDATE].includes(p)
+          );
+        // const canEditEmployee = CheckPermission([PermissionEnum.EMPLOYEE_UPDATE]);
         return `
           <div className="d-flex align-items-center justify-content-center">
               <div class="dropdown d-lg-none">
@@ -147,9 +153,13 @@ const Employees = ({ title }) => {
                      href="/profile/employeePreview/${row.publicEmployeeId}" 
                      id="employeePreview"
                      style="
-                            display: ${authdata.permissions?.includes(PermissionEnum.EMPLOYEE_VIEW)
-                              ? "block"
-                              : "none"}
+                            display: ${
+                              authdata.permissions?.includes(
+                                PermissionEnum.EMPLOYEE_VIEW
+                              )
+                                ? "block"
+                                : "none"
+                            }
                           "
                      >
                       <i class="bi bi-eye me-2"></i> ดูข้อมูลพนักงาน
@@ -157,9 +167,7 @@ const Employees = ({ title }) => {
                   <a class="dropdown-item text-dark"
                      href="/settings/employees/form/${row.publicEmployeeId}"
                       style="
-                            display: ${canEditEmployee
-                              ? "block"
-                              : "none"}
+                            display: ${canEditEmployee ? "block" : "none"}
                           "
                   >
                     <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
@@ -175,9 +183,13 @@ const Employees = ({ title }) => {
                   title="ดูข้อมูลพนักงาน"
                   id="employeePreview"
                   style="
-                        display: ${authdata.permissions?.includes(PermissionEnum.EMPLOYEE_VIEW)
-                        ? "block"
-                        : "none"}
+                        display: ${
+                          authdata.permissions?.includes(
+                            PermissionEnum.EMPLOYEE_VIEW
+                          )
+                            ? "block"
+                            : "none"
+                        }
                         "
                         
                 >
@@ -187,7 +199,7 @@ const Employees = ({ title }) => {
                   href="/settings/employees/form/${row.publicEmployeeId}"
                   class="btn btn-warning me-2"
                   title="แก้ไข"
-                  style="display: ${canEditEmployee? "block": "none"}"
+                  style="display: ${canEditEmployee ? "block" : "none"}"
                  >
                   <i class="bi bi-pen-fill"></i>
                 </a>
@@ -215,12 +227,10 @@ const Employees = ({ title }) => {
     { maxWidth: "120px", targets: 6, className: "text-center" },
   ];
 
-  const orders= [
-        // [0, 'asc'],
-        [3, 'desc'],
-
-      
-    ]
+  const orders = [
+    // [0, 'asc'],
+    [3, "desc"],
+  ];
 
   const getLevelName = (levelId) => {
     if (!levelDropdown) return "";
@@ -230,8 +240,6 @@ const Employees = ({ title }) => {
     if (!positionDropdown) return "";
     return positionDropdown.find((item) => item.value === Id)?.label;
   };
-
- 
 
   return (
     <div>
@@ -253,11 +261,10 @@ const Employees = ({ title }) => {
           to="/settings/employees/form"
           style={{ textDecoration: "none" }}
         >
-           {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
-              rolePermissionRequire.some((p) =>
-                ["EMPLOYEE_CREATE"].includes(p)
-              ))&&(<MainButton btnName={title} icon={"bi bi-plus-circle"} />)}
-          
+          {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
+            rolePermissionRequire.some((p) =>
+              ["EMPLOYEE_CREATE"].includes(p)
+            )) && <MainButton btnName={title} icon={"bi bi-plus-circle"} />}
         </NavLink>
         {/* ตารางข้อมูล */}
         {isLoading === true ? (

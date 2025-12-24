@@ -7,7 +7,6 @@ import { useAnnounments } from "../../hooks/announcementsStore";
 import Swal from "sweetalert2";
 
 import {
-  convertStringDateToDatetime,
   getDateOnly,
 } from "../../util/inputFormat";
 import { useParams } from "react-router-dom";
@@ -26,6 +25,8 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     files: [],
   });
   const [selectedFile, setSelectedFile] = useState([]);
+  const [transectionFile, setTransectionFile] = useState([]);
+  const [storeFileIDToDel, setStoreFileIDToDel] = useState([]);
   const {
     createAnnouncement,
     updateAnnouncement,
@@ -33,6 +34,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     getAnnouncementsById,
   } = useAnnounments();
 
+  //เก็บไฟล์ที่ต้องการลบ
   const fetchDataTable = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -65,15 +67,17 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
         files: announmentById.attachments,
       });
       const announmentList = announmentById.attachments || [];
+
       if (announmentList.length > 0) {
         const fileMetadataList = announmentList.map((item) => {
           const jsonString = JSON.stringify(item);
-          const blobFile = new Blob([jsonString], { type: "application/json" });
+          const blobFile = new Blob([jsonString], { type: "application/json" }); //type ตามนามสกุลไฟล์
           return new File([blobFile], item.fileName, { type: blobFile.type });
           // (file = new File([blobFile], { type: "application/json" }));
         });
-        console.log(fileMetadataList);
+        // console.log(fileMetadataList);
 
+        //สามารถไม่ส่งไฟล์ได้ / setSeletedFile เป็น state ที่ใช้ในการเก็บไฟล์ upload
         setSelectedFile((prev) => {
           const prevList = announmentList.map((item, index) => ({
             attachmentId: item.attachmentId,
@@ -91,6 +95,10 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       setIsLoading(false);
     }
   }, [announmentById]);
+
+  // useEffect(() => {
+  //   console.log("transectionFile updated:", transectionFile);
+  // }, [transectionFile]);
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -110,13 +118,14 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       files: [],
     });
     setSelectedFile([]);
+    setTransectionFile([]);
   };
 
   const handleSubmit = async (e) => {
-    debugger;
+    // debugger;
     e.preventDefault();
 
-    console.log("input data", input);
+
     const getDate = getDateOnly(input.publichedAt);
 
     const formData = new FormData();
@@ -125,18 +134,27 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     formData.append("content", input.content);
     formData.append("status", input.status);
     formData.append("PublishedAt", getDate);
-    // formData.append("files", selectedFile.fileData);
 
-    selectedFile.forEach((item) => {
-      if (isEdit) {
-        formData.append(`newFiles`, item.attachments);
-      } else {
-        formData.append(`files`, item.attachments);
-      }
-    });
+    // console.log("transection in submit", transectionFile);
+    if (transectionFile.length > 0) {
+      transectionFile.forEach((item) => {
+        if (item.attachments instanceof File) {
+          if (isEdit) {
+            formData.append(`newFiles`, item.attachments);
+          } else {
+            formData.append(`files`, item.attachments);
+          }
+        }
+      });
+    }
 
-    console.log("input data", [...formData]);
-    // console.log("error from errorform", errorForm);
+    if (isEdit && storeFileIDToDel.length > 0) {
+      storeFileIDToDel.forEach((id) => {
+        formData.append("deleteAttachmentIds", id);
+      });
+    }
+
+    // console.log("input data", [...formData]);
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -165,6 +183,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
               icon: "success",
             });
             clearInput();
+            setStoreFileIDToDel([]);
             navigate("/settings/announcement");
           } else {
             Swal.fire({
@@ -174,6 +193,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
             });
           }
         } else if (result.dismiss === Swal.DismissReason.cancel) {
+          setStoreFileIDToDel([]);
           swalWithBootstrapButtons.fire({
             title: "ยกเลิก",
             text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
@@ -183,6 +203,43 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
 
     //เมื่อทำการบันทึกข้อมูลใน API เรียบร้อย ให้ทำการ set ตัวแปลให้เป็นค่าว่าง
+  };
+
+  const removeFile = (fileID) => {
+    // console.log("fileID to remove", fileID);
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success custom-width-btn-alert",
+        cancelButton: "btn btn-danger custom-width-btn-alert",
+      },
+      buttonsStyling: "w-100",
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "คุณต้องการลบไฟล์ใช่หรือไม่",
+        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `ลบได้เลย`,
+        cancelButtonText: "ยกเลิกการลบ",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          setSelectedFile(
+            selectedFile.filter((select) => select.attachmentId !== fileID)
+          );
+          //สำหรับทำการเก็บรหัสไฟล์ที่ต้องการลบ
+          setStoreFileIDToDel((prev) =>
+            prev.includes(fileID) ? prev : [...prev, fileID]
+          );
+          swalWithBootstrapButtons.fire({
+            title: "ลบสำเร็จ!",
+            text: "คุณทำการลบไฟล์เรียบร้อยแล้ว",
+            icon: "success",
+          });
+        }
+      });
   };
 
   return (
@@ -256,11 +313,14 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                 ></textarea>
               </div>
               <div className="announcement-box border-bottom  mb-3">
-                <h4>แนบไฟล์</h4>
+                <h4>แนบไฟล์ <span  className="muted ">( สามารถแนปไฟล์ภาพและไฟล์ pdf ได้ )</span></h4>
                 <hr className="text-danger" />
                 <UploadFile
                   selectedFile={selectedFile}
                   setSelectedFile={setSelectedFile}
+                  onRemove={removeFile}
+                  transactionFile={transectionFile}
+                  setTransectionFile={setTransectionFile}
                 />
               </div>
             </div>

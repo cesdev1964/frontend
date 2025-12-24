@@ -432,7 +432,7 @@ export default function Holidays({ title }) {
                       ) : null} */}
                     </div>
                     <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                      <label className="mb-2">กำหนดให้เป็นครึ่งวัน</label>
+                      <label className="mb-2">กำหนดให้เป็นวันลาครึ่งวัน</label>
                       <div className="form-check form-switch form-switch-md ms-3">
                         <input
                           className="form-check-input"
