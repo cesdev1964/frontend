@@ -217,7 +217,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     swalWithBootstrapButtons
       .fire({
         title: "คุณต้องการลบไฟล์ใช่หรือไม่",
-        text: "ถ้าลบไปแล้วไม่สามารถกลับคืนมาได้ คุณแน่ใจแล้วใช่ไหม",
+        text: "กรุณาทำการบันทึกข้อมูลหลังการลบไฟล์ เพื่อที่จะให้ให้การลบไฟล์ได้อย่างสมบูรณ์",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: `ลบได้เลย`,

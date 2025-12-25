@@ -101,8 +101,8 @@ export default function EmployeeForm({ title, isEdit = false }) {
   const modalCopperName = "cooperModal";
 
   const fetchDataTable = useCallback(async () => {
+    await getEmployeeById(null || "" || undefined)
     try {
- 
       setIsLoading(true);
       await getEducationDropdown();
       await getTitleNameData();

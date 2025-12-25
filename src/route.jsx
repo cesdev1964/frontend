@@ -60,7 +60,7 @@ export default function RouterPage() {
         // หน้าแรกหลง login
         { index: true, element: <Home title="หน้าหลัก" /> },
         {
-          path: "profile/:publicEmployeeId",
+          path: "profile/:employeeId",
           element: <Profile title="ข้อมูลของคุณ" isAdmin={false}/>,
         },
         { path: "working", element: <Working title="ข้อมูลการทำงาน" /> },
@@ -102,7 +102,7 @@ export default function RouterPage() {
           element: <EmployeeForm title="แก้ไขข้อมูลพนักงาน" isEdit={true} />,
         },
         {
-          path: "profile/employeePreview/:publicEmployeeId",
+          path: "profile/employeePreview/:employeeId",
           element: <Profile title="ข้อมูลพนักงาน" isAdmin={true}/>,
         },
         {

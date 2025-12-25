@@ -9,7 +9,7 @@ export const useEmployee = create((set) => ({
   success: false,
   employeeById: {},
   employeeDropdown: [],
-
+  employeeDataProfile : {},
   getEmployeeData: async () => {
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
@@ -33,7 +33,6 @@ export const useEmployee = create((set) => ({
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
       const response = await api.get(url);
-      // console.log("role data", response.data.data)
       const data = response.data.data ?? [];
       const option = data
         ?.filter((activeData) => activeData.isActive === true)
@@ -56,16 +55,40 @@ export const useEmployee = create((set) => ({
   },
 
   getEmployeeById: async (id) => {
+
     set({ employeeIsLoading: true, employeeErrorMessage: null });
     try {
       const response = await api.get(`${url}/${id}`);
-        // console.log("emp data", response.data.data);
       set({
         employeeById: response.data.data ?? {},
         employeeIsLoading: false,
       });
       return {
         employeeById: response.data.data ?? {},
+        employeeIsLoading: false,
+      };
+    } catch (errorMessage) {
+      set({
+        employeeErrorMessage: errorMessage.response?.data?.message,
+        employeeIsLoading: false,
+      });
+      return {
+        employeeIsLoading: false,
+        employeeErrorMessage: errorMessage.response?.data?.message,
+      };
+    }
+  },
+  getEmployeeByIdForProfile: async (id) => {
+
+    set({ employeeIsLoading: true, employeeErrorMessage: null });
+    try {
+      const response = await api.get(`${url}/${id}`);
+      set({
+        employeeDataProfile: response.data.data ?? {},
+        employeeIsLoading: false,
+      });
+      return {
+        employeeDataProfile: response.data.data ?? {},
         employeeIsLoading: false,
       };
     } catch (errorMessage) {
