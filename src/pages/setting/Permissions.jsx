@@ -12,6 +12,10 @@ import { Link } from "react-router-dom";
 import DataTableComponent from "../../components/DatatableComponent";
 import handleDelete from "../../util/handleDelete";
 import ModalComponent from "../../components/modal/ModalComponent";
+import { CheckPermission } from "../../util/checkPermission";
+import { PermissionEnum } from "../../enum/permissionAndRole";
+import LoadingSpin from "../../components/loadingSpin";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -40,6 +44,7 @@ export default function Permissions({ title }) {
 
   const [editMode, setEditMode] = useState(false);
   const [editPermissionId, setEditPermissionId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState({
     permissioncode: "",
     permissionname: "",
@@ -62,9 +67,13 @@ export default function Permissions({ title }) {
   };
 
   const fetchDataTable = useCallback(async () => {
+    setIsLoading(true);
     try {
       await getPermission();
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+
       return;
     }
   }, [getPermission]);
@@ -89,6 +98,11 @@ export default function Permissions({ title }) {
       finishSubmit();
     }
   }, [error, isSubmit]);
+
+  //checkPermission
+  const canEditPermission = CheckPermission([PermissionEnum.PERM_UPDATE]);
+
+  const canCreatePermission = CheckPermission([PermissionEnum.EMPLOYEE_CREATE]);
 
   const columnData = [
     {
@@ -131,6 +145,7 @@ export default function Permissions({ title }) {
                 <a class="dropdown-item text-dark" 
                    data-action="edit"
                    data-id = "${row.permissionId}"
+                  style="display: ${canEditPermission ? "block" : "none"}"
                    
                    >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
@@ -153,6 +168,8 @@ export default function Permissions({ title }) {
               title="แก้ไข"
               data-action="edit"
               data-id = "${row.permissionId}"
+              style="display: ${canEditPermission ? "block" : "none"}"
+
             >
               <i class="bi bi-pen-fill"></i>
             </a>
@@ -171,9 +188,12 @@ export default function Permissions({ title }) {
     },
   ];
 
-  
   const columnDefs = [
-    { maxWidth: "70px", targets: 0, className: "text-center mobile-hide-column" },
+    {
+      maxWidth: "70px",
+      targets: 0,
+      className: "text-center mobile-hide-column",
+    },
     { maxWidth: "70px", targets: 1 },
     { maxWidth: "200px", targets: 2, className: "mobile-hide-column" },
     { maxWidth: "100px", targets: 3 },
@@ -223,58 +243,57 @@ export default function Permissions({ title }) {
       isActive: input.isactive,
     };
 
-    console.log("req permission data",reqData);
+    console.log("req permission data", reqData);
     const errorList = validateForm(input) || [];
     setError(errorList);
 
     if (Object.keys(errorList).length === 0) {
-
-        const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                  confirmButton: "btn btn-success custom-width-btn-alert",
-                  cancelButton: "btn btn-danger custom-width-btn-alert",
-                },
-                buttonsStyling: "w-100",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success custom-width-btn-alert",
+          cancelButton: "btn btn-danger custom-width-btn-alert",
+        },
+        buttonsStyling: "w-100",
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการบันทึกรายการใช่หรือไม่",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยื่นยันการบันทึกรายการ",
+          cancelButtonText: "ยกเลิกการบันทึกรายการ",
+          reverseButtons: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const { permissionError, success } = editMode
+              ? await updatePermission(reqData, editPermissionId)
+              : await createPermission(reqData);
+            if (success) {
+              swalWithBootstrapButtons.fire({
+                title: "บึนทึกรายการสำเร็จ!",
+                icon: "success",
               });
-              swalWithBootstrapButtons
-                .fire({
-                  title: "คุณต้องการบันทึกรายการใช่หรือไม่",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonText: "ยื่นยันการบันทึกรายการ",
-                  cancelButtonText: "ยกเลิกการบันทึกรายการ",
-                  reverseButtons: true,
-                })
-                .then(async (result) => {
-                  if (result.isConfirmed) {
-                    const {permissionError , success } = editMode
-                     ? await updatePermission(reqData, editPermissionId)
-                     : await createPermission(reqData);
-                    if (success) {
-                      swalWithBootstrapButtons.fire({
-                        title: "บึนทึกรายการสำเร็จ!",
-                        icon: "success",
-                      });
-                      ClearInput();
-                      await getPermission();
-                      const currentModal = document.getElementById("permissionModal");
-                      const modalInstance = bootstrap.Modal.getInstance(currentModal);
-                      modalInstance.hide();
-                    } else {
-                      Swal.fire({
-                        title: "บันทึกข้อมูลไม่สำเร็จ",
-                        text: permissionError,
-                        icon: "error",
-                      });
-                    }
-                  } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    swalWithBootstrapButtons.fire({
-                      title: "ยกเลิก",
-                      text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
-                      icon: "error",
-                    });
-                  }
-                });
+              ClearInput();
+              await getPermission();
+              const currentModal = document.getElementById("permissionModal");
+              const modalInstance = bootstrap.Modal.getInstance(currentModal);
+              modalInstance.hide();
+            } else {
+              Swal.fire({
+                title: "บันทึกข้อมูลไม่สำเร็จ",
+                text: permissionError,
+                icon: "error",
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+              title: "ยกเลิก",
+              text: "คุณทำการยกเลิกรายการเรียบร้อยแล้ว",
+              icon: "error",
+            });
+          }
+        });
     }
   };
 
@@ -318,111 +337,105 @@ export default function Permissions({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "350px" }}
+        {canCreatePermission && (
+          <MainButton
+            btnName={addBtnName}
+            icon="bi bi-plus-circle"
             onClick={() => handleOpenModal("permissionModal")}
-          >
-            <span>
-              <i className="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
+          />
+        )}
+        {isLoading ? (
+          <LoadingSpin />
+        ) : (
+          <DataTableComponent
+            column={columnData}
+            data={permissionData}
+            onAction={handleAction}
+            tableHead={tableHead}
+            tableRef={tableRef}
+            columnDefs={columnDefs}
+          />
+        )}
 
-        <DataTableComponent
-          column={columnData}
-          data={permissionData}
-          onAction={handleAction}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          columnDefs={columnDefs}
-        />
-
-        <ModalComponent icon="bi bi-plus-circle" modalId="permissionModal" title={title}>
-            <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      {/* ข้อมูลทั่วไป */}
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label className="form-label">
-                              โค้ดสิทธิ์เข้าใช้งาน
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="permissioncode"
-                              type="text"
-                              className={`form-control ${
-                                error.permissioncode
-                                  ? "border border-danger"
-                                  : ""
-                              }`}
-                              placeholder="กรอกโค้ดสิทธิ์เข้าใช้งาน"
-                              value={input.permissioncode}
-                              onChange={handleChangeInput}
-                            />
-                            {error.permissioncode ? (
-                              <p className="text-danger">
-                                {error.permissioncode}
-                              </p>
-                            ) : null}
-                            <label className="form-label mt-2">
-                              ชื่อสิทธิ์เข้าใช้งาน
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="permissionname"
-                              type="text"
-                              className={`form-control ${
-                                error.permissionname
-                                  ? "border border-danger"
-                                  : ""
-                              }`}
-                              placeholder="กรอกชื่อสิทธิ์เข้าใช้งาน"
-                              value={input.permissionname}
-                              onChange={handleChangeInput}
-                            />
-                            {error.permissionname ? (
-                              <p className="text-danger">
-                                {error.permissionname}
-                              </p>
-                            ) : null}
-                          </div>
-                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div className="form-check form-switch form-switch-md ms-3">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isactive"
-                                value={input.isactive}
-                                onChange={handleChangeCheckbox}
-                                checked={input.isactive === true}
-                              />
-                            </div>
-                          </div>
-                        </div>
+        <ModalComponent
+          icon="bi bi-plus-circle"
+          modalId="permissionModal"
+          title={title}
+        >
+          <div className="employee-content p-4">
+            <div className="col-lg-3 "></div>
+            <div
+              className="col-lg-9 "
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <form>
+                {/* ข้อมูลทั่วไป */}
+                <div>
+                  <div className="row form-spacing g-3">
+                    <div className="col-md-12">
+                      <label className="form-label">
+                        โค้ดสิทธิ์เข้าใช้งาน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="permissioncode"
+                        type="text"
+                        className={`form-control ${
+                          error.permissioncode ? "border border-danger" : ""
+                        }`}
+                        placeholder="กรอกโค้ดสิทธิ์เข้าใช้งาน"
+                        value={input.permissioncode}
+                        onChange={handleChangeInput}
+                      />
+                      {error.permissioncode ? (
+                        <p className="text-danger">{error.permissioncode}</p>
+                      ) : null}
+                      <label className="form-label mt-2">
+                        ชื่อสิทธิ์เข้าใช้งาน
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <input
+                        name="permissionname"
+                        type="text"
+                        className={`form-control ${
+                          error.permissionname ? "border border-danger" : ""
+                        }`}
+                        placeholder="กรอกชื่อสิทธิ์เข้าใช้งาน"
+                        value={input.permissionname}
+                        onChange={handleChangeInput}
+                      />
+                      {error.permissionname ? (
+                        <p className="text-danger">{error.permissionname}</p>
+                      ) : null}
+                    </div>
+                    <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
+                      <label className="mb-2">เปิดใช้งาน</label>
+                      <div className="form-check form-switch form-switch-md ms-3">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="isActive-toggle"
+                          name="isactive"
+                          value={input.isactive}
+                          onChange={handleChangeCheckbox}
+                          checked={input.isactive === true}
+                        />
                       </div>
-                    </form>
+                    </div>
                   </div>
                 </div>
-                <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={ClearInput}
-                isLoading={permissionLoading}
-              />
+              </form>
+            </div>
+          </div>
+          <SubmitOrCancelButton
+            handleSubmit={handleSubmit}
+            handleCancel={ClearInput}
+            isLoading={permissionLoading}
+          />
         </ModalComponent>
         {/* modal */}
         {/* <div

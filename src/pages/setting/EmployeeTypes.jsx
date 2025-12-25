@@ -10,6 +10,10 @@ import { useEmployeeType } from "../../hooks/employeeTypeStore";
 import handleDelete from "../../util/handleDelete";
 import DataTableComponent from "../../components/DatatableComponent";
 import { isActiveBadge } from "../../util/isActiveBadge";
+import { CheckPermission } from "../../util/checkPermission";
+import { PermissionEnum } from "../../enum/permissionAndRole";
+import LoadingSpin from "../../components/loadingSpin";
+import MainButton from "../../components/MainButton";
 
 export const tableHead = [
   { index: 0, colName: "ลำดับ" },
@@ -21,10 +25,10 @@ export const tableHead = [
 export default function EmployeeTypes({ title }) {
   useTitle(title);
   const tableRef = useRef();
-  const [data, setData] = useState({});
   const [error, setError] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [addBtnName, setAddBtnName] = useState("เพิ่มข้อมูลประเภทของพนักงาน");
+  const [isLoading, setLoading] = useState(false);
   const [input, setInput] = useState({
     typename: "",
     isactive: false,
@@ -58,10 +62,13 @@ export default function EmployeeTypes({ title }) {
   };
 
   const fetchDataTable = useCallback(async () => {
+    setLoading(true);
     try {
       await getEmployeeType();
+      setLoading(false);
     } catch (error) {
-     return;
+      setLoading(false);
+      return;
     }
   }, [getEmployeeType]);
 
@@ -83,6 +90,20 @@ export default function EmployeeTypes({ title }) {
       finishSubmit();
     }
   }, [error, isSubmit]);
+
+  //สำหรับตรวจสอบ permmission
+  const canEditEmployeeType = CheckPermission([
+    PermissionEnum.EMPLOYEETYPE_UPDATE,
+  ]);
+  const canDeleteEmployeeType = CheckPermission([
+    PermissionEnum.EMPLOYEETYPE_DELETE,
+  ]);
+
+  const canCreatEmployeeType = CheckPermission([
+    PermissionEnum.EMPLOYEETYPE_CREATE,
+  ]);
+
+  //datatable
 
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
@@ -122,7 +143,12 @@ export default function EmployeeTypes({ title }) {
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>
-                <a class="dropdown-item text-dark" data-action="edit" data-id="${row.typeId}">
+                <a class="dropdown-item text-dark" 
+                    data-action="edit" 
+                    data-id="${row.typeId} 
+                    style="
+                      display: ${canEditEmployeeType ? "block" : "none"}
+                     "">
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
               </li>
@@ -135,6 +161,9 @@ export default function EmployeeTypes({ title }) {
               data-action="edit"
               class="btn btn-warning me-2"
               title="แก้ไข"
+              style="
+                      display: ${canEditEmployeeType ? "block" : "none"}
+                     "
             >
               <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล 
             </a>
@@ -277,27 +306,29 @@ export default function EmployeeTypes({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        <div className="add-btn">
-          <a
-            className="power py-2"
-            style={{ maxWidth: "400px" }}
-            onClick={() => handleOpenModal("employeeTypeModal")}
-          >
-            <span>
-              <i class="bi bi-plus-circle fs-4"></i>
-            </span>{" "}
-            <span className="label">{addBtnName}</span>
-          </a>
-        </div>
-        <DataTableComponent
-          column={columns}
-          data={employeeTypeData}
-          onAction={handleAction}
-          tableHead={tableHead}
-          tableRef={tableRef}
-          columnDefs={columnDefs}
-          isLoading={employeeTypeIsLoading}
-        />
+
+        {isLoading ? (
+          <LoadingSpin />
+        ) : (
+          <>
+            {canCreatEmployeeType && (
+              <MainButton
+                btnName={addBtnName}
+                icon="bi bi-plus-circle"
+                onClick={() => handleOpenModal("employeeTypeModal")}
+              />
+            )}
+            <DataTableComponent
+              column={columns}
+              data={employeeTypeData}
+              onAction={handleAction}
+              tableHead={tableHead}
+              tableRef={tableRef}
+              columnDefs={columnDefs}
+              isLoading={employeeTypeIsLoading}
+            />
+          </>
+        )}
 
         {/* modal */}
         <div

@@ -15,6 +15,7 @@ import ModalComponent from "../../components/modal/ModalComponent";
 import { useAuth } from "../../auth/AuthContext";
 import { PermissionEnum, RoleEnum } from "../../enum/permissionAndRole";
 import LoadingSpin from "../../components/loadingSpin";
+import { CheckPermission } from "../../util/checkPermission";
 
 export const tableHead = [
   { colName: "ลำดับ" },
@@ -97,6 +98,13 @@ export default function Roles({ title }) {
     }
   }, [error, isSubmit]);
 
+   //checkPermission
+    const canEditRole = CheckPermission([PermissionEnum.ROLE_UPDATE]);
+    const canCreateRole = CheckPermission([PermissionEnum.ROLE_CREATE]);
+    const canViewPermisionRole = CheckPermission([PermissionEnum.ROLE_PERM_VIEW]);
+    const canDeleteRole = CheckPermission([PermissionEnum.ROLE_DELETE]);
+  
+
   const columnData = [
     {
       data: null,
@@ -137,6 +145,8 @@ export default function Roles({ title }) {
                 <a class="dropdown-item text-dark btn-edit" 
                    data-id="${row.roleId}"
                    data-action="edit" 
+                   style="display: ${canEditRole ? "block" : "none"}"
+
                    >
                   <i class="bi bi-pen-fill me-2"></i> แก้ไขข้อมูล
                 </a>
@@ -145,9 +155,7 @@ export default function Roles({ title }) {
                 <a class="dropdown-item text-dark btn-permission" 
                    data-id="${row.roleId}"
                    data-action="permission"
-                   style="
-                           display: ${canViewRolePermission ? "block" : "none"}
-                                             "
+                   style="display: ${canViewPermisionRole ? "block" : "none"} "
                    >
                   <i class="bi bi-person-fill-lock me-2"></i>สิทธิเข้าใช้งาน
                 </a>
@@ -155,7 +163,9 @@ export default function Roles({ title }) {
               <li>
                 <a class="dropdown-item text-dark btn-delete"
                    data-id="${row.roleId}" 
-                   data-action="delete">
+                   data-action="delete"
+                   style="display: ${canDeleteRole ? "block" : "none"}"
+                   >
                   <i class="bi bi-trash-fill me-2"></i> ลบข้อมูล
                 </a>
               </li>
@@ -169,6 +179,8 @@ export default function Roles({ title }) {
               title="แก้ไข"
               data-id="${row.roleId}"
               data-action="edit" 
+               style="display: ${canEditRole ? "block" : "none"}"
+              
             >
               <i class="bi bi-pen-fill"></i>
             </a>
@@ -177,9 +189,7 @@ export default function Roles({ title }) {
               title="สิทธิเข้าใช้งาน"
               data-id="${row.roleId}"
                data-action="permission"
-               style="
-                      display: ${canViewRolePermission ? "block" : "none"}
-                               "
+               style="display: ${canViewPermisionRole ? "block" : "none"}"
             >
               <i class="bi bi-person-fill-lock"></i>
             </a>
@@ -188,6 +198,7 @@ export default function Roles({ title }) {
               title="ลบ"
               data-id="${row.roleId}"
               data-action="delete"
+              style="display: ${canDeleteRole ? "block" : "none"}"
             >
               <i class="bi bi-trash-fill"></i>
             </a>
@@ -377,9 +388,7 @@ export default function Roles({ title }) {
       <HeaderPage pageName={title} />
       <div className="container">
         {/* ปุ่มเพิ่ม */}
-        {(roleRequire.includes(RoleEnum.SUPER) ||
-          rolePermissionRequire.some((p) =>
-            [PermissionEnum.ROLE_PERM_CREATE].includes(p))) && (
+        {(canCreateRole) && (
               <MainButton
                 btnName={addBtnName}
                 icon={"bi bi-plus-circle"}

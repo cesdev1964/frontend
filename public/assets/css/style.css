@@ -719,7 +719,7 @@ thead th:last-child {
   border-radius: 10px;
 }
 .news-container {
-  max-height: 600px;
+  max-height: 680px;
   overflow-y: auto;
 }
 
@@ -2060,7 +2060,7 @@ thead th:last-child {
   }
 
   .news-container {
-    max-height: 450px;
+    max-height: 520px;
   }
 }
 

@@ -3,6 +3,7 @@ import { useAnnounments } from "../../hooks/announcementsStore";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";
 import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
+import Pagination from "../Pagination";
 
 export default function AnnouncementCard() {
   const [newsdata, setNewData] = useState([]);
@@ -10,6 +11,8 @@ export default function AnnouncementCard() {
   const [search, setSearch] = useState("");
   const { getAnnounmentData, announmentData } = useAnnounments();
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginate, setShowPaginate] = useState(false);
 
   const fetchDataTable = useCallback(async () => {
     try {
@@ -24,14 +27,42 @@ export default function AnnouncementCard() {
   }, [fetchDataTable]);
 
   useEffect(() => {
-    if (!announmentData) return;
+    if (!announmentData) {
+      setShowPaginate(false);
+      return;
+    }
     let displayOnlyPublic = announmentData.filter(
       (item) => item.status === AnnounmentStatusEnum.PUBLISHED
     );
     setNewData(displayOnlyPublic);
+    setShowPaginate(true);
   }, [announmentData]);
 
-  const filterItemFromSearch = newsdata.filter((item) => {
+  let NUM_OF_RECORDS = newsdata.length;
+  let LIMIT = 4;
+
+  const onPageChanged = useCallback(
+    (event, page) => {
+      event.preventDefault();
+      setCurrentPage(page);
+    },
+    [setCurrentPage]
+  );
+  const currentData = newsdata.slice(
+    (currentPage - 1) * LIMIT,
+    (currentPage - 1) * LIMIT + LIMIT
+  );
+
+  useEffect(() => {
+    if (NUM_OF_RECORDS >= LIMIT) {
+      setShowPaginate(true);
+    } else {
+      setShowPaginate(false);
+    }
+  }, [NUM_OF_RECORDS, LIMIT]);
+
+  //เอา current data ใส่ไว้ตรงนี้
+  const filterItemFromSearch = currentData.filter((item) => {
     if (
       item.title.toLocaleLowerCase().includes(search) ||
       item.content.toLocaleLowerCase().includes(search) ||
@@ -90,46 +121,59 @@ export default function AnnouncementCard() {
                       </div>
                     ) : (
                       <>
-                        {filterItemFromSearch.map((item, index) => (
-                          <div
-                            className="w-100 p-3 rounded-3 mb-3 otReqCard shadow-sm"
-                            key={index}
-                            onClick={() =>
-                              navigate(
-                                `/announcement/${item.publicAnnouncementId}`
-                              )
-                            }
-                          >
-                            <div className="d-flex align-items-center justify-content-between">
-                              <p
-                                style={{
-                                  fontSize: "1.1rem",
-                                  fontWeight: "bold",
-                                }}
+                        {paginate && (
+                          <>
+                            {filterItemFromSearch.map((item, index) => (
+                              <div
+                                className="w-100 p-3 rounded-3 mb-3 otReqCard shadow-sm"
+                                key={index}
+                                onClick={() =>
+                                  navigate(
+                                    `/announcement/${item.publicAnnouncementId}`
+                                  )
+                                }
                               >
-                                {item.title}
-                              </p>
-                              <span className="badge  text-dark p-2 px-2 fs-6">
-                                <i className="bi bi-paperclip me-2"></i>
-                                {item.attachmentCount}
-                              </span>
-                            </div>
+                                <div className="d-flex align-items-center justify-content-between">
+                                  <p
+                                    style={{
+                                      fontSize: "1.1rem",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {item.title}
+                                  </p>
+                                  <span className="badge  text-dark p-2 px-2 fs-6">
+                                    <i className="bi bi-paperclip me-2"></i>
+                                    {item.attachmentCount}
+                                  </span>
+                                </div>
 
-                            <p className="OT-description-label mt-3">
-                              {" "}
-                              วันที่ลงข่าวสาร :{" "}
-                              <span className="OT-description-value">
-                                {shortDateFormate(item.publishedAt)}
-                              </span>
-                            </p>
-                            <p
-                              style={{ fontSize: "0.9rem" }}
-                              className="ps-3 text-primary"
-                            >
-                              <em>{item.summary ?? "-"}</em>
-                            </p>
-                          </div>
-                        ))}
+                                <p className="OT-description-label mt-3">
+                                  {" "}
+                                  วันที่ลงข่าวสาร :{" "}
+                                  <span className="OT-description-value">
+                                    {shortDateFormate(item.publishedAt)}
+                                  </span>
+                                </p>
+                                <p
+                                  style={{ fontSize: "0.9rem" }}
+                                  className="ps-3 text-primary"
+                                >
+                                  <em>{item.summary ?? "-"}</em>
+                                </p>
+                              </div>
+                            ))}
+                            <div className="pagination-wrapper">
+                              <Pagination
+                                totalRecords={NUM_OF_RECORDS}
+                                pageLimit={LIMIT}
+                                pageNeighbours={2}
+                                onPageChanged={onPageChanged}
+                                currentPage={currentPage}
+                              />
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
                   </div>

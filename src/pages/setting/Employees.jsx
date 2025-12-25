@@ -85,6 +85,13 @@ const Employees = ({ title }) => {
     }
   };
 
+  //checkPermission
+  const canEditEmployee = CheckPermission([PermissionEnum.EMPLOYEE_UPDATE]);
+
+  const canCreatEmployee = CheckPermission([PermissionEnum.EMPLOYEE_CREATE]);
+
+  const canViewEmployee = CheckPermission([PermissionEnum.EMPLOYEE_VIEW]);
+
   const columnData = [
     {
       data: null,
@@ -134,12 +141,11 @@ const Employees = ({ title }) => {
       data: null,
       title: "การจัดการ",
       render: function (data, type, row) {
-        const canEditEmployee =
-          roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
-          rolePermissionRequire.some((p) =>
-            [PermissionEnum.EMPLOYEE_UPDATE].includes(p)
-          );
-        // const canEditEmployee = CheckPermission([PermissionEnum.EMPLOYEE_UPDATE]);
+        // const canEditEmployee =
+        //   roleRequire.some((role) => [RoleEnum.SUPER].includes(role)) ||
+        //   rolePermissionRequire.some((p) =>
+        //     [PermissionEnum.EMPLOYEE_UPDATE].includes(p)
+        //   );
         return `
           <div className="d-flex align-items-center justify-content-center">
               <div class="dropdown d-lg-none">
@@ -153,13 +159,7 @@ const Employees = ({ title }) => {
                      href="/profile/employeePreview/${row.publicEmployeeId}" 
                      id="employeePreview"
                      style="
-                            display: ${
-                              authdata.permissions?.includes(
-                                PermissionEnum.EMPLOYEE_VIEW
-                              )
-                                ? "block"
-                                : "none"
-                            }
+                            display: ${canViewEmployee ? "block" : "none"}
                           "
                      >
                       <i class="bi bi-eye me-2"></i> ดูข้อมูลพนักงาน
@@ -182,17 +182,8 @@ const Employees = ({ title }) => {
                   class="btn btn-info me-2"
                   title="ดูข้อมูลพนักงาน"
                   id="employeePreview"
-                  style="
-                        display: ${
-                          authdata.permissions?.includes(
-                            PermissionEnum.EMPLOYEE_VIEW
-                          )
-                            ? "block"
-                            : "none"
-                        }
-                        "
-                        
-                >
+                  style="display: ${canViewEmployee ? "block" : "none"}"
+>
                   <i class="bi bi-eye"></i>
                 </a>
               <a
@@ -261,10 +252,7 @@ const Employees = ({ title }) => {
           to="/settings/employees/form"
           style={{ textDecoration: "none" }}
         >
-          {(roleRequire.some((role) => ["SUPER"].includes(role)) ||
-            rolePermissionRequire.some((p) =>
-              ["EMPLOYEE_CREATE"].includes(p)
-            )) && <MainButton btnName={title} icon={"bi bi-plus-circle"} />}
+          {canCreatEmployee && <MainButton btnName={title} icon={"bi bi-plus-circle"} />}
         </NavLink>
         {/* ตารางข้อมูล */}
         {isLoading === true ? (
