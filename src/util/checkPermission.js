@@ -4,7 +4,6 @@ import { RoleEnum } from "../enum/permissionAndRole";
 //ทำการตรวจสอบว่า เจ้าของ account มี permission ตรงกับ ที่กำหนดไหม หรทอเป็น super ไหม
 export function CheckPermission(permissionReq = []) {
   const { authdata } = useAuth();
-
   const rolePermissionRequire = authdata?.permissions ?? [];
   const roleRequire = authdata?.roles ?? [];
   try {

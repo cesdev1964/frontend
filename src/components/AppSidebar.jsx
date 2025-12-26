@@ -96,7 +96,8 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
               </span>
             </button>
             <ul className={`submenu ${isWorkOpen ? "show" : ""}`}>
-              {rolePermissionRequire.includes(PermissionEnum.OT_CREATE) &&
+              {/* {CheckPermission([PermissionEnum.OT_CREATE])} */}
+              {CheckPermission([PermissionEnum.OT_CREATE]) &&
                 employeeId != null && (
                   <li>
                     <NavLink
@@ -129,6 +130,7 @@ function AppSidebar({ isOpen, toggleSidebar, asideRef }) {
                 //   [PermissionEnum.OT_PENDING].includes(p)
                 // )
                 CheckPermission([PermissionEnum.OT_PENDING]) && (
+            
                   <>
                     <li>
                       <NavLink
