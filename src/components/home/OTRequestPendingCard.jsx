@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useOTApprove } from "../../hooks/otApproveStore";
-import { getDateOnly, shortDateFormate } from "../../util/inputFormat";
+import { getDateOnly, getOnlyDateCE, shortDateFormate } from "../../util/inputFormat";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 
@@ -36,14 +36,9 @@ export default function OTRequestPendingCard() {
     setOtData(otApproveData);
   }, [otApproveData]);
 
-  const getOnlyDate = (dateTime) => {
-    // return new Date(dateTime).toISOString().split("T")[0];
-    const date = new Date(dateTime);
-    date.setFullYear(date.getFullYear() - 543);
-    return date;
-  };
+ 
   const otReqList = Object.groupBy(otData, (otItem) => {
-    return getOnlyDate(otItem.period.startDate);
+    return getOnlyDateCE(otItem.period.startDate);
   });
 
   const getThaiDate = (dateTime) => {

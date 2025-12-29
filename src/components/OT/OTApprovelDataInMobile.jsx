@@ -1,8 +1,8 @@
 import React from "react";
-import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
+import { getDateAndTime, getOnlyDateCE, shortDateFormate } from "../../util/inputFormat";
 
 export default function OTApprovelDataInMobile({ data }) {
-
+  
   return (
     <div>
       <div className="row g-2 justify-content-center">
@@ -11,7 +11,7 @@ export default function OTApprovelDataInMobile({ data }) {
             <p className="label">วันที่เริ่มทำโอที</p>
             <hr />
             <h5 className="value">
-              {shortDateFormate(data.period.startDate) ?? "ไม่ระบุ"}
+              {shortDateFormate(getOnlyDateCE(data.period.startDate)) ?? "ไม่ระบุ"}
             </h5>
           </div>
         </div>
@@ -20,7 +20,7 @@ export default function OTApprovelDataInMobile({ data }) {
             <p className="label">วันที่สิ้นสุดโอที</p>
             <hr />
             <h5 className="value">
-              {shortDateFormate(data.period.endDate) ?? "ไม่ระบุ"}
+              {shortDateFormate(getOnlyDateCE(data.period.endDate)) ?? "ไม่ระบุ"}
             </h5>
           </div>
         </div>

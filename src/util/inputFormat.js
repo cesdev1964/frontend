@@ -128,3 +128,11 @@ export const ageGap = (reqDatetime)=>{
 
    return `${diffYear} ปี ${diffMonth} เดือน ${diffDay} วัน`;
 }
+
+//แปลงให้เป็น ค.ศ. กรณีเป็นพ.ศ.
+export const getOnlyDateCE = (dateTime) => {
+    // return new Date(dateTime).toISOString().split("T")[0];
+    const date = new Date(dateTime);
+    date.setFullYear(date.getFullYear() - 543);
+    return date;
+  };

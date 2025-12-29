@@ -1,6 +1,6 @@
 import { OTapproveStatusBadge } from "../../util/isActiveBadge.jsx";
 import { OTApproveEnum } from "../../enum/otApproveEnum.js";
-import { getDateAndTime, shortDateFormate } from "../../util/inputFormat.js";
+import { getDateAndTime, getOnlyDateCE, shortDateFormate } from "../../util/inputFormat.js";
 import { useAuth } from "../../auth/AuthContext.jsx"
 import { PermissionEnum } from "../../enum/permissionAndRole.js";
 
@@ -45,7 +45,7 @@ export default function OTcard({ otData, handleDelete }) {
                     <p className="label">วันที่เริ่มทำโอที</p>
                     <hr />
                     <p className="value fw-bold" style={{textWrap:"wrap",fontSize:"1.2rem"}}>
-                       {shortDateFormate(otData.startDate)}
+                       {shortDateFormate(getOnlyDateCE(otData.startDate))}
                     </p>
                   </div>
                 </div>
@@ -54,7 +54,7 @@ export default function OTcard({ otData, handleDelete }) {
                     <p className="label">วันที่สิ้นสุดโอที</p>
                     <hr />
                     <p className="value fw-bold " style={{textWrap:"wrap",fontSize:"1.2rem"}}>
-                   {shortDateFormate(otData.endDate)}
+                   {shortDateFormate(getOnlyDateCE(otData.endDate))}
                     </p>
                   </div>
                 </div>
