@@ -95,6 +95,12 @@ export default function OTcard({ otData, handleDelete }) {
                           {getDateAndTime(otData?.requestedAt) ?? "ไม่มีการบันทึก"}
                         </span>
                       </p>
+                      <p className="OT-description-label" style={{ textWrap: "balance"}}>
+                        ลงโอทีโดย :{" "}
+                        <span className="OT-description-value OT-approver">
+                          {otData?.requester ?? "ไม่มีการบันทึก"}
+                        </span>
+                      </p>
                     </div>
 
         {/* <div className="row g-3">

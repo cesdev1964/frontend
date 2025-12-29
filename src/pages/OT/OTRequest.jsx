@@ -153,6 +153,7 @@ export default function OTRequest({ title }) {
     const { employeeById } = await getEmployeeById(authdata.publicEmployeeId);
 
     const reqData = {
+      publicEmployeeId : employeeById.employee.publicEmployeeId,
       startDate: input.startDate,
       endDate: input.endDate,
       startTime: `${input.startTime}:00`,

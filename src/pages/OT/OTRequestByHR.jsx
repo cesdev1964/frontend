@@ -143,6 +143,7 @@ export default function OTRequestByHR({ title }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const reqData = {
+      publicEmployeeId : employee.employeeId,
       startDate: input.startDate,
       endDate: input.endDate,
       startTime: `${input.startTime}:00`,

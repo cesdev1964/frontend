@@ -3,7 +3,8 @@ import { useEmployee } from "../../hooks/employeeStore";
 import LoadingSpin from "../loadingSpin";
 import { useTitltName } from "../../hooks/titleNameStore";
 
-export default function EmployeeList({
+export default function 
+EmployeeList({
   jobData,
   setEmployee,
   activeJobId,

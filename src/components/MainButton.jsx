@@ -9,7 +9,7 @@ export default function MainButton({onClick,icon,btnName}) {
             onClick={onClick}
           >
             <span>
-              <i class={`${icon} fs-4`}></i>
+              <i className={`${icon} fs-4`}></i>
             </span>{" "}
             <span className="label">{btnName}</span>
           </a>

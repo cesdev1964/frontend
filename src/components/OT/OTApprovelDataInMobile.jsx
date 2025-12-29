@@ -2,6 +2,7 @@ import React from "react";
 import { getDateAndTime, shortDateFormate } from "../../util/inputFormat";
 
 export default function OTApprovelDataInMobile({ data }) {
+
   return (
     <div>
       <div className="row g-2 justify-content-center">

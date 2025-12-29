@@ -111,15 +111,15 @@ export default function AnnouncementCard() {
                   </div>
                   <div className="news-container mt-3">
                     {filterItemFromSearch.length === 0 ||
-                    newsdata.length === 0 ? (
-                      <div className="d-flex flex-column align-items-center justify-content-center p-4">
-                        <i
-                          className="fa-solid fa-newspaper mb-4 text-danger"
-                          style={{ fontSize: "60px" }}
-                        ></i>
-                        <h5 className="text-danger">ไม่พบข่าวประกาศ</h5>
-                      </div>
-                    ) : (
+                      newsdata.length === 0 ? (
+                        <div className="d-flex flex-column align-items-center justify-content-center p-4">
+                          <i
+                            className="fa-solid fa-newspaper mb-4 text-danger"
+                            style={{ fontSize: "60px" }}
+                          ></i>
+                          <h5 className="text-danger">ไม่พบข่าวประกาศ</h5>
+                        </div>
+                      ) : (
                       <>
                         {paginate && (
                           <>

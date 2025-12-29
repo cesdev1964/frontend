@@ -77,13 +77,14 @@ export function shortDateFormate(inputdate) {
 }
 //dd-mm-yyyy / hh:mm
 export const getDateAndTime = (datetime) => {
-  const [date, timeFull] = new Date(datetime).toISOString().split("T");
+  const [date] = new Date(datetime).toISOString().split("T");
+
   const dateTime = new Date(datetime);
   const hr = dateTime.getHours().toString().padStart(2, "0");
   const min = dateTime.getMinutes().toString().padStart(2, "0");
 
   if (date) {
-    const [year, month, day] = date.split("-");
+    const [year,month, day] = date.split("-");
     const dateFormat = `${day}/${month}/${year}`;
     return `${dateFormat} - ${hr}:${min} น.`;
   }
