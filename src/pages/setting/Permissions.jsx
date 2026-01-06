@@ -84,7 +84,7 @@ export default function Permissions({ title }) {
 
   useEffect(() => {
     if (permissionDataById) {
-      console.log("permission data", permissionDataById);
+      // console.log("permission data", permissionDataById);
       setInput({
         permissioncode: permissionDataById.permissionCode ?? "",
         permissionname: permissionDataById.permissionName ?? "",
@@ -243,7 +243,7 @@ export default function Permissions({ title }) {
       isActive: input.isactive,
     };
 
-    console.log("req permission data", reqData);
+    // console.log("req permission data", reqData);
     const errorList = validateForm(input) || [];
     setError(errorList);
 
@@ -298,7 +298,7 @@ export default function Permissions({ title }) {
   };
 
   const finishSubmit = () => {
-    console.log("submit data", input);
+    // console.log("submit data", input);
   };
 
   const ClearInput = () => {

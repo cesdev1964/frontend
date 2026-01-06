@@ -156,7 +156,6 @@ export default function OTApproval({ title }) {
               placeholder="ลงวันที่สิ้นสุด"
               value={input.startDate}
               onChange={handleChangeInput}
-              // defaultValue={Date.now()}
               onKeyDown={(e) => e.preventDefault()}
             />
           </div>
@@ -173,7 +172,6 @@ export default function OTApproval({ title }) {
               placeholder="ลงวันที่สิ้นสุด"
               value={input.endDate}
               onChange={handleChangeInput}
-              // defaultValue={Date.now()}
               onKeyDown={(e) => e.preventDefault()}
             />
           </div>

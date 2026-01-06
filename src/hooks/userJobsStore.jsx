@@ -15,7 +15,7 @@ export const useUserJobs = create((set) => ({
     set({ userJobsisLoading: true, userJobserrorMessage: null });
     try {
       const response = await api.get(`${url}/${userId}`);
-      console.log("role data", response.data.data);
+      // console.log("role data", response.data.data);
       set({
         userJobsdata: response.data.data ?? [],
         userJobsisLoading: false,

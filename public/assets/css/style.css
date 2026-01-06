@@ -467,11 +467,7 @@ body {
 .headerName {
   font-size: 30px;
   font-weight: bold;
-  background: linear-gradient(
-    to right,
-    #EA4747,
-    #FF6F80
-  );
+  background: linear-gradient(to right, #ea4747, #ff6f80);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1820,7 +1816,6 @@ thead th:last-child {
     justify-content: start;
     align-items: center;
   }
-
 }
 
 @media (max-width: 600px) {
@@ -2069,14 +2064,14 @@ thead th:last-child {
     display: flex;
     flex-direction: column;
   }
+  .jobSelectContainer {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
 }
 
-@media (max-width: 988) {
- .jobSelectContainer{
-  max-height: 500px;
-  overflow-y: auto;
-}
-}
+/* @media (max-width: 988) {
+} */
 
 @media (max-width: 1199.98px) {
   .modal-fullscreen-xl-down {
@@ -2225,6 +2220,13 @@ thead th:last-child {
     flex: 1;
   }
 }
+
+/* @media (min-width: 996px) {
+  .sticky-jobSidebar {
+    position: fixed;
+    min-width: none;
+  }
+} */
 
 /* form select */
 .form-select {
@@ -2551,7 +2553,7 @@ thead th:last-child {
 .OT-description-value {
   font-size: 0.9rem;
   line-height: 0.3;
-  color:#000
+  color: #000;
   /* text-wrap: nowrap; */
 }
 .OT-approver {
@@ -2559,7 +2561,7 @@ thead th:last-child {
   line-height: 0.3;
   color: var(--logout-bg);
   text-wrap: nowrap;
-  color:#000
+  color: #000;
 }
 .OT-card-container,
 .holiday-card-container,
@@ -2869,30 +2871,31 @@ ul.pagination a.page-link:hover {
   cursor: pointer;
   transition: 300ms;
 }
-.jobSelectContainer{
-  max-height: 750px;
-  overflow-y: auto;
+.jobSelectContainer {
+  max-height: 700px;
+  overflow-y: scroll;
+  padding-right: 5px;
 }
 
 /* ot approve card css */
-.items-flex{
+.items-flex {
   display: flex;
   gap: 10px;
 }
-.item-card{
-  width:100%;
+.item-card {
+  width: 100%;
   height: 100%;
   /* max-width:230px; */
-  min-height : 90px;
-  border:none;
+  min-height: 90px;
+  border: none;
   border-radius: 10px;
-  padding:5px 10px;
-  color:#000;
+  padding: 5px 10px;
+  color: #000;
   box-sizing: border-box;
 }
-.label{
+.label {
   text-align: start;
 }
-.value{
+.value {
   text-align: end;
 }

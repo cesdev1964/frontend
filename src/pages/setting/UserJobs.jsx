@@ -17,7 +17,7 @@ export default function UserJobs({ title }) {
   const { getJobDropdown, jobDropdown } = useJob();
   const [getUserId, setGetUserId] = useState("");
   const [selectJob, setSelectJob] = useState([]); //ส่งไปหลังบ้าน
-
+  
   const fetchDataTable = useCallback(async () => {
     try {
       await getUserDropdown();
@@ -39,6 +39,8 @@ export default function UserJobs({ title }) {
 
     if (userJobsList.length > 0) {
       setSelectJob(userJobsList); // จากนั้นเอาไป map กับ checked box
+
+    
     } else {
       setSelectJob([]);
     }
@@ -72,6 +74,8 @@ export default function UserJobs({ title }) {
     } else {
       setSelectJob((prev) => prev.filter((id) => id !== Id));
     }
+
+   
   };
 
   const handleSubmit = (e, userId) => {
@@ -133,7 +137,8 @@ export default function UserJobs({ title }) {
         }
       });
   };
-  
+
+
 
   return (
     <div>
@@ -188,7 +193,9 @@ export default function UserJobs({ title }) {
                               key={row.value}
                               style={{ cursor: "pointer" }}
                               onClick={() => selectedRow(row.value)}
-                              className={`${getUserId === row.value?"table-active":""}`}
+                              className={`${
+                                getUserId === row.value ? "table-active" : ""
+                              }`}
                             >
                               <td className="p-2">
                                 <div className="d-flex justify-content-between align-item-center">
@@ -245,6 +252,7 @@ export default function UserJobs({ title }) {
                       <>
                         {getUserId != "" && (
                           <>
+                           
                             {filterJobs.map((row) => (
                               <tr key={row.value} style={{ cursor: "pointer" }}>
                                 <td className="p-2">
@@ -254,7 +262,6 @@ export default function UserJobs({ title }) {
                                       id={`jobCheck_${row.value}`}
                                       type="checkbox"
                                       value={row.value}
-                                      
                                       checked={selectJob.includes(row.value)}
                                       onChange={(e) =>
                                         handleChangeSelect(

@@ -8,6 +8,7 @@ export const useOTrequest = create((set) => ({
   otErrorMessage: null,
   success: false,
   otById: [],
+  otDataSuccess : {},
 
   getOTrequestData: async () => {
     set({ otIsLoading: true, otErrorMessage: null });
@@ -56,21 +57,29 @@ export const useOTrequest = create((set) => ({
   createOTrequest: async (reqData) => {
     set({ otIsLoading: true, otErrorMessage: null });
     try {
-      await api.post(url, reqData);
+      const response = await api.post(url, reqData);
+      set({
+        otIsLoading: false,
+        success: true,
+        otDataSuccess : response.data.data
+      });
       return {
         otIsLoading: false,
         success: true,
+        otDataSuccess : response.data.data
       };
     } catch (error) {
       set({
         otErrorMessage: error?.response?.data?.message || error.message,
         otIsLoading: false,
         success: false,
+        otDataSuccess : {}
       });
       return {
         otErrorMessage: error?.response?.data?.message || error.message,
         otIsLoading: false,
         success: false,
+        otDataSuccess : {}
       };
     }
   },

@@ -70,6 +70,7 @@ export default function Weekend({ title }) {
                 handlePrevYear={() => navigateYear(-1)}
               />
               <div className="w-100 bg-danger p-1 border-n rounded-3"></div>
+              <div className="jobSelectContainer">
               {selectYearForRenderHolidayData &&
               selectYearForRenderHolidayData?.items?.length > 0 ? (
                 <>
@@ -88,6 +89,7 @@ export default function Weekend({ title }) {
                   </div>
                 </>
               )}
+              </div>
             </div>
           </>
         ) : (

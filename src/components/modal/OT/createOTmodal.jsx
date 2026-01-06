@@ -163,11 +163,6 @@ export default function CreateOTmodal({
             ></button>
           </div>
           <div className="modal-body d-flex flex-column align-items-center">
-            {/* <div class="alert alert-info w-100" role="alert">
-                    วันที่ 21/09/2568 กะ (นับชั่วโมง) OF3 เวลาเข้า 08:00 ออก 00:00
-                    วันหยุด พัก 60 นาที
-                  </div> */}
-
             <div className="row form-spacing g-2 w-100">
               <div className="col-6">
                 <label className="form-label">

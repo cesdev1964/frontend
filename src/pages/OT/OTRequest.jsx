@@ -15,6 +15,7 @@ import InputTextField from "../../components/inputTextField";
 import SessionExpiryModal from "../../components/modal/SessionExpiryModal";
 import OTrequestList from "../../components/OT/OTrequestList";
 import { Link } from "react-router-dom";
+import SuccessOTRequestModal from "../../components/modal/OT/SuccessOTRequestModal";
 
 export default function OTRequest({ title }) {
   const token = localStorage.getItem("access_token");
@@ -30,6 +31,7 @@ export default function OTRequest({ title }) {
   const [isSubmit, setIsSubmit] = useState(false);
   const [displayTime, setDisplayTime] = useState("");
   const currentDate = new Date().toISOString().split("T")[0];
+  const [OTResponse,setOTResponse] = useState({});
 
   const [input, setInput] = useState({
     startDate: currentDate,
@@ -166,7 +168,7 @@ export default function OTRequest({ title }) {
       reason: input.reason,
     };
     
-    console.log("data from req ot",reqData)
+    // console.log("data from req ot",reqData)
 
     if (compareDate(input.startDate, input.endDate)) {
       Swal.fire({
@@ -200,17 +202,21 @@ export default function OTRequest({ title }) {
           })
           .then(async (result) => {
             if (result.isConfirmed) {
-              const { otErrorMessage, success } = await createOTrequest(
+              const { otErrorMessage, success , otDataSuccess } = await createOTrequest(
                 reqData
               );
+              console.log("res",otDataSuccess );
               if (success) {
                 swalWithBootstrapButtons.fire({
                   title: "บึนทึกรายการสำเร็จ!",
                   icon: "success",
                 });
+                setOTResponse(otDataSuccess);
                 const currentModal = document.getElementById("addOTModal");
                 const modalInstance = bootstrap.Modal.getInstance(currentModal);
                 modalInstance.hide();
+   
+                handleOpenModal("RequestOTDescription");
                 fetchData();
                 ClearInput();
               } else {
@@ -403,6 +409,8 @@ export default function OTRequest({ title }) {
         setDisplayTime={setDisplayTime}
         isHRrole={false}
       />
+
+      <SuccessOTRequestModal otData={OTResponse}/>
     </div>
   );
 }

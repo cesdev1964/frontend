@@ -90,6 +90,18 @@ export const getDateAndTime = (datetime) => {
   }
 };
 
+export const getDateAndTime2 = (datetime) => {
+  if (!datetime) return "";
+  var [date,time] = datetime.split(" ");
+  var [year,month,day] = date.split("-");
+
+  year = parseInt(year, 10)-543;
+
+    const dateFormat = `${day}/${month}/${year}`;
+    return `${dateFormat} - ${time} น.`;
+  // }
+};
+
 //get date from datetime => yyyy-mm-dd
 export const getDateOnly = (datetime) => {
   const date = new Date(datetime);
