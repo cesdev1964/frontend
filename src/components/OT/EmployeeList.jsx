@@ -89,16 +89,12 @@ EmployeeList({
             className={`accordion-button ${isOpen ? "" : "collapsed"}`}
             type="button"
             onClick={handleToggle}
-            // data-bs-toggle="collapse"
-            // data-bs-target={`#${collapseId}`}
-            // aria-expanded="false"
-            // aria-controls={collapseId}
           >
             <label
               className="accordion-header-label"
               htmlFor={`job-${jobData.value}`}
             >
-              <strong>{jobData.label}</strong>
+              <strong>{jobData.label} <span style={{fontWeight:"normal",color:"gray"}} >({employeeList.length})</span></strong>
             </label>
           </button>
         </h2>

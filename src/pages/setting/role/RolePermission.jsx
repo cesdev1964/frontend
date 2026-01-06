@@ -73,7 +73,6 @@ export default function RolePermission({ title }) {
     },
   ];
 
-  const columnDefs = [];
 
   const handleChangeSelect = (e, permissionId) => {
     if (e.target.checked) {
@@ -291,14 +290,6 @@ export default function RolePermission({ title }) {
                 </table>
               </div>
             </div>
-            {/* <DataTableComponent
-              column={columnData2}
-              tableRef={tableRef2}
-              tableHead={tableHead}
-              data={rolePermissiondataById}
-              isLoading={rolePermissionisLoading}
-              columnDefs={columnDefs}
-            /> */}
           </div>
         </div>
       </div>

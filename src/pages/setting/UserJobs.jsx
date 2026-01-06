@@ -67,35 +67,11 @@ export default function UserJobs({ title }) {
 
   //   เอาไว้ส่ง API
   const handleChangeSelect = (e, Id, userId) => {
-
-
     if (e.target.checked) {
       setSelectJob((prev) => [...prev, Id]);
     } else {
       setSelectJob((prev) => prev.filter((id) => id !== Id));
     }
-
-
-    // const reqData = {
-    //   jobIds: selectJob,
-    // };
-    // updateUserJobs(reqData, userId);
-
-    // const Toast = Swal.mixin({
-    //   toast: true,
-    //   position: "top-end",
-    //   showConfirmButton: false,
-    //   timer: 3000,
-    //   timerProgressBar: true,
-    //   didOpen: (toast) => {
-    //     toast.onmouseenter = Swal.stopTimer;
-    //     toast.onmouseleave = Swal.resumeTimer;
-    //   },
-    // });
-    // Toast.fire({
-    //   icon: "success",
-    //   title: "เพิ่มหน่วยงานแล้ว",
-    // });
   };
 
   const handleSubmit = (e, userId) => {

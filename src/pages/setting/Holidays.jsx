@@ -230,7 +230,7 @@ export default function Holidays({ title }) {
     const errorList = validateForm(input) || [];
     setError(errorList);
 
-    console.log("req data", reqData);
+    // console.log("req data", reqData);
 
     if (Object.keys(errorList).length === 0) {
       const swalWithBootstrapButtons = Swal.mixin({

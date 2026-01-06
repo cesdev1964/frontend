@@ -36,7 +36,6 @@ export default function OTApproval({ title }) {
   });
   const { jobDropdown, getJobDropdownAll } = useJob();
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   const { getOTApprovalPending, otApproveData, getOTApprovalPendingByFilter } =
     useOTApprove();
@@ -82,8 +81,8 @@ export default function OTApproval({ title }) {
     const result = otApproveData.filter((item) => {
       const searchLower = input.search.toLowerCase();
       return (
-        (item.employee.employeeCode).toLowerCase().includes(searchLower) ||
-        (item.employee.fullName).toLowerCase().includes(searchLower)
+        item.employee.employeeCode.toLowerCase().includes(searchLower) ||
+        item.employee.fullName.toLowerCase().includes(searchLower)
       );
     });
 
@@ -131,7 +130,10 @@ export default function OTApproval({ title }) {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/">  <i className="bi bi-house-door-fill"></i></Link>
+            <Link to="/">
+              {" "}
+              <i className="bi bi-house-door-fill"></i>
+            </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             {title}
@@ -199,14 +201,29 @@ export default function OTApproval({ title }) {
           </div>
           <div className="col-sm-12 col-md-6 col-lg-3">
             <label className="form-label">หน่วยงาน</label>
-            <SearchDropdown
+            {/* <SearchDropdown
               data={jobDropdown}
               handleSelectChange={(selected) =>
                 handleSelectChange("jobId", selected)
               }
               placeholder="เลือกหน่วยงาน"
               value={jobDropdown.find((i) => i.value === input.jobId) || ""}
-            />
+            /> */}
+            <select
+              name="jobId"
+              id="jobId"
+              className={`form-select `}
+              onChange={handleChangeInput}
+              value={input.jobId}
+            >
+              <option value={""}>ทั้งหมด</option>
+              {jobDropdown.map((item) => (
+                <option value={item.value} key={item.value}>
+                  {item.label}
+                </option>
+              ))}
+              {/* <option value={1}>ปกติ</option> */}
+            </select>
           </div>
         </Filter>
 
@@ -214,7 +231,8 @@ export default function OTApproval({ title }) {
           <div className="announcement-box border border-primary">
             <div className="text-danger">
               <h5>
-                <i className="bi bi-filter me-2"></i><strong>{title}</strong>
+                <i className="bi bi-filter me-2"></i>
+                <strong>{title}</strong>
               </h5>
             </div>
             <hr className="text-danger" />
