@@ -10,6 +10,7 @@ import CreateOTmodal from "../../components/modal/OT/createOTmodal";
 import { handleCancel } from "../../util/handleCloseModal";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import SuccessOTRequestModal from "../../components/modal/OT/SuccessOTRequestModal";
 export default function OTRequestByHR({ title }) {
   const currentDate = new Date().toISOString().split("T")[0];
   useTitle(title);
@@ -24,6 +25,7 @@ export default function OTRequestByHR({ title }) {
   const [displayTime, setDisplayTime] = useState("");
   const [error, setError] = useState({});
   const [activeJobId, setActiveJobId] = useState(null);
+  const [OTResponse, setOTResponse] = useState({});
   const [employee, setEmployee] = useState({
     employeeId: "",
     employeeName: "",
@@ -143,7 +145,7 @@ export default function OTRequestByHR({ title }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const reqData = {
-      publicEmployeeId : employee.employeeId,
+      publicEmployeeId: employee.employeeId,
       startDate: input.startDate,
       endDate: input.endDate,
       startTime: `${input.startTime}:00`,
@@ -188,17 +190,18 @@ export default function OTRequestByHR({ title }) {
           })
           .then(async (result) => {
             if (result.isConfirmed) {
-              const { otErrorMessage, success } = await createOTrequest(
-                reqData
-              );
+              const { otErrorMessage, success, otDataSuccess } =
+                await createOTrequest(reqData);
               if (success) {
                 swalWithBootstrapButtons.fire({
                   title: "บึนทึกรายการสำเร็จ!",
                   icon: "success",
                 });
+                setOTResponse(otDataSuccess);
                 const currentModal = document.getElementById("addOTModal");
                 const modalInstance = bootstrap.Modal.getInstance(currentModal);
                 modalInstance.hide();
+                handleOpenModal("RequestOTDescription");
                 fetchData();
                 ClearInput();
               } else {
@@ -269,27 +272,25 @@ export default function OTRequestByHR({ title }) {
               <div className="jobSelectContainer">
                 <div className="p-2">
                   <div className="accordion w-100" id="accordionJobList">
-                    
-                      <>
-                        {jobDropdown.length > 0 && (
-                          <div>
-                            {jobDropdown.map((item) => (
-                              //ก้อนย่อยๆ อิสระต่อกัน
-                              <>
-                                <EmployeeList
-                                  jobData={item}
-                                  key={item.value}
-                                  setEmployee={setEmployee} //พนักงานที่เลือก
-                                  activeJobId={activeJobId}
-                                  setActiveJobId={setActiveJobId}
-                                />
-                                <hr className="text-primary" />
-                              </>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                  
+                    <>
+                      {jobDropdown.length > 0 && (
+                        <div>
+                          {jobDropdown.map((item) => (
+                            //ก้อนย่อยๆ อิสระต่อกัน
+                            <>
+                              <EmployeeList
+                                jobData={item}
+                                key={item.value}
+                                setEmployee={setEmployee} //พนักงานที่เลือก
+                                activeJobId={activeJobId}
+                                setActiveJobId={setActiveJobId}
+                              />
+                              <hr className="text-primary" />
+                            </>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   </div>
                 </div>
               </div>
@@ -338,6 +339,7 @@ export default function OTRequestByHR({ title }) {
         setDisplayTime={setDisplayTime}
         isHRrole={true}
       />
+      <SuccessOTRequestModal otData={OTResponse} />
     </div>
   );
 }
