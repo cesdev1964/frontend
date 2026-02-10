@@ -2064,14 +2064,16 @@ thead th:last-child {
     display: flex;
     flex-direction: column;
   }
+}
+
+
+
+@media (max-width: 900px) {
   .jobSelectContainer {
     max-height: 300px;
     overflow-y: scroll;
   }
 }
-
-/* @media (max-width: 988) {
-} */
 
 @media (max-width: 1199.98px) {
   .modal-fullscreen-xl-down {
@@ -2571,6 +2573,11 @@ thead th:last-child {
   border-radius: 10px;
   margin-bottom: 10px;
 }
+
+.holiday-card-container:hover{
+  border: 2px solid var(--logout-bg);
+}
+
 .OT-card-container:hover {
   border: 3px solid var(--pink-active);
 }

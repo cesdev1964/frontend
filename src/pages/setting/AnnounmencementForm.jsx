@@ -6,12 +6,14 @@ import UploadFile from "../../components/UploadFile";
 import { useAnnounments } from "../../hooks/announcementsStore";
 import Swal from "sweetalert2";
 
-import {
-  getDateOnly,
-} from "../../util/inputFormat";
+import { getDateOnly } from "../../util/inputFormat";
 import { useParams } from "react-router-dom";
 import LoadingSpin from "../../components/loadingSpin";
 import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css"; // Add css for snow theme
+import QuillToolbar from "../../util/TextEdit/EditorToolbar";
+
 export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const { publicAnnouncementId } = useParams();
   const navigate = useNavigate();
@@ -19,11 +21,13 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const [input, setInput] = useState({
     title: "",
     summary: "",
-    content: "",
+    //content: "",
     status: AnnounmentStatusEnum.DRAFT,
     publichedAt: new Date(),
     files: [],
   });
+  const [contentNews,setContentNews] = useState("");
+
   const [selectedFile, setSelectedFile] = useState([]);
   const [transectionFile, setTransectionFile] = useState([]);
   const [storeFileIDToDel, setStoreFileIDToDel] = useState([]);
@@ -33,6 +37,8 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     announmentById,
     getAnnouncementsById,
   } = useAnnounments();
+
+ 
 
   //เก็บไฟล์ที่ต้องการลบ
   const fetchDataTable = useCallback(async () => {
@@ -58,15 +64,21 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
         setIsLoading(false);
         return;
       }
+
       setInput({
         title: announmentById.title,
         summary: announmentById.summary,
-        content: announmentById.content,
+      //  content: announmentById.content,
+       // content: dataInhtmlFormat,
         status: announmentById.status,
         publichedAt: new Date(),
         files: announmentById.attachments,
       });
+
+      setContentNews(announmentById.content);
+
       const announmentList = announmentById.attachments || [];
+      console.log(input);
 
       if (announmentList.length > 0) {
         const fileMetadataList = announmentList.map((item) => {
@@ -75,7 +87,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
           return new File([blobFile], item.fileName, { type: blobFile.type });
           // (file = new File([blobFile], { type: "application/json" }));
         });
-        // console.log(fileMetadataList);
 
         //สามารถไม่ส่งไฟล์ได้ / setSeletedFile เป็น state ที่ใช้ในการเก็บไฟล์ upload
         setSelectedFile((prev) => {
@@ -112,26 +123,27 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     setInput({
       title: "",
       summary: "",
-      content: "",
+     // content: "",
       status: AnnounmentStatusEnum.DRAFT,
       publichedAt: new Date(),
       files: [],
     });
     setSelectedFile([]);
     setTransectionFile([]);
+    setContentNews("");
   };
 
   const handleSubmit = async (e) => {
     // debugger;
     e.preventDefault();
 
-
     const getDate = getDateOnly(input.publichedAt);
 
     const formData = new FormData();
     formData.append("title", input.title);
     formData.append("summary", input.summary);
-    formData.append("content", input.content);
+  //  formData.append("content", input.content);
+    formData.append("content", contentNews);
     formData.append("status", input.status);
     formData.append("PublishedAt", getDate);
 
@@ -154,7 +166,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
     }
 
-    // console.log("input data", [...formData]);
+    console.log("input data", [...formData]);
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -242,6 +254,8 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
   };
 
+
+
   return (
     <div>
       <nav aria-label="breadcrumb">
@@ -313,7 +327,12 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                 ></textarea>
               </div>
               <div className="announcement-box border-bottom  mb-3">
-                <h4>แนบไฟล์ <span  className="muted ">( สามารถแนปไฟล์ภาพและไฟล์ pdf ได้ )</span></h4>
+                <h4>
+                  แนบไฟล์{" "}
+                  <span className="muted ">
+                    ( สามารถแนปไฟล์ภาพและไฟล์ pdf ได้ )
+                  </span>
+                </h4>
                 <hr className="text-danger" />
                 <UploadFile
                   selectedFile={selectedFile}
@@ -335,9 +354,14 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                   cols="30"
                   className="form-control"
                   placeholder="บรรยายเนื้อหาข่าวที่นี้"
-                  value={input.content}
-                  onChange={handleChangeInput}
+                  value={contentNews}
+                  onChange={(e)=>setContentNews(e.target.value)}
                 ></textarea>
+                    {/* <QuillToolbar
+                      onChange={(html)=>setContentNews(html)}
+                      value={contentNews}
+                      placeholder="Write something..."
+                    /> */}
               </div>
               <SubmitOrCancelButton
                 handleCancel={clearInput}
