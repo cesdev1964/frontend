@@ -14,6 +14,7 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css"; // Add css for snow theme
 import QuillToolbar from "../../util/TextEdit/EditorToolbar";
 
+
 export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const { publicAnnouncementId } = useParams();
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     getAnnouncementsById,
   } = useAnnounments();
 
- 
+  const {quill} = useQuill();
 
   //เก็บไฟล์ที่ต้องการลบ
   const fetchDataTable = useCallback(async () => {
@@ -64,6 +65,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
         setIsLoading(false);
         return;
       }
+           
 
       setInput({
         title: announmentById.title,
@@ -119,6 +121,10 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     }));
   };
 
+  const handleContentChange = (e)=>{
+    setContentNews(e.target.value);
+  }
+
   const clearInput = () => {
     setInput({
       title: "",
@@ -140,10 +146,14 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     const getDate = getDateOnly(input.publichedAt);
 
     const formData = new FormData();
+
     formData.append("title", input.title);
     formData.append("summary", input.summary);
   //  formData.append("content", input.content);
-    formData.append("content", contentNews);
+
+  //อ่านค่าจาก quill 
+    formData.append("content", contentNews); 
+
     formData.append("status", input.status);
     formData.append("PublishedAt", getDate);
 
@@ -166,7 +176,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
     }
 
-    console.log("input data", [...formData]);
+    console.log("input data", [...formData.entries()]);
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -347,7 +357,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
               <div className="announcement-box border-bottom  mb-3">
                 <h4>เนื้อหาข่าว</h4>
                 <hr className="text-danger" />
-                <textarea
+                {/* <textarea
                   name="content"
                   type="text"
                   rows="20"
@@ -356,12 +366,12 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                   placeholder="บรรยายเนื้อหาข่าวที่นี้"
                   value={contentNews}
                   onChange={(e)=>setContentNews(e.target.value)}
-                ></textarea>
-                    {/* <QuillToolbar
-                      onChange={(html)=>setContentNews(html)}
+                ></textarea> */}
+                    <QuillToolbar
                       value={contentNews}
-                      placeholder="Write something..."
-                    /> */}
+                      placeholder="พิมพ์เนื้อหาข่าวสารที่นี้"
+                      onChange={(html)=>setContentNews(html)}
+                    />
               </div>
               <SubmitOrCancelButton
                 handleCancel={clearInput}

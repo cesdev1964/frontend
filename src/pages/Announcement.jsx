@@ -67,7 +67,7 @@ export default function Announcement({ title, isPreview = false }) {
                     "ไม่พบวันที่ลงข่าว"}
                 </span>
               </p>
-              <h5 className="text-secondary">{announmentById.summary ?? ""}</h5>
+              <h5 className="text-secondary" style={{textIndent:"1.5em"}}>{announmentById.summary ?? ""}</h5>
             </div>
             <div className="border-bottom  border-danger border-4 mb-3 px-5 py-5">
               {announmentById.content ? (
