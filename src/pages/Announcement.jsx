@@ -7,6 +7,7 @@ import { shortDateFormate } from "../util/inputFormat";
 import LoadingSpin from "../components/loadingSpin";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 import DOMPurify from "dompurify";
+import { checkDataIsBase64 } from "../util/base64";
 
 export default function Announcement({ title, isPreview = false }) {
   useTitle(title);
@@ -71,10 +72,9 @@ export default function Announcement({ title, isPreview = false }) {
             </div>
             <div className="border-bottom  border-danger border-4 mb-3 px-5 py-5">
               {announmentById.content ? (
-                // <p style={{textIndent:"1.5em",lineHeight:2}} >{announmentById.content}</p>
                   <div style={{textIndent:"1.5em",lineHeight:2}} 
                     dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(announmentById.content),
+                    __html: DOMPurify.sanitize(checkDataIsBase64(announmentById.content)),
                   }}/>
               ) : (
                 <div className="d-flex flex-column align-items-center justify-content-center p-4">

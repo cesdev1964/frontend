@@ -12,7 +12,7 @@ import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
 
 import "quill/dist/quill.snow.css"; // Add css for snow theme
 import QuillToolbar from "../../util/TextEdit/EditorToolbar";
-
+import {checkDataIsBase64,utf8ToBase64} from "../../util/base64.js";
 
 export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const { publicAnnouncementId } = useParams();
@@ -70,9 +70,11 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
         publichedAt: new Date(),
         files: announmentById.attachments,
       });
-
-      //ทำการ decode กลับ ที่จุดนี้
-      setContentNews(announmentById.content);
+      
+      //ตรวจสอบว่า content มีการเข้ารหัสไหม
+        const contentData = checkDataIsBase64(announmentById.content);
+        setContentNews(contentData);
+      
 
       const announmentList = announmentById.attachments || [];
 
@@ -135,13 +137,15 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     e.preventDefault();
     
     // ทำการ encode to base64 ที่นี้
+    const encodeContent = utf8ToBase64(contentNews);
+   
     const getDate = getDateOnly(input.publichedAt);
 
     const formData = new FormData();
 
     formData.append("title", input.title);
     formData.append("summary", input.summary); 
-    formData.append("content", contentNews); 
+    formData.append("content", encodeContent); 
     formData.append("status", input.status);
     formData.append("PublishedAt", getDate);
 
@@ -251,7 +255,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
         }
       });
   };
-
 
 
   return (
