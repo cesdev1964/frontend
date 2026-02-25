@@ -78,11 +78,6 @@ export function validateFormInput(input) {
   if (!input.startDate || input.startDate === "") {
     errors.startDate = "กรุณากรอกวันเริ่มงาน";
   }
-
-  // if (input.statusId === "0" && !input.endDate) {
-  //   errors.endDate = "กรุณากรอกวันที่ลาออก";
-  // }
-
   return errors;
 }
 

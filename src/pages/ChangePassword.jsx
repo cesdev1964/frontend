@@ -24,8 +24,6 @@ const ChangePassword = ({ title, isForce = false }) => {
   const { changePassword, userError, userIsLoading } = useUser();
 
 
-  // console.log("userData", authdata);
-
   useEffect(() => {
     if (authdata) {
       setInputData({
@@ -104,15 +102,12 @@ const ChangePassword = ({ title, isForce = false }) => {
           draggable: true,
           buttonsStyling: "w-100",
         }).then(() => {
-          // console.log("response",response)
+       
           if (userIsLoading === false) {
             logout();
           }
         });
         ClearInput();
-        {
-          /* สำเร็จแล้ว ให้ทำการ nevigate ไปหน้า home */
-        }
       } else {
         Swal.fire({
           index: "เปลี่ยนรหัสผ่านไม่สำเร็จไม่สำเร็จ",

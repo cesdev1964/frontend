@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate , useParams} from "react-router-dom";
 import HeaderPage from "../../components/HeaderPage";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import UploadFile from "../../components/UploadFile";
@@ -7,10 +7,9 @@ import { useAnnounments } from "../../hooks/announcementsStore";
 import Swal from "sweetalert2";
 
 import { getDateOnly } from "../../util/inputFormat";
-import { useParams } from "react-router-dom";
 import LoadingSpin from "../../components/loadingSpin";
 import { AnnounmentStatusEnum } from "../../enum/announcementEnum";
-import { useQuill } from "react-quilljs";
+
 import "quill/dist/quill.snow.css"; // Add css for snow theme
 import QuillToolbar from "../../util/TextEdit/EditorToolbar";
 
@@ -22,7 +21,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
   const [input, setInput] = useState({
     title: "",
     summary: "",
-    //content: "",
     status: AnnounmentStatusEnum.DRAFT,
     publichedAt: new Date(),
     files: [],
@@ -38,8 +36,6 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     announmentById,
     getAnnouncementsById,
   } = useAnnounments();
-
-  const {quill} = useQuill();
 
   //เก็บไฟล์ที่ต้องการลบ
   const fetchDataTable = useCallback(async () => {
@@ -70,24 +66,23 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       setInput({
         title: announmentById.title,
         summary: announmentById.summary,
-      //  content: announmentById.content,
-       // content: dataInhtmlFormat,
         status: announmentById.status,
         publichedAt: new Date(),
         files: announmentById.attachments,
       });
 
+      //ทำการ decode กลับ ที่จุดนี้
       setContentNews(announmentById.content);
 
       const announmentList = announmentById.attachments || [];
-      console.log(input);
+
 
       if (announmentList.length > 0) {
         const fileMetadataList = announmentList.map((item) => {
           const jsonString = JSON.stringify(item);
           const blobFile = new Blob([jsonString], { type: "application/json" }); //type ตามนามสกุลไฟล์
           return new File([blobFile], item.fileName, { type: blobFile.type });
-          // (file = new File([blobFile], { type: "application/json" }));
+         
         });
 
         //สามารถไม่ส่งไฟล์ได้ / setSeletedFile เป็น state ที่ใช้ในการเก็บไฟล์ upload
@@ -103,15 +98,13 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
             : prevList;
         });
         //ต้องทำการ convert ข้อมูลฝห้อยู่ในรูป type file เพราะตอนนี้เป็น type obj ตอนนี้ข้อมูลที่ get มากับที่ส่งกับไป คนละข้อมูลกัน
-        console.log(selectedFile);
+       // console.log(selectedFile);
       }
       setIsLoading(false);
     }
   }, [announmentById]);
 
-  // useEffect(() => {
-  //   console.log("transectionFile updated:", transectionFile);
-  // }, [transectionFile]);
+
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -121,9 +114,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
     }));
   };
 
-  const handleContentChange = (e)=>{
-    setContentNews(e.target.value);
-  }
+
 
   const clearInput = () => {
     setInput({
@@ -140,24 +131,21 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
   };
 
   const handleSubmit = async (e) => {
-    // debugger;
-    e.preventDefault();
 
+    e.preventDefault();
+    
+    // ทำการ encode to base64 ที่นี้
     const getDate = getDateOnly(input.publichedAt);
 
     const formData = new FormData();
 
     formData.append("title", input.title);
-    formData.append("summary", input.summary);
-  //  formData.append("content", input.content);
-
-  //อ่านค่าจาก quill 
+    formData.append("summary", input.summary); 
     formData.append("content", contentNews); 
-
     formData.append("status", input.status);
     formData.append("PublishedAt", getDate);
 
-    // console.log("transection in submit", transectionFile);
+
     if (transectionFile.length > 0) {
       transectionFile.forEach((item) => {
         if (item.attachments instanceof File) {
@@ -176,7 +164,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
       });
     }
 
-    console.log("input data", [...formData.entries()]);
+    
 
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -228,7 +216,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
   };
 
   const removeFile = (fileID) => {
-    // console.log("fileID to remove", fileID);
+
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success custom-width-btn-alert",
@@ -353,7 +341,7 @@ export default function AnnounmencementForm({ title = "", isEdit = false }) {
                 />
               </div>
             </div>
-            <div className="col-lg-7 col-md-12">
+            <div className="col-lg-7 col-md-12" >
               <div className="announcement-box border-bottom  mb-3">
                 <h4>เนื้อหาข่าว</h4>
                 <hr className="text-danger" />

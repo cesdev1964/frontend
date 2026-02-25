@@ -1,8 +1,6 @@
-import React, { useRef, useCallback } from "react";
-import { useEffect } from "react";
+import React, { useRef, useCallback,useEffect,useState } from "react";
 import { useTitle } from "../../hooks/useTitle";
 import HeaderPage from "../../components/HeaderPage";
-import { useState } from "react";
 import Swal from "sweetalert2";
 import { SubmitOrCancelButton } from "../../components/SubmitOrCancelBtnForModal";
 import { Link } from "react-router-dom";
@@ -63,8 +61,7 @@ export default function Contrators({ title }) {
     try {
       await getContratorData();
     } catch (error) {
-      // alert("โหลด API ไม่สำเร็จ", error);
-      return;
+         console.log(error);
     }
   }, [getContratorData]);
 
@@ -252,7 +249,6 @@ export default function Contrators({ title }) {
   };
 
   const finishSubmit = () => {
-    // console.log("submit data", input);
   };
 
   const ClearInput = () => {
@@ -359,96 +355,6 @@ export default function Contrators({ title }) {
             isLoading={contratorIsLoading}
           />
         </ModalComponent>
-
-        {/* <div
-          className="modal fade"
-          id="notModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-primary d-flex flex-column">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  <i className="bi bi-plus-circle fs-4 me-2"></i>
-                  {addBtnName}
-                </h1>
-
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => handleCancel("notModal")}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="employee-content p-4">
-                  <div className="col-lg-3 "></div>
-                  <div
-                    className="col-lg-9 "
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <form>
-                      <div>
-                        <div className="row form-spacing g-3">
-                          <div className="col-md-12">
-                            <label className="form-label">
-                              ชื่อผู้รับเหมา
-                              <span style={{ color: "red" }}>*</span>
-                            </label>
-                            <input
-                              name="contractorname"
-                              type="text"
-                              className={`form-control ${
-                                error.contractorname
-                                  ? "border border-danger"
-                                  : ""
-                              }`}
-                              id="educationname"
-                              placeholder="กรอกชื่อผู้รับเหมา"
-                              value={input.contractorname ?? ""}
-                              onChange={handleChangeInput}
-                            />
-                            {error.contractorname ? (
-                              <p className="text-danger">
-                                {error.contractorname}
-                              </p>
-                            ) : null}
-                          </div>
-                          <div className=" d-flex justify-content-between align-items-center w-100 mt-2">
-                            <label className="mb-2">เปิดใช้งาน</label>
-                            <div className="form-check form-switch form-switch-md ms-3">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="isActive-toggle"
-                                name="isactive"
-                                value={input.isactive}
-                                onChange={handleChangeCheckbox}
-                                checked={input.isactive === true}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <SubmitOrCancelButton
-                handleSubmit={handleSubmit}
-                handleCancel={() => handleCancel("notModal")}
-                isLoading={contratorIsLoading}
-              />
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

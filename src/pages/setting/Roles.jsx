@@ -211,9 +211,9 @@ export default function Roles({ title }) {
 
   const columnDefs = [
     { width: "70px", targets: 0, className: "text-center" },
-    { width: "100px", targets: 1 },
-    { width: "150px", targets: 2, className: "fs-6" },
-    { width: "90px", targets: 3 },
+    { width: "160px", targets: 1 },
+    { width: "380px", targets: 2, className: "fs-6" },
+    { width: "70px", targets: 3 },
   ];
 
   const handleAction = (action, id) => {

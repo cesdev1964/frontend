@@ -1,13 +1,9 @@
 import { useTitle } from "../hooks/useTitle";
 import HeaderPage from "../components/HeaderPage";
-import { Link } from "react-router-dom";
-import ImageComponent from "../components/Image";
-import DetailItem from "../components/home/detailItem.jsx";
+import { Link ,useParams} from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useEmployee } from "../hooks/employeeStore";
-import { useParams } from "react-router-dom";
 import { useTitltName } from "../hooks/titleNameStore";
-
 import LoadingSpin from "../components/loadingSpin.jsx";
 import { useEducation } from "../hooks/educationStore.jsx";
 import { usePosition } from "../hooks/positionStore.jsx";
@@ -16,7 +12,6 @@ import { useEmployeeType } from "../hooks/employeeTypeStore.jsx";
 import { useContrator } from "../hooks/contratorStore.jsx";
 import { useLevel } from "../hooks/levelStore.jsx";
 import { useFlow } from "../hooks/flowStore.jsx";
-import FlowIcon from "../assets/icon/FlowIcon.jsx";
 import { useDeduction } from "../hooks/deductionTypeStore.jsx";
 import WorkInformation from "../components/profile/WorkInformation.jsx";
 import PersonalInformation from "../components/profile/PersonalInformation.jsx";
@@ -29,7 +24,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
 export default function Profile({ title, isAdmin = false }) {
   useTitle(title);
   const { employeeId } = useParams();
-  const { getEmployeeById, employeeById, employeeIsLoading ,getEmployeeByIdForProfile,employeeDataProfile} = useEmployee();
+  const {  employeeIsLoading ,getEmployeeByIdForProfile,employeeDataProfile} = useEmployee();
   const { levelDropdown, getLevelDropdown } = useLevel();
   const { positionDropdown, getPositionDropdown } = usePosition();
   const { contratorDropdown, getContratorDropdown } = useContrator();
@@ -39,7 +34,6 @@ export default function Profile({ title, isAdmin = false }) {
   const { getFlowById, flowById, flowIsLoading } = useFlow();
   const { getDeductionData, deductionData } = useDeduction();
   const { getTitleDropdown, titleDropdown } = useTitltName();
-  const [onClickAccordian, setOnClickAccordian] = useState(true);
   const [empData, setEmpData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -84,7 +78,6 @@ export default function Profile({ title, isAdmin = false }) {
   }, [fetchDataTable]);
 
   useEffect(() => {
-    // debugger;
     if (!employeeDataProfile) {
       setEmpData({});
       return;
